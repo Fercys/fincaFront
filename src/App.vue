@@ -7,7 +7,7 @@
           <v-flex class="d-none d-sm-none d-md-flex">
             <Mainmenu />
           </v-flex>
-          <v-flex>
+          <v-flex class="md12">
             <router-view style="min-height: 81vh"/>
           </v-flex>
         </v-layout>    
