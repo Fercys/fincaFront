@@ -44,8 +44,8 @@ export default {
       return {
         cards: {
           farms: {
-            title:'Farms',
-            count: 28,
+            title:'Cliente',
+            count: 2,
             click: () => this.toFarms()
           },
           nodes: {
@@ -70,6 +70,7 @@ export default {
        })
        .then((response) => {
          console.log(response);
+         this.cards.count=80;
        })
        .catch((error) => {
          console.log(error);
