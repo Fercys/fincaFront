@@ -62,18 +62,18 @@ export default {
       }
     },
     created: function (){
-      // this.axios.get(' https://apiv2.wiseconn.com/farms',{
-      //   headers: {
-      //     api_key: '9Ev6ftyEbHhylMoKFaok',
-      //     Accept: 'application/json ',
-      //   }
-      // })
-      // .then((response) => {
-      //   console.log(response);
-      // })
-      // .catch((error) => {
-      //   console.log(error);
-      // });
+       this.axios.get('https://cors-anywhere.herokuapp.com/https://apiv2.wiseconn.com/farms',{
+         headers: {
+           api_key: '9Ev6ftyEbHhylMoKFaok',
+           Accept: 'application/json ',
+         }
+       })
+       .then((response) => {
+         console.log(response);
+       })
+       .catch((error) => {
+         console.log(error);
+       });
     },
     methods:{
       imprimir(){
