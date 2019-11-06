@@ -5,8 +5,9 @@
       <!-- <v-flex xs12> <h1>{{title}} .</h1> </v-flex> -->
       <v-flex xs12 md12>
         <v-layout :wrap="true" class="pl-5 pr-5">
-          <v-flex @click="imprimir()" v-for="(card,index) in cards" v-bind:key="index" xs12 md4 class="pt-5 pl-xs-5 pl-md-5 pl-md-5">      
+          <v-flex v-for="(card,index) in cards" v-bind:key="index" xs12 md4 class="pt-5 pl-xs-5 pl-md-5 pl-md-5">      
             <v-card 
+              @click="card.click"
               :elevation=1
             >
             <!-- :loading="true" -->
@@ -44,22 +45,42 @@ export default {
         cards: {
           farms: {
             title:'Farms',
-            count: 28
+            count: 28,
+            click: () => this.toFarms()
           },
           nodes: {
             title:'Nodes',
-            count: 15
+            count: 15,
+            click: ''
           },
           zones: {
             title:'Zones',
-            count: 358
+            count: 358,
+            click:''
           }
         }
       }
     },
+    created: function (){
+      // this.axios.get(' https://apiv2.wiseconn.com/farms',{
+      //   headers: {
+      //     api_key: '9Ev6ftyEbHhylMoKFaok',
+      //     Accept: 'application/json ',
+      //   }
+      // })
+      // .then((response) => {
+      //   console.log(response);
+      // })
+      // .catch((error) => {
+      //   console.log(error);
+      // });
+    },
     methods:{
       imprimir(){
         console.log('cambie de pestaña')
+      },
+      toFarms(){
+        this.$router.push({name:'farms'})
       }
     }
 }

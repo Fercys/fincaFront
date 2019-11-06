@@ -14,6 +14,12 @@ export default new Router({
       component: () => import(/* webpackChunkName: "dashboard" */ './views/Dashboard.vue')
     },
     {
+      path: '/farms',
+      name: 'farms',
+      // Importando component de manera directa
+      component: () => import(/* webpackChunkName: "farm" */ './views/FarmsTable.vue')
+    },
+    {
       path: '/farm/:name',
       name: 'farm',
       // Importando component de manera directa
@@ -32,7 +38,12 @@ export default new Router({
     {
       path: '/zone/:name',
       name: 'zone',
-      component: () => import(/* webpackChunkName: "zone" */ './components/Zone.vue')
+      component: () => import(/* webpackChunkName: "zone" */ './views/ZoneList.vue')
     }
+    // {
+    //   path: '/zone/:name',
+    //   name: 'zone',
+    //   component: () => import(/* webpackChunkName: "zone" */ './components/Zone.vue')
+    // }
   ]
 })
