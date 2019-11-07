@@ -20,8 +20,9 @@ export default {
     data(){
       return{
         headers: [
-            {text: 'Nombre', value: 'nombre'},
-            {text: 'Descripción', value: 'descripcion'},
+            {text: 'Id', value: 'id'},
+            {text: 'Nombre', value: 'name'},
+            {text: 'Descripción', value: 'description'},
             {text: 'Acciones', value: 'actions'}
         ],
         items: [
@@ -53,8 +54,35 @@ export default {
         ]
       }
     },
-    computed: {
-     
+    created: function (){
+        this.axios.get('https://cors-anywhere.herokuapp.com/https://apiv2.wiseconn.com/farms',{
+            headers: {
+            api_key: '9Ev6ftyEbHhylMoKFaok',
+            Accept: 'application/json ',
+            }
+        })
+        .then((response) => {
+            let user_id = this.$route.params.id
+            console.log(response);
+            this.items = response.data.map( data => {
+                return {
+                    user_id: data.account.id,
+                    id: data.id,
+                    name: data.name,
+                    description: data.description,
+                    actions:{
+                        icon:'visibility',
+                        click: () => this.toZone()
+                    }
+                }
+            })
+            .filter( farm => {
+                return farm.user_id == user_id
+            })
+        })
+        .catch((error) => {
+            console.log(error);
+        }); 
     },
     methods: {
         toZone(){

@@ -14,7 +14,13 @@ export default new Router({
       component: () => import(/* webpackChunkName: "dashboard" */ './views/Dashboard.vue')
     },
     {
-      path: '/farms',
+      path: '/users',
+      name: 'users',
+      // Importando component de manera directa
+      component: () => import(/* webpackChunkName: "farm" */ './views/UsersTable.vue')
+    },
+    {
+      path: '/user/:id/farms',
       name: 'farms',
       // Importando component de manera directa
       component: () => import(/* webpackChunkName: "farm" */ './views/FarmsTable.vue')

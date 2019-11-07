@@ -43,45 +43,54 @@ export default {
     data() {
       return {
         cards: {
-          farms: {
-            title:'Cliente',
-            count: 2,
+          users: {
+            title:'Clientes',
+            count: 0,
             click: () => this.toFarms()
           },
-          nodes: {
-            title:'Nodes',
-            count: 15,
-            click: ''
-          },
-          zones: {
-            title:'Zones',
-            count: 358,
-            click:''
-          }
+          // nodes: {
+          //   title:'Nodes',
+          //   count: 15,
+          //   click: ''
+          // },
+          // zones: {
+          //   title:'Zones',
+          //   count: 358,
+          //   click:''
+          // }
         }
       }
     },
     created: function (){
-       this.axios.get('https://cors-anywhere.herokuapp.com/https://apiv2.wiseconn.com/farms',{
-         headers: {
-           api_key: '9Ev6ftyEbHhylMoKFaok',
-           Accept: 'application/json ',
-         }
-       })
-       .then((response) => {
-         console.log(response);
-         this.cards.count=80;
-       })
-       .catch((error) => {
-         console.log(error);
-       });
+      this.axios.get('https://cors-anywhere.herokuapp.com/https://apiv2.wiseconn.com/farms',{
+        headers: {
+          api_key: '9Ev6ftyEbHhylMoKFaok',
+          Accept: 'application/json ',
+        }
+      })
+      .then((response) => {
+        console.log(response);
+        let users_id = [];
+        let users_count = [];
+        this.cards.users.count = response.data.map( data => {
+          return data.account.id
+        })
+        .filter( id => {
+          users_id = [... users_count]
+          users_count.push(id)
+          return id && !users_id.includes(id)
+        }).length
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     },
     methods:{
       imprimir(){
         console.log('cambie de pestaña')
       },
       toFarms(){
-        this.$router.push({name:'farms'})
+        this.$router.push({name:'users'})
       }
     }
 }
