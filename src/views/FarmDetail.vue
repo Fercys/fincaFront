@@ -1,6 +1,9 @@
 <template>
   <v-container>
-    <h2> Detalle de la Granja </h2>
+       <hr>
+      <div style="width: 100%; margin: 0 auto;">  <h3> Detalle de la Finca {{ farm.name }} </h3></div> 
+      <hr> <br> 
+  
     <v-row>
         <v-col class="mb-6">
             <div>

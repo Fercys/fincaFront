@@ -1,20 +1,23 @@
 <template>
   <v-container>
-    <h2> Detalle de la Zona </h2>
+     <hr>
+      <div style="width: 100%; margin: 0 auto;">  <h3> Detalle de la zona: {{ zone.name }} </h3></div> 
+      <hr> <br> 
+  
     <v-row>
         <v-col class="mb-6">
             <div>
-                <label for="">Nombre </label>
+                <label for="">Nombre:  </label>
                 <span>{{ zone.name }}</span>
             </div>
             <div>
-                <label for="">Longitud </label>
+                <label for="">Longitud: </label>
                 <span>{{ zone.long }}</span>
             </div>
             <div>
 
-                <label for="">Direción Postal </label>
-                <span>{{ zone.postal_address }}</span>
+                <label for="">Unit Theoretical Flow:  </label>
+                <span>{{ zone.unitTheoreticalFlow }}</span>
             </div>
             <br>
             <v-btn rounded color="primary" @click='toMeasuresList()'>Lista de Mediciones</v-btn>
@@ -22,16 +25,16 @@
         </v-col>
         <v-col class="mb-6">
             <div>
-                <label for="">Descripcion </label>
-                <span>{{ zone.description }}</span>
+                <label for="">Crops: </label>
+                <span>{{ zone.crops }}</span>
             </div>
             <div>
-                <label for="">Latitud </label>
+                <label for="">Latitud: </label>
                 <span>{{ zone.lat }}</span>
             </div>
             <div>
-                <label for="">Zona Horaria </label>
-                <span>{{ zone.time_zone }}</span>
+                <label for="">Theoretical Flow: </label>
+                <span>{{ zone.theoreticalFlow }}</span>
             </div>
             <br>
 
@@ -53,14 +56,14 @@ export default {
     data(){
       return{
           zone: {
-              id: '1',
-              farm_id: '2',
-              name: 'Zona 2',
-              description: 'Zona 2',
-              lat: '12.123.12',
-              long: '-234.2323.2',
-              postal_address: '2',
-              time_zone: 'GMT-3',
+              id: '',
+              farm_id: '',
+              name: '',
+              crops: '',
+              lat: '',
+              long: '',
+              unitTheoreticalFlow: '',
+              theoreticalFlow: '',
           }
       }
     },
@@ -68,31 +71,35 @@ export default {
      
     },
     created: function() {
-        let zone_id = this.$route.params.id
-        // this.axios.get(`https://cors-anywhere.herokuapp.com/https://apiv2.wiseconn.com/zones/${zone_id}  `,{
-        //     headers: {
-        //     api_key: '9Ev6ftyEbHhylMoKFaok',
-        //     Accept: 'application/json ',
-        //     }
-        // })
-        // .then((response) => {
-        //     let farm_id = this.$route.params.id
-        //     console.log(response);
-        //     let farm_data = response.data.filter( data => {
-        //         return data.id == user_id
-        //     })
-        //     this.zone.id = farm_data[0].id
-        //     this.zone.name = farm_data[0].name
-        //     this.zone.description = farm_data[0].description
-        //     this.zone.lat = farm_data[0].latitude
-        //     this.zone.long = farm_data[0].longitude
-        //     this.zone.postal_address = farm_data[0].postalAddress
-        //     this.zone.time_zone = farm_data[0].timeZone
+        let zone_id = this.$route.params.id;
+        console.log(zone_id);
+         this.axios.get(`https://cors-anywhere.herokuapp.com/https://apiv2.wiseconn.com/zones/${zone_id}  `,{
+             headers: {
+             api_key: '9Ev6ftyEbHhylMoKFaok',
+             Accept: 'application/json ',
+             }
+         })
+         .then((response) => {
+            //  let farm_id = this.$route.params.id
+             
+            //   let farm_data = response.data.filter( data => {
+            //       return data.id == user_id
+            //       })
+             console.log(response);
+             console.log(response.data.name);
 
-        // })
-        // .catch((error) => {
-        //     console.log(error);
-        // }); 
+             this.zone.id = response.data.id
+             this.zone.name = response.data.name
+              this.zone.crops = response.data.crops
+              this.zone.lat = response.data.latitude
+             this.zone.long = response.data.longitude
+              this.zone.unitTheoreticalFlow = response.data.unitTheoreticalFlow
+              this.zone.theoreticalFlow = response.data.theoreticalFlow
+
+         })
+         .catch((error) => {
+             console.log(error);
+         }); 
     },
     methods: {
         toMeasuresList(){

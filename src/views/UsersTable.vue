@@ -1,5 +1,8 @@
 <template>
-  <div>
+  <div> <br>
+     <hr>
+      <div style="width: 20%; margin: 0 auto;"><h3>Lista de Clientes</h3></div> 
+      <hr> <br> 
     <Table 
         :headers="headers"
         :items="items"
