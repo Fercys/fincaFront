@@ -48,16 +48,16 @@ export default {
             count: 0,
             click: () => this.toFarms()
           },
-          // nodes: {
-          //   title:'Nodes',
-          //   count: 15,
-          //   click: ''
-          // },
-          // zones: {
-          //   title:'Zones',
-          //   count: 358,
-          //   click:''
-          // }
+           nodes: {
+             title:'Nodes',
+             count: 15,
+             click: ''
+           },
+           zones: {
+             title:'Zones',
+             count: 358,
+             click:''
+           }
         }
       }
     },

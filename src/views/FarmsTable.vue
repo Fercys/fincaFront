@@ -25,7 +25,6 @@ export default {
         headers: [
             {text: 'Id', value: 'id'},
             {text: 'Nombre', value: 'name'},
-            {text: 'Descripción', value: 'description'},
             {text: 'Acciones', value: 'actions'}
         ],
         items: [

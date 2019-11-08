@@ -1,7 +1,7 @@
 <template>
   <v-container>
      <hr>
-      <div style="width: 100%; margin: 0 auto;">  <h3> Detalle de la zona: {{ zone.name }} </h3></div> 
+      <div style="width: 100%; margin: 0 auto;">  <h3> Detalle de la zona:  <span style="color:#0d47a1"> {{ zone.name }} </span></h3></div> 
       <hr> <br> 
   
     <v-row>

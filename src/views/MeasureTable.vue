@@ -69,10 +69,10 @@ export default {
     methods: {
         toMeasureDetail(farm_id){
             console.log('cambie de vista')
-            // this.$router.push({name: 'measuredetail', params: {
-            //     id: farm_id
-            //     }
-            // })
+             this.$router.push({name: 'measuredetail', params: {
+                 id: farm_id
+                 }
+             })
         }
     }
       
