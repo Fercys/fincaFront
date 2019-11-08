@@ -7,7 +7,7 @@
         class="elevation-1"
     >
         <template v-slot:item.actions="{ item }">
-            <v-icon @click="item.actions.click">{{item.actions.icon}}</v-icon>
+            <v-icon v-if="item.actions" @click="item.actions.click">{{item.actions.icon}}</v-icon>
         </template>
     </v-data-table>
   </div>
