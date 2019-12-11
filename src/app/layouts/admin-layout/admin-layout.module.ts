@@ -12,6 +12,7 @@ import { MapsComponent } from '../../maps/maps.component';
 import { NotificationsComponent } from '../../notifications/notifications.component';
 import { UpgradeComponent } from '../../upgrade/upgrade.component';
 import { FarmsComponent } from '../../farms/farms.component';
+import { FarmMapComponent } from '../../farm-map/farm-map.component';
 
 import {
   MatButtonModule,
@@ -44,6 +45,7 @@ import {
     NotificationsComponent,
     UpgradeComponent,
     FarmsComponent,
+    FarmMapComponent
   ]
 })
 
