@@ -31,7 +31,7 @@ export class FarmMapComponent implements OnInit {
     });
     
     var marker = new window['google'].maps.Marker({
-      position: {lat: 24.5373, lng: 81.3042},
+      position: {lat: -33.4372, lng: -70.6506},
       map: map,
       title: 'Hello World!',
       draggable: true,
@@ -69,6 +69,24 @@ export class FarmMapComponent implements OnInit {
       marker.addListener('click', function() {
         infowindow.open(map, marker);
       });
-    
+
+          // Define the LatLng coordinates for the polygon's path.
+    var triangleCoords = [
+      {lat: -33.4372, lng: -70.6506},
+      {lat: -33.466, lng: -70.118},
+      {lat: -33.321, lng: -70.757},
+      {lat: -33.4372, lng: -70.6506}
+    ];
+
+    // Construct the polygon.
+    var Triangle = new window['google'].maps.Polygon({
+      paths: triangleCoords,
+      strokeColor: '#FF0000',
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+      fillColor: '#FF0000',
+      fillOpacity: 0.35
+    });
+    Triangle.setMap(map);
   }
 }
