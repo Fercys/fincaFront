@@ -29,7 +29,13 @@ export class FarmMapComponent implements OnInit {
       center: {lat: -33.4372, lng: -70.6506},
       zoom:7
     });
-    
+    //Funcion de Click
+    var addListenersOnPolygon = function(polygon) {
+      window['google'].maps.event.addListener(polygon, 'click', function (event) {
+        alert('Hello World!');
+      });  
+    }
+ 
     var marker = new window['google'].maps.Marker({
       position: {lat: -33.4372, lng: -70.6506},
       map: map,
@@ -85,8 +91,9 @@ export class FarmMapComponent implements OnInit {
       strokeOpacity: 0.8,
       strokeWeight: 2,
       fillColor: '#FF0000',
-      fillOpacity: 0.35
+      fillOpacity: 0.35,
     });
     Triangle.setMap(map);
+    addListenersOnPolygon(Triangle);
   }
 }
