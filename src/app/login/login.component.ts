@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy,AfterViewInit} from '@angular/core';
 import { FormBuilder,FormGroup, FormArray,  Validators,FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-login',
@@ -26,7 +27,7 @@ export class LoginComponent implements OnInit,OnDestroy,AfterViewInit {
 	}
 
 
-	constructor(private fb: FormBuilder,private elementRef: ElementRef) { }
+	constructor(private _router: Router, private fb: FormBuilder,private elementRef: ElementRef) { }
 
 	ngOnInit() {
 		this.screenHeight = window.innerHeight;
@@ -45,7 +46,6 @@ export class LoginComponent implements OnInit,OnDestroy,AfterViewInit {
 	onSubmit() {
 		// Adding data values
 		console.log(this.myForm.value)
-		console.log(this.myForm.controls['components'].value)
 	}
 	ngOnDestroy(){
 		document.body.className="";
@@ -53,4 +53,18 @@ export class LoginComponent implements OnInit,OnDestroy,AfterViewInit {
 	ngAfterViewInit(){
 		this.elementRef.nativeElement.ownerDocument.body.style.backgroundImage = './assets/img/backgrounds/2.jpg';
 	}
+
+	LoginUser(event){
+		event.preventDefault();
+		const target = event.target;
+		const usuario= target.querySelector('#usuario').value;
+		const password= target.querySelector('#password').value;
+	  
+		if (usuario == 'Admin' && password == '12345678') {
+			console.log('entre');
+			this._router.navigate(['/dashboard']);
+
+		}
+
+	  }
 }
