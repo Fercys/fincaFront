@@ -24,6 +24,8 @@ import {
 } from '@agm/core';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { LoginComponent } from './login/login.component';
+import { FarmService } from './services/farm-service/farm.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   imports: [
@@ -39,6 +41,7 @@ import { LoginComponent } from './login/login.component';
     }),
     MaterialModule,
     FlexLayoutModule,
+    HttpClientModule
   ], 
   declarations: [
     AppComponent,
@@ -46,7 +49,7 @@ import { LoginComponent } from './login/login.component';
     LoginComponent,
 
   ],
-  providers: [],
+  providers: [FarmService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

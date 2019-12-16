@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FarmService } from 'app/services/farm-service/farm.service';
 
 @Component({
   selector: 'app-farms',
@@ -7,9 +8,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FarmsComponent implements OnInit {
 
-  constructor() { }
+  farms = [
+    {id: 1}
+  ];
+  constructor(private farmService: FarmService) { }
 
   ngOnInit() {
+    this.farmService.getFarms().toPromise().then(result => {
+      this.farms = result
+    })
   }
 
 }

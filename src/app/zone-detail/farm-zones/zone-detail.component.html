@@ -5,7 +5,7 @@
             <div class="col-md-12">
                 <div class="card card-plain">
                     <div class="card-header card-header-danger">
-                        <h4 class="card-title mt-0"> Table on Plain Background</h4>
+                        <h4 class="card-title mt-0"> Detalles de zona</h4>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -18,39 +18,55 @@
                                         Name
                                     </th>
                                     <th>
-                                        Description
+                                        Unit
                                     </th>
                                     <th>
-                                        Latitude
+                                        Last Data
                                     </th>
                                     <th>
-                                        Longitude
+                                        Last Data Date
                                     </th>
                                     <th>
-                                        Options
+                                        Monitoring Time
+                                    </th>
+                                    <th>
+                                        Sensor Depth
+                                    </th>
+                                    <th>
+                                        Depth Unit
+                                    </th>
+                                    <th>
+                                        Sensor Type
                                     </th>
                                 </thead>
                                 <tbody>
-                                    <tr *ngFor='let farm of farms'>
+                                    <tr *ngFor='let measure of zone_measures'>
                                         <td>
-                                            {{farm.id}}
+                                            {{measure.id}}
                                         </td>
                                         <td>
-                                            {{farm.name}}
+                                            {{measure.name}}
                                         </td>
                                         <td>
-                                            {{farm.description}}
+                                            {{measure.unit}}
                                         </td>
                                         <td>
-                                            {{farm.latitude}}
+                                            {{measure.lastData}}
                                         </td>
                                         <td>
-                                            {{farm.longitude}}
+                                            {{measure.lastDataDate}}
                                         </td>
                                         <td>
-                                            <a [routerLink]="['/farm-zones',farm.id]">
-                                                <i class="material-icons">find_in_page</i>
-                                            </a>
+                                            {{measure.monitoringTime}}
+                                        </td>
+                                        <td>
+                                            {{measure.sensorDepth}}
+                                        </td>
+                                        <td>
+                                            {{measure.depthUnit}}
+                                        </td>
+                                        <td>
+                                            {{measure.sensorType}}
                                         </td>
                                     </tr>
                                 </tbody>

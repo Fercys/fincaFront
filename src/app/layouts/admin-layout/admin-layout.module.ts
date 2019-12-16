@@ -21,6 +21,8 @@ import {
   MatTooltipModule,
   MatSelectModule
 } from '@angular/material';
+import { FarmZonesComponent } from 'app/farm-zones/farm-zones.component';
+import { ZoneDetailComponent } from 'app/zone-detail/farm-zones/zone-detail.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -44,6 +46,8 @@ import {
     NotificationsComponent,
     UpgradeComponent,
     FarmsComponent,
+    FarmZonesComponent,
+    ZoneDetailComponent
   ]
 })
 

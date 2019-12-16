@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as Chartist from 'chartist';
+import { FarmService } from 'app/services/farm-service/farm.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -8,7 +9,9 @@ import * as Chartist from 'chartist';
 })
 export class DashboardComponent implements OnInit {
 
-  constructor() { }
+  clientsNumber = 0;
+  farmsNumber = 0;
+  constructor(private farmService: FarmService) { }
   startAnimationForLineChart(chart){
       let seq: any, delays: any, durations: any;
       seq = 0;
@@ -67,7 +70,13 @@ export class DashboardComponent implements OnInit {
   };
   ngOnInit() {
       /* ----------==========     Daily Sales Chart initialization For Documentation    ==========---------- */
-
+      this.farmService.getFarms().toPromise().then(result => {
+        this.farmsNumber = result.length
+        let all_account_id = result.map(data => {
+          return data.account.id
+        })
+        this.clientsNumber =  [...new Set(all_account_id)];
+      })
       const dataDailySalesChart: any = {
           labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
           series: [
