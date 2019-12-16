@@ -75,7 +75,7 @@ export class DashboardComponent implements OnInit {
         let all_account_id = result.map(data => {
           return data.account.id
         })
-        this.clientsNumber =  [...new Set(all_account_id)];
+        this.clientsNumber =  [...new Set(all_account_id)].length;
       })
       const dataDailySalesChart: any = {
           labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
