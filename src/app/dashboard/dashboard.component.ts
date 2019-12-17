@@ -73,6 +73,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.wiseconnService.getFarms().subscribe((data: {}) => {
       this.farms = data;
+      localStorage.setItem("datafarms", JSON.stringify(this.farms));
       console.log(data);  
       this.cant_farms=this.farms.length;   
     })
