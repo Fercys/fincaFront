@@ -43,7 +43,7 @@
                                           {{data.timeZone}}
                                       </td>
                                       <td>
-                                          <i class="material-icons" routerLink="/farmmap">find_in_page</i>
+                                          <i class="material-icons" [routerLink]="['/farmmap',data.id]">find_in_page</i>
                                       </td>
                                   </tr>
                               </tbody>

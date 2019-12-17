@@ -1,4 +1,7 @@
 import { Component, OnInit,ViewChild,ElementRef   } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { WiseconnService } from 'app/services/wiseconn.service';
+import { element } from 'protractor';
 
 @Component({
   selector: 'app-farm-map',
@@ -8,25 +11,33 @@ import { Component, OnInit,ViewChild,ElementRef   } from '@angular/core';
 export class FarmMapComponent implements OnInit {
   @ViewChild('mapRef', {static: true }) mapElement: ElementRef;
   private google_api_key = 'AIzaSyDx_dMfo0VnR_2CsF_wNw9Ayjd_HO6sMB0';
-  constructor() { }
+  public loading = false;
+  constructor(private _route: ActivatedRoute,private wiseconnService: WiseconnService) { }
 
   ngOnInit() {
     //this.renderMap();
-    this.loadMap();
+    this.loading = true;
+    console.log(this._route.snapshot.paramMap.get('id'));
+    this.wiseconnService.getZones(this._route.snapshot.paramMap.get('id')).subscribe((data: {}) => {      
+      console.log(data); 
+      this.loading = false; 
+      this.loadMap(data); 
+    })
+    
   }
   renderMap() {
     
     window['initMap'] = () => {
-      this.loadMap();     
+      this.loadMap(null);     
     }
     if(!window.document.getElementById('google-map-script')) {
     } else {
-      this.loadMap();
+      this.loadMap(null);
     }
   }
-  loadMap = () => {
+  loadMap = (data) => {
     var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
-      center: {lat: -33.4372, lng: -70.6506},
+      center: {lat: -33.0478101, lng: -71.6116333},
       zoom:7
     });
     //Funcion de Click
@@ -37,7 +48,7 @@ export class FarmMapComponent implements OnInit {
     }
  
     var marker = new window['google'].maps.Marker({
-      position: {lat: -33.4372, lng: -70.6506},
+      position: {lat: -33.0478101, lng: -71.6116333},
       map: map,
       title: 'Hello World!',
       draggable: true,
@@ -54,10 +65,11 @@ export class FarmMapComponent implements OnInit {
     '</div>';
 
     var flightPlanCoordinates = [
-      {lat: 37.772, lng: -122.214},
-      {lat: 21.291, lng: -157.821},
-      {lat: -18.142, lng: 178.431},
-      {lat: -27.467, lng: 153.027}
+      {lat: -32.90045576247285, lng: -70.90006940132304},
+      {lat: -32.89963602180464, lng: -70.90243510967417},
+      {lat: -32.90179795883293, lng: -70.90349726444401},
+      {lat: -32.90276180541499, lng: -70.90126030212565},
+      {lat: -32.9021042289774, lng:  -70.90038590198674},
     ];
     var flightPath = new window['google'].maps.Polyline({
       path: flightPlanCoordinates,
@@ -75,47 +87,20 @@ export class FarmMapComponent implements OnInit {
       marker.addListener('click', function() {
         infowindow.open(map, marker);
       });
-
-          // Define the LatLng coordinates for the polygon's path.
-    var triangleCoords = [
-      {lat: -32.90045576247285, lng: -70.90006940132304},
-      {lat: -32.89963602180464, lng: -70.90243510967417},
-      {lat: -32.90179795883293, lng: -70.90349726444401},
-      {lat: -32.90276180541499, lng: -70.90126030212565},
-      {lat: -32.9021042289774, lng:  -70.90038590198674},
-      {lat: -32.90105930295035, lng: -70.90128712421574}
-    ];
-
-    // Construct the polygon.
-    var Triangle = new window['google'].maps.Polygon({
-      paths: triangleCoords,
-      strokeColor: '#FF0000',
-      strokeOpacity: 0.8,
-      strokeWeight: 2,
-      fillColor: '#FF0000',
-      fillOpacity: 0.35,
+    data.forEach(element => {
+      // Construct the polygon.
+      console.log(element.polygon.path);
+      
+      var Triangle = new window['google'].maps.Polygon({
+        paths: element.polygon.path,
+        strokeColor: '#FF0000',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#FF0000',
+        fillOpacity: 0.35,
+      });
+      Triangle.setMap(map);
+      addListenersOnPolygon(Triangle);
     });
-    Triangle.setMap(map);
-    addListenersOnPolygon(Triangle);
-
-    var triangleCoords = [
-      {lat: -32.89964784520172, lng: -70.90245153787691},
-      {lat: -32.90178275818888, lng: -70.90349223530211},
-      {lat: -32.90155755883886, lng: -70.90408232128539},
-      {lat: -32.901332358916164, lng: -70.90418960964598},
-      {lat: -32.89887933165899, lng: -70.90472035240964}
-    ];
-
-    // Construct the polygon.
-    var Triangle = new window['google'].maps.Polygon({
-      paths: triangleCoords,
-      strokeColor: '#FF0000',
-      strokeOpacity: 0.8,
-      strokeWeight: 2,
-      fillColor: '#FF0000',
-      fillOpacity: 0.35,
-    });
-    Triangle.setMap(map);
-    addListenersOnPolygon(Triangle);
   }
 }

@@ -27,6 +27,13 @@ export class WiseconnService {
       catchError(this.errorHandl)
     )
   }
+  getZones(id): Observable<farmModels> { console.log( this.httpOptions);
+    return this.http.get<farmModels>(this.baseurl + '/farms/'+id+"/zones", this.httpOptions)
+    .pipe(
+      retry(1),
+      catchError(this.errorHandl)
+    )
+  }
   errorHandl(error) {
     let errorMessage = '';
     if(error.error instanceof ErrorEvent) {
