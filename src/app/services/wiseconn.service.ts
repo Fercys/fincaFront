@@ -13,14 +13,14 @@ export class WiseconnService {
 
   httpOptions = {
     headers: new HttpHeaders({
-      'Content-Type': 'application/json',
+      'Accept': 'application/json',
       'api_key':'9Ev6ftyEbHhylMoKFaok'
     })
   }
 
   constructor(private http: HttpClient) { }
-  prueba(){return "hi"}
-  getFarms(): Observable<farmModels> {
+  
+  getFarms(): Observable<farmModels> { console.log( this.httpOptions);
     return this.http.get<farmModels>(this.baseurl + '/farms', this.httpOptions)
     .pipe(
       retry(1),
@@ -36,7 +36,7 @@ export class WiseconnService {
       // Get server-side error
       errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
     }
-    console.log(errorMessage);
+    console.log(errorMessage); console.log(error);
     return throwError(errorMessage);
  }
 }

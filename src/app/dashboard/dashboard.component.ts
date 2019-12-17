@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import * as Chartist from 'chartist';
 
 import { WiseconnService } from '../services/wiseconn.service';
+import { HttpClient, HttpHeaders, HttpHandler,HttpClientModule  } from '@angular/common/http';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,7 +12,7 @@ import { WiseconnService } from '../services/wiseconn.service';
 export class DashboardComponent implements OnInit {
   //@italo
   farms: any = [];
-  constructor() { }  
+  constructor(private wiseconnService: WiseconnService) { }  
   startAnimationForLineChart(chart){
       let seq: any, delays: any, durations: any;
       seq = 0;
@@ -69,7 +70,7 @@ export class DashboardComponent implements OnInit {
       seq2 = 0;
   };
   ngOnInit() {
-      //this.loadFams();
+      this.loadFams();
       /* ----------==========     Daily Sales Chart initialization For Documentation    ==========---------- */
 
       const dataDailySalesChart: any = {
@@ -153,10 +154,9 @@ export class DashboardComponent implements OnInit {
       console.log(this.farms);
   }
   // Issues list
-  /*loadFams() {
-    return this.wiseconnService.prueba();
+  public loadFams() {
     return this.wiseconnService.getFarms().subscribe((data: {}) => {
       this.farms = data;
     })
-  }*/
+  }
 }

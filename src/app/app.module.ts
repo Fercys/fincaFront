@@ -24,6 +24,7 @@ import {
 } from '@agm/core';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { LoginComponent } from './login/login.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   imports: [
@@ -39,6 +40,7 @@ import { LoginComponent } from './login/login.component';
     }),
     MaterialModule,
     FlexLayoutModule,
+    HttpClientModule,
   ], 
   declarations: [
     AppComponent,
