@@ -37,23 +37,23 @@ export class FarmMapComponent implements OnInit {
   }
   loadMap = (data) => {
     var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
-      center: {lat: -33.0478101, lng: -71.6116333},
-      zoom:7
+      center: {lat: -32.232403, lng: -70.827825},
+      zoom:15
     });
     //Funcion de Click
-    var addListenersOnPolygon = function(polygon) {
+    var addListenersOnPolygon = function(polygon,id) {
       window['google'].maps.event.addListener(polygon, 'click', function (event) {
-        alert('Hello World!');
+        alert('ID Sector: '+id);
       });  
     }
  
-    var marker = new window['google'].maps.Marker({
-      position: {lat: -33.0478101, lng: -71.6116333},
-      map: map,
-      title: 'Hello World!',
-      draggable: true,
-      animation: window['google'].maps.Animation.DROP,
-    });
+    // var marker = new window['google'].maps.Marker({
+    //   position: {lat: -32.232403, lng: -70.827825},
+    //   map: map,
+    //   title: 'Hello World!',
+    //   draggable: true,
+    //   animation: window['google'].maps.Animation.DROP,
+    // });
     
     var contentString = '<div id="content">'+
     '<div id="siteNotice">'+
@@ -84,9 +84,9 @@ export class FarmMapComponent implements OnInit {
       content: contentString
     });
     
-      marker.addListener('click', function() {
-        infowindow.open(map, marker);
-      });
+      // marker.addListener('click', function() {
+      //   infowindow.open(map, marker);
+      // });
     data.forEach(element => {
       // Construct the polygon.
       console.log(element.polygon.path);
@@ -100,7 +100,7 @@ export class FarmMapComponent implements OnInit {
         fillOpacity: 0.35,
       });
       Triangle.setMap(map);
-      addListenersOnPolygon(Triangle);
+      addListenersOnPolygon(Triangle, element.id);
     });
   }
 }
