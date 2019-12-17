@@ -42,7 +42,11 @@ export class FarmMapComponent implements OnInit {
     });
     //Funcion de Click
     var addListenersOnPolygon = function(polygon,id) {
+      //this.loading = true;
       window['google'].maps.event.addListener(polygon, 'click', function (event) {
+      // this.obtenerMedidas(id);
+       console.log(event);
+       
         alert('ID Sector: '+id);
       });  
     }
@@ -102,5 +106,11 @@ export class FarmMapComponent implements OnInit {
       Triangle.setMap(map);
       addListenersOnPolygon(Triangle, element.id);
     });
+  }
+
+  obtenerMedidas(id){
+    this.wiseconnService.getMeasuresOfZones(id).subscribe((data: {}) => {      
+      console.log(data); 
+    })
   }
 }
