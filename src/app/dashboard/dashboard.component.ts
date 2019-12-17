@@ -12,6 +12,7 @@ import { HttpClient, HttpHeaders, HttpHandler,HttpClientModule  } from '@angular
 export class DashboardComponent implements OnInit {
   //@italo
   farms: any = [];
+  public cant_farms=0;
   constructor(private wiseconnService: WiseconnService) { }  
   startAnimationForLineChart(chart){
       let seq: any, delays: any, durations: any;
@@ -70,7 +71,11 @@ export class DashboardComponent implements OnInit {
       seq2 = 0;
   };
   ngOnInit() {
-      this.loadFams();
+    this.wiseconnService.getFarms().subscribe((data: {}) => {
+      this.farms = data;
+      console.log(data);  
+      this.cant_farms=this.farms.length;   
+    })
       /* ----------==========     Daily Sales Chart initialization For Documentation    ==========---------- */
 
       const dataDailySalesChart: any = {
@@ -152,11 +157,5 @@ export class DashboardComponent implements OnInit {
       this.startAnimationForBarChart(websiteViewsChart);
 
       console.log(this.farms);
-  }
-  // Issues list
-  public loadFams() {
-    return this.wiseconnService.getFarms().subscribe((data: {}) => {
-      this.farms = data;
-    })
   }
 }
