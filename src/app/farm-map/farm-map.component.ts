@@ -78,10 +78,32 @@ export class FarmMapComponent implements OnInit {
 
           // Define the LatLng coordinates for the polygon's path.
     var triangleCoords = [
-      {lat: -33.4372, lng: -70.6506},
-      {lat: -33.466, lng: -70.118},
-      {lat: -33.321, lng: -70.757},
-      {lat: -33.4372, lng: -70.6506}
+      {lat: -32.90045576247285, lng: -70.90006940132304},
+      {lat: -32.89963602180464, lng: -70.90243510967417},
+      {lat: -32.90179795883293, lng: -70.90349726444401},
+      {lat: -32.90276180541499, lng: -70.90126030212565},
+      {lat: -32.9021042289774, lng:  -70.90038590198674},
+      {lat: -32.90105930295035, lng: -70.90128712421574}
+    ];
+
+    // Construct the polygon.
+    var Triangle = new window['google'].maps.Polygon({
+      paths: triangleCoords,
+      strokeColor: '#FF0000',
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+      fillColor: '#FF0000',
+      fillOpacity: 0.35,
+    });
+    Triangle.setMap(map);
+    addListenersOnPolygon(Triangle);
+
+    var triangleCoords = [
+      {lat: -32.89964784520172, lng: -70.90245153787691},
+      {lat: -32.90178275818888, lng: -70.90349223530211},
+      {lat: -32.90155755883886, lng: -70.90408232128539},
+      {lat: -32.901332358916164, lng: -70.90418960964598},
+      {lat: -32.89887933165899, lng: -70.90472035240964}
     ];
 
     // Construct the polygon.

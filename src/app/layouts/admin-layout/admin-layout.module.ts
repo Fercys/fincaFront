@@ -13,6 +13,7 @@ import { NotificationsComponent } from '../../notifications/notifications.compon
 import { UpgradeComponent } from '../../upgrade/upgrade.component';
 import { FarmsComponent } from '../../farms/farms.component';
 import { FarmMapComponent } from '../../farm-map/farm-map.component';
+import { NgxLoadingModule } from 'ngx-loading';
 
 import {
   MatButtonModule,
@@ -34,6 +35,7 @@ import {
     MatInputModule,
     MatSelectModule,
     MatTooltipModule,
+    NgxLoadingModule.forRoot({})
   ],
   declarations: [
     DashboardComponent,
