@@ -23,6 +23,7 @@ import {
   MatTooltipModule,
   MatSelectModule
 } from '@angular/material';
+import { ClientComponent } from 'app/client/client.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -47,7 +48,8 @@ import {
     NotificationsComponent,
     UpgradeComponent,
     FarmsComponent,
-    FarmMapComponent
+    FarmMapComponent,
+    ClientComponent
   ]
 })
 

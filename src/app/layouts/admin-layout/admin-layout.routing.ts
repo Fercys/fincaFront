@@ -10,6 +10,7 @@ import { NotificationsComponent } from '../../notifications/notifications.compon
 import { UpgradeComponent } from '../../upgrade/upgrade.component';
 import { FarmsComponent } from '../../farms/farms.component';
 import { FarmMapComponent } from '../../farm-map/farm-map.component';
+import { ClientComponent } from 'app/client/client.component';
 
 export const AdminLayoutRoutes: Routes = [
     // {
@@ -64,4 +65,5 @@ export const AdminLayoutRoutes: Routes = [
     { path: 'upgrade',        component: UpgradeComponent },    
     { path: 'farms', component:  FarmsComponent, pathMatch:  'full' },
     { path: 'farmmap/:id', component:  FarmMapComponent, pathMatch:  'full' },
+    { path: 'client', component:  ClientComponent, pathMatch:  'full' },
 ];

@@ -5,8 +5,8 @@
       <div class="col-md-12">
           <div class="card card-plain">
               <div class="card-header card-header-danger">
-                  <h4 class="card-title mt-0">Campos</h4>
-                  <p class="card-category"> Datos de todos los campos registrados</p>
+                  <h4 class="card-title mt-0">Usuario</h4>
+                  <p class="card-category">Datos de todos los usuarios registrados</p>
               </div>
               <div class="card-body">
                   <div class="table-responsive">
@@ -18,34 +18,16 @@
                               <th>
                                   Nombre
                               </th>
-                              <th>
-                                  Descripcion
-                              </th>
-                              <th>
-                                Time Zone
-                              </th>
-                              <th>
-                                  Opciones
-                              </th>
                           </thead>
                           <tbody>
-                              <tr *ngFor="let data of farms">
+                              <tr *ngFor="let data of client">
                                   <td>
-                                      {{data.id}}
+                                      {{data.account.id}}
                                   </td>
                                   <td>
-                                      {{data.name}}
+                                      {{data.account.name}}
                                   </td>
-                                  <td>
-                                      {{data.description}}
-                                  </td>
-                                  <td>
-                                      {{data.timeZone}}
-                                  </td>
-                                  <td>
-                                      <i class="material-icons" [routerLink]="['/farmmap',data.id]">find_in_page</i>
-                                  </td>
-                              </tr>
+                              </tr> 
                           </tbody>
                       </table>
                   </div>
