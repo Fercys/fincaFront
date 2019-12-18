@@ -14,6 +14,7 @@ export class DashboardComponent implements OnInit {
   farms: any = [];
   public loading = false;
   public cant_farms=0;
+  public users = 0;
   constructor(private wiseconnService: WiseconnService) { }  
   startAnimationForLineChart(chart){
       let seq: any, delays: any, durations: any;
@@ -72,12 +73,20 @@ export class DashboardComponent implements OnInit {
       seq2 = 0;
   };
   ngOnInit() {
+    
     this.loading = true;
     this.wiseconnService.getFarms().subscribe((data: {}) => {
       this.farms = data;
-      localStorage.setItem("datafarms", JSON.stringify(this.farms));
-      console.log(data);  
-      this.cant_farms=this.farms.length; 
+      localStorage.setItem("datafarms", JSON.stringify(this.farms));  
+      this.cant_farms=this.farms.length;
+      var farm_client = this.farms.filter(function(item,index,array){ 
+        if(index == 0){
+          return true;
+        }else{ 
+          return item['account']['id'] == array[--index]['account']['id']? false: true;
+        }
+      });
+      this.users = farm_client.length;;
       this.loading = false;  
     })
       /* ----------==========     Daily Sales Chart initialization For Documentation    ==========---------- */

@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy,AfterViewInit} from '@angular/core';
 import { FormBuilder,FormGroup, FormArray,  Validators,FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2'
 
 @Component({
 	selector: 'app-login',
@@ -63,8 +64,12 @@ export class LoginComponent implements OnInit,OnDestroy,AfterViewInit {
 		if (usuario == 'Admin' && password == '12345678') {
 			console.log('entre');
 			this._router.navigate(['/dashboard']);
-
+		}else{
+			Swal.fire({
+				icon: 'error',
+				title: 'Oops...',
+				text: 'Usuario o Contraseña Equivocada!'
+			})
 		}
-
 	  }
 }
