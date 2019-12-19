@@ -53,15 +53,21 @@ export class FarmMapComponent implements OnInit {
     //   this.obtenerMedidas(id);
        wisservice.getMeasuresOfZones(id).subscribe((data: {}) => {      
         console.log(data); 
+       wisservice.getIrrigarionsRealOfZones(id).subscribe((dataIrrigations: {}) => {
+
+        alert('ID Sector: '+id+'\nfarmId: '+data[0].farmId+ '\nESTATUS: '+dataIrrigations[0].status+
+        '\nZone ID: '+data[0].zoneId+
+        '\nName: '+data[0].name+' \nUnit: '+data[0].unit+ '\nLast Data: '+data[0].lastData+
+        '\nLast Data Date: '+data[0].lastDataDate+'\nMonitoring Time: '+data[0].monitoringTime+
+        '\nSenson Depth: '+data[0].sensorDepth+'\nDepth Unit: '+data[0].depthUnit+
+        '\nNode ID: '+data[0].nodeId//'\nExpansion Port: '+data[0].physicalConnection.expansionPort+
+       // '\nExpansionBoard: '+data[0].physicalConnection.expansionBoard+
+        //'\nNode Port: '+data[0].physicalConnection.nodePort+'\nSensor Type: '+data[0].sensorType
+        );
+     })
+
+        });
        
-        alert('ID Sector: '+id+'\nfarmId: '+data[0].farmId+ '\nZone ID: '+data[0].zoneId+
-         '\nName: '+data[0].name+' \nUnit: '+data[0].unit+ '\nLast Data: '+data[0].lastData+
-         '\nLast Data Date: '+data[0].lastDataDate+'\nMonitoring Time: '+data[0].monitoringTime+
-         '\nSenson Depth: '+data[0].sensorDepth+'\nDepth Unit: '+data[0].depthUnit+
-         '\nNode ID: '+data[0].nodeId+'\nExpansion Port: '+data[0].physicalConnection.expansionPort+
-         '\nExpansionBoard: '+data[0].physicalConnection.expansionBoard+
-         '\nNode Port: '+data[0].physicalConnection.nodePort+'\nSensor Type: '+data[0].sensorType);
-      })
        
       });  
     }
@@ -109,17 +115,47 @@ export class FarmMapComponent implements OnInit {
     data.forEach(element => {
       // Construct the polygon.
       console.log(element.polygon.path);
-      
-      var Triangle = new window['google'].maps.Polygon({
-        paths: element.polygon.path,
-        strokeColor: '#FF0000',
-        strokeOpacity: 0.8,
-        strokeWeight: 2,
-        fillColor: '#FF0000',
-        fillOpacity: 0.35,
+      wisservice.getIrrigarionsRealOfZones(element.id).subscribe((dataIrrigations: {}) => {
+        if(dataIrrigations[0].status == "Executed OK"){
+          var Triangle = new window['google'].maps.Polygon({
+            paths: element.polygon.path,
+            strokeColor: '#49AA4F',
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: '#49AA4F',
+            fillOpacity: 0.35,
+          });
+          Triangle.setMap(map);
+         addListenersOnPolygon(Triangle, element.id);
+        }else{
+          if(dataIrrigations[0].status == "Running"){
+            var Triangle = new window['google'].maps.Polygon({
+              paths: element.polygon.path,
+              strokeColor: '#419FD5',
+              strokeOpacity: 0.8,
+              strokeWeight: 2,
+              fillColor: '#419FD5',
+              fillOpacity: 0.35,
+            });
+            Triangle.setMap(map);
+            addListenersOnPolygon(Triangle, element.id);
+          }else{
+            var Triangle = new window['google'].maps.Polygon({
+              paths: element.polygon.path,
+              strokeColor: '#FF0000',
+              strokeOpacity: 0.8,
+              strokeWeight: 2,
+              fillColor: '#FF0000',
+              fillOpacity: 0.35,
+            });
+            Triangle.setMap(map);
+            addListenersOnPolygon(Triangle, element.id);
+          }
+        }
+       
       });
-      Triangle.setMap(map);
-      addListenersOnPolygon(Triangle, element.id);
+      
+      
     });
   }
 
