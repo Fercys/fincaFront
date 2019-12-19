@@ -6,14 +6,15 @@ import { element } from 'protractor';
 @Component({
   selector: 'app-farm-map',
   templateUrl: './farm-map.component.html',
-  styleUrls: ['./farm-map.component.scss']
+  styleUrls: ['./farm-map.component.scss'],
 })
 export class FarmMapComponent implements OnInit {
   @ViewChild('mapRef', {static: true }) mapElement: ElementRef;
   private google_api_key = 'AIzaSyDx_dMfo0VnR_2CsF_wNw9Ayjd_HO6sMB0';
   public loading = false;
+  public id = 0;
+  
   constructor(private _route: ActivatedRoute,private wiseconnService: WiseconnService) { }
-
   ngOnInit() {
     //this.renderMap();
     this.loading = true;
@@ -23,8 +24,8 @@ export class FarmMapComponent implements OnInit {
       this.loading = false; 
       this.loadMap(data); 
     })
-    
   }
+
   renderMap() {
     
     window['initMap'] = () => {
@@ -41,13 +42,27 @@ export class FarmMapComponent implements OnInit {
       zoom:15
     });
     //Funcion de Click
+    var wisservice = this.wiseconnService;
     var addListenersOnPolygon = function(polygon,id) {
       //this.loading = true;
-      window['google'].maps.event.addListener(polygon, 'click', function (event) {
-      // this.obtenerMedidas(id);
-       console.log(event);
+      window['google'].maps.event.addListener(polygon, 'click', () => {
+        console.log(id);
+     //   var ids = 0;
+
+   //     this.ids = id;
+    //   this.obtenerMedidas(id);
+       wisservice.getMeasuresOfZones(id).subscribe((data: {}) => {      
+        console.log(data); 
        
-        alert('ID Sector: '+id);
+        alert('ID Sector: '+id+'\nfarmId: '+data[0].farmId+ '\nZone ID: '+data[0].zoneId+
+         '\nName: '+data[0].name+' \nUnit: '+data[0].unit+ '\nLast Data: '+data[0].lastData+
+         '\nLast Data Date: '+data[0].lastDataDate+'\nMonitoring Time: '+data[0].monitoringTime+
+         '\nSenson Depth: '+data[0].sensorDepth+'\nDepth Unit: '+data[0].depthUnit+
+         '\nNode ID: '+data[0].nodeId+'\nExpansion Port: '+data[0].physicalConnection.expansionPort+
+         '\nExpansionBoard: '+data[0].physicalConnection.expansionBoard+
+         '\nNode Port: '+data[0].physicalConnection.nodePort+'\nSensor Type: '+data[0].sensorType);
+      })
+       
       });  
     }
  
@@ -109,7 +124,8 @@ export class FarmMapComponent implements OnInit {
   }
 
   obtenerMedidas(id){
-    this.wiseconnService.getMeasuresOfZones(id).subscribe((data: {}) => {      
+    console.log(id)
+    this.wiseconnService.getMeasuresOfZones(this.id).subscribe((data: {}) => {      
       console.log(data); 
     })
   }
