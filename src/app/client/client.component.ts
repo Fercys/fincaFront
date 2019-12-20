@@ -9,9 +9,11 @@ import { WiseconnService } from 'app/services/wiseconn.service';
 export class ClientComponent implements OnInit {
   farms: any = [];
   client: any = [];
+  public loading = false;
   constructor(private wiseconnService: WiseconnService) { }
 
   ngOnInit() {
+    this.loading=true;
     this.wiseconnService.getFarms().subscribe((data: {}) => {
       let farms: any = [];
       farms = data; 
@@ -23,6 +25,7 @@ export class ClientComponent implements OnInit {
         }
       });
       this.client = client;
+      this.loading=false;
       console.log(client);
     })
   }
