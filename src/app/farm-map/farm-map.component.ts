@@ -38,7 +38,7 @@ export class FarmMapComponent implements OnInit {
   }
   loadMap = (data) => {
     var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
-      center: {lat: -32.232403, lng: -70.827825},
+      center: {lat: -32.89963602180464, lng: -70.90243510967417},
       zoom:15
     });
     //Funcion de Click
