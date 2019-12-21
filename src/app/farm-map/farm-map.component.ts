@@ -37,10 +37,19 @@ export class FarmMapComponent implements OnInit {
     }
   }
   loadMap = (data) => {
-    var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
-      center: {lat: data[10].polygon.path[0].lat, lng: data[10].polygon.path[0].lng},
-      zoom:15
-    });
+    console.log(data);
+    if(data.length == 0){
+      var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
+        center: {lat: -32.89963602180464, lng: -70.90243510967417},
+        zoom:15
+      });
+    }else{
+      var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
+        center: {lat: data[10].polygon.path[0].lat, lng: data[10].polygon.path[0].lng},
+        zoom:15
+      });
+    }
+    
     //Funcion de Click
     var wisservice = this.wiseconnService;
     var addListenersOnPolygon = function(polygon,id) {
@@ -91,10 +100,6 @@ export class FarmMapComponent implements OnInit {
 
     var flightPlanCoordinates = [
       {lat: -32.90045576247285, lng: -70.90006940132304},
-      {lat: -32.89963602180464, lng: -70.90243510967417},
-      {lat: -32.90179795883293, lng: -70.90349726444401},
-      {lat: -32.90276180541499, lng: -70.90126030212565},
-      {lat: -32.9021042289774, lng:  -70.90038590198674},
     ];
     var flightPath = new window['google'].maps.Polyline({
       path: flightPlanCoordinates,
