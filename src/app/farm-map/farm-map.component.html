@@ -2,6 +2,48 @@
   <div class="container-fluid">
       <div #mapRef style="width:100%;height:400px"></div>
   </div>
-  <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>
+  <div class="container-fluid">
+
+  <div class="row">
+    <div class="col-lg-4 col-md-6 col-sm-6">
+        <div class="card card-stats" style="background-color: darkseagreen;">
+            <div class="card-header card-header-danger" style="width: 70%; align-self: center;">
+              <h3 class="card-title">Deconectado</h3>
+            </div>
+            <div class="card-footer">
+                <div class="stats">
+                    <!-- <i class="material-icons text-danger">warning</i> -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-6 col-sm-6">
+        <div class="card card-stats" style="background-color: darkseagreen;">
+            <div class="card-header card-header-info" style="width: 50%; align-self: center;">
+                <h3 class="card-title">Regando</h3>
+            </div>
+            <div class="card-footer">
+              <div class="stats">
+                  <!-- <i class="material-icons text-danger">warning</i> -->
+              </div>
+          </div>
+        </div>
+    </div>
+    <div class="col-lg-4 col-md-6 col-sm-6">
+        <div class="card card-stats" style="background-color: darkseagreen;">
+            <div class="card-header card-header-success" style="width: 50%; align-self: center;">
+              <h3 class="card-title">Estatu: Ok</h3>
+            </div>
+            <div class="card-footer">
+              <div class="stats">
+                  <!-- <i class="material-icons text-danger">warning</i> -->
+              </div>
+          </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>
 </div>
 
