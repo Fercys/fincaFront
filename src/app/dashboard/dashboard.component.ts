@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import * as Chartist from 'chartist';
 
 import { WiseconnService } from '../services/wiseconn.service';
 import { HttpClient, HttpHeaders, HttpHandler,HttpClientModule  } from '@angular/common/http';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,11 +12,17 @@ import { HttpClient, HttpHeaders, HttpHandler,HttpClientModule  } from '@angular
 })
 export class DashboardComponent implements OnInit {
   //@italo
+  @ViewChild('mapRef', {static: true }) mapElement: ElementRef;
+
   farms: any = [];
   public loading = false;
   public cant_farms=0;
   public users = 0;
-  constructor(private wiseconnService: WiseconnService) { }  
+  map: google.maps.Map;
+  lat = -32.9034219818308;
+  lng = -70.9091198444366;
+  constructor(private _route: ActivatedRoute, private wiseconnService: WiseconnService) { }  
+
   startAnimationForLineChart(chart){
       let seq: any, delays: any, durations: any;
       seq = 0;
@@ -49,6 +56,45 @@ export class DashboardComponent implements OnInit {
 
       seq = 0;
   };
+
+  coordinates = new window['google'].maps.LatLng(this.lat, this.lng);
+
+  mapOptions: google.maps.MapOptions = {
+   center: this.coordinates,
+   zoom: 8
+  };
+
+  marker = new window['google'].maps.Marker({
+    position: {lat: -32.9034219818308, lng: -70.9091198444366},
+
+    map: this.map,
+  });
+
+  
+  marker2 = new window['google'].maps.Marker({
+    position: {lat: -32.8729730502858, lng: -70.927852048291},
+
+    map: this.map,
+  });
+
+  marker3 = new window['google'].maps.Marker({
+    position: {lat: -32.2308814313991, lng: -70.8284282684326},
+
+    map: this.map,
+  });
+
+  ngAfterViewInit() {
+    this.mapInitializer();
+  }
+
+  mapInitializer() {
+    this.map = new google.maps.Map(this.mapElement.nativeElement, 
+    this.mapOptions);
+    this.marker.setMap(this.map);
+    this.marker2.setMap(this.map);
+    this.marker3.setMap(this.map);
+
+  }
   startAnimationForBarChart(chart){
       let seq2: any, delays2: any, durations2: any;
 
@@ -77,7 +123,8 @@ export class DashboardComponent implements OnInit {
     this.loading = true;
     this.wiseconnService.getFarms().subscribe((data: {}) => {
       this.farms = data;
-      localStorage.setItem("datafarms", JSON.stringify(this.farms));  
+      localStorage.setItem("datafarms", JSON.stringify(this.farms));
+      console.log(this.farms);
       this.cant_farms=this.farms.length;
       var farm_client = this.farms.filter(function(item,index,array){ 
         if(index == 0){
