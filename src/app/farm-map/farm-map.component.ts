@@ -28,10 +28,10 @@ export class FarmMapComponent implements OnInit {
         console.log(data['account']['id']);
         switch (data['account']['id']) { 
           case 63:
-            this.url="https://cdtec.irrimaxlive.com/#/u:3435/Campos/Agrifrut";
+            this.url="https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3435/Campos/Agrifrut";
             break;
           case 395:
-            this.url="https://cdtec.irrimaxlive.com/#/u:3507/Campos/Agricola%20Santa%20Juana%20de%20Chincolco";
+            this.url="https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3507/Campos/Agricola%20Santa%20Juana%20de%20Chincolco";
             break;
           default:
             this.url="";
