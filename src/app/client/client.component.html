@@ -18,6 +18,9 @@
                               <th>
                                   Nombre
                               </th>
+                              <th>
+                                Fincas
+                              </th>
                           </thead>
                           <tbody>
                               <tr *ngFor="let data of client">
@@ -27,6 +30,9 @@
                                   <td>
                                       {{data.account.name}}
                                   </td>
+                                  <td>
+                                    <i class="material-icons" [routerLink]="['/client-farm',data.account.id]">find_in_page</i>
+                                </td>
                               </tr> 
                           </tbody>
                       </table>
