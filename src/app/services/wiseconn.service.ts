@@ -20,21 +20,28 @@ export class WiseconnService {
 
   constructor(private http: HttpClient) { }
   
-  getFarms(): Observable<farmModels> { console.log( this.httpOptions);
+  getFarms(): Observable<farmModels> { 
     return this.http.get<farmModels>(this.baseurl + '/farms', this.httpOptions)
     .pipe(
       retry(1),
       catchError(this.errorHandl)
     )
   }
-  getZones(id): Observable<farmModels> { console.log( this.httpOptions);
+  getFarm(id): Observable<farmModels> { 
+    return this.http.get<farmModels>(this.baseurl + '/farms/'+id, this.httpOptions)
+    .pipe(
+      retry(1),
+      catchError(this.errorHandl)
+    )
+  }
+  getZones(id): Observable<farmModels> { 
     return this.http.get<farmModels>(this.baseurl + '/farms/'+id+"/zones", this.httpOptions)
     .pipe(
       retry(1),
       catchError(this.errorHandl)
     )
   }
-  getIrrigarionsRealOfZones(id): Observable<farmModels> { console.log( this.httpOptions);
+  getIrrigarionsRealOfZones(id): Observable<farmModels> { 
     return this.http.get<farmModels>(this.baseurl + '/zones/'+id+"/realIrrigations?initTime=2019-12-01&endTime=2019-12-19", this.httpOptions)
     .pipe(
       retry(1),

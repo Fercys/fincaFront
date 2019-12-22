@@ -13,17 +13,30 @@ export class FarmMapComponent implements OnInit {
   private google_api_key = 'AIzaSyDx_dMfo0VnR_2CsF_wNw9Ayjd_HO6sMB0';
   public loading = false;
   public id = 0;
+  public url;
   
   constructor(private _route: ActivatedRoute,private wiseconnService: WiseconnService) { }
   ngOnInit() {
     //this.renderMap();
     this.loading = true;
-    console.log(this._route.snapshot.paramMap.get('id'));
     this.wiseconnService.getZones(this._route.snapshot.paramMap.get('id')).subscribe((data: {}) => {      
-      console.log(data); 
       this.loading = false; 
       this.loadMap(data); 
-    })
+    });
+    let idFarm = (this._route.snapshot.paramMap.get('id'));
+    this.wiseconnService.getFarm(idFarm).subscribe((data: {}) => {
+        console.log(data['account']['id']);
+        switch (data['account']['id']) { 
+          case 63:
+            this.url="https://cdtec.irrimaxlive.com/#/u:3435/Campos/Agrifrut";
+            break;
+          case 395:
+            this.url="https://cdtec.irrimaxlive.com/#/u:3507/Campos/Agricola%20Santa%20Juana%20de%20Chincolco";
+            break;
+          default:
+            this.url="";
+        } console.log(this.url);
+    });
   }
 
   renderMap() {
@@ -37,7 +50,6 @@ export class FarmMapComponent implements OnInit {
     }
   }
   loadMap = (data) => {
-    console.log(data);
     if(data.length == 0){
       var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
         center: {lat: -32.89963602180464, lng: -70.90243510967417},
@@ -55,13 +67,11 @@ export class FarmMapComponent implements OnInit {
     var addListenersOnPolygon = function(polygon,id) {
       //this.loading = true;
       window['google'].maps.event.addListener(polygon, 'click', () => {
-        console.log(id);
      //   var ids = 0;
 
    //     this.ids = id;
     //   this.obtenerMedidas(id);
-       wisservice.getMeasuresOfZones(id).subscribe((data: {}) => {      
-        console.log(data); 
+       wisservice.getMeasuresOfZones(id).subscribe((data: {}) => {     
        wisservice.getIrrigarionsRealOfZones(id).subscribe((dataIrrigations: {}) => {
 
         alert('ID Sector: '+id+'\nfarmId: '+data[0].farmId+ '\nESTATUS: '+dataIrrigations[0].status+
@@ -119,7 +129,6 @@ export class FarmMapComponent implements OnInit {
       // });
     data.forEach(element => {
       // Construct the polygon.
-      console.log(element.polygon.path);
       wisservice.getIrrigarionsRealOfZones(element.id).subscribe((dataIrrigations: {}) => {
         if(dataIrrigations[0].status == "Executed OK"){
           var Triangle = new window['google'].maps.Polygon({
@@ -169,9 +178,7 @@ export class FarmMapComponent implements OnInit {
   }
 
   obtenerMedidas(id){
-    console.log(id)
     this.wiseconnService.getMeasuresOfZones(this.id).subscribe((data: {}) => {      
-      console.log(data); 
     })
   }
 }
