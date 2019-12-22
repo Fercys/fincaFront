@@ -18,7 +18,6 @@ export class DashboardComponent implements OnInit {
   public loading = false;
   public cant_farms=0;
   public users = 0;
-  map: google.maps.Map;
   lat = -32.9034219818308;
   lng = -70.9091198444366;
   constructor(private _route: ActivatedRoute, private wiseconnService: WiseconnService) { }  
@@ -59,28 +58,21 @@ export class DashboardComponent implements OnInit {
 
   coordinates = new window['google'].maps.LatLng(this.lat, this.lng);
 
-  mapOptions: google.maps.MapOptions = {
-   center: this.coordinates,
-   zoom: 8
-  };
 
   marker = new window['google'].maps.Marker({
     position: {lat: -32.9034219818308, lng: -70.9091198444366},
 
-    map: this.map,
   });
 
   
   marker2 = new window['google'].maps.Marker({
     position: {lat: -32.8729730502858, lng: -70.927852048291},
 
-    map: this.map,
   });
 
   marker3 = new window['google'].maps.Marker({
     position: {lat: -32.2308814313991, lng: -70.8284282684326},
 
-    map: this.map,
   });
 
   ngAfterViewInit() {
@@ -88,11 +80,13 @@ export class DashboardComponent implements OnInit {
   }
 
   mapInitializer() {
-    this.map = new google.maps.Map(this.mapElement.nativeElement, 
-    this.mapOptions);
-    this.marker.setMap(this.map);
-    this.marker2.setMap(this.map);
-    this.marker3.setMap(this.map);
+    var map = new window['google'].maps.Map(this.mapElement.nativeElement, { 
+      center: this.coordinates,
+      zoom:8});
+
+    this.marker.setMap(map);
+    this.marker2.setMap(map);
+    this.marker3.setMap(map);
 
   }
   startAnimationForBarChart(chart){
