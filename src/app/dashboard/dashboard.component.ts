@@ -3,7 +3,7 @@ import * as Chartist from 'chartist';
 
 import { WiseconnService } from '../services/wiseconn.service';
 import { HttpClient, HttpHeaders, HttpHandler,HttpClientModule  } from '@angular/common/http';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,7 +20,7 @@ export class DashboardComponent implements OnInit {
   public users = 0;
   lat = -32.9034219818308;
   lng = -70.9091198444366;
-  constructor(private _route: ActivatedRoute, private wiseconnService: WiseconnService) { }  
+  constructor(private _route: ActivatedRoute, private wiseconnService: WiseconnService,private router: Router) { }  
 
   startAnimationForLineChart(chart){
       let seq: any, delays: any, durations: any;
@@ -58,35 +58,19 @@ export class DashboardComponent implements OnInit {
 
   coordinates = new window['google'].maps.LatLng(this.lat, this.lng);
 
-
-  marker = new window['google'].maps.Marker({
-    position: {lat: -32.9034219818308, lng: -70.9091198444366},
-
-  });
-
-  
-  marker2 = new window['google'].maps.Marker({
-    position: {lat: -32.8729730502858, lng: -70.927852048291},
-
-  });
-
-  marker3 = new window['google'].maps.Marker({
-    position: {lat: -32.2308814313991, lng: -70.8284282684326},
-
-  });
-
-  ngAfterViewInit() {
-    this.mapInitializer();
-  }
-
   mapInitializer() {
     var map = new window['google'].maps.Map(this.mapElement.nativeElement, { 
       center: this.coordinates,
-      zoom:8});
-
-    this.marker.setMap(map);
-    this.marker2.setMap(map);
-    this.marker3.setMap(map);
+      zoom:8});      
+      this.farms.forEach(element => {
+        let marker = new window['google'].maps.Marker({
+          position: {lat: element['latitude'], lng: element['longitude']},          
+        });
+        marker.addListener('click', () => {
+          this.router.navigate(['/farmmap', element['id']]);
+        });
+        marker.setMap(map);
+      },[map,this]);
 
   }
   startAnimationForBarChart(chart){
@@ -127,8 +111,9 @@ export class DashboardComponent implements OnInit {
           return item['account']['id'] == array[--index]['account']['id']? false: true;
         }
       });
-      this.users = farm_client.length;;
-      this.loading = false;  
+      this.users = farm_client.length;
+      this.loading = false;
+      this.mapInitializer();  
     })
       /* ----------==========     Daily Sales Chart initialization For Documentation    ==========---------- */
 
