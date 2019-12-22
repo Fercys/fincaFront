@@ -24,6 +24,8 @@ import {
   MatSelectModule
 } from '@angular/material';
 import { ClientComponent } from 'app/client/client.component';
+import { FarmClientComponent } from 'app/farm-client/farm-client.component';
+import { SafePipePipe } from 'app/pipe/safe-pipe.pipe';
 @NgModule({
   imports: [
     CommonModule,
@@ -49,7 +51,9 @@ import { ClientComponent } from 'app/client/client.component';
     UpgradeComponent,
     FarmsComponent,
     FarmMapComponent,
-    ClientComponent
+    ClientComponent,
+    FarmClientComponent,
+    SafePipePipe
   ]
 })
 
