@@ -34,6 +34,33 @@
             </div>
         </div>
     </div> -->
+     <div class="row">
+    <div class="col-lg-5 col-md-6 col-sm-6">
+    <table class="table table-hover">
+      <thead class="">
+        <th>
+
+        </th>
+        <th style="background-color: #419FD5;">
+          <img src="https://www.dropcontrol.com/img/widgets/ico_humedad.gif">
+          <span style="color: white; margin-left: 10px;">Regando</span>  
+        </th>
+        <th style="background-color: #49AA4F;">
+          <!-- <img src="https://www.dropcontrol.com/img/widgets/ico_humedad.gif"> -->
+          <span style="color: white; margin-left: 10px;">Status OK</span>  
+        </th>
+        <th style="background-color: rgb(233, 58, 189);">
+          <!-- <img src="https://www.dropcontrol.com/img/widgets/ico_humedad.gif"> -->
+          <span style="color: white; margin-left: 10px;">Estresado</span>  
+        </th>
+        <th style="background-color: red;">
+          <!-- <img src="https://www.dropcontrol.com/img/widgets/ico_humedad.gif"> -->
+          <span style="color: white; margin-left: 10px;">Stoppet</span>  
+        </th>
+      </thead>
+      </table>
+      </div>
+     </div>
   <div class="container-fluid">
     <div class="row">
       <div #mapRef style="width:100%;height:400px"></div>
@@ -79,7 +106,8 @@
                     <img *ngIf="data.name =='Solar radiation ' || data.name=='Radiacion Solar'" src="https://www.dropcontrol.com/img/widgets/ico_radiacion.gif">
                     <img *ngIf="data.name =='Horas Frío'" src=" https://www.dropcontrol.com/img/widgets/ico_pluviometria.gif?uv=1">
                     <img *ngIf="data.name =='Porciones de Frío'" src=" https://www.dropcontrol.com/img/widgets/ico_pluviometria.gif?uv=1">
-                                    
+                    <img *ngIf="data.name =='ATM pressure'" src="https://www.dropcontrol.com/img/widgets/ico_presion.gif">
+                                   
                   </td>
                   <td>
                     {{data.name}}
