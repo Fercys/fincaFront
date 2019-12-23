@@ -14,6 +14,7 @@ export class FarmMapComponent implements OnInit {
   public loading = false;
   public id = 0;
   public url;
+  public mediciones;
   
   constructor(private _route: ActivatedRoute,private wiseconnService: WiseconnService) { }
   ngOnInit() {
@@ -73,8 +74,8 @@ export class FarmMapComponent implements OnInit {
     //   this.obtenerMedidas(id);
        wisservice.getMeasuresOfZones(id).subscribe((data: {}) => {     
        wisservice.getIrrigarionsRealOfZones(id).subscribe((dataIrrigations: {}) => {
-
-        alert('ID Sector: '+id+'\nfarmId: '+data[0].farmId+ '\nESTATUS: '+dataIrrigations[0].status+
+       
+          alert('ID Sector: '+id+'\nfarmId: '+data[0].farmId+ '\nESTATUS: '+dataIrrigations[0].status+
         '\nZone ID: '+data[0].zoneId+
         '\nName: '+data[0].name+' \nUnit: '+data[0].unit+ '\nLast Data: '+data[0].lastData+
         '\nLast Data Date: '+data[0].lastDataDate+'\nMonitoring Time: '+data[0].monitoringTime+
@@ -83,6 +84,8 @@ export class FarmMapComponent implements OnInit {
        // '\nExpansionBoard: '+data[0].physicalConnection.expansionBoard+
         //'\nNode Port: '+data[0].physicalConnection.nodePort+'\nSensor Type: '+data[0].sensorType
         );
+        
+        
      })
 
         });
@@ -130,6 +133,25 @@ export class FarmMapComponent implements OnInit {
     data.forEach(element => {
       // Construct the polygon.
       wisservice.getIrrigarionsRealOfZones(element.id).subscribe((dataIrrigations: {}) => {
+        if(element.id == "727" || element.id== 727 || element.id == "6054" || element.id == 6054 || element.id == "13872" || element.id == 13872){
+          var Triangle = new window['google'].maps.Polygon({
+            paths: element.polygon.path,
+            strokeColor: '#E5C720',
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: '#E5C720',
+            fillOpacity: 0.35,
+          });
+          Triangle.setMap(map);
+         addListenersOnPolygon(Triangle, element.id);
+         this.loading = true;
+         wisservice.getMeterogoAgrifut(element.id).subscribe((data: {}) => { 
+          this.loading = false;
+              console.log(data);
+           this.mediciones=data;   
+         });
+        }else{
+        
         if(dataIrrigations[0].status == "Executed OK"){
           var Triangle = new window['google'].maps.Polygon({
             paths: element.polygon.path,
@@ -170,7 +192,7 @@ export class FarmMapComponent implements OnInit {
          //   });
           }
         }
-       
+      }
       });
       
       

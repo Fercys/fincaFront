@@ -1,5 +1,5 @@
 <div class="main-content">
-    <!-- <div class="row">
+  <!-- <div class="row">
         <div class="col-lg-4 col-md-6 col-sm-6">
             <div class="card card-stats" style="background-color: darkseagreen; width: 220px;">
                 <div class="card-header card-header-danger" style="align-self: center;">
@@ -37,17 +37,64 @@
   <div class="container-fluid">
     <div class="row">
       <div #mapRef style="width:100%;height:400px"></div>
+    </div>
+
+
+    <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>
   </div>
   <div class="container-fluid">
-
-  
-</div>
-
-<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>
-  <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>
-    </div>      
   <div class="row">
-    <iframe [src]="url | safePipe" frameborder="0" allowFullScreen="true"></iframe>
+    <div class="col-lg-6 col-md-6 col-sm-6">
+      <iframe [src]="url | safePipe" frameborder="0" allowFullScreen="true"></iframe>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6">
+      <div class="card card-plain">
+        <div class="card-header card-header-success">
+          <h4 class="card-title mt-0">Medidas</h4>
+          <p class="card-category"> Estacion Metereológica</p>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead class="">
+                <th>
+
+                </th>
+                <th>
+                  Nombre
+                </th>
+                <th>
+                  Medida
+                </th>
+
+              </thead>
+              <tbody>
+                <tr *ngFor="let data of mediciones">
+                  <td>
+                    <img *ngIf="data.name =='Station Temperature' || data.name=='Temperatura'" src="https://www.dropcontrol.com/img/widgets/ico_temperatura.gif">
+                    <img *ngIf="data.name =='Rafaga de viento' || data.name=='Direccion de viento'" src="https://www.dropcontrol.com/img/widgets/ico_velocidad.gif">
+                    <img *ngIf="data.name =='Wind Direction' || data.name=='Velocidad Viento'" src="https://www.dropcontrol.com/img/widgets/ico_velocidad.gif">
+                    <img *ngIf="data.name =='Wind Speed (period)'" src="https://www.dropcontrol.com/img/widgets/ico_velocidad.gif">
+                    <img *ngIf="data.name =='Station Relative Humidity' || data.name=='Humedad'" src="https://www.dropcontrol.com/img/widgets/ico_humedad.gif">
+                    <img *ngIf="data.name =='Solar radiation ' || data.name=='Radiacion Solar'" src="https://www.dropcontrol.com/img/widgets/ico_radiacion.gif">
+                    <img *ngIf="data.name =='Horas Frío'" src=" https://www.dropcontrol.com/img/widgets/ico_pluviometria.gif?uv=1">
+                    <img *ngIf="data.name =='Porciones de Frío'" src=" https://www.dropcontrol.com/img/widgets/ico_pluviometria.gif?uv=1">
+                                    
+                  </td>
+                  <td>
+                    {{data.name}}
+                  </td>
+                  <td>
+                    {{data.lastData}} {{data.unit}}
+                  </td>
+
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
-
+</div>
