@@ -27,6 +27,7 @@ import { ClientComponent } from 'app/client/client.component';
 import { FarmClientComponent } from 'app/farm-client/farm-client.component';
 import { SafePipePipe } from 'app/pipe/safe-pipe.pipe';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { FarmMapPolygonComponent } from 'app/farm-map-polygon/farm-map-polygon.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -55,7 +56,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     FarmMapComponent,
     ClientComponent,
     FarmClientComponent,
-    SafePipePipe
+    SafePipePipe,
+    FarmMapPolygonComponent
   ]
 })
 

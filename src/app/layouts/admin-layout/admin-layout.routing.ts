@@ -12,6 +12,7 @@ import { FarmsComponent } from '../../farms/farms.component';
 import { FarmMapComponent } from '../../farm-map/farm-map.component';
 import { ClientComponent } from 'app/client/client.component';
 import { FarmClientComponent } from 'app/farm-client/farm-client.component';
+import { FarmMapPolygonComponent } from 'app/farm-map-polygon/farm-map-polygon.component';
 
 export const AdminLayoutRoutes: Routes = [
     // {
@@ -68,4 +69,5 @@ export const AdminLayoutRoutes: Routes = [
     { path: 'farmmap/:id', component:  FarmMapComponent, pathMatch:  'full' },
     { path: 'client', component:  ClientComponent, pathMatch:  'full' },
     { path: 'client-farm/:id', component:  FarmClientComponent, pathMatch:  'full' },
+    { path: 'farmpolygon/:id/:farm', component:  FarmMapPolygonComponent, pathMatch:  'full' },
 ];
