@@ -2,6 +2,7 @@ import { Component, OnInit,ViewChild,ElementRef   } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { WiseconnService } from 'app/services/wiseconn.service';
 import { element } from 'protractor';
+import { NgbModal,ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-farm-map',
@@ -15,8 +16,9 @@ export class FarmMapComponent implements OnInit {
   public id = 0;
   public url;
   public mediciones;
+  closeResult: string;
   
-  constructor(private _route: ActivatedRoute,private wiseconnService: WiseconnService) { }
+  constructor(private _route: ActivatedRoute,private wiseconnService: WiseconnService, public modalService: NgbModal) { }
   ngOnInit() {
     //this.renderMap();
     this.loading = true;
@@ -202,5 +204,8 @@ export class FarmMapComponent implements OnInit {
   obtenerMedidas(id){
     this.wiseconnService.getMeasuresOfZones(this.id).subscribe((data: {}) => {      
     })
+  }
+  open(content) {
+    this.modalService.open(content);
   }
 }

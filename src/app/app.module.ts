@@ -36,7 +36,6 @@ import { HttpClientModule } from '@angular/common/http';
     ComponentsModule,
     RouterModule,
     AppRoutingModule,
-    
     AgmCoreModule.forRoot({
       apiKey: 'YOUR_GOOGLE_MAPS_API_KEY'
     }),

@@ -26,6 +26,7 @@ import {
 import { ClientComponent } from 'app/client/client.component';
 import { FarmClientComponent } from 'app/farm-client/farm-client.component';
 import { SafePipePipe } from 'app/pipe/safe-pipe.pipe';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 @NgModule({
   imports: [
     CommonModule,
@@ -38,6 +39,7 @@ import { SafePipePipe } from 'app/pipe/safe-pipe.pipe';
     MatInputModule,
     MatSelectModule,
     MatTooltipModule,
+    NgbModule,
     NgxLoadingModule.forRoot({})
   ],
   declarations: [
