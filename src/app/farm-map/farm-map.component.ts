@@ -81,15 +81,15 @@ export class FarmMapComponent implements OnInit {
        wisservice.getIrrigarionsRealOfZones(id).subscribe((dataIrrigations: {}) => {
           redirect.navigate(['/farmpolygon', data[0].farmId, id]);
 
-            alert('ID Sector: '+id+'\nfarmId: '+data[0].farmId+ '\nESTATUS: '+dataIrrigations[0].status+
-          '\nZone ID: '+data[0].zoneId+
-          '\nName: '+data[0].name+' \nUnit: '+data[0].unit+ '\nLast Data: '+data[0].lastData+
-          '\nLast Data Date: '+data[0].lastDataDate+'\nMonitoring Time: '+data[0].monitoringTime+
-          '\nSenson Depth: '+data[0].sensorDepth+'\nDepth Unit: '+data[0].depthUnit+
-          '\nNode ID: '+data[0].nodeId//'\nExpansion Port: '+data[0].physicalConnection.expansionPort+
-        // // '\nExpansionBoard: '+data[0].physicalConnection.expansionBoard+
-        //  //'\nNode Port: '+data[0].physicalConnection.nodePort+'\nSensor Type: '+data[0].sensorType
-          );
+        //     alert('ID Sector: '+id+'\nfarmId: '+data[0].farmId+ '\nESTATUS: '+dataIrrigations[0].status+
+        //   '\nZone ID: '+data[0].zoneId+
+        //   '\nName: '+data[0].name+' \nUnit: '+data[0].unit+ '\nLast Data: '+data[0].lastData+
+        //   '\nLast Data Date: '+data[0].lastDataDate+'\nMonitoring Time: '+data[0].monitoringTime+
+        //   '\nSenson Depth: '+data[0].sensorDepth+'\nDepth Unit: '+data[0].depthUnit+
+        //   '\nNode ID: '+data[0].nodeId//'\nExpansion Port: '+data[0].physicalConnection.expansionPort+
+        // // // '\nExpansionBoard: '+data[0].physicalConnection.expansionBoard+
+        // //  //'\nNode Port: '+data[0].physicalConnection.nodePort+'\nSensor Type: '+data[0].sensorType
+        //   );
      })
         });
       });  
