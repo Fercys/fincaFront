@@ -17,6 +17,8 @@ export class FarmMapPolygonComponent implements OnInit {
   public url;
   public mediciones;
   closeResult: string;
+  status: any;
+  idfarm: any;
   
   constructor(private _route: ActivatedRoute,private wiseconnService: WiseconnService, public modalService: NgbModal) { }
   ngOnInit() {
@@ -24,6 +26,34 @@ export class FarmMapPolygonComponent implements OnInit {
     this.loading = true;
     this.wiseconnService.getZones(this._route.snapshot.paramMap.get('id')).subscribe((data: {}) => {      
       this.loading = false; 
+      console.log(this._route.snapshot.paramMap.get('farm'))
+      this.wiseconnService.getMeterogoAgrifut(this._route.snapshot.paramMap.get('farm')).subscribe((data: {}) => { 
+        this.loading = false;
+            console.log(data);
+         this.mediciones=data;   
+       });
+      this.wiseconnService.getIrrigarionsRealOfZones(this._route.snapshot.paramMap.get('farm')).subscribe((dataIrrigations: {}) => {
+     //   console.log(dataIrrigations)
+        this.idfarm = data[0].zoneId;
+        this.status = dataIrrigations[0].status;
+        this.idfarm = data[0].name;
+        this.idfarm = data[0].unit;
+        this.idfarm = data[0].lastData;
+        this.idfarm = data[0].lastDataDate;
+        this.idfarm = data[0].monitoringTime;
+        this.idfarm = data[0].sensorDepth;
+        this.idfarm = data[0].depthUnit;
+
+      //     alert('ID Sector: '+id+'\nfarmId: '+data[0].farmId+ '\nESTATUS: '+dataIrrigations[0].status+
+      //   '\nZone ID: '+data[0].zoneId+
+      //   '\nName: '+data[0].name+' \nUnit: '+data[0].unit+ '\nLast Data: '+data[0].lastData+
+      //   '\nLast Data Date: '+data[0].lastDataDate+'\nMonitoring Time: '+data[0].monitoringTime+
+      //   '\nSenson Depth: '+data[0].sensorDepth+'\nDepth Unit: '+data[0].depthUnit+
+      //   '\nNode ID: '+data[0].nodeId//'\nExpansion Port: '+data[0].physicalConnection.expansionPort+
+      // // // '\nExpansionBoard: '+data[0].physicalConnection.expansionBoard+
+      // //  //'\nNode Port: '+data[0].physicalConnection.nodePort+'\nSensor Type: '+data[0].sensorType
+      //   );
+   })
       this.loadMap2(data); 
     });
     let idFarm = (this._route.snapshot.paramMap.get('id'));
@@ -52,10 +82,10 @@ export class FarmMapPolygonComponent implements OnInit {
     });   
     var flightPath = new window['google'].maps.Polygon({
       paths: farmPolygon.polygon.path,
-      strokeColor: '#FF0000',
+      strokeColor: '#49AA4F',
       strokeOpacity: 0.8,
       strokeWeight: 2,
-      fillColor: '#FF0000',
+      fillColor: '#49AA4F',
       fillOpacity: 0.35,
     });
     flightPath.setMap(map);
