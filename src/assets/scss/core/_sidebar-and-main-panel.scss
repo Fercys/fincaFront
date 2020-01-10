@@ -133,7 +133,7 @@
             > a{
               &:hover,
               &:focus{
-                  background-color: transparent;
+                  background-color: #43a047;
                   outline: none;
               }
             }
@@ -146,19 +146,21 @@
             & .dropdown-menu a:hover,
             & .dropdown-menu a:focus,
             &.active > [data-toggle="collapse"]{
-                background-color: rgba(200, 200, 200, 0.2);
+                background-color: #43a047;
                 color: $black-color;
                 box-shadow: none;
             }
 
             &.active > [data-toggle="collapse"]{
                 i{
+                    background-color: #43a047;
                     color: #a9afbb;
                 }
             }
 
             &.active > a,
             &.active > a i{
+                background-color: #43a047;
                 color: $white-color;
             }
 
