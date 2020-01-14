@@ -95,12 +95,14 @@ export class FarmMapPolygonComponent implements OnInit {
     if(farmPolygon.latitude == undefined && farmPolygon.latitude == undefined){
       var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
         center: {lat:  farmPolygon.polygon.path[0].lat, lng: farmPolygon.polygon.path[0].lng},
-        zoom:15
+        zoom:15,
+        mapTypeId: window['google'].maps.MapTypeId.HYBRID
       });
     }else{
       var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
         center: {lat: farmPolygon.latitude, lng: farmPolygon.longitude},
-        zoom:15
+        zoom:15,
+        mapTypeId: window['google'].maps.MapTypeId.HYBRID
       });
     } 
     var flightPath = new window['google'].maps.Polygon({

@@ -57,12 +57,14 @@ export class FarmMapComponent implements OnInit {
     if(data.length == 0){
       var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
         center: {lat: -32.89963602180464, lng: -70.90243510967417},
-        zoom:15
+        zoom:15,
+        mapTypeId: window['google'].maps.MapTypeId.HYBRID
       });
     }else{
       var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
         center: {lat: data[10].polygon.path[0].lat, lng: data[10].polygon.path[0].lng},
-        zoom:15
+        zoom:15,
+        mapTypeId: window['google'].maps.MapTypeId.HYBRID
       });
     }
     
