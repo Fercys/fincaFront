@@ -82,7 +82,7 @@ export class FarmMapPolygonComponent implements OnInit {
     const key = "67a49d3ba5904bef87441658192312";
     console.log(q);
     this.weatherService.getWeather(key,q).subscribe((data: {}) => {
-    console.log(data);
+    console.log(JSON.stringify({data}));
     });
     // console.log( farmPolygon.latitude, farmPolygon.longitude)
 

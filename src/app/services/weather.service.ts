@@ -14,15 +14,17 @@ export class WeatherService {
 //   HTTPS: https://api.worldweatheronline.com/premium/v1/weather.ashx
   httpOptions = {
     headers: new HttpHeaders({
+      'Accept': 'application/json',
       'api_key':'67a49d3ba5904bef87441658192312'
     })
   }
+
 
   constructor(private http: HttpClient) { }
   
 
   getWeather(q, key): Observable<any> { 
-    return this.http.get(this.baseurl+"q="+key+"&"+"Key="+q, this.httpOptions)
+    return this.http.get(this.baseurl+"q="+key+"&"+"Key="+q, {responseType: 'text'})
     .pipe(
       retry(1),
       catchError(this.errorHandl)
