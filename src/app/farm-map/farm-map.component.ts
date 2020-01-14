@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { WiseconnService } from 'app/services/wiseconn.service';
 import { element } from 'protractor';
 import { NgbModal,ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { WeatherService } from 'app/services/weather.service';
 
 @Component({
   selector: 'app-farm-map',
@@ -17,18 +18,30 @@ export class FarmMapComponent implements OnInit {
   public url;
   public mediciones;
   closeResult: string;
+  clima: any;
   
-  constructor(private _route: ActivatedRoute,private wiseconnService: WiseconnService, public modalService: NgbModal,private router: Router) { }
+  constructor(private _route: ActivatedRoute,private wiseconnService: WiseconnService, public modalService: NgbModal,private router: Router, public weatherService: WeatherService) { }
   ngOnInit() {
     //this.renderMap();
     this.loading = true;
     this.wiseconnService.getZones(this._route.snapshot.paramMap.get('id')).subscribe((data: {}) => {      
       this.loading = false; 
       this.loadMap(data); 
-      console.log(data);
     });
     let idFarm = (this._route.snapshot.paramMap.get('id'));
-    this.wiseconnService.getFarm(idFarm).subscribe((data: {}) => {
+    this.wiseconnService.getFarm(idFarm).subscribe((data) => {
+      console.log(data);
+      this.weatherService;
+      const q = [data.latitude, data.longitude];
+      const key = "67a49d3ba5904bef87441658192312";
+      console.log(q);
+      this.weatherService.getWeather(key,q).subscribe((weather) => {
+        this.clima = (weather.data.weather);
+        // var clima2 = weather.data.current_condition[0];
+        // this.climaRes.push({ name: 'temp_C' , value: clima2.temp_C });
+        // this.climaRes.push({ name: 'temp_F' , value: clima2.temp_F });
+        console.log(weather.data.weather);
+      });
         console.log(data['account']['id']);
         switch (data['account']['id']) { 
           case 63:
