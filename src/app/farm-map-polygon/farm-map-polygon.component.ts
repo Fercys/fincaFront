@@ -85,17 +85,24 @@ export class FarmMapPolygonComponent implements OnInit {
     console.log(q);
     this.weatherService.getWeather(key,q).subscribe((weather) => {
       this.clima = (weather.data.weather);
-      var clima2 = weather.data.current_condition[0];
-      this.climaRes.push({ name: 'temp_C' , value: clima2.temp_C });
-      this.climaRes.push({ name: 'temp_F' , value: clima2.temp_F });
-      console.log(weather);
+      // var clima2 = weather.data.current_condition[0];
+      // this.climaRes.push({ name: 'temp_C' , value: clima2.temp_C });
+      // this.climaRes.push({ name: 'temp_F' , value: clima2.temp_F });
+      console.log(weather.data.weather);
     });
-    // console.log( farmPolygon.latitude, farmPolygon.longitude)
+     console.log( farmPolygon.polygon.path)
 
-    var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
-      center: {lat: farmPolygon.latitude, lng: farmPolygon.longitude},
-      zoom:15,
-    });   
+    if(farmPolygon.latitude == undefined && farmPolygon.latitude == undefined){
+      var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
+        center: {lat:  farmPolygon.polygon.path[0].lat, lng: farmPolygon.polygon.path[0].lng},
+        zoom:15
+      });
+    }else{
+      var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
+        center: {lat: farmPolygon.latitude, lng: farmPolygon.longitude},
+        zoom:15
+      });
+    } 
     var flightPath = new window['google'].maps.Polygon({
       paths: farmPolygon.polygon.path,
       strokeColor: '#49AA4F',

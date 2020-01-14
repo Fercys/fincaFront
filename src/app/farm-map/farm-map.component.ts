@@ -25,6 +25,7 @@ export class FarmMapComponent implements OnInit {
     this.wiseconnService.getZones(this._route.snapshot.paramMap.get('id')).subscribe((data: {}) => {      
       this.loading = false; 
       this.loadMap(data); 
+      console.log(data);
     });
     let idFarm = (this._route.snapshot.paramMap.get('id'));
     this.wiseconnService.getFarm(idFarm).subscribe((data: {}) => {
