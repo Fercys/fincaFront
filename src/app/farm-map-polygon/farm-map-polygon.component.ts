@@ -85,8 +85,10 @@ export class FarmMapPolygonComponent implements OnInit {
     console.log(q);
     this.weatherService.getWeather(key,q).subscribe((weather) => {
       this.clima = (weather.data.weather);
-      // this.climaRes.push({})
-      console.log(weather.data.weather);
+      var clima2 = weather.data.current_condition[0];
+      this.climaRes.push({ name: 'temp_C' , value: clima2.temp_C });
+      this.climaRes.push({ name: 'temp_F' , value: clima2.temp_F });
+      console.log(weather);
     });
     // console.log( farmPolygon.latitude, farmPolygon.longitude)
 

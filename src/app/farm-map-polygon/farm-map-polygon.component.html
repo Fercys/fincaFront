@@ -97,28 +97,27 @@
     </div>
     <div class="col-lg-4 col-md-4 col-sm-4">
       <div class="card card-plain">
-        <div class="card-header card-header-success">
-          <h4 class="card-title mt-0">Medidas</h4>
-          <p class="card-category"> Estacion Metereológica</p>
-        </div>
         <div class="card-body">
-          <div class="table-responsive">
+          <div class="table-responsive"  style="background-color: powderblue;">
             <table class="table table-hover">
               <thead class="">
+                <tr>
+                  <th colspan="3" style="background: linear-gradient(90deg, rgba(25,129,217,1) 48%, rgba(118,192,255,1) 100%); text-align: center; color: white; font-weight: bold;">FORECAST</th>
+                </tr>
                 <th>
                   Date
                 </th>
                 <th>
-                  MinTemp
+                  Min
                 </th>
                 <th>
-                  MaxTemp
+                  Max
                 </th>
               </thead>
               <tbody>
                 <tr *ngFor="let data of clima">
                   <td>
-                    {{data.date| date : "EEEE d"}}
+                    {{data.date| date : "EEE d"}}
                   </td>
                   <td>
                     {{data.mintempC}}°C
@@ -131,6 +130,10 @@
             </table>
           </div>
         </div>
+            <div class="card-header card-header-success" style="margin-top: 20px;">
+              <h4 class="card-title mt-0">Medidas</h4>
+              <p class="card-category"> Estacion Metereológica</p>
+            </div>
         <div class="card-body">
           <div class="table-responsive">
             <table class="table table-hover">
