@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { WiseconnService } from 'app/services/wiseconn.service';
 import { element } from 'protractor';
 import { NgbModal,ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { WeatherService } from 'app/services/weather.service';
 
 @Component({
   selector: 'app-farm-map-polygon',
@@ -20,7 +21,7 @@ export class FarmMapPolygonComponent implements OnInit {
   status: any;
   idfarm: any;
   
-  constructor(private _route: ActivatedRoute,private wiseconnService: WiseconnService, public modalService: NgbModal) { }
+  constructor(private _route: ActivatedRoute,private wiseconnService: WiseconnService, public modalService: NgbModal, public weatherService: WeatherService) { }
   ngOnInit() {
     //this.renderMap();
     this.loading = true;
@@ -72,13 +73,22 @@ export class FarmMapPolygonComponent implements OnInit {
     });
   }
   loadMap2(data){
+    this.weatherService;
     let idFarm = this._route.snapshot.paramMap.get('farm');
     let farmPolygon = data.find(function(element){
       return element['id'] == idFarm;
     }); 
+    const q = [farmPolygon.latitude, farmPolygon.longitude];
+    const key = "67a49d3ba5904bef87441658192312";
+    console.log(q);
+    this.weatherService.getWeather(key,q).subscribe((data: {}) => {
+    console.log(data);
+    });
+    // console.log( farmPolygon.latitude, farmPolygon.longitude)
+
     var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
       center: {lat: farmPolygon.latitude, lng: farmPolygon.longitude},
-      zoom:15
+      zoom:15,
     });   
     var flightPath = new window['google'].maps.Polygon({
       paths: farmPolygon.polygon.path,
