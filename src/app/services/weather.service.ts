@@ -15,7 +15,7 @@ export class WeatherService {
   httpOptions = {
     headers: new HttpHeaders({
       'Accept': 'application/json',
-      'api_key':'67a49d3ba5904bef87441658192312'
+      'api_key':'67a49d3ba5904bef87441658192312',
     })
   }
 
@@ -24,7 +24,8 @@ export class WeatherService {
   
 
   getWeather(q, key): Observable<any> { 
-    return this.http.get(this.baseurl+"q="+key+"&"+"Key="+q, {responseType: 'text'})
+    return this.http.get(this.baseurl+"q="+key+"&"+"Key="+q+'&'+'format='+'json'
+    , this.httpOptions)
     .pipe(
       retry(1),
       catchError(this.errorHandl)

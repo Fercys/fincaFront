@@ -106,8 +106,36 @@
             <table class="table table-hover">
               <thead class="">
                 <th>
-
+                  Date
                 </th>
+                <th>
+                  MinTemp
+                </th>
+                <th>
+                  MaxTemp
+                </th>
+              </thead>
+              <tbody>
+                <tr *ngFor="let data of clima">
+                  <td>
+                    {{data.date| date : "EEEE d"}}
+                  </td>
+                  <td>
+                    {{data.mintempC}}°C
+                  </td>
+                  <td>
+                    {{data.maxtempC}}°C
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead class="">
+
                 <th>
                   Nombre
                 </th>
@@ -118,18 +146,7 @@
               </thead>
               <tbody>
                 <tr *ngFor="let data of mediciones">
-                  <td>
-                    <img *ngIf="data.name =='Station Temperature' || data.name=='Temperatura'" src="https://www.dropcontrol.com/img/widgets/ico_temperatura.gif">
-                    <img *ngIf="data.name =='Rafaga de viento' || data.name=='Direccion de viento'" src="https://www.dropcontrol.com/img/widgets/ico_velocidad.gif">
-                    <img *ngIf="data.name =='Wind Direction' || data.name=='Velocidad Viento'" src="https://www.dropcontrol.com/img/widgets/ico_velocidad.gif">
-                    <img *ngIf="data.name =='Wind Speed (period)'" src="https://www.dropcontrol.com/img/widgets/ico_velocidad.gif">
-                    <img *ngIf="data.name =='Station Relative Humidity' || data.name=='Humedad'" src="https://www.dropcontrol.com/img/widgets/ico_humedad.gif">
-                    <img *ngIf="data.name =='Solar radiation ' || data.name=='Radiacion Solar'" src="https://www.dropcontrol.com/img/widgets/ico_radiacion.gif">
-                    <img *ngIf="data.name =='Horas Frío'" src=" https://www.dropcontrol.com/img/widgets/ico_pluviometria.gif?uv=1">
-                    <img *ngIf="data.name =='Porciones de Frío'" src=" https://www.dropcontrol.com/img/widgets/ico_pluviometria.gif?uv=1">
-                    <img *ngIf="data.name =='ATM pressure'" src="https://www.dropcontrol.com/img/widgets/ico_presion.gif">
-                                   
-                  </td>
+     
                   <td>
                     {{data.name}}
                   </td>

@@ -17,6 +17,8 @@ export class FarmMapPolygonComponent implements OnInit {
   public id = 0;
   public url;
   public mediciones;
+  public clima;
+  public climaRes: any = [];
   closeResult: string;
   status: any;
   idfarm: any;
@@ -81,8 +83,10 @@ export class FarmMapPolygonComponent implements OnInit {
     const q = [farmPolygon.latitude, farmPolygon.longitude];
     const key = "67a49d3ba5904bef87441658192312";
     console.log(q);
-    this.weatherService.getWeather(key,q).subscribe((data: {}) => {
-    console.log(JSON.stringify({data}));
+    this.weatherService.getWeather(key,q).subscribe((weather) => {
+      this.clima = (weather.data.weather);
+      // this.climaRes.push({})
+      console.log(weather.data.weather);
     });
     // console.log( farmPolygon.latitude, farmPolygon.longitude)
 
