@@ -61,7 +61,9 @@ export class DashboardComponent implements OnInit {
   mapInitializer() {
     var map = new window['google'].maps.Map(this.mapElement.nativeElement, { 
       center: this.coordinates,
-      zoom:8});      
+      zoom:8,
+      mapTypeId: window['google'].maps.MapTypeId.HYBRID
+    });      
       this.farms.forEach(element => {
         let marker = new window['google'].maps.Marker({
           position: {lat: element['latitude'], lng: element['longitude']},          
