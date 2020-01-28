@@ -10,7 +10,7 @@ import { AppRoutingModule } from './app.routing';
 import { ComponentsModule } from './components/components.module';
 
 import { AppComponent } from './app.component';
-
+import { NgxLoadingModule } from 'ngx-loading';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { TableListComponent } from './table-list/table-list.component';
@@ -24,7 +24,6 @@ import {
 } from '@agm/core';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { LoginComponent } from './login/login.component';
-import { FarmService } from './services/farm-service/farm.service';
 import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
@@ -33,6 +32,7 @@ import { HttpClientModule } from '@angular/common/http';
     FormsModule,
     ReactiveFormsModule,
     HttpModule,
+    NgxLoadingModule.forRoot({}),
     ComponentsModule,
     RouterModule,
     AppRoutingModule,
@@ -41,7 +41,7 @@ import { HttpClientModule } from '@angular/common/http';
     }),
     MaterialModule,
     FlexLayoutModule,
-    HttpClientModule
+    HttpClientModule,
   ], 
   declarations: [
     AppComponent,

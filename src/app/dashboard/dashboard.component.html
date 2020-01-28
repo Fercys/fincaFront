@@ -1,43 +1,43 @@
 <div class="main-content">
   <div class="container-fluid">
       <div class="row">
-          <div class="col-lg-4 col-md-6 col-sm-6">
+          <div class="col-lg-6 col-md-6 col-sm-6">
               <div class="card card-stats">
                   <div class="card-header card-header-warning card-header-icon">
                       <div class="card-icon">
                           <i class="material-icons">content_copy</i>
                       </div>
                       <p class="card-category">Clientes</p>
-                      <h3 class="card-title">{{clientsNumber}}
+                      <h3 class="card-title">{{users}}
                           <small>Activos</small>
                       </h3>
                   </div>
                   <div class="card-footer">
                       <div class="stats">
                           <!-- <i class="material-icons text-danger">warning</i> -->
-                          <a href="javascript:void(0)">Ver clientes</a>
+                          <a routerLink="/client">Ver clientes</a>
                       </div>
                   </div>
               </div>
           </div>
-          <div class="col-lg-4 col-md-6 col-sm-6">
+          <div class="col-lg-6 col-md-6 col-sm-6">
               <div class="card card-stats">
                   <div class="card-header card-header-success card-header-icon">
                       <div class="card-icon">
                           <i class="material-icons">store</i>
                       </div>
-                      <p class="card-category">Fincas</p>
-                      <h3 class="card-title">{{farmsNumber}}</h3>
+                      <p class="card-category">Campos</p>
+                      <h3 class="card-title">{{cant_farms}}</h3>
                   </div>
                   <div class="card-footer">
                     <div class="stats">
                         <!-- <i class="material-icons text-danger">warning</i> -->
-                        <a routerLink="/farms">Ver Fincas</a>
+                        <a routerLink="/farms">Ver Campos</a>
                     </div>
                 </div>
               </div>
           </div>
-          <div class="col-lg-4 col-md-6 col-sm-6">
+          <!-- <div class="col-lg-4 col-md-6 col-sm-6">
               <div class="card card-stats">
                   <div class="card-header card-header-info card-header-icon">
                       <div class="card-icon">
@@ -48,47 +48,16 @@
                   </div>
                   <div class="card-footer">
                     <div class="stats">
-                        <!-- <i class="material-icons text-danger">warning</i> -->
                         <a href="javascript:void(0)">Ver Zonas</a>
                     </div>
                 </div>
               </div>
-          </div>
+          </div> -->
       </div>
-      <div class="row">
-          <div class="col-md-4">
-              <div class="card card-chart">
-                  <div class="card-header card-header-success">
-                      <div class="ct-chart" id="dailySalesChart"></div>
-                  </div>
-                  <div class="card-body">
-                      <h4 class="card-title">Cliente</h4>
-                      <p class="card-category">Graficas de los clientes</p>
-                  </div>
-                  <div class="card-footer">
-                      <div class="stats">
-                          <i class="material-icons">access_time</i>
-                      </div>
-                  </div>
-              </div>
-          </div>
-          <div class="col-md-4">
-              <div class="card card-chart">
-                  <div class="card-header card-header-warning">
-                      <div class="ct-chart" id="websiteViewsChart"></div>
-                  </div>
-                  <div class="card-body">
-                      <h4 class="card-title">Finca</h4>
-                      <p class="card-category">Graficas de las fincas</p>
-                  </div>
-                  <div class="card-footer">
-                      <div class="stats">
-                          <i class="material-icons">access_time</i>
-                      </div>
-                  </div>
-              </div>
-          </div>
-          <div class="col-md-4">
+      <div class="container-fluid">
+        <div #mapRef style="width:100%;height:500px"></div>
+    </div>
+        <!--   <div class="col-md-4">
               <div class="card card-chart">
                   <div class="card-header card-header-danger">
                       <div class="ct-chart" id="completedTasksChart"></div>
@@ -103,7 +72,7 @@
                       </div>
                   </div>
               </div>
-          </div>
+          </div> -->
       </div>
+      <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>
   </div>
-</div>

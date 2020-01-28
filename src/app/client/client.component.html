@@ -1,0 +1,46 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+          
+      <div class="col-md-12">
+          <div class="card card-plain">
+              <div class="card-header card-header-success">
+                  <h4 class="card-title mt-0">Usuario</h4>
+                  <p class="card-category">Datos de todos los usuarios registrados</p>
+              </div>
+              <div class="card-body">
+                  <div class="table-responsive">
+                      <table class="table table-hover">
+                          <thead class="">
+                              <th>
+                                  ID
+                              </th>
+                              <th>
+                                  Nombre
+                              </th>
+                              <th>
+                                Fincas
+                              </th>
+                          </thead>
+                          <tbody>
+                              <tr *ngFor="let data of client">
+                                  <td>
+                                      {{data.account.id}}
+                                  </td>
+                                  <td>
+                                      {{data.account.name}}
+                                  </td>
+                                  <td>
+                                    <i class="material-icons" [routerLink]="['/client-farm',data.account.id]">find_in_page</i>
+                                </td>
+                              </tr> 
+                          </tbody>
+                      </table>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>
+</div>
+

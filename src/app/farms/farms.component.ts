@@ -7,16 +7,12 @@ import { FarmService } from 'app/services/farm-service/farm.service';
   styleUrls: ['./farms.component.scss']
 })
 export class FarmsComponent implements OnInit {
-
-  farms = [
-    {id: 1}
-  ];
-  constructor(private farmService: FarmService) { }
+  public farms;
+  constructor() { }
 
   ngOnInit() {
-    this.farmService.getFarms().toPromise().then(result => {
-      this.farms = result
-    })
+    this.farms=JSON.parse(localStorage.getItem("datafarms"));
+    console.log(this.farms);
   }
 
 }

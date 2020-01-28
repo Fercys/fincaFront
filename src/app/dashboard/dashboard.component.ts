@@ -1,6 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import * as Chartist from 'chartist';
 import { FarmService } from 'app/services/farm-service/farm.service';
+
+import { WiseconnService } from '../services/wiseconn.service';
+import { HttpClient, HttpHeaders, HttpHandler,HttpClientModule  } from '@angular/common/http';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -8,10 +12,17 @@ import { FarmService } from 'app/services/farm-service/farm.service';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
+  //@italo
+  @ViewChild('mapRef', {static: true }) mapElement: ElementRef;
 
-  clientsNumber = 0;
-  farmsNumber = 0;
-  constructor(private farmService: FarmService) { }
+  farms: any = [];
+  public loading = false;
+  public cant_farms=0;
+  public users = 0;
+  lat = -32.9034219818308;
+  lng = -70.9091198444366;
+  constructor(private _route: ActivatedRoute, private wiseconnService: WiseconnService,private router: Router) { }  
+
   startAnimationForLineChart(chart){
       let seq: any, delays: any, durations: any;
       seq = 0;
@@ -45,6 +56,26 @@ export class DashboardComponent implements OnInit {
 
       seq = 0;
   };
+
+  coordinates = new window['google'].maps.LatLng(this.lat, this.lng);
+
+  mapInitializer() {
+    var map = new window['google'].maps.Map(this.mapElement.nativeElement, { 
+      center: this.coordinates,
+      zoom:8,
+      mapTypeId: window['google'].maps.MapTypeId.HYBRID
+    });      
+      this.farms.forEach(element => {
+        let marker = new window['google'].maps.Marker({
+          position: {lat: element['latitude'], lng: element['longitude']},          
+        });
+        marker.addListener('click', () => {
+          this.router.navigate(['/farmmap', element['id']]);
+        });
+        marker.setMap(map);
+      },[map,this]);
+
+  }
   startAnimationForBarChart(chart){
       let seq2: any, delays2: any, durations2: any;
 
@@ -69,6 +100,24 @@ export class DashboardComponent implements OnInit {
       seq2 = 0;
   };
   ngOnInit() {
+    
+    this.loading = true;
+    this.wiseconnService.getFarms().subscribe((data: {}) => {
+      this.farms = data;
+      localStorage.setItem("datafarms", JSON.stringify(this.farms));
+      console.log(this.farms);
+      this.cant_farms=this.farms.length;
+      var farm_client = this.farms.filter(function(item,index,array){ 
+        if(index == 0){
+          return true;
+        }else{ 
+          return item['account']['id'] == array[--index]['account']['id']? false: true;
+        }
+      });
+      this.users = farm_client.length;
+      this.loading = false;
+      this.mapInitializer();  
+    })
       /* ----------==========     Daily Sales Chart initialization For Documentation    ==========---------- */
       this.farmService.getFarms().toPromise().then(result => {
         this.farmsNumber = result.length
@@ -154,6 +203,7 @@ export class DashboardComponent implements OnInit {
 
       //start animation for the Emails Subscription Chart
       this.startAnimationForBarChart(websiteViewsChart);
-  }
 
+      console.log(this.farms);
+  }
 }

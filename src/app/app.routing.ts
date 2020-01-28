@@ -5,12 +5,11 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { LoginComponent } from './login/login.component';
-import { FarmsComponent } from './farms/farms.component';
 
 const routes: Routes =[
 	{
 		path: '',
-		redirectTo: 'dashboard',
+		redirectTo: 'login',
 		pathMatch: 'full',
 	}, {
 		path: '',

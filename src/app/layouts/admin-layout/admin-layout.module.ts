@@ -12,6 +12,8 @@ import { MapsComponent } from '../../maps/maps.component';
 import { NotificationsComponent } from '../../notifications/notifications.component';
 import { UpgradeComponent } from '../../upgrade/upgrade.component';
 import { FarmsComponent } from '../../farms/farms.component';
+import { FarmMapComponent } from '../../farm-map/farm-map.component';
+import { NgxLoadingModule } from 'ngx-loading';
 
 import {
   MatButtonModule,
@@ -21,8 +23,11 @@ import {
   MatTooltipModule,
   MatSelectModule
 } from '@angular/material';
-import { FarmZonesComponent } from 'app/farm-zones/farm-zones.component';
-import { ZoneDetailComponent } from 'app/zone-detail/farm-zones/zone-detail.component';
+import { ClientComponent } from 'app/client/client.component';
+import { FarmClientComponent } from 'app/farm-client/farm-client.component';
+import { SafePipePipe } from 'app/pipe/safe-pipe.pipe';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { FarmMapPolygonComponent } from 'app/farm-map-polygon/farm-map-polygon.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -35,6 +40,8 @@ import { ZoneDetailComponent } from 'app/zone-detail/farm-zones/zone-detail.comp
     MatInputModule,
     MatSelectModule,
     MatTooltipModule,
+    NgbModule,
+    NgxLoadingModule.forRoot({})
   ],
   declarations: [
     DashboardComponent,
@@ -46,8 +53,11 @@ import { ZoneDetailComponent } from 'app/zone-detail/farm-zones/zone-detail.comp
     NotificationsComponent,
     UpgradeComponent,
     FarmsComponent,
-    FarmZonesComponent,
-    ZoneDetailComponent
+    FarmMapComponent,
+    ClientComponent,
+    FarmClientComponent,
+    SafePipePipe,
+    FarmMapPolygonComponent
   ]
 })
 

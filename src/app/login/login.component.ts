@@ -28,7 +28,7 @@ export class LoginComponent implements OnInit,OnDestroy,AfterViewInit {
 	}
 
 
-	constructor(private fb: FormBuilder,private elementRef: ElementRef, private router: Router) { }
+	constructor(private _router: Router, private fb: FormBuilder,private elementRef: ElementRef) { }
 
 	ngOnInit() {
 		this.screenHeight = window.innerHeight;
@@ -47,15 +47,6 @@ export class LoginComponent implements OnInit,OnDestroy,AfterViewInit {
 	onSubmit() {
 		// Adding data values
 		console.log(this.myForm.value)
-		if(this.myForm.value.user = 'admin' && this.myForm.value.password == '12345678'){
-			this.router.navigate(['/dashboard'])
-		} else {
-			Swal.fire(
-				'Error!',
-				'Credenciales invalidas',
-				'error'
-			)
-		}
 	}
 	ngOnDestroy(){
 		document.body.className="";
@@ -63,4 +54,22 @@ export class LoginComponent implements OnInit,OnDestroy,AfterViewInit {
 	ngAfterViewInit(){
 		this.elementRef.nativeElement.ownerDocument.body.style.backgroundImage = './assets/img/backgrounds/2.jpg';
 	}
+
+	LoginUser(event){
+		event.preventDefault();
+		const target = event.target;
+		const usuario= target.querySelector('#usuario').value;
+		const password= target.querySelector('#password').value;
+	  
+		if (usuario == 'Admin' && password == '12345678') {
+			console.log('entre');
+			this._router.navigate(['/dashboard']);
+		}else{
+			Swal.fire({
+				icon: 'error',
+				title: 'Oops...',
+				text: 'Usuario o Contraseña Equivocada!'
+			})
+		}
+	  }
 }
