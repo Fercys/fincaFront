@@ -16,7 +16,7 @@ export class LoginComponent implements OnInit,OnDestroy,AfterViewInit {
 	myForm: FormGroup;
 	name = new FormControl('');
 	Validator: Validators;
-	disablesavebutton = true;
+	disablesavebutton = false;
     screenHeight: number;
     screenWidth: number;
 	login = document.getElementsByClassName('login-background') as HTMLCollectionOf<HTMLElement>;
@@ -28,7 +28,7 @@ export class LoginComponent implements OnInit,OnDestroy,AfterViewInit {
 	}
 
 
-	constructor(private _router: Router, private fb: FormBuilder,private elementRef: ElementRef) { }
+	constructor(private fb: FormBuilder,private elementRef: ElementRef, private router: Router) { }
 
 	ngOnInit() {
 		this.screenHeight = window.innerHeight;
@@ -47,6 +47,15 @@ export class LoginComponent implements OnInit,OnDestroy,AfterViewInit {
 	onSubmit() {
 		// Adding data values
 		console.log(this.myForm.value)
+		if(this.myForm.value.user = 'admin' && this.myForm.value.password == '12345678'){
+			this.router.navigate(['/dashboard'])
+		} else {
+			Swal.fire(
+				'Error!',
+				'Credenciales invalidas',
+				'error'
+			)
+		}
 	}
 	ngOnDestroy(){
 		document.body.className="";

@@ -1,0 +1,29 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+
+            <div class="col-md-12">
+                <div class="card card-plain">
+                    <div class="card-header card-header-danger">
+                        <h4 class="card-title mt-0">Sectores</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div *ngFor='let zone of zones' class="card col-3 mx-1 text-center">
+                                <a [routerLink]="['/zone-detail',zone.id]">
+                                    <div class="card-header">
+                                        <h4 class="card-title mt-0"> {{zone.name}}</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        {{zone.description}}
+                                    </div>
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

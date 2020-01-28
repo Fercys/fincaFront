@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FarmService } from 'app/services/farm-service/farm.service';
 
 @Component({
   selector: 'app-farms',
@@ -6,13 +7,16 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./farms.component.scss']
 })
 export class FarmsComponent implements OnInit {
-  public farms;
-  constructor() { }
+
+  farms = [
+    {id: 1}
+  ];
+  constructor(private farmService: FarmService) { }
 
   ngOnInit() {
-    this.farms=JSON.parse(localStorage.getItem("datafarms"));
-    console.log(this.farms);
-    
+    this.farmService.getFarms().toPromise().then(result => {
+      this.farms = result
+    })
   }
 
 }
