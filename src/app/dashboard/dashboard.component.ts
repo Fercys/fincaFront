@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import * as Chartist from 'chartist';
-import { FarmService } from 'app/services/farm-service/farm.service';
 
 import { WiseconnService } from '../services/wiseconn.service';
 import { HttpClient, HttpHeaders, HttpHandler,HttpClientModule  } from '@angular/common/http';
@@ -23,9 +22,6 @@ export class DashboardComponent implements OnInit {
   lng = -70.9091198444366;
   constructor(private _route: ActivatedRoute, private wiseconnService: WiseconnService,private router: Router) { }  
 
-  clientsNumber = 0;
-  farmsNumber = 0;
-  constructor(private farmService: FarmService) { }
   startAnimationForLineChart(chart){
       let seq: any, delays: any, durations: any;
       seq = 0;
@@ -122,13 +118,7 @@ export class DashboardComponent implements OnInit {
       this.mapInitializer();  
     })
       /* ----------==========     Daily Sales Chart initialization For Documentation    ==========---------- */
-      this.farmService.getFarms().toPromise().then(result => {
-        this.farmsNumber = result.length
-        let all_account_id = result.map(data => {
-          return data.account.id
-        })
-        this.clientsNumber =  [...new Set(all_account_id)].length;
-      })
+
       const dataDailySalesChart: any = {
           labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
           series: [

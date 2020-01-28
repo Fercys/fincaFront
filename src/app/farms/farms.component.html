@@ -1,64 +1,58 @@
 <div class="main-content">
-    <div class="container-fluid">
-        <div class="row">
-
-            <div class="col-md-12">
-                <div class="card card-plain">
-                    <div class="card-header card-header-danger">
-                        <h4 class="card-title mt-0"> Table on Plain Background</h4>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead class="">
-                                    <th>
-                                        ID
-                                    </th>
-                                    <th>
-                                        Name
-                                    </th>
-                                    <th>
-                                        Description
-                                    </th>
-                                    <th>
-                                        Latitude
-                                    </th>
-                                    <th>
-                                        Longitude
-                                    </th>
-                                    <th>
-                                        Options
-                                    </th>
-                                </thead>
-                                <tbody>
-                                    <tr *ngFor='let farm of farms'>
-                                        <td>
-                                            {{farm.id}}
-                                        </td>
-                                        <td>
-                                            {{farm.name}}
-                                        </td>
-                                        <td>
-                                            {{farm.description}}
-                                        </td>
-                                        <td>
-                                            {{farm.latitude}}
-                                        </td>
-                                        <td>
-                                            {{farm.longitude}}
-                                        </td>
-                                        <td>
-                                            <a [routerLink]="['/farm-zones',farm.id]">
-                                                <i class="material-icons">find_in_page</i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+  <div class="container-fluid">
+      <div class="row">
+          
+          <div class="col-md-12">
+              <div class="card card-plain">
+                  <div class="card-header card-header-success">
+                      <h4 class="card-title mt-0">Campos</h4>
+                      <p class="card-category"> Datos de todos los campos registrados</p>
+                  </div>
+                  <div class="card-body">
+                      <div class="table-responsive">
+                          <table class="table table-hover">
+                              <thead class="">
+                                  <th>
+                                      ID
+                                  </th>
+                                  <th>
+                                      Nombre
+                                  </th>
+                                  <th>
+                                      Descripcion
+                                  </th>
+                                  <th>
+                                    Time Zone
+                                  </th>
+                                  <th>
+                                      Opciones
+                                  </th>
+                              </thead>
+                              <tbody>
+                                  <tr *ngFor="let data of farms">
+                                      <td>
+                                          {{data.id}}
+                                      </td>
+                                      <td>
+                                          {{data.name}}
+                                      </td>
+                                      <td>
+                                          {{data.description}}
+                                      </td>
+                                      <td>
+                                          {{data.timeZone}}
+                                      </td>
+                                      <td>
+                                          <i class="material-icons" [routerLink]="['/farmmap',data.id]">find_in_page</i>
+                                      </td>
+                                  </tr>
+                              </tbody>
+                          </table>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
 </div>
+

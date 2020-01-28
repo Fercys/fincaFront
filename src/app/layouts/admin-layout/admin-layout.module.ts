@@ -23,8 +23,11 @@ import {
   MatTooltipModule,
   MatSelectModule
 } from '@angular/material';
-import { FarmZonesComponent } from 'app/farm-zones/farm-zones.component';
-import { ZoneDetailComponent } from 'app/zone-detail/farm-zones/zone-detail.component';
+import { ClientComponent } from 'app/client/client.component';
+import { FarmClientComponent } from 'app/farm-client/farm-client.component';
+import { SafePipePipe } from 'app/pipe/safe-pipe.pipe';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { FarmMapPolygonComponent } from 'app/farm-map-polygon/farm-map-polygon.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -50,8 +53,11 @@ import { ZoneDetailComponent } from 'app/zone-detail/farm-zones/zone-detail.comp
     NotificationsComponent,
     UpgradeComponent,
     FarmsComponent,
-    FarmZonesComponent,
-    ZoneDetailComponent
+    FarmMapComponent,
+    ClientComponent,
+    FarmClientComponent,
+    SafePipePipe,
+    FarmMapPolygonComponent
   ]
 })
 
