@@ -49,7 +49,7 @@ import { HttpClientModule } from '@angular/common/http';
     LoginComponent,
 
   ],
-  providers: [FarmService],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

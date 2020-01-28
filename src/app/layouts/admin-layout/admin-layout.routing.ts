@@ -64,7 +64,7 @@ export const AdminLayoutRoutes: Routes = [
     { path: 'icons',          component: IconsComponent },
     { path: 'maps',           component: MapsComponent },
     { path: 'notifications',  component: NotificationsComponent },
-    { path: 'upgrade',        component: UpgradeComponent },  
+    { path: 'upgrade',        component: UpgradeComponent },
     { path: 'farms', component:  FarmsComponent, pathMatch:  'full' },
     { path: 'farmmap/:id', component:  FarmMapComponent, pathMatch:  'full' },
     { path: 'client', component:  ClientComponent, pathMatch:  'full' },

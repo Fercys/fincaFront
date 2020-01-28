@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { FarmService } from 'app/services/farm-service/farm.service';
 
 @Component({
   selector: 'app-farms',

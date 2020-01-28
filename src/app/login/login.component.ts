@@ -16,7 +16,7 @@ export class LoginComponent implements OnInit,OnDestroy,AfterViewInit {
 	myForm: FormGroup;
 	name = new FormControl('');
 	Validator: Validators;
-	disablesavebutton = false;
+	disablesavebutton = true;
     screenHeight: number;
     screenWidth: number;
 	login = document.getElementsByClassName('login-background') as HTMLCollectionOf<HTMLElement>;
