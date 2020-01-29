@@ -1,0 +1,104 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Program Files\Yarn\bin\yarn.js add ngx-loading
+
+PATH: 
+  C:\Users\Reinaldo González\bin;C:\Program Files\Git\mingw32\bin;C:\Program Files\Git\usr\local\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\mingw32\bin;C:\Program Files\Git\usr\bin;C:\Users\Reinaldo González\bin;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Program Files\Rockwell Software\RSCommon;C:\ProgramData\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Program Files\QuickTime\QTSystem;C:\Program Files\Windows Kits\10\Windows Performance Toolkit;C:\WINDOWS\System32\OpenSSH;C:\Program Files\Git\cmd;C:\Program Files\Microsoft VS Code\bin;C:\Users\Reinaldo González\AppData\Local\Programs\Python\Python37-32;C:\Program Files\nodejs;C:\Program Files\Yarn\bin;C:\ProgramData\chocolatey\bin;C:\Android\android-sdk\tools;C:\Android\android-sdk\platform-tools;C:\Android\android-sdk\tools\bin;C:\Users\Reinaldo González\.windows-build-tools\python27;C:\Program Files\nodejs\node_modules\npm\node_modules\npm-lifecycle\node-gyp-bin;C:\Users\Reinaldo González\AppData\Roaming\npm\node_modules\windows-build-tools\node_modules\.bin;C:\Users\Reinaldo González\AppData\Roaming\npm\node_modules\.bin;C:\Users\Reinaldo González\AppData\Local\Microsoft\WindowsApps;C:\Users\Reinaldo González\AppData\Roaming\Composer\vendor\bin;C:\Program Files\Heroku;C:\Program Files\Git\usr\bin;C:\Program Files\heroku\bin;C:\Users\Reinaldo González\AppData\Roaming\npm;C:\Users\Reinaldo González\AppData\Local\Yarn\bin;C:\Program Files\Git\usr\bin\vendor_perl;C:\Program Files\Git\usr\bin\core_perl
+
+Yarn version: 
+  1.21.1
+
+Node version: 
+  12.11.1
+
+Platform: 
+  win32 ia32
+
+Trace: 
+  Error: https://registry.npm.taobao.org/@angular/router/download/@angular/router-8.0.0.tgz: unexpected end of file
+      at Zlib.zlibOnError [as onerror] (zlib.js:170:17)
+
+npm manifest: 
+  {
+    "name": "material-dashboard-angular",
+    "version": "2.3.0",
+    "license": "MIT",
+    "scripts": {
+      "ng": "ng",
+      "start": "ng serve",
+      "build": "ng build",
+      "test": "ng test",
+      "lint": "ng lint",
+      "e2e": "ng e2e",
+      "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && ng serve -o"
+    },
+    "private": true,
+    "dependencies": {
+      "@agm/core": "1.0.0-beta.6",
+      "@angular/animations": "8.0.0",
+      "@angular/cdk": "8.0.1",
+      "@angular/common": "8.0.0",
+      "@angular/compiler": "8.0.0",
+      "@angular/core": "8.0.0",
+      "@angular/flex-layout": "^8.0.0-beta.27",
+      "@angular/forms": "8.0.0",
+      "@angular/http": "7.2.15",
+      "@angular/material": "8.0.1",
+      "@angular/platform-browser": "8.0.0",
+      "@angular/platform-browser-dynamic": "8.0.0",
+      "@angular/platform-server": "8.0.0",
+      "@angular/router": "8.0.0",
+      "@ng-bootstrap/ng-bootstrap": "^5.1.5",
+      "ajv": "6.10.0",
+      "arrive": "2.4.1",
+      "bootstrap": "4.3.1",
+      "bootstrap-material-design": "4.1.2",
+      "bootstrap-notify": "3.1.3",
+      "chartist": "0.11.2",
+      "classlist.js": "1.1.20150312",
+      "core-js": "3.1.3",
+      "express": "4.17.1",
+      "googleapis": "40.0.0",
+      "hammerjs": "2.0.8",
+      "jquery": "3.4.1",
+      "moment": "2.24.0",
+      "ngx-loading": "^2.0.1",
+      "perfect-scrollbar": "1.1.0",
+      "popper.js": "1.15.0",
+      "rxjs": "6.5.2",
+      "rxjs-compat": "6.5.2",
+      "sweetalert2": "^9.5.3",
+      "web-animations-js": "2.3.1",
+      "zone.js": "0.9.1"
+    },
+    "devDependencies": {
+      "@angular-devkit/build-angular": "0.800.2",
+      "@angular/cli": "8.0.2",
+      "@angular/compiler-cli": "8.0.0",
+      "@angular/language-service": "8.0.0",
+      "@types/bootstrap": "4.3.0",
+      "@types/chartist": "0.9.46",
+      "@types/googlemaps": "3.36.4",
+      "@types/jasmine": "3.3.13",
+      "@types/jquery": "3.3.29",
+      "@types/node": "12.0.7",
+      "codelyzer": "5.1.0",
+      "jasmine-core": "3.4.0",
+      "jasmine-spec-reporter": "4.2.1",
+      "karma": "4.1.0",
+      "karma-chrome-launcher": "2.2.0",
+      "karma-cli": "2.0.0",
+      "karma-coverage-istanbul-reporter": "2.0.5",
+      "karma-jasmine": "2.0.1",
+      "karma-jasmine-html-reporter": "1.4.2",
+      "protractor": "5.4.2",
+      "ts-node": "8.2.0",
+      "tslint": "5.17.0",
+      "typescript": "3.4.5"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

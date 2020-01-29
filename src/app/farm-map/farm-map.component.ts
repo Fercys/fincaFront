@@ -17,6 +17,7 @@ export class FarmMapComponent implements OnInit {
   public id = 0;
   public url;
   public mediciones;
+  public zones:any[]=[];
   closeResult: string;
   clima: any;
   
@@ -24,8 +25,9 @@ export class FarmMapComponent implements OnInit {
   ngOnInit() {
     //this.renderMap();
     this.loading = true;
-    this.wiseconnService.getZones(this._route.snapshot.paramMap.get('id')).subscribe((data: {}) => {      
+    this.wiseconnService.getZones(this._route.snapshot.paramMap.get('id')).subscribe((data: any) => {      
       this.loading = false; 
+      this.zones=data;
       this.loadMap(data); 
     });
     let idFarm = (this._route.snapshot.paramMap.get('id'));
@@ -82,19 +84,38 @@ export class FarmMapComponent implements OnInit {
     }
     
     //Funcion de Click
-    var wisservice = this.wiseconnService;
-    var redirect =  this.router;
-
+      var wisservice = this.wiseconnService;
+      var redirect =  this.router;
+      var zones =this.zones;
     var addListenersOnPolygon = function(polygon,id) {
       //this.loading = true;
-
+      let zone=zones.filter(element => element.id==id)[0];
+      window['google'].maps.event.addListener(polygon, 'mouseover', (event) => {
+        let map=document.getElementById("map-container").firstChild;
+        let tooltip= document.createElement("span");
+        tooltip.id='tooltip-text';
+        tooltip.style.backgroundColor= '#777777';
+        tooltip.style.color= '#FFFFFF';
+        tooltip.style.left= event.tb.offsetX+'px';
+        tooltip.style.top= event.tb.offsetY+'px';
+        tooltip.style.padding= '10px 20px';
+        tooltip.style.position= 'absolute';
+        tooltip.innerHTML= zone.name;
+        map.appendChild(tooltip);
+      });
+      window['google'].maps.event.addListener(polygon, 'mouseout', (event) => {
+        let map=document.getElementById("map-container").firstChild;
+        let tooltip= document.getElementById("tooltip-text");
+        if(tooltip)
+          map.removeChild(tooltip);
+      });
       window['google'].maps.event.addListener(polygon, 'click', () => {
      //   var ids = 0;
 
    //     this.ids = id;
     //   this.obtenerMedidas(id);
-       wisservice.getMeasuresOfZones(id).subscribe((data: {}) => {     
-       wisservice.getIrrigarionsRealOfZones(id).subscribe((dataIrrigations: {}) => {
+       wisservice.getMeasuresOfZones(id).subscribe((data: any) => {     
+       wisservice.getIrrigarionsRealOfZones(id).subscribe((dataIrrigations: any) => {
           redirect.navigate(['/farmpolygon', data[0].farmId, id]);
 
         //     alert('ID Sector: '+id+'\nfarmId: '+data[0].farmId+ '\nESTATUS: '+dataIrrigations[0].status+
