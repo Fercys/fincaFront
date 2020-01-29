@@ -30,14 +30,14 @@
         background-color: #191919;
     }
     .logo-img{
-        width: 35px;
+        width: 130px;
         display: block;
-        max-height: 30px;
+        height: 15px;
         margin-left: 13px;
         margin-right: 15px;
         img{
-            width: 35px;
-            top: 16px;
+            width: 80px;
+            top: 12px;
             position: absolute;
         }
     }
@@ -47,7 +47,7 @@
         overflow: auto;
         width: 260px;
         z-index: 4;
-        background-color: #1c2b36;
+        background: linear-gradient(to bottom, rgba(43,65,84,1) 0%, rgba(28,43,53,1) 100%);
         padding-bottom: 30px;
 
         .dropdown .dropdown-backdrop{
@@ -133,7 +133,7 @@
             > a{
               &:hover,
               &:focus{
-                  background-color: #43a047;
+                  background-color: #63babd;
                   outline: none;
               }
             }
@@ -146,21 +146,21 @@
             & .dropdown-menu a:hover,
             & .dropdown-menu a:focus,
             &.active > [data-toggle="collapse"]{
-                background-color: #43a047;
+                background-color: #63babd;
                 color: $black-color;
                 box-shadow: none;
             }
 
             &.active > [data-toggle="collapse"]{
                 i{
-                    background-color: #43a047;
-                    color: #a9afbb;
+                    background-color: #63babd;
+                    color: #5daeb2;
                 }
             }
 
             &.active > a,
             &.active > a i{
-                background-color: #43a047;
+                background-color: #63babd;
                 color: $white-color;
             }
 
@@ -199,7 +199,7 @@
             line-height: 30px;
             width: 30px;
             text-align: center;
-            color: #a9afbb;
+            color: #5daeb2;
         }
     }
 
@@ -245,7 +245,7 @@
         display: block;
         position: relative;
         z-index: 4;
-        background-color: #1c2b36;
+        background-color: #2b4154;
 
         &:after{
             content: '';
@@ -354,6 +354,13 @@
     }
 }
 
+.row {
+    .row-title{
+        color: #96a3a9;
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+}
 .off-canvas-sidebar .navbar-collapse{
     .nav {
         > li > a,

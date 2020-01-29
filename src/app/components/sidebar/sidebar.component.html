@@ -1,9 +1,8 @@
 <div class="logo">
-    <a href="https://www.creative-tim.com" class="simple-text">
+    <a href="/" class="simple-text">
         <div class="logo-img">
-            <img src="/assets/img/logocedetec.png"/>
+            <img src="/assets/img/CERES.png"/>
         </div>
-        CDTEC
     </a>
 </div>
 <div class="sidebar-wrapper">
@@ -57,7 +56,8 @@
     <ul class="nav">
         <li routerLinkActive="active" *ngFor="let menuItem of menuItems" class="{{menuItem.class}} nav-item">
             <a class="nav-link" [routerLink]="[menuItem.path]">
-                <i class="material-icons">{{menuItem.icon}}</i>
+                <i class="icon-sidebar" >
+                    <img src="assets/icons/{{menuItem.icon}}"></i>
                 <p>{{menuItem.title}}</p>
             </a>
         </li>

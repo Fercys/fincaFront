@@ -17,6 +17,7 @@ export class FarmMapComponent implements OnInit {
   public id = 0;
   public url;
   public mediciones;
+  dataFarm: any;
   closeResult: string;
   clima: any;
   
@@ -31,6 +32,7 @@ export class FarmMapComponent implements OnInit {
     let idFarm = (this._route.snapshot.paramMap.get('id'));
     this.wiseconnService.getFarm(idFarm).subscribe((data) => {
       console.log(data);
+      this.dataFarm = data;
       this.weatherService;
       const q = [data.latitude, data.longitude];
       const key = "67a49d3ba5904bef87441658192312";
@@ -164,8 +166,29 @@ export class FarmMapComponent implements OnInit {
          this.loading = true;
          wisservice.getMeterogoAgrifut(element.id).subscribe((data: {}) => { 
           this.loading = false;
-              console.log(data);
-           this.mediciones=data;   
+               console.log(data);
+
+            this.mediciones = data;   
+            for (const item of this.mediciones) {
+                if(item.name == "Velocidad Viento"){
+                  item.name = "Vel. Viento"
+                }
+                if(item.name == "Direccion de viento") {
+                  item.name = "Dir. Viento"
+                }
+                if(item.name == "Radiacion Solar"){
+                  item.name = "Rad. Solar"
+                }
+                // if(item.name == "Et0"){
+                //   item.name = "ET0"
+                // }
+                // if(item.name == "Etp"){
+                //   item.name = "ETP"
+                // }
+                
+            }
+            this.mediciones.splice(this.mediciones.length - 2, 2);
+            console.log(this.mediciones);
          });
         }else{
         
