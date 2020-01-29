@@ -4,6 +4,7 @@ import { WiseconnService } from 'app/services/wiseconn.service';
 import { element } from 'protractor';
 import { NgbModal,ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { WeatherService } from 'app/services/weather.service';
+import * as Chartist from 'chartist';
 
 @Component({
   selector: 'app-farm-map',
@@ -56,8 +57,48 @@ export class FarmMapComponent implements OnInit {
             this.url="";
         } console.log(this.url);
     });
+    this.renderCharts();
   }
+  renderLineChart(){
+    new Chartist.Line('.ct-chart.line-chart', {
+      labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday'],
+      series: [
+      [12, 9, 7, 8],
+      [2, 1, 3.5, 7],
+      [1, 3, 4, 5]
+      ]
+    }, {
+      fullWidth: true,
+      chartPadding: {
+        right: 40
+      }
+    });
+  }
+  renderBarChart(){
+    new Chartist.Bar('.ct-chart.bar-chart', {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr'],
+      series: [
+      [5, 4, 3, 7]
+      ]
+    }, {
+      seriesBarDistance: 10,
+      axisX: {
+        offset: 60
+      },
+      axisY: {
+        offset: 80,
+        labelInterpolationFnc: function(value) {
+          return value + ' CHF'
+        },
+        scaleMinSpace: 15
+      }
+    });
 
+  }
+  renderCharts(){    
+    this.renderLineChart();
+    this.renderBarChart();
+  }
   renderMap() {
     
     window['initMap'] = () => {
@@ -236,7 +277,6 @@ export class FarmMapComponent implements OnInit {
       
     });
   }
-
   obtenerMedidas(id){
     this.wiseconnService.getMeasuresOfZones(this.id).subscribe((data: {}) => {      
     })
