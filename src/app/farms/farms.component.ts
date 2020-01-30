@@ -12,7 +12,6 @@ export class FarmsComponent implements OnInit {
   ngOnInit() {
     this.farms=JSON.parse(localStorage.getItem("datafarms"));
     console.log(this.farms);
-    
   }
 
 }
