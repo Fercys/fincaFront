@@ -17,9 +17,17 @@ export class FarmMapComponent implements OnInit {
   public id = 0;
   public url;
   public mediciones;
+  today = Date.now();
   dataFarm: any;
   closeResult: string;
-  clima: any;
+
+  //Pronostico values
+  climaLoading = false;
+  climaToday: any;
+  climaDay = [];
+  climaIcon = [];
+  climaMax = [];
+  climaMin = [];
   
   constructor(private _route: ActivatedRoute,private wiseconnService: WiseconnService, public modalService: NgbModal,private router: Router, public weatherService: WeatherService) { }
   ngOnInit() {
@@ -30,19 +38,26 @@ export class FarmMapComponent implements OnInit {
       this.loadMap(data); 
     });
     let idFarm = (this._route.snapshot.paramMap.get('id'));
+    this.climaLoading = false;
     this.wiseconnService.getFarm(idFarm).subscribe((data) => {
-      console.log(data);
+      //console.log(data);
       this.dataFarm = data;
       this.weatherService;
       const q = [data.latitude, data.longitude];
       const key = "67a49d3ba5904bef87441658192312";
-      console.log(q);
+    //  console.log(q);
       this.weatherService.getWeather(key,q).subscribe((weather) => {
-        this.clima = (weather.data.weather);
-        // var clima2 = weather.data.current_condition[0];
-        // this.climaRes.push({ name: 'temp_C' , value: clima2.temp_C });
-        // this.climaRes.push({ name: 'temp_F' , value: clima2.temp_F });
-        console.log(weather.data.weather);
+        this.climaToday = weather.data.current_condition[0];
+        console.log(weather)
+        var clima = (weather.data.weather);
+        for (const data of clima) {
+              data.iconLabel = data.hourly[0].weatherIconUrl[0];
+              this.climaDay.push(data.date);
+              this.climaIcon.push(data.iconLabel.value);
+              this.climaMax.push(data.maxtempC);
+              this.climaMin.push(data.mintempC);
+        }
+        this.climaLoading = true; 
       });
         console.log(data['account']['id']);
         switch (data['account']['id']) { 
@@ -166,8 +181,7 @@ export class FarmMapComponent implements OnInit {
          this.loading = true;
          wisservice.getMeterogoAgrifut(element.id).subscribe((data: {}) => { 
           this.loading = false;
-               console.log(data);
-
+            // console.log(data); //TODO Data de Tabla Clima
             this.mediciones = data;   
             for (const item of this.mediciones) {
                 if(item.name == "Velocidad Viento"){
@@ -178,17 +192,9 @@ export class FarmMapComponent implements OnInit {
                 }
                 if(item.name == "Radiacion Solar"){
                   item.name = "Rad. Solar"
-                }
-                // if(item.name == "Et0"){
-                //   item.name = "ET0"
-                // }
-                // if(item.name == "Etp"){
-                //   item.name = "ETP"
-                // }
-                
+                }            
             }
             this.mediciones.splice(this.mediciones.length - 2, 2);
-            console.log(this.mediciones);
          });
         }else{
         

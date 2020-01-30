@@ -37,7 +37,7 @@
         margin-right: 15px;
         img{
             width: 80px;
-            top: 12px;
+            top: 8px;
             position: absolute;
         }
     }
@@ -47,7 +47,7 @@
         overflow: auto;
         width: 260px;
         z-index: 4;
-        background: linear-gradient(to bottom, rgba(43,65,84,1) 0%, rgba(28,43,53,1) 100%);
+        background: linear-gradient(to bottom, #33547d 0%, rgba(28,43,53,1) 100%);
         padding-bottom: 30px;
 
         .dropdown .dropdown-backdrop{
@@ -245,7 +245,7 @@
         display: block;
         position: relative;
         z-index: 4;
-        background-color: #2b4154;
+        background-color: #33547d;
 
         &:after{
             content: '';
@@ -356,9 +356,14 @@
 
 .row {
     .row-title{
-        color: #96a3a9;
+        color: #6fb060;
         text-transform: uppercase;
         font-weight: 600;
+    }
+    .row-subtitle{
+        color: #000;
+        text-transform: uppercase;
+        font-weight: 500;
     }
 }
 .off-canvas-sidebar .navbar-collapse{

@@ -35,22 +35,53 @@ iframe{
         height: 15px;
     }
 }
-// .card-weather th, .card-weather td {
-//     padding-right: 7px;
-//     padding-bottom: 2px;
-//     padding-left: 7px;
-// }
-// .card-weather tr{
-//     border-bottom: 1px solid #cbe5e6;
-// }
-// .card-weather .name-weather{
-//     padding-right: 10% !important;
-//     white-space: nowrap;
-// }
+.card-pronostic{
+    background: linear-gradient(135deg, rgba(51,183,203,1) 0%, rgba(18,127,144,1) 100%);
+    border-radius: 7px;
+    color: white;
+    .table-title{
+        border-bottom: 1px solid #5ddcef;
+        thead {
+            th{
+                padding: 2%;
+            }
+            th:first-child img{
+                width:50px; 
+                height:50px
+            }
+            th:nth-child(2){
+                font-size: 30px;
+                font-weight: 500;
+        
+            }
+            th:nth-child(3){
+                span:first-child{
+                    font-size: 13px; 
+                    font-weight: 200;
+                }
+                span:nth-child(2){
+                    font-size: 15px;
+                }
+            }
+        }
+    }
 
-// .card-weather .icon-weather{
-//     padding-right: 10% !important;
-// }
+    .table-body{
+        tbody{
+            text-align: center;
+            td{
+                font-size: 11px;
+                width: 56px;
+            }
+            tr:first-child td{
+                font-weight: 500;
+            }
+        }
+    }
+
+    
+}
+
 ::ng-deep {
     .mat-select-custom .mat-form-field-flex{
       background-color: white;

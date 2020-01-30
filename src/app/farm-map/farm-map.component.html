@@ -24,19 +24,17 @@
       <h4 class="row-title">Dashboard</h4>
     </div>
     <div class="row">
-      <div class="col-md-2" style="display: table; height: 60px;">
+      <div class="col-md-1" style="display: table; height: 60px;">
         <span style="display: table-cell; vertical-align: middle;">Campo</span>
       </div>
-      <mat-form-field class="col-md-10 mat-select-custom" floatLabel="never">
+      <mat-form-field class="col-md-6 mat-select-custom" floatLabel="never">
         <mat-label>Seleccionar Campo</mat-label>
         <mat-select>
           <mat-option>prueba 1</mat-option>
           <mat-option>prueba 2</mat-option>
         </mat-select>
       </mat-form-field>
-    </div>
-    <div class="row">
-      <div class="col-md-2" style="display: table; height: 60px;">
+      <div class="col-md-1" style="display: table; height: 60px;">
         <span style="display: table-cell; vertical-align: middle;">Sector</span>
       </div>
       <mat-form-field class="col-md-4 mat-select-custom" floatLabel="never">
@@ -131,23 +129,21 @@
     <div class="row">
       <div class="col-lg-4 col-md-4 col-sm-4">
         <div class="row">
-          <span>Enero 29/01/2020</span>
+          <span>{{today | date:'MMMM dd/MM/yyyy'}} </span>
+           
         </div>
-        <div class="container-fluid">
+
+        <!-- Cuadro de Clima -->
+        <div *ngIf="mediciones" class="container-fluid">
             <div class="row "> 
-              <h4 class="row-title">Clima</h4>
+              <h4 class="row-subtitle">Clima</h4>
             </div>
-            <div class="card-body card-weather">
-                <table *ngIf="mediciones">
-                    <thead class="">
-                      <th>
-                      </th>
-                      <th>
-          
-                      </th>
-                      <th>
-                      </th>
-          
+            <div   class="card-body card-weather">
+                <table>
+                    <thead>
+                      <th> </th>
+                      <th> </th>
+                      <th> </th>
                     </thead>
                     <tbody>
                       <tr *ngFor="let data of mediciones">
@@ -172,7 +168,6 @@
                           <img *ngIf="data.name =='Porciones de Frío'"
                             src=" https://www.dropcontrol.com/img/widgets/ico_pluviometria.gif?uv=1">
                           <img *ngIf="data.name =='Pluviometro'" src="assets/icons/Lluvia.svg">
-          
                         </td>
                         <td>
                           {{data.lastData}} {{data.unit}}
@@ -183,9 +178,51 @@
                   </table>
             </div>
         </div>
+        <!-- Fin de Cuadro de Clima -->
 
+         <!-- Cuadro de Pronostico -->
+        <div *ngIf="climaLoading" class="container-fluid">
+            <div class="row "> 
+              <h4 class="row-subtitle">Pronostico</h4>
+            </div>
+            <div class="card-body card-pronostic" >
+              <table class="table-title"> 
+                <thead>
+                    <th > <img src="{{climaToday.weatherIconUrl[0].value}} "> </th>
+                    <th > {{climaToday.temp_C}}°C  </th>
+                    <th > 
+                      <span>
+                          {{today | date:'dd/MM/yyyy'}} 
+                      </span>
+                      <span>
+                          {{dataFarm.name}}
+                      </span>
+                    </th>
+                </thead>
+              </table>
+              <table class="table-body">
+                <thead  > 
+                </thead>
+                <tbody>
+                  <tr >
+                      <td *ngFor="let day of climaDay"> {{day | date:'EE dd'}} </td>
+                  </tr>
+                  <tr>
+                      <td *ngFor="let icon of climaIcon"><img style="width: 22px; height:22px" src="{{icon}}" ></td>
+                  </tr>
+                  <tr>
+                      <td *ngFor="let max of climaMax">{{max}}°C </td>
+                  </tr>
+                  <tr>
+                      <td *ngFor="let min of climaMin">{{min}}°C</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+        </div>
+         <!-- Fin de Cuadro de Pronostico -->
 
-        <div class="card card-plain">
+        <!-- <div class="card card-plain">
           <div class="card-body">
             <div class="table-responsive" style="background-color: powderblue;">
               <table class="table table-hover">
@@ -204,6 +241,9 @@
                   <th>
                     Max
                   </th>
+                   <th>
+                    Icon
+                  </th>
                 </thead>
                 <tbody>
                   <tr *ngFor="let data of clima">
@@ -215,6 +255,9 @@
                     </td>
                     <td>
                       {{data.maxtempC}}°C
+                    </td>
+                    <td>
+                      <img style="width: 25px;height:20px" src="{{data.iconLabel.value}}">
                     </td>
                   </tr>
                 </tbody>
@@ -276,10 +319,10 @@
             </div>
           </div>
           <button type="button" class="btn btn-success" (click)="open(content)">Ver en Irrimaxlife</button>
-        </div>
+        </div> -->
       </div>
       <div class="col-lg-8 col-md-8 col-sm-8">
-        <div #mapRef style="width:100%;height:50%"></div>
+        <div #mapRef style="width:100%;height:60%"></div>
         <!-- <iframe [src]="url | safePipe" frameborder="0" allowFullScreen="true"></iframe>       -->
       </div>
     </div>
