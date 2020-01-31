@@ -54,10 +54,10 @@
     </ul>
   </div>
     <ul class="nav">
-        <li routerLinkActive="active" *ngFor="let menuItem of menuItems" class="{{menuItem.class}} nav-item">
+        <li  routerLinkActive="active" *ngFor="let menuItem of menuItems; index" class="{{menuItem.class}} nav-item"  (mouseover)="activeHover(menuItem, true )"  (mouseleave)="activeHover(menuItem, false)">
             <a class="nav-link" [routerLink]="[menuItem.path]">
-                <i class="icon-sidebar" >
-                    <img src="assets/icons/{{menuItem.icon}}.svg"></i>
+                <i class="icon-sidebar"  >
+                    <img [ngClass]="{'img-filter-colors': menuItem.active || isCurrentRoute(menuItem) }"  src="assets/icons/{{menuItem.icon}}.svg"></i>
                 <p>{{menuItem.title}}</p>
             </a>
         </li>

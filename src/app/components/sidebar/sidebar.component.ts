@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 declare const $: any;
 declare interface RouteInfo {
@@ -6,11 +7,12 @@ declare interface RouteInfo {
     title: string;
     icon: string;
     class: string;
+    active: boolean
 }
 export const ROUTES: RouteInfo[] = [
-    { path: '/dashboard', title: 'Dashboard',  icon: 'Dashboard-Verde', class: '' },
-    { path: '/prueba', title: 'Fincas',  icon:'Campo-Verde', class: '' },
-    { path: '/farms', title: 'Campos',  icon:'Graficador-libre-verde', class: '' },
+    { path: '/dashboard', title: 'Dashboard',  icon: 'Dashboard-Verde', class: '', active : false },
+    { path: '/prueba', title: 'Fincas',  icon:'Campo-Verde', class: '' , active : false},
+    { path: '/farms', title: 'Campos',  icon:'Graficador-libre-verde', class: '', active : false },
     // { path: '/icons', title: 'Icons',  icon:'bubble_chart', class: '' },
     // { path: '/maps', title: 'Maps',  icon:'location_on', class: '' },
     // { path: '/notifications', title: 'Notifications',  icon:'notifications', class: '' },
@@ -24,8 +26,7 @@ export const ROUTES: RouteInfo[] = [
 })
 export class SidebarComponent implements OnInit {
   menuItems: any[];
-
-  constructor() { }
+  constructor( public router: Router) { }
 
   ngOnInit() {
     this.menuItems = ROUTES.filter(menuItem => menuItem);
@@ -36,4 +37,13 @@ export class SidebarComponent implements OnInit {
       }
       return true;
   };
+  activeHover(value, cond){
+     cond  ? value.active  = true : value.active  = false 
+  }
+  isCurrentRoute(routePath) {
+    if( this.router.url == routePath.path){
+      return true;
+    }
+    return false;
+}
 }

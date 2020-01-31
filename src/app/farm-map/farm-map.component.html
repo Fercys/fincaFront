@@ -61,6 +61,18 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-4 col-md-4 col-sm-4">
+        <div class="buttons-farm">
+          <div class="btn btns-message btn-block">
+            <span><img src="/assets/icons/message-icon.png"></span>
+            <span>Message</span>
+          </div>
+        </div>
+        <div class="buttons-farm">
+            <div class="btn btns-alerts btn-block">
+              <span><img src="/assets/icons/alert-icon.png"></span>
+              <span>Alerts</span>
+            </div>
+        </div>
         <!-- Cuadro de Clima -->
         <div *ngIf="mediciones" class="container-fluid">
           <div class="row ">
@@ -105,9 +117,9 @@
         <div #mapRef style="width:100%;height:100%"></div>
         <!-- <iframe [src]="url | safePipe" frameborder="0" allowFullScreen="true"></iframe>       -->
         <div class="row">
-          <div class="col-md-7">
+          <div class="col-md-6">
             <div class="row">
-              <div class="col-lg-5 col-md-6 col-sm-6">
+              <div class="col-lg-6 col-md-6 col-sm-6">
                 <table class="table-legent">
                   <thead>
                     <th>
@@ -131,9 +143,12 @@
               </div>
             </div>
           </div>
-          <div class="col-md-5" style="display: flex">
-            <h6 style="margin-top: 5%; margin-right: 1%;">Ver analisis de suelo en</h6>
-            <button type="button" class="btn btn-success btn-radius " (click)="open(content)">IrrimaxLIVE</button>
+          <div class="col-md-6" style="display: flex; justify-content: flex-end;">
+            <h6 style="margin-top: 5%;">Ver analisis de suelo en</h6>
+            <div (click)="open(content)" class="btn btns-irrimax btn-radius">
+                <span>Irrimax<b>LIVE</b></span>
+                <span><img src="/assets/icons/IrrimaxLive.png"></span>
+            </div>
           </div>
         </div>
 

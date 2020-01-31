@@ -8,6 +8,46 @@ iframe{
     font-weight: 600;
     padding: 1% 0 1% 0;
 }
+.btns{
+    &-message{
+        background-color: #4173b1;
+        text-align: left;
+        img{
+            width: 20px;
+            height: 15px;
+            margin-right:10px;
+        }
+        span:nth-child(2){
+            font-weight: 600;
+        }
+    }
+    &-alerts{
+        background-color: #eec01b;
+        text-align: left;
+        img{
+            width: 20px;
+            height: 20px;
+            margin-right:10px;
+        }
+        span:nth-child(2){
+            font-weight: 600;
+        }
+    }
+    &-irrimax{
+        background-color: #6fb060;
+        margin-left: 5px;
+        img{
+            width: 20px;
+            height: 20px;
+            margin-left:10px;
+        }
+        span{
+            font-size: 12px;
+            text-transform: capitalize;
+        }
+    }
+
+}
 .card-weather{
     background-color: white;
     border-radius: 7px;
@@ -87,7 +127,6 @@ iframe{
 
     
 }
-
 .table-legent{
     thead {
         display: flex; 
@@ -111,7 +150,7 @@ iframe{
 .chard-size{
     border-radius: 5px;
     div{
-        padding: 6% 0% 6% 0%;
+        padding: 4% 0% 4% 0%;
     }
 
 }
