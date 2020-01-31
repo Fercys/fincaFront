@@ -23,6 +23,7 @@ iframe{
     }
     td:first-child{
         font-weight: 400; 
+        font-size: 13px;
     }
     td:last-child{
         font-size: 12px;
@@ -41,6 +42,7 @@ iframe{
     color: white;
     .table-title{
         border-bottom: 1px solid #5ddcef;
+        width: 100%;
         thead {
             th{
                 padding: 2%;
@@ -59,8 +61,12 @@ iframe{
                     font-size: 13px; 
                     font-weight: 200;
                 }
-                span:nth-child(2){
+                div{
                     font-size: 15px;
+                    white-space: nowrap;
+                    width: 100px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
                 }
             }
         }
@@ -82,6 +88,33 @@ iframe{
     
 }
 
+.table-legent{
+    thead {
+        display: flex; 
+        position: absolute;
+        padding-top:3%;   
+        th{
+            display: flex; 
+            width: 100px;
+            .square-temp{
+                border-radius: 5px;
+                top: 0;
+                left: 0;
+                height: 15px;
+                width: 15px;
+                margin-top: 3px;
+            }
+        }
+
+    }
+}
+.chard-size{
+    border-radius: 5px;
+    div{
+        padding: 6% 0% 6% 0%;
+    }
+
+}
 ::ng-deep {
     .mat-select-custom .mat-form-field-flex{
       background-color: white;

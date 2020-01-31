@@ -22,6 +22,7 @@ export class FarmMapComponent implements OnInit {
   dataFarm: any;
   public zones:any[]=[];
   closeResult: string;
+  farms;
 
   //Pronostico values
   climaLoading = false;
@@ -51,7 +52,6 @@ export class FarmMapComponent implements OnInit {
     //  console.log(q);
       this.weatherService.getWeather(key,q).subscribe((weather) => {
         this.climaToday = weather.data.current_condition[0];
-        console.log(weather)
         var clima = (weather.data.weather);
         for (const data of clima) {
               data.iconLabel = data.hourly[0].weatherIconUrl[0];
@@ -75,6 +75,8 @@ export class FarmMapComponent implements OnInit {
         } console.log(this.url);
     });
     this.renderCharts();
+    this.farms=JSON.parse(localStorage.getItem("datafarms"));
+    console.log(this.farms);
   }
   renderLineChart(){
     new Chartist.Line('.ct-chart.line-chart', {
@@ -243,7 +245,7 @@ export class FarmMapComponent implements OnInit {
          this.loading = true;
          wisservice.getMeterogoAgrifut(element.id).subscribe((data: {}) => { 
           this.loading = false;
-            // console.log(data); //TODO Data de Tabla Clima
+             console.log(data); //TODO Data de Tabla Clima
             this.mediciones = data;   
             for (const item of this.mediciones) {
                 if(item.name == "Velocidad Viento"){
@@ -254,9 +256,20 @@ export class FarmMapComponent implements OnInit {
                 }
                 if(item.name == "Radiacion Solar"){
                   item.name = "Rad. Solar"
-                }            
+                }  
+                if(item.name == "Wind Direction" || item.name ==  "ATM pressure" || item.name ==  "Wind Speed (period)" || item.name ==  "Porciones de Frío" || item.name ==  "Horas Frío"){
+                  this.deleteValueJson(item.name);
+                }    
+                if(item.name == "Porciones de Frío")  {
+                  this.deleteValueJson(item.name);
+                }
+                if(item.name == "Horas Frío")  {
+                  this.deleteValueJson(item.name);
+                }    
             }
-            this.mediciones.splice(this.mediciones.length - 2, 2);
+             this.deleteValueJson("Et0");
+             this.deleteValueJson("Etp");
+           // console.log(this.mediciones);
          });
         }else{
         
@@ -305,6 +318,10 @@ export class FarmMapComponent implements OnInit {
       
       
     });
+  }
+  deleteValueJson(value){
+    var index:number = this.mediciones.indexOf(this.mediciones.find(x => x.name == value));
+    if(index != -1) this.mediciones.splice(index, 1);
   }
   obtenerMedidas(id){
     this.wiseconnService.getMeasuresOfZones(this.id).subscribe((data: {}) => {      

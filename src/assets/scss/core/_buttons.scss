@@ -78,6 +78,10 @@
     @include button-size($input-btn-padding-y-sm, $input-btn-padding-x-sm, $bmd-btn-font-size-sm, $line-height-sm, $border-radius-sm);
   }
 
+  &.btn-radius{
+    border-radius: 100px;
+  }
+
   &.btn-round {
     border-radius: $border-radius-extreme;
 
