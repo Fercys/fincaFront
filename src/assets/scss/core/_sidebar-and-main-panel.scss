@@ -30,14 +30,14 @@
         background-color: #191919;
     }
     .logo-img{
-        width: 35px;
+        width: 130px;
         display: block;
-        max-height: 30px;
+        height: 15px;
         margin-left: 13px;
         margin-right: 15px;
         img{
-            width: 35px;
-            top: 16px;
+            width: 80px;
+            top: 8px;
             position: absolute;
         }
     }
@@ -47,7 +47,7 @@
         overflow: auto;
         width: 260px;
         z-index: 4;
-        background-color: #1c2b36;
+        background: linear-gradient(to bottom, #33547d 0%, rgba(28,43,53,1) 100%);
         padding-bottom: 30px;
 
         .dropdown .dropdown-backdrop{
@@ -133,7 +133,7 @@
             > a{
               &:hover,
               &:focus{
-                  background-color: #43a047;
+                  background-color: #6fb060;
                   outline: none;
               }
             }
@@ -146,22 +146,23 @@
             & .dropdown-menu a:hover,
             & .dropdown-menu a:focus,
             &.active > [data-toggle="collapse"]{
-                background-color: #43a047;
-                color: $black-color;
+                background-color: #6fb060;
                 box-shadow: none;
+                border-radius: 100px;
             }
 
             &.active > [data-toggle="collapse"]{
                 i{
-                    background-color: #43a047;
-                    color: #a9afbb;
+                    background-color: #6fb060;
+                    color: #5daeb2;
                 }
             }
 
             &.active > a,
             &.active > a i{
-                background-color: #43a047;
+                background-color: #6fb060;
                 color: $white-color;
+                border-radius: 100px;
             }
 
             &.separator{
@@ -199,7 +200,6 @@
             line-height: 30px;
             width: 30px;
             text-align: center;
-            color: #a9afbb;
         }
     }
 
@@ -245,7 +245,7 @@
         display: block;
         position: relative;
         z-index: 4;
-        background-color: #1c2b36;
+        background-color: #33547d;
 
         &:after{
             content: '';
@@ -354,6 +354,18 @@
     }
 }
 
+.row {
+    .row-title{
+        color: #6fb060;
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+    .row-subtitle{
+        color: #000;
+        text-transform: uppercase;
+        font-weight: 500;
+    }
+}
 .off-canvas-sidebar .navbar-collapse{
     .nav {
         > li > a,
@@ -378,8 +390,8 @@
 
      .main-content{
         margin-top: 70px;
-        padding: 30px 15px;
-        min-height: calc(100vh - 123px);
+        padding: 30px 15px 60px;
+        min-height: calc(100vh - 170px);
     }
 
      .footer{

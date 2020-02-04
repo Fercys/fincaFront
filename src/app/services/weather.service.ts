@@ -8,7 +8,7 @@ import { farmModels } from '../models/farmModels';
   providedIn: 'root'
 })
 export class WeatherService {
-
+  
    baseurl = 'https://api.worldweatheronline.com/premium/v1/weather.ashx?';
 //   HTTP: http://api.worldweatheronline.com/premium/v1/weather.ashx
 //   HTTPS: https://api.worldweatheronline.com/premium/v1/weather.ashx
@@ -24,7 +24,7 @@ export class WeatherService {
   
 
   getWeather(q, key): Observable<any> { 
-    return this.http.get(this.baseurl+"q="+key+"&"+"Key="+q+'&'+'format='+'json'
+    return this.http.get(this.baseurl+"q="+key+"&"+"Key="+q+'&'+'format='+'json&num_of_days=5&tp=24'
     , this.httpOptions)
     .pipe(
       retry(1),

@@ -22,6 +22,8 @@ export class FarmMapComponent implements OnInit {
   public id = 0;
   public url;
   public mediciones;
+  today = Date.now();
+  dataFarm: any;
   public zones:any[]=[];
   public weatherStation:any=null;
   closeResult: string;
@@ -38,6 +40,15 @@ export class FarmMapComponent implements OnInit {
     labels:[],
     series:[[],[]]
   }
+  farms;
+
+  //Pronostico values
+  climaLoading = false;
+  climaToday: any;
+  climaDay = [];
+  climaIcon = [];
+  climaMax = [];
+  climaMin = [];
   constructor(
     private _route: ActivatedRoute,
     private wiseconnService: WiseconnService, 
@@ -45,6 +56,7 @@ export class FarmMapComponent implements OnInit {
     private router: Router, 
     public weatherService: WeatherService,
     private calendar: NgbCalendar,) { }
+  
   ngOnInit() {
     //rango de fechas para graficas
     this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -2);
@@ -108,18 +120,25 @@ export class FarmMapComponent implements OnInit {
       this.loadMap(data); 
     });
     let idFarm = (this._route.snapshot.paramMap.get('id'));
+    this.climaLoading = false;
     this.wiseconnService.getFarm(idFarm).subscribe((data) => {
-      console.log(data);
+      //console.log(data);
+      this.dataFarm = data;
       this.weatherService;
       const q = [data.latitude, data.longitude];
       const key = "67a49d3ba5904bef87441658192312";
-      console.log(q);
+    //  console.log(q);
       this.weatherService.getWeather(key,q).subscribe((weather) => {
-        this.clima = (weather.data.weather);
-        // var clima2 = weather.data.current_condition[0];
-        // this.climaRes.push({ name: 'temp_C' , value: clima2.temp_C });
-        // this.climaRes.push({ name: 'temp_F' , value: clima2.temp_F });
-        console.log(weather.data.weather);
+        this.climaToday = weather.data.current_condition[0];
+        var clima = (weather.data.weather);
+        for (const data of clima) {
+              data.iconLabel = data.hourly[0].weatherIconUrl[0];
+              this.climaDay.push(data.date);
+              this.climaIcon.push(data.iconLabel.value);
+              this.climaMax.push(data.maxtempC);
+              this.climaMin.push(data.mintempC);
+        }
+        this.climaLoading = true; 
       });
         console.log(data['account']['id']);
         switch (data['account']['id']) { 
@@ -133,6 +152,9 @@ export class FarmMapComponent implements OnInit {
             this.url="";
         } console.log(this.url);
     });
+    this.renderCharts();
+    this.farms=JSON.parse(localStorage.getItem("datafarms"));
+    console.log(this.farms);
   }
   renderLineChart(){
     new Chartist.Line('.ct-chart.line-chart', {
@@ -297,8 +319,31 @@ export class FarmMapComponent implements OnInit {
          this.loading = true;
          wisservice.getMeterogoAgrifut(element.id).subscribe((data: {}) => { 
           this.loading = false;
-              console.log(data);
-           this.mediciones=data;   
+             console.log(data); //TODO Data de Tabla Clima
+            this.mediciones = data;   
+            for (const item of this.mediciones) {
+                if(item.name == "Velocidad Viento"){
+                  item.name = "Vel. Viento"
+                }
+                if(item.name == "Direccion de viento") {
+                  item.name = "Dir. Viento"
+                }
+                if(item.name == "Radiacion Solar"){
+                  item.name = "Rad. Solar"
+                }  
+                if(item.name == "Wind Direction" || item.name ==  "ATM pressure" || item.name ==  "Wind Speed (period)" || item.name ==  "Porciones de Frío" || item.name ==  "Horas Frío"){
+                  this.deleteValueJson(item.name);
+                }    
+                if(item.name == "Porciones de Frío")  {
+                  this.deleteValueJson(item.name);
+                }
+                if(item.name == "Horas Frío")  {
+                  this.deleteValueJson(item.name);
+                }    
+            }
+             this.deleteValueJson("Et0");
+             this.deleteValueJson("Etp");
+           // console.log(this.mediciones);
          });
         }else{
         
@@ -347,6 +392,10 @@ export class FarmMapComponent implements OnInit {
       
       
     });
+  }
+  deleteValueJson(value){
+    var index:number = this.mediciones.indexOf(this.mediciones.find(x => x.name == value));
+    if(index != -1) this.mediciones.splice(index, 1);
   }
   obtenerMedidas(id){
     this.wiseconnService.getMeasuresOfZones(this.id).subscribe((data: {}) => {      
