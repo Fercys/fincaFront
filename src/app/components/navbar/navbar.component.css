@@ -1,0 +1,7 @@
+.link-navbar-user{
+    text-transform: capitalize !important;
+    font-size: 14px !important;
+}
+.link-navbar-user b{
+    color: #6fb060;
+}
