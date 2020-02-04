@@ -2,3 +2,6 @@
     width: 25px;
     height: 25px;
 }
+.img-filter-colors{
+    filter: brightness(1000%);
+}

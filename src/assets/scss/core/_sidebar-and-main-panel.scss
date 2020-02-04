@@ -133,7 +133,7 @@
             > a{
               &:hover,
               &:focus{
-                  background-color: #63babd;
+                  background-color: #6fb060;
                   outline: none;
               }
             }
@@ -146,22 +146,23 @@
             & .dropdown-menu a:hover,
             & .dropdown-menu a:focus,
             &.active > [data-toggle="collapse"]{
-                background-color: #63babd;
-                color: $black-color;
+                background-color: #6fb060;
                 box-shadow: none;
+                border-radius: 100px;
             }
 
             &.active > [data-toggle="collapse"]{
                 i{
-                    background-color: #63babd;
+                    background-color: #6fb060;
                     color: #5daeb2;
                 }
             }
 
             &.active > a,
             &.active > a i{
-                background-color: #63babd;
+                background-color: #6fb060;
                 color: $white-color;
+                border-radius: 100px;
             }
 
             &.separator{
@@ -199,7 +200,6 @@
             line-height: 30px;
             width: 30px;
             text-align: center;
-            color: #5daeb2;
         }
     }
 
@@ -390,8 +390,8 @@
 
      .main-content{
         margin-top: 70px;
-        padding: 30px 15px;
-        min-height: calc(100vh - 123px);
+        padding: 30px 15px 60px;
+        min-height: calc(100vh - 170px);
     }
 
      .footer{

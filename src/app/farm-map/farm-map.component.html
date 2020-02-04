@@ -24,317 +24,201 @@
       <h4 class="row-title">Dashboard</h4>
     </div>
     <div class="row">
-      <div class="col-md-1" style="display: table; height: 60px;">
+      <div class="col-md-1" style="display: table; height: 45px;">
         <span style="display: table-cell; vertical-align: middle;">Campo</span>
       </div>
       <mat-form-field class="col-md-6 mat-select-custom" floatLabel="never">
         <mat-label>Seleccionar Campo</mat-label>
         <mat-select>
-          <mat-option>prueba 1</mat-option>
-          <mat-option>prueba 2</mat-option>
+          <mat-option *ngFor="let farm of farms">{{farm.name}}</mat-option>
         </mat-select>
       </mat-form-field>
-      <div class="col-md-1" style="display: table; height: 60px;">
+      <div class="col-md-1" style="display: table; height: 45px;">
         <span style="display: table-cell; vertical-align: middle;">Sector</span>
       </div>
       <mat-form-field class="col-md-4 mat-select-custom" floatLabel="never">
         <mat-label>Seleccionar Sector</mat-label>
         <mat-select>
-            <mat-option>prueba 1</mat-option>
-            <mat-option>prueba 2</mat-option>
+          <mat-option>prueba 1</mat-option>
+          <mat-option>prueba 2</mat-option>
         </mat-select>
       </mat-form-field>
     </div>
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-4">
+        <div class="row">
+          <span>{{today | date:'MMMM dd/MM/yyyy'}} </span>
+        </div>
+      </div>
+      <div class="col-md-8">
         <span *ngIf="dataFarm" class="title-farm">{{dataFarm.name}}</span>
       </div>
     </div>
   </div>
-
-
-  <!-- <div class="row">
-                          <div class="col-lg-4 col-md-6 col-sm-6">
-                              <div class="card card-stats" style="background-color: darkseagreen; width: 220px;">
-                                  <div class="card-header card-header-danger" style="align-self: center;">
-                                    <h3 class="card-title">Desconectado</h3>
-                                  </div>
-                                  <div class="card-footer">
-                                      <div class="stats">
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="col-lg-4 col-md-6 col-sm-6">
-                              <div class="card card-stats" style="background-color: darkseagreen; width: 170px;">
-                                  <div class="card-header card-header-info" style="align-self: center;">
-                                      <h3 class="card-title">Regando</h3>
-                                  </div>
-                                  <div class="card-footer">
-                                    <div class="stats">
-                                    </div>
-                                </div>
-                              </div>
-                          </div>
-                          <div class="col-lg-4 col-md-6 col-sm-6">
-                              <div class="card card-stats" style="background-color: darkseagreen; width: 200px;">
-                                  <div class="card-header card-header-success" style=" align-self: center;">
-                                    <h3 class="card-title" style=" align-self: center;">Estatus: Ok</h3>
-                                  </div>
-                                  <div class="card-footer">
-                                    <div class="stats">
-                                    </div>
-                                </div>
-                              </div>
-                          </div>
-                      </div> -->
-
-
-  <!-- ColoresMapa -->
-
-  <!-- <div class="row">
-    <div class="col-lg-5 col-md-6 col-sm-6">
-      <table class="table table-hover">
-        <thead class="">
-          <th>
-
-          </th>
-          <th style="background-color: #419FD5;">
-            <img src="https://www.dropcontrol.com/img/widgets/ico_humedad.gif">
-            <span style="color: white; margin-left: 10px;">Regando</span>
-          </th>
-          <th style="background-color: #49AA4F;">
-            <!-- <img src="https://www.dropcontrol.com/img/widgets/ico_humedad.gif">
-            <span style="color: white; margin-left: 10px;">Status OK</span>
-          </th>
-          <th style="background-color: rgb(233, 58, 189);">
-            <!-- <img src="https://www.dropcontrol.com/img/widgets/ico_humedad.gif"> 
-            <span style="color: white; margin-left: 10px;">Estresado</span>
-          </th>
-          <th style="background-color: red;">
-            <!-- <img src="https://www.dropcontrol.com/img/widgets/ico_humedad.gif"> 
-            <span style="color: white; margin-left: 10px;">Stoppet</span>
-          </th>
-        </thead>
-      </table>
-    </div>
-  </div> -->
-  <!-- ColoresMapa -->
-
   <div class="container-fluid">
     <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>
   </div>
-
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-4 col-md-4 col-sm-4">
-        <div class="row">
-          <span>{{today | date:'MMMM dd/MM/yyyy'}} </span>
-           
+        <div class="buttons-farm">
+          <div class="btn btns-message btn-block">
+            <span><img src="/assets/icons/message-icon.png"></span>
+            <span>Message</span>
+          </div>
         </div>
-
+        <div class="buttons-farm">
+            <div class="btn btns-alerts btn-block">
+              <span><img src="/assets/icons/alert-icon.png"></span>
+              <span>Alerts</span>
+            </div>
+        </div>
         <!-- Cuadro de Clima -->
         <div *ngIf="mediciones" class="container-fluid">
-            <div class="row "> 
-              <h4 class="row-subtitle">Clima</h4>
-            </div>
-            <div   class="card-body card-weather">
-                <table>
-                    <thead>
-                      <th> </th>
-                      <th> </th>
-                      <th> </th>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let data of mediciones">
-                        <td class="name-weather">
-                          {{data.name}}
-                        </td>
-                        <td class="icon-weather">
-                          <img *ngIf="data.name =='Station Temperature' || data.name=='Temperatura'"
-                            src="assets/icons/Temperatura.svg">
-                          <img *ngIf="data.name =='Rafaga de viento' || data.name=='Dir. Viento'"
-                            src="assets/icons/Direccion-del-Viento.svg">
-                          <img *ngIf="data.name =='Wind Direction' || data.name=='Vel. Viento'"
-                            src="assets/icons/Viento.svg">
-                          <img *ngIf="data.name =='Wind Speed (period)'"
-                            src="https://www.dropcontrol.com/img/widgets/ico_velocidad.gif">
-                          <img *ngIf="data.name =='Station Relative Humidity' || data.name=='Humedad'"
-                            src="assets/icons/Gota.svg">
-                          <img *ngIf="data.name =='Solar radiation ' || data.name=='Rad. Solar'"
-                            src="assets/icons/Sol.svg">
-                          <img *ngIf="data.name =='Horas Frío'"
-                            src=" https://www.dropcontrol.com/img/widgets/ico_pluviometria.gif?uv=1">
-                          <img *ngIf="data.name =='Porciones de Frío'"
-                            src=" https://www.dropcontrol.com/img/widgets/ico_pluviometria.gif?uv=1">
-                          <img *ngIf="data.name =='Pluviometro'" src="assets/icons/Lluvia.svg">
-                        </td>
-                        <td>
-                          {{data.lastData}} {{data.unit}}
-                        </td>
-          
-                      </tr>
-                    </tbody>
-                  </table>
-            </div>
+          <div class="row ">
+            <h4 class="row-subtitle">Clima</h4>
+          </div>
+          <div class="card-body card-weather">
+            <table>
+              <tbody>
+                <tr *ngFor="let data of mediciones">
+                  <td class="name-weather">
+                    {{data.name}}
+                  </td>
+                  <td class="icon-weather">
+                    <img *ngIf="data.name =='Station Temperature' || data.name=='Temperatura'"
+                      src="assets/icons/Temperatura.svg">
+                    <img *ngIf="data.name =='Rafaga de viento' || data.name=='Dir. Viento'"
+                      src="assets/icons/Direccion-del-Viento.svg">
+                    <img *ngIf="data.name =='Wind Direction' || data.name=='Vel. Viento'" src="assets/icons/Viento.svg">
+                    <img *ngIf="data.name =='Wind Speed (period)'"
+                      src="https://www.dropcontrol.com/img/widgets/ico_velocidad.gif">
+                    <img *ngIf="data.name =='Station Relative Humidity' || data.name=='Humedad'"
+                      src="assets/icons/Gota.svg">
+                    <img *ngIf="data.name =='Solar radiation ' || data.name=='Rad. Solar'" src="assets/icons/Sol.svg">
+                    <img *ngIf="data.name =='Horas Frío'"
+                      src=" https://www.dropcontrol.com/img/widgets/ico_pluviometria.gif?uv=1">
+                    <img *ngIf="data.name =='Porciones de Frío'"
+                      src=" https://www.dropcontrol.com/img/widgets/ico_pluviometria.gif?uv=1">
+                    <img *ngIf="data.name =='Pluviometro'" src="assets/icons/Lluvia.svg">
+                  </td>
+                  <td>
+                    {{data.lastData}} {{data.unit}}
+                  </td>
+
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
         <!-- Fin de Cuadro de Clima -->
-
-         <!-- Cuadro de Pronostico -->
-        <div *ngIf="climaLoading" class="container-fluid">
-            <div class="row "> 
-              <h4 class="row-subtitle">Pronostico</h4>
-            </div>
-            <div class="card-body card-pronostic" >
-              <table class="table-title"> 
-                <thead>
-                    <th > <img src="{{climaToday.weatherIconUrl[0].value}} "> </th>
-                    <th > {{climaToday.temp_C}}°C  </th>
-                    <th > 
-                      <span>
-                          {{today | date:'dd/MM/yyyy'}} 
-                      </span>
-                      <span>
-                          {{dataFarm.name}}
-                      </span>
-                    </th>
-                </thead>
-              </table>
-              <table class="table-body">
-                <thead  > 
-                </thead>
-                <tbody>
-                  <tr >
-                      <td *ngFor="let day of climaDay"> {{day | date:'EE dd'}} </td>
-                  </tr>
-                  <tr>
-                      <td *ngFor="let icon of climaIcon"><img style="width: 22px; height:22px" src="{{icon}}" ></td>
-                  </tr>
-                  <tr>
-                      <td *ngFor="let max of climaMax">{{max}}°C </td>
-                  </tr>
-                  <tr>
-                      <td *ngFor="let min of climaMin">{{min}}°C</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-        </div>
-         <!-- Fin de Cuadro de Pronostico -->
-
-        <!-- <div class="card card-plain">
-          <div class="card-body">
-            <div class="table-responsive" style="background-color: powderblue;">
-              <table class="table table-hover">
-                <thead class="">
-                  <tr>
-                    <th colspan="3"
-                      style="background: linear-gradient(90deg, rgba(25,129,217,1) 48%, rgba(118,192,255,1) 100%); text-align: center; color: white; font-weight: bold;">
-                      FORECAST</th>
-                  </tr>
-                  <th>
-                    Date
-                  </th>
-                  <th>
-                    Min
-                  </th>
-                  <th>
-                    Max
-                  </th>
-                   <th>
-                    Icon
-                  </th>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let data of clima">
-                    <td>
-                      {{data.date| date : "EEE d"}}
-                    </td>
-                    <td>
-                      {{data.mintempC}}°C
-                    </td>
-                    <td>
-                      {{data.maxtempC}}°C
-                    </td>
-                    <td>
-                      <img style="width: 25px;height:20px" src="{{data.iconLabel.value}}">
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="card-header card-header-success" style="margin-top: 20px;">
-            <h4 class="card-title mt-0">Medidas</h4>
-            <p class="card-category"> Estacion Metereológica</p>
-          </div>
-          <div class="card-body">
-            <div class="table-responsive">
-              <table class="table table-hover">
-                <thead class="">
-                  <th>
-
-                  </th>
-                  <th>
-                    Nombre
-                  </th>
-                  <th>
-                    Medida
-                  </th>
-
-                </thead>
-                <tbody>
-                  <tr *ngFor="let data of mediciones">
-                    <td>
-                      <img *ngIf="data.name =='Station Temperature' || data.name=='Temperatura'"
-                        src="https://www.dropcontrol.com/img/widgets/ico_temperatura.gif">
-                      <img *ngIf="data.name =='Rafaga de viento' || data.name=='Direccion de viento'"
-                        src="https://www.dropcontrol.com/img/widgets/ico_velocidad.gif">
-                      <img *ngIf="data.name =='Wind Direction' || data.name=='Velocidad Viento'"
-                        src="https://www.dropcontrol.com/img/widgets/ico_velocidad.gif">
-                      <img *ngIf="data.name =='Wind Speed (period)'"
-                        src="https://www.dropcontrol.com/img/widgets/ico_velocidad.gif">
-                      <img *ngIf="data.name =='Station Relative Humidity' || data.name=='Humedad'"
-                        src="https://www.dropcontrol.com/img/widgets/ico_humedad.gif">
-                      <img *ngIf="data.name =='Solar radiation ' || data.name=='Radiacion Solar'"
-                        src="https://www.dropcontrol.com/img/widgets/ico_radiacion.gif">
-                      <img *ngIf="data.name =='Horas Frío'"
-                        src=" https://www.dropcontrol.com/img/widgets/ico_pluviometria.gif?uv=1">
-                      <img *ngIf="data.name =='Porciones de Frío'"
-                        src=" https://www.dropcontrol.com/img/widgets/ico_pluviometria.gif?uv=1">
-                      <img *ngIf="data.name =='ATM pressure'"
-                        src="https://www.dropcontrol.com/img/widgets/ico_presion.gif">
-
-                    </td>
-                    <td>
-                      {{data.name}}
-                    </td>
-                    <td>
-                      {{data.lastData}} {{data.unit}}
-                    </td>
-
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <button type="button" class="btn btn-success" (click)="open(content)">Ver en Irrimaxlife</button>
-        </div> -->
       </div>
       <div class="col-lg-8 col-md-8 col-sm-8">
-        <div #mapRef style="width:100%;height:60%"></div>
-        <!-- <iframe [src]="url | safePipe" frameborder="0" allowFullScreen="true"></iframe>-->
-        <div class="row">
-          <div class="col-md-12">
-            <button type="button" class="btn btn-success pull-right" (click)="open(content)">Ver en Irrimaxlife</button>
-          </div>
+        <div #mapRef id="map-container" style="width:100%;height:100%"></div>
         <!-- <iframe [src]="url | safePipe" frameborder="0" allowFullScreen="true"></iframe>       -->
-          <div class="col-md-6 bg-white">
-            <div class="ct-chart line-chart"></div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <table class="table-legent">
+                  <thead>
+                    <th>
+                      <div class="square-temp" style=" background-color: #419FD5;"></div>
+                      <span style="color: black; font-size: 10px; margin-left: 10px;">Regando</span>
+                    </th>
+                    <th>
+                      <div class="square-temp" style=" background-color: #49AA4F;"></div>
+                      <span style="color: black; font-size: 10px; margin-left: 10px;">Status OK</span>
+                    </th>
+                    <th>
+                      <div class="square-temp" style=" background-color: rgb(233, 58, 189);"></div>
+                      <span style="color: black; font-size: 10px; margin-left: 10px;">Estresado</span>
+                    </th>
+                    <th>
+                      <div class="square-temp" style="background-color: red;"></div>
+                      <span style="color: black; font-size: 10px; margin-left: 10px;">Stoppet</span>
+                    </th>
+                  </thead>
+                </table>
+              </div>
+            </div>
           </div>
-          <div class="col-md-6 bg-white">
-            <div class="ct-chart bar-chart"></div>
+          <div class="col-md-6" style="display: flex; justify-content: flex-end;">
+            <h6 style="margin-top: 5%;">Ver analisis de suelo en</h6>
+            <div (click)="open(content)" class="btn btns-irrimax btn-radius">
+                <span>Irrimax<b>LIVE</b></span>
+                <span><img src="/assets/icons/IrrimaxLive.png"></span>
+            </div>
           </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container-fluid">
+  <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>
+</div>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-4">
+      <div *ngIf="climaLoading" class="container-fluid">
+        <div class="row ">
+          <h4 class="row-subtitle">Pronostico</h4>
+        </div>
+        <div class="card-body card-pronostic">
+          <table class="table-title">
+            <thead>
+              <th> <img src="{{climaToday.weatherIconUrl[0].value}} "> </th>
+              <th> {{climaToday.temp_C}}°C </th>
+              <th>
+                <span>
+                  {{today | date:'dd/MM/yyyy'}}
+                </span>
+                <div>
+                  {{dataFarm.name}}
+                </div>
+              </th>
+            </thead>
+          </table>
+          <table class="table-body">
+            <thead>
+            </thead>
+            <tbody>
+              <tr>
+                <td *ngFor="let day of climaDay"> {{day | date:'EE dd'}} </td>
+              </tr>
+              <tr>
+                <td *ngFor="let icon of climaIcon"><img style="width: 22px; height:22px" src="{{icon}}"></td>
+              </tr>
+              <tr>
+                <td *ngFor="let max of climaMax">{{max}}°C </td>
+              </tr>
+              <tr>
+                <td *ngFor="let min of climaMin">{{min}}°C</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 ">
+      <div class="container-fluid">
+        <div class="row ">
+          <h4 class="row-subtitle">Temperatura/Humedad</h4>
+        </div>
+        <div class="card-body bg-white chard-size">
+          <div class="ct-chart line-chart "></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 ">
+      <div class="container-fluid">
+        <div class="row ">
+          <h4 class="row-subtitle">Rainfall/Et0</h4>
+        </div>
+        <div class="card-body bg-white chard-size">
+          <div class="ct-chart bar-chart  "></div>
         </div>
       </div>
     </div>

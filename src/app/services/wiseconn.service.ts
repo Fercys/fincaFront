@@ -48,22 +48,29 @@ export class WiseconnService {
       catchError(this.errorHandl)
     )
   }
-  getMeasuresOfZones(id): Observable<farmModels> { console.log( this.httpOptions);
+  getMeasuresOfZones(id): Observable<any> { 
+    return this.http.get<any>(this.baseurl + '/zones/'+id+"/measures", this.httpOptions)
+    .pipe(
+      retry(1),
+      catchError(this.errorHandl)
+    )
+  }
+  getMeterogoAgrifut(id): Observable<farmModels> {
     return this.http.get<farmModels>(this.baseurl + '/zones/'+id+"/measures", this.httpOptions)
     .pipe(
       retry(1),
       catchError(this.errorHandl)
     )
   }
-  getMeterogoAgrifut(id): Observable<farmModels> { console.log( this.httpOptions);
+  getMeterogoSantaPin(id): Observable<farmModels> { 
     return this.http.get<farmModels>(this.baseurl + '/zones/'+id+"/measures", this.httpOptions)
     .pipe(
       retry(1),
       catchError(this.errorHandl)
     )
   }
-  getMeterogoSantaPin(id): Observable<farmModels> { console.log( this.httpOptions);
-    return this.http.get<farmModels>(this.baseurl + '/zones/'+id+"/measures", this.httpOptions)
+  getDataByMeasure(id,dateRange): Observable<any> { 
+    return this.http.get<any>(this.baseurl + '/measures/'+id+"/data?initTime="+dateRange.initTime+"T00:00&endTime="+dateRange.endTime+"T00:00", this.httpOptions)
     .pipe(
       retry(1),
       catchError(this.errorHandl)

@@ -8,6 +8,46 @@ iframe{
     font-weight: 600;
     padding: 1% 0 1% 0;
 }
+.btns{
+    &-message{
+        background-color: #4173b1;
+        text-align: left;
+        img{
+            width: 20px;
+            height: 15px;
+            margin-right:10px;
+        }
+        span:nth-child(2){
+            font-weight: 600;
+        }
+    }
+    &-alerts{
+        background-color: #eec01b;
+        text-align: left;
+        img{
+            width: 20px;
+            height: 20px;
+            margin-right:10px;
+        }
+        span:nth-child(2){
+            font-weight: 600;
+        }
+    }
+    &-irrimax{
+        background-color: #6fb060;
+        margin-left: 5px;
+        img{
+            width: 20px;
+            height: 20px;
+            margin-left:10px;
+        }
+        span{
+            font-size: 12px;
+            text-transform: capitalize;
+        }
+    }
+
+}
 .card-weather{
     background-color: white;
     border-radius: 7px;
@@ -23,6 +63,7 @@ iframe{
     }
     td:first-child{
         font-weight: 400; 
+        font-size: 13px;
     }
     td:last-child{
         font-size: 12px;
@@ -41,6 +82,7 @@ iframe{
     color: white;
     .table-title{
         border-bottom: 1px solid #5ddcef;
+        width: 100%;
         thead {
             th{
                 padding: 2%;
@@ -59,8 +101,12 @@ iframe{
                     font-size: 13px; 
                     font-weight: 200;
                 }
-                span:nth-child(2){
+                div{
                     font-size: 15px;
+                    white-space: nowrap;
+                    width: 100px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
                 }
             }
         }
@@ -81,7 +127,33 @@ iframe{
 
     
 }
+.table-legent{
+    thead {
+        display: flex; 
+        position: absolute;
+        padding-top:3%;   
+        th{
+            display: flex; 
+            width: 100px;
+            .square-temp{
+                border-radius: 5px;
+                top: 0;
+                left: 0;
+                height: 15px;
+                width: 15px;
+                margin-top: 3px;
+            }
+        }
 
+    }
+}
+.chard-size{
+    border-radius: 5px;
+    div{
+        padding: 4% 0% 4% 0%;
+    }
+
+}
 ::ng-deep {
     .mat-select-custom .mat-form-field-flex{
       background-color: white;
