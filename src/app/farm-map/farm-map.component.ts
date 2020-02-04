@@ -7,6 +7,7 @@ import { NgbModal, NgbDate,NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 
 import { WeatherService } from 'app/services/weather.service';
 
+
 import * as Chartist from 'chartist';
 import * as moment from "moment";
 
@@ -55,9 +56,12 @@ export class FarmMapComponent implements OnInit {
     public modalService: NgbModal,
     private router: Router, 
     public weatherService: WeatherService,
-    private calendar: NgbCalendar,) { }
+    private calendar: NgbCalendar) { }
   
   ngOnInit() {
+
+    this.getFarms();
+    
     //rango de fechas para graficas
     this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -2);
     this.toDate = this.calendar.getToday();
@@ -84,10 +88,8 @@ export class FarmMapComponent implements OnInit {
               if(this.temperatureId&&this.humidityId){
                 this.wiseconnService.getDataByMeasure(this.temperatureId,this.dateRange).subscribe((data) => {
                   let temperatureData=data;
-                  console.log("temperatureData:",temperatureData);
                   this.wiseconnService.getDataByMeasure(this.humidityId,this.dateRange).subscribe((data) => {
                     let humidityData=data;
-                    console.log("humidityData:",humidityData);
                     for (var i = temperatureData.length - 1; i >= 0; i--) {
                       if(this.lineChart.labels.filter((element) => {
                         return element == moment(temperatureData[i].time).format("YYYY-MM-DD");
@@ -105,7 +107,6 @@ export class FarmMapComponent implements OnInit {
                         
                       }
                       this.lineChart.series[1].push(humidityData[i].value);
-                      console.log("this.lineChart:",this.lineChart);
                       if(i==0){
                         this.renderCharts();
                       }
@@ -140,7 +141,6 @@ export class FarmMapComponent implements OnInit {
         }
         this.climaLoading = true; 
       });
-        console.log(data['account']['id']);
         switch (data['account']['id']) { 
           case 63:
             this.url="https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3435/Campos/Agrifrut";
@@ -153,8 +153,30 @@ export class FarmMapComponent implements OnInit {
         } console.log(this.url);
     });
     this.renderCharts();
-    this.farms=JSON.parse(localStorage.getItem("datafarms"));
-    console.log(this.farms);
+  }
+  getFarms(){
+    this.wiseconnService.getFarms().subscribe((data: any) => {
+      this.farms = data;
+      console.log("farms:",this.farms);
+      switch (localStorage.getItem("username").toLowerCase()) {
+        case "agrifut":
+        this.farms=this.farms.filter((element)=>{
+          return element.id==185 || element.id==2110 || element.id==1378 || element.id==520
+        })
+        break;
+        case "santajuana":
+        this.farms=this.farms.filter((element)=>{
+          return element.id==719
+        })
+        break;
+        
+        default:
+        // code...
+        break;
+      }
+      console.log("farms:",this.farms);
+    })
+    
   }
   renderLineChart(){
     new Chartist.Line('.ct-chart.line-chart', {
@@ -319,7 +341,6 @@ export class FarmMapComponent implements OnInit {
          this.loading = true;
          wisservice.getMeterogoAgrifut(element.id).subscribe((data: {}) => { 
           this.loading = false;
-             console.log(data); //TODO Data de Tabla Clima
             this.mediciones = data;   
             for (const item of this.mediciones) {
                 if(item.name == "Velocidad Viento"){
