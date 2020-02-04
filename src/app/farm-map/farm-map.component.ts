@@ -327,7 +327,7 @@ export class FarmMapComponent implements OnInit {
     this.wiseconnService.getMeasuresOfZones(this.id).subscribe((data: {}) => {      
     })
   }
-  open(content) {
-    this.modalService.open(content);
-  }
+  open(content, sizeValue) {
+    this.modalService.open(content, {size: sizeValue} );
+  } 
 }
