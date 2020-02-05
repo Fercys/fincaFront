@@ -25,6 +25,7 @@
     display: block;
     opacity: 1;
     transform: scale(1);
+    margin-left: 50%;
   }
 
   &.hiding {
@@ -115,7 +116,7 @@
   a:focus,
   a:active {
     @include shadow-small-color($brand-primary);
-    background-color: $brand-primary;
+    background-color: #6fb060;
     color: #FFFFFF;
   }
 }

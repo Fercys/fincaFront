@@ -2,8 +2,10 @@ import { Component, OnInit,ViewChild,ElementRef   } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { WiseconnService } from 'app/services/wiseconn.service';
 import { element } from 'protractor';
-import { NgbModal,ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal,ModalDismissReasons , NgbDate, NgbCalendar, NgbDateParserFormatter} from '@ng-bootstrap/ng-bootstrap';
 import { WeatherService } from 'app/services/weather.service';
+import * as Chartist from 'chartist';
+
 
 @Component({
   selector: 'app-farm-map-polygon',
@@ -19,24 +21,89 @@ export class FarmMapPolygonComponent implements OnInit {
   public mediciones;
   public clima;
   public climaRes: any = [];
+
+  farmData: any;
   closeResult: string;
   status: any;
   idfarm: any;
+  today = Date.now();
+  hoveredDate: NgbDate;
+  selectedValue: any;
+  getZone: any;
+  fromDate: NgbDate;
+  toDate: NgbDate;
+
+  times =[
+    { value: '1D ' , active: false},
+    { value: '1S ' , active: false},
+    { value: '2S ' , active: false},
+    { value: '1M ' , active: false},
+    { value: '3M ' , active: false},
+    { value: '6M ' , active: false},
+  ]
+
+    //Pronostico values
+  climaLoading = false;
+  climaToday: any;
+  climaDay = [];
+  climaIcon = [];
+  climaMax = [];
+  climaMin = [];
   
-  constructor(private _route: ActivatedRoute,private wiseconnService: WiseconnService, public modalService: NgbModal, public weatherService: WeatherService) { }
+  constructor(
+    private _route: ActivatedRoute,
+    private wiseconnService: WiseconnService, 
+    public modalService: NgbModal, 
+    public weatherService: WeatherService,
+    private calendar: NgbCalendar, 
+    public formatter: NgbDateParserFormatter) {
+     }
   ngOnInit() {
     //this.renderMap();
     this.loading = true;
+
+    this.wiseconnService.getMeterogoAgrifut(this._route.snapshot.paramMap.get('farm')).subscribe((data: {}) => { 
+      this.farmData = data;
+      console.log(data);
+    });
     this.wiseconnService.getZones(this._route.snapshot.paramMap.get('id')).subscribe((data: {}) => {      
       this.loading = false; 
-      console.log(this._route.snapshot.paramMap.get('farm'))
-      this.wiseconnService.getMeterogoAgrifut(this._route.snapshot.paramMap.get('farm')).subscribe((data: {}) => { 
-        this.loading = false;
-            console.log(data);
-         this.mediciones=data;   
-       });
+      this.getZone = data;
+      this.getZone.forEach(element =>{
+        if(element.id == "727" || element.id== 727 || element.id == "6054" || element.id == 6054 || element.id == "13872" || element.id == 13872){
+          this.wiseconnService.getMeterogoAgrifut(element.id).subscribe((data: {}) => { 
+            this.loading = false;
+             console.log(data);
+             this.mediciones=data;   
+             for (const item of this.mediciones) {
+              if(item.name == "Velocidad Viento"){
+                item.name = "Vel. Viento"
+              }
+              if(item.name == "Direccion de viento") {
+                item.name = "Dir. Viento"
+              }
+              if(item.name == "Radiacion Solar"){
+                item.name = "Rad. Solar"
+              }  
+              if(item.name == "Wind Direction" || item.name ==  "ATM pressure" || item.name ==  "Wind Speed (period)" || item.name ==  "Porciones de Frío" || item.name ==  "Horas Frío"){
+                this.deleteValueJson(item.name);
+              }    
+              if(item.name == "Porciones de Frío")  {
+                this.deleteValueJson(item.name);
+              }
+              if(item.name == "Horas Frío")  {
+                this.deleteValueJson(item.name);
+              }    
+          }
+           this.deleteValueJson("Et0");
+           this.deleteValueJson("Etp");
+           });
+        }
+
+      });
+
       this.wiseconnService.getIrrigarionsRealOfZones(this._route.snapshot.paramMap.get('farm')).subscribe((dataIrrigations: {}) => {
-     //   console.log(dataIrrigations)
+        console.log(dataIrrigations)
         this.idfarm = data[0].zoneId;
         this.status = dataIrrigations[0].status;
         this.idfarm = data[0].name;
@@ -61,7 +128,6 @@ export class FarmMapPolygonComponent implements OnInit {
     });
     let idFarm = (this._route.snapshot.paramMap.get('id'));
     this.wiseconnService.getFarm(idFarm).subscribe((data: {}) => {
-        console.log(data['account']['id']);
         switch (data['account']['id']) { 
           case 63:
             this.url="https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3435/Campos/Agrifrut";
@@ -73,6 +139,47 @@ export class FarmMapPolygonComponent implements OnInit {
             this.url="";
         } console.log(this.url);
     });
+    this.renderCharts();
+  }
+  renderCharts(){    
+    this.renderLineChart();
+    this.renderBarChart();
+  }
+  renderLineChart(){
+    new Chartist.Line('.ct-chart.line-chart', {
+      labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday'],
+      series: [
+      [12, 9, 7, 8],
+      [2, 1, 3.5, 7],
+      [1, 3, 4, 5]
+      ]
+    }, {
+      fullWidth: true,
+      chartPadding: {
+        right: 40
+      }
+    });
+  }
+  renderBarChart(){
+    new Chartist.Bar('.ct-chart.bar-chart', {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr'],
+      series: [
+      [5, 4, 3, 7]
+      ]
+    }, {
+      seriesBarDistance: 10,
+      axisX: {
+        offset: 60
+      },
+      axisY: {
+        offset: 80,
+        labelInterpolationFnc: function(value) {
+          return value + ' CHF'
+        },
+        scaleMinSpace: 15
+      }
+    });
+
   }
   loadMap2(data){
     this.weatherService;
@@ -83,14 +190,20 @@ export class FarmMapPolygonComponent implements OnInit {
     const q = [farmPolygon.latitude, farmPolygon.longitude];
     const key = "67a49d3ba5904bef87441658192312";
     console.log(q);
+    this.climaLoading = false;
     this.weatherService.getWeather(key,q).subscribe((weather) => {
-      this.clima = (weather.data.weather);
-      // var clima2 = weather.data.current_condition[0];
-      // this.climaRes.push({ name: 'temp_C' , value: clima2.temp_C });
-      // this.climaRes.push({ name: 'temp_F' , value: clima2.temp_F });
-      console.log(weather.data.weather);
+      this.climaToday = weather.data.current_condition[0];
+      var clima = (weather.data.weather);
+      for (const data of clima) {
+        data.iconLabel = data.hourly[0].weatherIconUrl[0];
+        this.climaDay.push(data.date);
+        this.climaIcon.push(data.iconLabel.value);
+        this.climaMax.push(data.maxtempC);
+        this.climaMin.push(data.mintempC);
+        this.climaLoading = true;
+     }
     });
-     console.log( farmPolygon.polygon.path)
+
 
     if(farmPolygon.latitude == undefined && farmPolygon.latitude == undefined){
       var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
@@ -223,8 +336,8 @@ export class FarmMapPolygonComponent implements OnInit {
          this.loading = true;
          wisservice.getMeterogoAgrifut(element.id).subscribe((data: {}) => { 
           this.loading = false;
-              console.log(data);
            this.mediciones=data;   
+           console.log(data); 
          });
         }else{
         
@@ -281,5 +394,42 @@ export class FarmMapPolygonComponent implements OnInit {
   }
   open(content) {
     this.modalService.open(content);
+  }
+
+  selectTime(event){
+    this.selectedValue = event.value;
+  } 
+  deleteValueJson(value){
+    var index:number = this.mediciones.indexOf(this.mediciones.find(x => x.name == value));
+    if(index != -1) this.mediciones.splice(index, 1);
+  }
+  //datepicker
+
+  onDateSelection(date: NgbDate) {
+    if (!this.fromDate && !this.toDate) {
+      this.fromDate = date;
+    } else if (this.fromDate && !this.toDate && date.after(this.fromDate)) {
+      this.toDate = date;
+    } else {
+      this.toDate = null;
+      this.fromDate = date;
+    }
+  }
+
+  isHovered(date: NgbDate) {
+    return this.fromDate && !this.toDate && this.hoveredDate && date.after(this.fromDate) && date.before(this.hoveredDate);
+  }
+
+  isInside(date: NgbDate) {
+    return date.after(this.fromDate) && date.before(this.toDate);
+  }
+
+  isRange(date: NgbDate) {
+    return date.equals(this.fromDate) || date.equals(this.toDate) || this.isInside(date) || this.isHovered(date);
+  }
+
+  validateInput(currentValue: NgbDate, input: string): NgbDate {
+    const parsed = this.formatter.parse(input);
+    return parsed && this.calendar.isValid(NgbDate.from(parsed)) ? NgbDate.from(parsed) : currentValue;
   }
 }
