@@ -57,10 +57,12 @@ export class FarmMapComponent implements OnInit {
     public modalService: NgbModal,
     private router: Router,
     public weatherService: WeatherService,
-    private calendar: NgbCalendar) { }
+    private calendar: NgbCalendar) { 
+      }
 
   ngOnInit() {
     this.init(0);
+    
   }
   init(id) {
     this.getFarms();
@@ -90,7 +92,10 @@ export class FarmMapComponent implements OnInit {
       const q = [data.latitude, data.longitude];
       const key = "67a49d3ba5904bef87441658192312";
       this.weatherService.getWeather(key, q).subscribe((weather) => {
-        console.log(weather.data);
+        this.climaDay = [];
+      this.climaIcon = [];
+      this.climaMax = [];
+      this.climaMin = [];
         let i=0;
         this.climaToday = weather.data.current_condition[0];
         var clima = (weather.data.weather);
