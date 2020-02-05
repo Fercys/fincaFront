@@ -57,12 +57,12 @@ export class FarmMapComponent implements OnInit {
     public modalService: NgbModal,
     private router: Router,
     public weatherService: WeatherService,
-    private calendar: NgbCalendar) { 
-      }
+    private calendar: NgbCalendar) {
+  }
 
   ngOnInit() {
     this.init(0);
-    
+
   }
   init(id) {
     this.getFarms();
@@ -90,31 +90,25 @@ export class FarmMapComponent implements OnInit {
       this.selected = data.name;
       this.weatherService;
       const q = [data.latitude, data.longitude];
-      const key = "67a49d3ba5904bef87441658192312";
-      this.weatherService.getWeather(key, q).subscribe((weather) => {
-        this.climaDay = [];
-      this.climaIcon = [];
-      this.climaMax = [];
-      this.climaMin = [];
-        let i=0;
-        this.climaToday = weather.data.current_condition[0];
-        var clima = (weather.data.weather);
-        for (const data of clima) {
-          i++;
-          console.log(i);
-          
-          if(i<=5){
-            console.log(i);
+      if (q[0] != null) {
+        const key = "67a49d3ba5904bef87441658192312";
+        this.weatherService.getWeather(key, q).subscribe((weather) => {
+          this.climaDay = [];
+          this.climaIcon = [];
+          this.climaMax = [];
+          this.climaMin = [];
+          this.climaToday = weather.data.current_condition[0];
+          var clima = (weather.data.weather);
+          for (const data of clima) {
             data.iconLabel = data.hourly[0].weatherIconUrl[0];
             this.climaDay.push(data.date);
             this.climaIcon.push(data.iconLabel.value);
             this.climaMax.push(data.maxtempC);
             this.climaMin.push(data.mintempC);
-        }
-        }
-        this.climaLoading = true;
-        i=0;
-      });
+          }
+          this.climaLoading = true;
+        });
+      }
       switch (data['account']['id']) {
         case 63:
           this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3435/Campos/Agrifrut/Sondas%20Gestión%20de%20Riego";
@@ -178,27 +172,27 @@ export class FarmMapComponent implements OnInit {
           });
         }
       }
-      if(data.length == 0){
+      if (data.length == 0) {
         this.loadMap([]);
-        this.mediciones=[];
+        this.mediciones = [];
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
           text: 'Por favor revisar la data cargada en el campo, ya que no tiene data cargada!'
         })
-      }else{
-      if(data[0].max!= null){
-        this.loadMap(data);
-      }else{
-        this.loadMap([]);
-        this.mediciones=[];
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'Por favor revisar la data cargada en el campo, ya que presenta errores, (ubicaciones no cargada, falta data etc) !'
-        })
+      } else {
+        if (data[0].max != null) {
+          this.loadMap(data);
+        } else {
+          this.loadMap([]);
+          this.mediciones = [];
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Por favor revisar la data cargada en el campo, ya que presenta errores, (ubicaciones no cargada, falta data etc) !'
+          })
+        }
       }
-    }
     });
   }
   getFarms() {
@@ -278,7 +272,7 @@ export class FarmMapComponent implements OnInit {
         mapTypeId: window['google'].maps.MapTypeId.HYBRID
       });
     } else {
-      
+
       var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
         center: { lat: data[10].polygon.path[0].lat, lng: data[10].polygon.path[0].lng },
         zoom: 15,
