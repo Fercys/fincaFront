@@ -71,7 +71,7 @@
   <div class="container-fluid">
     <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>
   </div>
-  <div class="container-fluid" style="margin-bottom: 60px;">
+  <div class="container-fluid barra">
     <div class="row">
       <div class="col-lg-4 col-md-4 col-sm-4">
         <div class="buttons-farm">
@@ -127,7 +127,7 @@
         <!-- Fin de Cuadro de Clima -->
       </div>
       <div class="col-lg-8 col-md-8 col-sm-8">
-        <div #mapRef style="width:100%;height:100%"></div>
+        <div #mapRef class="map"></div>
         <!-- <iframe [src]="url | safePipe" frameborder="0" allowFullScreen="true"></iframe>       -->
         <div class="row">
           <div class="col-md-6">
@@ -156,7 +156,7 @@
               </div>
             </div>
           </div>
-          <div class="col-md-6" style="display: flex; justify-content: flex-end;">
+          <div class="col-md-6 irrimax-label">
             <h6 style="margin-top: 5%;">Ver analisis de suelo en</h6>
             <div (click)="open(content, 'xl')" class="btn btns-irrimax btn-radius">
                 <span>Irrimax<b>LIVE</b></span>
@@ -181,7 +181,7 @@
       </div>
     </div>
   </div>
-  <div class="container-fluid">
+  <div class="container-fluid cards-farms">
     <div class="row">
       <div class="col-md-4">
         <div *ngIf="climaLoading" class="container-fluid">

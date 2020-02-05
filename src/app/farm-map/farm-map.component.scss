@@ -1,180 +1,217 @@
-iframe{
-    width: 100%;
-    height: 531px;
+iframe {
+  width: 100%;
+  height: 531px;
 }
-.title-farm{
-    float: right;
-    color: #000;
-    font-weight: 600;
-    padding: 1% 0 1% 0;
+.map {
+  width: 100%;
+  height: 100%;
 }
-.btns{
-    &-message{
-        background-color: #4173b1;
-        text-align: left;
-        img{
-            width: 20px;
-            height: 15px;
-            margin-right:10px;
-        }
-        span:nth-child(2){
-            font-weight: 600;
-        }
-    }
-    &-alerts{
-        background-color: #eec01b;
-        text-align: left;
-        img{
-            width: 20px;
-            height: 20px;
-            margin-right:10px;
-        }
-        span:nth-child(2){
-            font-weight: 600;
-        }
-    }
-    &-irrimax{
-        background-color: #6fb060;
-        margin-left: 5px;
-        img{
-            width: 20px;
-            height: 20px;
-            margin-left:10px;
-        }
-        span{
-            font-size: 12px;
-            text-transform: capitalize;
-        }
-    }
-
+.title-farm {
+  float: right;
+  color: #000;
+  font-weight: 600;
+  padding: 1% 0 1% 0;
 }
-.card-weather{
-    background-color: white;
-    border-radius: 7px;
-    padding: 10%;
+.barra {
+  margin-bottom: 60px;
+}
+.btns {
+  &-message {
+    background-color: #4173b1;
     text-align: left;
-    table{
-        margin: 4%;
+    img {
+      width: 20px;
+      height: 15px;
+      margin-right: 10px;
     }
-    th, td{
-        padding-right: 7px;
-        padding-bottom: 2px;
-        padding-left: 7px;
+    span:nth-child(2) {
+      font-weight: 600;
     }
-    td:first-child{
-        font-weight: 400; 
-        font-size: 13px;
+  }
+  &-alerts {
+    background-color: #eec01b;
+    text-align: left;
+    img {
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
     }
-    td:last-child{
-        font-size: 12px;
+    span:nth-child(2) {
+      font-weight: 600;
     }
-    tr{
-        border-bottom: 1px solid #cbe5e6;
+  }
+  &-irrimax {
+    background-color: #6fb060;
+    margin-left: 5px;
+    img {
+      width: 20px;
+      height: 20px;
+      margin-left: 10px;
     }
-    .icon-weather img{
-        width: 15px;
-        height: 15px;
+    span {
+      font-size: 12px;
+      text-transform: capitalize;
     }
+  }
 }
-.card-pronostic{
-    background: linear-gradient(135deg, rgba(51,183,203,1) 0%, rgba(18,127,144,1) 100%);
-    border-radius: 7px;
-    color: white;
-    .table-title{
-        border-bottom: 1px solid #5ddcef;
-        width: 100%;
-        thead {
-            th{
-                padding: 2%;
-            }
-            th:first-child img{
-                width:50px; 
-                height:50px
-            }
-            th:nth-child(2){
-                font-size: 30px;
-                font-weight: 500;
-        
-            }
-            th:nth-child(3){
-                span:first-child{
-                    font-size: 13px; 
-                    font-weight: 200;
-                }
-                div{
-                    font-size: 15px;
-                    white-space: nowrap;
-                    width: 100px;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                }
-            }
-        }
-    }
-
-    .table-body{
-        tbody{
-            text-align: center;
-            td{
-                font-size: 11px;
-                width: 56px;
-            }
-            tr:first-child td{
-                font-weight: 500;
-            }
-        }
-    }
-
-    
+.card-weather {
+  background-color: white;
+  border-radius: 7px;
+  padding: 10%;
+  text-align: left;
+  table {
+    margin: 4%;
+  }
+  th,
+  td {
+    padding-right: 7px;
+    padding-bottom: 2px;
+    padding-left: 7px;
+  }
+  td:first-child {
+    font-weight: 400;
+    font-size: 13px;
+  }
+  td:last-child {
+    font-size: 12px;
+  }
+  tr {
+    border-bottom: 1px solid #cbe5e6;
+  }
+  .icon-weather img {
+    width: 15px;
+    height: 15px;
+  }
 }
-.table-legent{
+.card-pronostic {
+  background: linear-gradient(
+    135deg,
+    rgba(51, 183, 203, 1) 0%,
+    rgba(18, 127, 144, 1) 100%
+  );
+  border-radius: 7px;
+  color: white;
+  .table-title {
+    border-bottom: 1px solid #5ddcef;
+    width: 100%;
     thead {
-        display: flex; 
-        position: absolute;
-        padding-top:3%;   
-        th{
-            display: flex; 
-            width: 100px;
-            .square-temp{
-                border-radius: 5px;
-                top: 0;
-                left: 0;
-                height: 15px;
-                width: 15px;
-                margin-top: 3px;
-            }
+      th {
+        padding: 2%;
+      }
+      th:first-child img {
+        width: 50px;
+        height: 50px;
+      }
+      th:nth-child(2) {
+        font-size: 30px;
+        font-weight: 500;
+      }
+      th:nth-child(3) {
+        span:first-child {
+          font-size: 13px;
+          font-weight: 200;
         }
-
+        div {
+          font-size: 15px;
+          white-space: nowrap;
+          width: 100px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
     }
+  }
+
+  .table-body {
+    tbody {
+      text-align: center;
+      td {
+        font-size: 11px;
+        width: 56px;
+      }
+      tr:first-child td {
+        font-weight: 500;
+      }
+    }
+  }
 }
-.chard-size{
-    border-radius: 5px;
-    div{
-        padding: 4% 0% 4% 0%;
+.table-legent {
+  thead {
+    display: flex;
+    position: absolute;
+    padding-top: 3%;
+    th {
+      display: flex;
+      width: 100px;
+      .square-temp {
+        border-radius: 5px;
+        top: 0;
+        left: 0;
+        height: 15px;
+        width: 15px;
+        margin-top: 3px;
+      }
     }
-
+  }
+}
+.chard-size {
+  border-radius: 5px;
+  div {
+    padding: 4% 0% 4% 0%;
+  }
 }
 ::ng-deep {
-    .mat-select-custom .mat-form-field-flex{
-      background-color: white;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.02); 
+  .mat-select-custom .mat-form-field-flex {
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.02);
+  }
+  .mat-select-custom .mat-form-field-underline {
+    display: none;
+  }
+  .mat-select-custom .mat-form-field-label {
+    text-align: center;
+  }
+  .mat-select-custom .mat-form-field-label-wrapper {
+    // Center Text Vertical Select
+    top: -1.14375em !important;
+  }
+  .mat-select-custom .mat-select-arrow {
+    //Center Row Vertical Select
+    margin: 0 15px 10px 0 !important;
+    color: #bfbfbf;
+  }
+  .mat-select-custom mat-label {
+    font-weight: 500;
+    color: #bfbfbf;
+    text-transform: uppercase;
+  }
+}
+.irrimax-label {
+  display: flex;
+  justify-content: flex-end;
+}
+@media screen and (max-width: 995px) {
+  .table-legent {
+    thead {
+      display: inline-flex;
+      width: 300px;
     }
-    .mat-select-custom .mat-form-field-underline{
-        display: none;
-    }
-    .mat-select-custom .mat-form-field-label{
-        text-align: center;
-    }
-    .mat-select-custom .mat-form-field-label-wrapper{ // Center Text Vertical Select
-        top: -1.14375em !important;
-    }
-    .mat-select-custom .mat-select-arrow{ //Center Row Vertical Select 
-        margin: 0 15px 10px 0 !important; 
-        color: #bfbfbf;
-    }
-    .mat-select-custom mat-label{
-        font-weight: 500;
-        color: #bfbfbf;
-        text-transform: uppercase;
-    }
-   }
+  }
+  .irrimax-label {
+    margin-top: 40px;
+  }
+  .map {
+    width: 100%;
+    height: 350px;
+    margin-top: 30px;
+  }
+  .barra {
+    margin-bottom: 0;
+  }
+  .cards-farms  > div > div:nth-child(2) , .cards-farms  > div > div:nth-child(3){
+    margin-top: 10px;
+  }
+  .pronostic-table{
+    margin-top: 20px;
+  }
+}
