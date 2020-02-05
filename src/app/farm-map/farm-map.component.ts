@@ -178,7 +178,27 @@ export class FarmMapComponent implements OnInit {
           });
         }
       }
-      this.loadMap(data);
+      if(data.length == 0){
+        this.loadMap([]);
+        this.mediciones=[];
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Por favor revisar la data cargada en el campo, ya que no tiene data cargada!'
+        })
+      }else{
+      if(data[0].max!= null){
+        this.loadMap(data);
+      }else{
+        this.loadMap([]);
+        this.mediciones=[];
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Por favor revisar la data cargada en el campo, ya que presenta errores, (ubicaciones no cargada, falta data etc) !'
+        })
+      }
+    }
     });
   }
   getFarms() {
@@ -258,6 +278,7 @@ export class FarmMapComponent implements OnInit {
         mapTypeId: window['google'].maps.MapTypeId.HYBRID
       });
     } else {
+      
       var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
         center: { lat: data[10].polygon.path[0].lat, lng: data[10].polygon.path[0].lng },
         zoom: 15,
