@@ -42,7 +42,7 @@ export class WiseconnService {
     )
   }
   getIrrigarionsRealOfZones(id): Observable<farmModels> { 
-    return this.http.get<farmModels>(this.baseurl + '/zones/'+id+"/realIrrigations?initTime=2020-01-01&endTime=2020-01-31", this.httpOptions)
+    return this.http.get<farmModels>(this.baseurl + '/zones/'+id+"/realIrrigations?initTime=2020-02-01&endTime=2020-02-29", this.httpOptions)
     .pipe(
       retry(1),
       catchError(this.errorHandl)

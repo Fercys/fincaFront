@@ -3,6 +3,7 @@ import { FormBuilder,FormGroup, FormArray,  Validators,FormControl } from '@angu
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2'
 
+
 @Component({
 	selector: 'app-login',
 	templateUrl: './login.component.html',
@@ -28,9 +29,14 @@ export class LoginComponent implements OnInit,OnDestroy,AfterViewInit {
 	}
 
 
-	constructor(private _router: Router, private fb: FormBuilder,private elementRef: ElementRef) { }
+	constructor(
+		private _router: Router, 
+		private fb: FormBuilder,
+		private elementRef: ElementRef
+    	) { }
 
 	ngOnInit() {
+		localStorage.clear();
 		this.screenHeight = window.innerHeight;
 		console.log('este es mi height inicial: '+this.screenHeight.toString())
 		this.login[0].style.height = this.screenHeight.toString()+'px';
@@ -62,8 +68,14 @@ export class LoginComponent implements OnInit,OnDestroy,AfterViewInit {
 		const password= target.querySelector('#password').value;
 	  
 		if (usuario == 'Admin' && password == '12345678') {
-			console.log('entre');
+    		localStorage.setItem("username", usuario);
 			this._router.navigate(['/dashboard']);
+		}else if(usuario == 'Agrifut' && password == '12345678'){
+    		localStorage.setItem("username", usuario);
+			this._router.navigate(['/farmmap/185']);//185,2110,1378,520
+		}else if(usuario == 'SantaJuana' && password == '12345678'){
+    		localStorage.setItem("username", usuario);
+			this._router.navigate(['/farmmap/719']);//719
 		}else{
 			Swal.fire({
 				icon: 'error',

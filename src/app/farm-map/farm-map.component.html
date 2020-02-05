@@ -41,9 +41,9 @@
         <span style="display: table-cell; vertical-align: middle;">Campo</span>
       </div>
       <mat-form-field class="col-md-6 mat-select-custom" floatLabel="never">
-        <mat-label>Seleccionar Campo</mat-label>
+        <mat-label>{{selected}}</mat-label>
         <mat-select>
-          <mat-option *ngFor="let farm of farms">{{farm.name}}</mat-option>
+          <mat-option *ngFor="let farm of farms" (click)="onSelect('farm',farm.id)">{{farm.name}}</mat-option>
         </mat-select>
       </mat-form-field>
       <div class="col-md-1" style="display: table; height: 45px;">
@@ -52,8 +52,7 @@
       <mat-form-field class="col-md-4 mat-select-custom" floatLabel="never">
         <mat-label>Seleccionar Sector</mat-label>
         <mat-select>
-          <mat-option>prueba 1</mat-option>
-          <mat-option>prueba 2</mat-option>
+          <mat-option  *ngFor="let zone of zones" (click)="onSelect('zone',zone.id)">{{zone.name}}</mat-option>
         </mat-select>
       </mat-form-field>
     </div>
