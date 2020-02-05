@@ -104,7 +104,6 @@ export class DashboardComponent implements OnInit {
     this.wiseconnService.getFarms().subscribe((data: {}) => {
       this.farms = data;
       localStorage.setItem("datafarms", JSON.stringify(this.farms));
-      console.log(this.farms);
       this.cant_farms=this.farms.length;
       var farm_client = this.farms.filter(function(item,index,array){ 
         if(index == 0){

@@ -59,7 +59,9 @@ export class FarmMapComponent implements OnInit {
     private calendar: NgbCalendar) { }
   
   ngOnInit() {
-
+    this.init();
+  }
+  init(){
     this.getFarms();
     
     //rango de fechas para graficas
@@ -69,8 +71,43 @@ export class FarmMapComponent implements OnInit {
       initTime:moment(this.fromDate.year+"-"+this.fromDate.month+"-"+this.fromDate.day).format("YYYY-MM-DD"),
       endTime:moment(this.toDate.year+"-"+this.toDate.month+"-"+this.toDate.day).format("YYYY-MM-DD")
     };
+    this.getZones(this._route.snapshot.paramMap.get('id'));
+    
+    let idFarm = (this._route.snapshot.paramMap.get('id'));
+    this.climaLoading = false;
+    this.wiseconnService.getFarm(idFarm).subscribe((data) => {
+      this.dataFarm = data;
+      this.weatherService;
+      const q = [data.latitude, data.longitude];
+      const key = "67a49d3ba5904bef87441658192312";
+      this.weatherService.getWeather(key,q).subscribe((weather) => {
+        this.climaToday = weather.data.current_condition[0];
+        var clima = (weather.data.weather);
+        for (const data of clima) {
+              data.iconLabel = data.hourly[0].weatherIconUrl[0];
+              this.climaDay.push(data.date);
+              this.climaIcon.push(data.iconLabel.value);
+              this.climaMax.push(data.maxtempC);
+              this.climaMin.push(data.mintempC);
+        }
+        this.climaLoading = true; 
+      });
+        switch (data['account']['id']) { 
+          case 63:
+            this.url="https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3435/Campos/Agrifrut";
+            break;
+          case 395:
+            this.url="https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3507/Campos/Agricola%20Santa%20Juana%20de%20Chincolco";
+            break;
+          default:
+            this.url="";
+        }
+    });
+    this.renderCharts();
+  }
+  getZones(id:any){
     this.loading = true;
-    this.wiseconnService.getZones(this._route.snapshot.paramMap.get('id')).subscribe((data: any) => {      
+    this.wiseconnService.getZones(id).subscribe((data: any) => {      
       this.loading = false; 
       this.zones=data;
       for (var i = this.zones.length - 1; i >= 0; i--) {      
@@ -120,63 +157,27 @@ export class FarmMapComponent implements OnInit {
       }
       this.loadMap(data); 
     });
-    let idFarm = (this._route.snapshot.paramMap.get('id'));
-    this.climaLoading = false;
-    this.wiseconnService.getFarm(idFarm).subscribe((data) => {
-      //console.log(data);
-      this.dataFarm = data;
-      this.weatherService;
-      const q = [data.latitude, data.longitude];
-      const key = "67a49d3ba5904bef87441658192312";
-    //  console.log(q);
-      this.weatherService.getWeather(key,q).subscribe((weather) => {
-        this.climaToday = weather.data.current_condition[0];
-        var clima = (weather.data.weather);
-        for (const data of clima) {
-              data.iconLabel = data.hourly[0].weatherIconUrl[0];
-              this.climaDay.push(data.date);
-              this.climaIcon.push(data.iconLabel.value);
-              this.climaMax.push(data.maxtempC);
-              this.climaMin.push(data.mintempC);
-        }
-        this.climaLoading = true; 
-      });
-        switch (data['account']['id']) { 
-          case 63:
-            this.url="https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3435/Campos/Agrifrut";
-            break;
-          case 395:
-            this.url="https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3507/Campos/Agricola%20Santa%20Juana%20de%20Chincolco";
-            break;
-          default:
-            this.url="";
-        } console.log(this.url);
-    });
-    this.renderCharts();
   }
   getFarms(){
     this.wiseconnService.getFarms().subscribe((data: any) => {
       this.farms = data;
-      console.log("farms:",this.farms);
       switch (localStorage.getItem("username").toLowerCase()) {
         case "agrifut":
-        this.farms=this.farms.filter((element)=>{
-          return element.id==185 || element.id==2110 || element.id==1378 || element.id==520
-        })
-        break;
+          this.farms=this.farms.filter((element)=>{
+            return element.id==185 || element.id==2110 || element.id==1378 || element.id==520
+          })
+          break;
         case "santajuana":
-        this.farms=this.farms.filter((element)=>{
-          return element.id==719
-        })
-        break;
-        
+          this.farms=this.farms.filter((element)=>{
+            return element.id==719
+          })
+          break;
+                
         default:
-        // code...
-        break;
+          // code...
+          break;
       }
-      console.log("farms:",this.farms);
     })
-    
   }
   renderLineChart(){
     new Chartist.Line('.ct-chart.line-chart', {
@@ -364,7 +365,6 @@ export class FarmMapComponent implements OnInit {
             }
              this.deleteValueJson("Et0");
              this.deleteValueJson("Etp");
-           // console.log(this.mediciones);
          });
         }else{
         
@@ -425,4 +425,24 @@ export class FarmMapComponent implements OnInit {
   open(content, sizeValue) {
     this.modalService.open(content, {size: sizeValue} );
   } 
+  onSelect(select:string,id:number){
+    let redirect=this.router;
+    let wisservice=this.wiseconnService;
+    switch (select) {
+      case "farm":
+        redirect.navigate(['/farmmap',id]);
+        this.init();
+        break;
+      case "zone":
+        wisservice.getMeasuresOfZones(id).subscribe((data: any) => {     
+         wisservice.getIrrigarionsRealOfZones(id).subscribe((dataIrrigations: any) => {
+          redirect.navigate(['/farmpolygon', data[0].farmId, id]);
+         })
+        });
+        break;
+      default:
+        // code...
+        break;
+    }
+  }
 }

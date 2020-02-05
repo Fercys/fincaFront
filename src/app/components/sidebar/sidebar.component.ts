@@ -32,7 +32,30 @@ export class SidebarComponent implements OnInit {
   constructor( public router: Router) { }
 
   ngOnInit() {
-    this.menuItems = ROUTES.filter(menuItem => menuItem);
+    
+    this.menuItems = ROUTES.filter(menuItem => {
+      console.log(localStorage.getItem("username")!="Admin");
+      console.log(menuItem.title.toLowerCase()!="dashboard");
+      console.log(menuItem.title.toLowerCase()!="campos");
+      switch (localStorage.getItem("username").toLowerCase()) {
+        case "agrifut":
+          if (menuItem.title.toLowerCase()!="dashboard" &&
+            menuItem.title.toLowerCase()!="campos") {
+            return menuItem;
+          }
+          break;
+        case "santajuana":
+          if (menuItem.title.toLowerCase()!="dashboard" &&
+            menuItem.title.toLowerCase()!="campos") {
+            return menuItem;
+          }
+          break;        
+        default:
+          return menuItem;
+          break;
+      }
+      
+    });
   }
   isMobileMenu() {
       if ($(window).width() > 991) {
