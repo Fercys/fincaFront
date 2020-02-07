@@ -109,12 +109,15 @@ export class FarmMapComponent implements OnInit {
           this.climaLoading = true;
         });
       }
-      switch (data['account']['id']) {
-        case 63:
-          this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3435/Campos/Agrifrut/Sondas%20Gestión%20de%20Riego";
+      switch (data.name) {
+        case "Agrifrut":
+          this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3435/Campos:l/Agrifrut:f";
           break;
-        case 395:
-          this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3507/Campos/Agricola%20Santa%20Juana%20de%20Chincolco%20SA/Sondas%20Gestión%20de%20Riego";
+        case "Agrifrut II (Nogales y Parrones)":
+          this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3435/Campos:l/Agrifrut%20II%20(Nogales%20y%20Parrones):f";
+          break;
+        case "Santa Juana de Chincolco":
+          this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3507/Campos:l/Agricola%20Santa%20Juana%20de%20Chincolco%20SA:f";
           break;
         default:
           this.url = "";
@@ -490,6 +493,27 @@ export class FarmMapComponent implements OnInit {
   }
   open(content, sizeValue) {
     this.modalService.open(content, {size: sizeValue} );
+  }
+  onSelect(select: string, id: number) {
+    let redirect = this.router;
+    let wisservice = this.wiseconnService;
+
+    switch (select) {
+      case "farm":
+        redirect.navigate(['/farmmap', id]);
+        this.init(id);
+        break;
+      case "zone":
+        wisservice.getMeasuresOfZones(id).subscribe((data: any) => {
+          wisservice.getIrrigarionsRealOfZones(id).subscribe((dataIrrigations: any) => {
+            redirect.navigate(['/farmpolygon', data[0].farmId, id]);
+          })
+        });
+        break;
+      default:
+        // code...
+        break;
+    }
   }
   openDialog(): void {
      const dialogRef = this.dialog.open(DialogMessage, {
