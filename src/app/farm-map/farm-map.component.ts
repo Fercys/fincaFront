@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit,ViewChild,ElementRef ,Inject  } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WiseconnService } from 'app/services/wiseconn.service';
 import { element } from 'protractor';
@@ -10,6 +10,7 @@ import { WeatherService } from 'app/services/weather.service';
 
 import * as Chartist from 'chartist';
 import * as moment from "moment";
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-farm-map',
@@ -24,6 +25,7 @@ export class FarmMapComponent implements OnInit {
   public url;
   public mediciones;
   public selected;
+  public dialog;
   today = Date.now();
   dataFarm: any;
   public zones: any[] = [];
@@ -386,24 +388,45 @@ export class FarmMapComponent implements OnInit {
             this.loading = false;
             this.mediciones = data;
             for (const item of this.mediciones) {
-              if (item.name == "Velocidad Viento") {
-                item.name = "Vel. Viento"
-              }
-              if (item.name == "Direccion de viento") {
-                item.name = "Dir. Viento"
-              }
-              if (item.name == "Radiacion Solar") {
-                item.name = "Rad. Solar"
-              }
-              if (item.name == "Wind Direction" || item.name == "ATM pressure" || item.name == "Wind Speed (period)" || item.name == "Porciones de Frío" || item.name == "Horas Frío") {
-                this.deleteValueJson(item.name);
-              }
-              if (item.name == "Porciones de Frío") {
-                this.deleteValueJson(item.name);
-              }
-              if (item.name == "Horas Frío") {
-                this.deleteValueJson(item.name);
-              }
+              // if (item.name == "Velocidad Viento") {
+              //   item.name = "Vel. Viento"
+              // }
+              // if (item.name == "Direccion de viento") {
+              //   item.name = "Dir. Viento"
+              // }
+              // if (item.name == "Radiacion Solar") {
+              //   item.name = "Rad. Solar"
+              // }
+              // if (item.name == "Wind Direction" || item.name == "ATM pressure" || item.name == "Wind Speed (period)" || item.name == "Porciones de Frío" || item.name == "Horas Frío") {
+              //   this.deleteValueJson(item.name);
+              // }
+              // if (item.name == "Porciones de Frío") {
+              //   this.deleteValueJson(item.name);
+              // }
+              // if (item.name == "Horas Frío") {
+              //   this.deleteValueJson(item.name);
+              // }
+                if(item.name == "Velocidad Viento"){
+                  item.name = "Vel. Viento"
+                }
+                if(item.name == "Direccion de viento") {
+                  item.name = "Dir. Viento"
+                }
+                if(item.name == "Radiacion Solar"){
+                  item.name = "Rad. Solar"
+                }   
+                if(item.name == "Station Relative Humidity"){
+                  item.name = " Sta. Rel. Humidity "
+                }  
+                if(item.name == "Wind Direction" || item.name ==  "ATM pressure" || item.name ==  "Wind Speed (period)" || item.name ==  "Porciones de Frío" || item.name ==  "Horas Frío"){
+                  this.deleteValueJson(item.name);
+                }    
+                if(item.name == "Porciones de Frío")  {
+                  this.deleteValueJson(item.name);
+                }
+                if(item.name == "Horas Frío")  {
+                  this.deleteValueJson(item.name);
+                }    
             }
             this.deleteValueJson("Et0");
             this.deleteValueJson("Etp");
@@ -466,27 +489,34 @@ export class FarmMapComponent implements OnInit {
     })
   }
   open(content, sizeValue) {
-    this.modalService.open(content, { size: sizeValue });
+    this.modalService.open(content, {size: sizeValue} );
   }
-  onSelect(select: string, id: number) {
-    let redirect = this.router;
-    let wisservice = this.wiseconnService;
+  openDialog(): void {
+     const dialogRef = this.dialog.open(DialogMessage, {
+       panelClass: 'messagedialogcss'
+     });
 
-    switch (select) {
-      case "farm":
-        redirect.navigate(['/farmmap', id]);
-        this.init(id);
-        break;
-      case "zone":
-        wisservice.getMeasuresOfZones(id).subscribe((data: any) => {
-          wisservice.getIrrigarionsRealOfZones(id).subscribe((dataIrrigations: any) => {
-            redirect.navigate(['/farmpolygon', data[0].farmId, id]);
-          })
-        });
-        break;
-      default:
-        // code...
-        break;
-    }
+     dialogRef.afterClosed().subscribe(result => {
+       console.log('The dialog was closed');
+     });
+  } 
+}
+
+
+@Component({
+  selector: 'message-dialog',
+  templateUrl: 'message-dialog.html',
+  styleUrls: ['./message-dialog.scss'],
+})
+export class DialogMessage {
+
+  constructor(
+    public dialogRef: MatDialogRef<DialogMessage>,
+    // @Inject(MAT_DIALOG_DATA) public data 
+    ) {}
+
+  onNoClick(): void {
+    this.dialogRef.close();
   }
+
 }
