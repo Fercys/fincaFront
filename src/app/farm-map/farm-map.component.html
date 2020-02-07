@@ -41,7 +41,7 @@
         <span style="display: table-cell; vertical-align: middle;">Campo</span>
       </div>
       <mat-form-field class="col-md-6 mat-select-custom" floatLabel="never">
-        <mat-label>Seleccionar Campo</mat-label>
+        <mat-label>{{selected}}</mat-label>
         <mat-select>
           <mat-option *ngFor="let farm of farms" (click)="onSelect('farm',farm.id)">{{farm.name}}</mat-option>
         </mat-select>
