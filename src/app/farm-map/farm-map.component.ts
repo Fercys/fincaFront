@@ -65,12 +65,13 @@ export class FarmMapComponent implements OnInit {
     this.getFarms();
     
     //rango de fechas para graficas
-    this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -2);
+    this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -5);
     this.toDate = this.calendar.getToday();
     this.dateRange={
       initTime:moment(this.fromDate.year+"-"+this.fromDate.month+"-"+this.fromDate.day).format("YYYY-MM-DD"),
       endTime:moment(this.toDate.year+"-"+this.toDate.month+"-"+this.toDate.day).format("YYYY-MM-DD")
     };
+    console.log("fechas:",this.dateRange)
     this.getZones(this._route.snapshot.paramMap.get('id'));
     
     let idFarm = (this._route.snapshot.paramMap.get('id'));
@@ -127,7 +128,7 @@ export class FarmMapComponent implements OnInit {
                   let temperatureData=data;
                   this.wiseconnService.getDataByMeasure(this.humidityId,this.dateRange).subscribe((data) => {
                     let humidityData=data;
-                    for (var i = temperatureData.length - 1; i >= 0; i--) {
+                    for (var i = 0; i < temperatureData.length; i+=10) {
                       if(this.lineChart.labels.filter((element) => {
                         return element == moment(temperatureData[i].time).format("YYYY-MM-DD");
                       }).length==0){
@@ -138,7 +139,7 @@ export class FarmMapComponent implements OnInit {
                         this.renderCharts();
                       }
                     }
-                    for (var i = humidityData.length - 1; i >= 0; i--) {
+                    for (var i = 0; i < humidityData.length; i+=10) {
                       if(this.lineChart.labels.filter((element) => {return element == moment(humidityData[i].time).format("YYYY-MM-DD")}).length==0){
                         this.lineChart.labels.push(moment(humidityData[i].time).format("YYYY-MM-DD"));
                         
@@ -180,11 +181,16 @@ export class FarmMapComponent implements OnInit {
     })
   }
   renderLineChart(){
+    console.log("this.lineChart.labels:",this.lineChart.labels)
+    console.log("this.lineChart.series:",this.lineChart.series)
     new Chartist.Line('.ct-chart.line-chart', {
       labels: this.lineChart.labels,
       series: this.lineChart.series
     }, {
       fullWidth: true,
+      // plugins: [
+      //   Chartist.plugins.tooltip()
+      // ],
       chartPadding: {
         right: 40
       }
@@ -213,7 +219,7 @@ export class FarmMapComponent implements OnInit {
   }
   renderCharts(){
     this.renderLineChart();
-    this.renderBarChart();
+    // this.renderBarChart();
   }
   renderMap() {
     

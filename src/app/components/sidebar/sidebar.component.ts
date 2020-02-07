@@ -34,9 +34,6 @@ export class SidebarComponent implements OnInit {
   ngOnInit() {
     
     this.menuItems = ROUTES.filter(menuItem => {
-      console.log(localStorage.getItem("username")!="Admin");
-      console.log(menuItem.title.toLowerCase()!="dashboard");
-      console.log(menuItem.title.toLowerCase()!="campos");
       switch (localStorage.getItem("username").toLowerCase()) {
         case "agrifut":
           if (menuItem.title.toLowerCase()!="dashboard" &&
