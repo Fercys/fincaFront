@@ -5,3 +5,7 @@
 .img-filter-colors{
     filter: brightness(1000%);
 }
+.sub-level{
+    display: none;
+    margin-left: 30px;
+}

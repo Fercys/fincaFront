@@ -1,0 +1,14 @@
+
+::ng-deep {
+    .message-dialog-title {
+        position: absolute;
+        background-color: #6fb060;
+        padding: 5px 25px 5px 10px;
+        margin: -65px 0 0 -25px;
+        .text{
+            color: white;
+            font-size: 10px;
+        }
+    }
+
+}

@@ -1,10 +1,11 @@
-import { Component, OnInit,ViewChild,ElementRef   } from '@angular/core';
+import { Component, OnInit,ViewChild,ElementRef ,Inject  } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WiseconnService } from 'app/services/wiseconn.service';
 import { element } from 'protractor';
 import { NgbModal,ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { WeatherService } from 'app/services/weather.service';
 import * as Chartist from 'chartist';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 @Component({
   selector: 'app-farm-map',
@@ -32,7 +33,13 @@ export class FarmMapComponent implements OnInit {
   climaMax = [];
   climaMin = [];
   
-  constructor(private _route: ActivatedRoute,private wiseconnService: WiseconnService, public modalService: NgbModal,private router: Router, public weatherService: WeatherService) { }
+  constructor(
+    private _route: ActivatedRoute,
+    private wiseconnService: WiseconnService, 
+    public modalService: NgbModal,
+    private router: Router, 
+    public weatherService: WeatherService,
+    public dialog: MatDialog) { }
   ngOnInit() {
     //this.renderMap();
     this.loading = true;
@@ -256,6 +263,9 @@ export class FarmMapComponent implements OnInit {
                 }
                 if(item.name == "Radiacion Solar"){
                   item.name = "Rad. Solar"
+                }   
+                if(item.name == "Station Relative Humidity"){
+                  item.name = " Sta. Rel. Humidity "
                 }  
                 if(item.name == "Wind Direction" || item.name ==  "ATM pressure" || item.name ==  "Wind Speed (period)" || item.name ==  "Porciones de Frío" || item.name ==  "Horas Frío"){
                   this.deleteValueJson(item.name);
@@ -329,5 +339,33 @@ export class FarmMapComponent implements OnInit {
   }
   open(content, sizeValue) {
     this.modalService.open(content, {size: sizeValue} );
+  }
+  openDialog(): void {
+    const dialogRef = this.dialog.open(DialogMessage, {
+      panelClass: 'messagedialogcss'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
   } 
+}
+
+
+@Component({
+  selector: 'message-dialog',
+  templateUrl: 'message-dialog.html',
+  styleUrls: ['./message-dialog.scss'],
+})
+export class DialogMessage {
+
+  constructor(
+    public dialogRef: MatDialogRef<DialogMessage>,
+    // @Inject(MAT_DIALOG_DATA) public data 
+    ) {}
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
 }

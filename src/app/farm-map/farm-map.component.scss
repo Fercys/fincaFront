@@ -19,10 +19,15 @@ iframe {
   &-message {
     background-color: #4173b1;
     text-align: left;
+    display: flex;
+    align-items: center;
     img {
       width: 20px;
       height: 15px;
       margin-right: 10px;
+    }
+    span:nth-child(1){
+      margin-top: -3px;
     }
     span:nth-child(2) {
       font-weight: 600;
@@ -31,6 +36,8 @@ iframe {
   &-alerts {
     background-color: #eec01b;
     text-align: left;
+    display: flex;
+    align-items: center;
     img {
       width: 20px;
       height: 20px;
@@ -43,6 +50,8 @@ iframe {
   &-irrimax {
     background-color: #6fb060;
     margin-left: 5px;
+    padding: 4px 20px 0 25px;
+    margin-top: 10px;
     img {
       width: 20px;
       height: 20px;
@@ -139,7 +148,7 @@ iframe {
   thead {
     display: flex;
     position: absolute;
-    padding-top: 3%;
+    padding-top: 13px;
     th {
       display: flex;
       width: 100px;
@@ -208,10 +217,21 @@ iframe {
   .barra {
     margin-bottom: 0;
   }
+  .barra > div > div > .container-fluid{
+    margin-top: 15px;
+  }
   .cards-farms  > div > div:nth-child(2) , .cards-farms  > div > div:nth-child(3){
     margin-top: 10px;
   }
   .pronostic-table{
     margin-top: 20px;
+  }
+}
+.messagedialogcss{
+  @media screen and (max-width: 995px) {
+      width: 50% !important;
+  }
+  @media screen and (min-width: 996px) {
+      width: 80% !important;
   }
 }
