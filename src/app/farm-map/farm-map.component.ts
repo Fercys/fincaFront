@@ -128,7 +128,7 @@ export class FarmMapComponent implements OnInit {
                   let temperatureData=data;
                   this.wiseconnService.getDataByMeasure(this.humidityId,this.dateRange).subscribe((data) => {
                     let humidityData=data;
-                    for (var i = 0; i < temperatureData.length; i+=10) {
+                    for (var i = 0; i < temperatureData.length; i+=30) {
                       if(this.lineChart.labels.filter((element) => {
                         return element == moment(temperatureData[i].time).format("YYYY-MM-DD");
                       }).length==0){
@@ -139,7 +139,7 @@ export class FarmMapComponent implements OnInit {
                         this.renderCharts();
                       }
                     }
-                    for (var i = 0; i < humidityData.length; i+=10) {
+                    for (var i = 0; i < humidityData.length; i+=30) {
                       if(this.lineChart.labels.filter((element) => {return element == moment(humidityData[i].time).format("YYYY-MM-DD")}).length==0){
                         this.lineChart.labels.push(moment(humidityData[i].time).format("YYYY-MM-DD"));
                         
