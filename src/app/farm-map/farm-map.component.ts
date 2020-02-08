@@ -3,6 +3,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { WiseconnService } from 'app/services/wiseconn.service';
 import { element } from 'protractor';
 import { NgbModal, NgbDate, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
+
+import { ChartDataSets, ChartOptions } from 'chart.js';
+import { Color, BaseChartDirective, Label } from 'ng2-charts';
+import * as pluginAnnotations from 'chartjs-plugin-annotation';
+
 import Swal from 'sweetalert2'
 
 import { WeatherService } from 'app/services/weather.service';
@@ -36,8 +41,79 @@ export class FarmMapComponent implements OnInit {
   public toDate: NgbDate;
   public dateRange: any = null;
   //graficas
+  public lineChartData: ChartDataSets[] = [
+    { data: [], label: 'Temperatura' },
+    { data: [], label: 'Humedad' },
+  ];
+  public lineChartLabels: Label[] = [];
+  public lineChartOptions: (ChartOptions & { annotation: any }) = {
+    responsive: true,
+    scales: {
+      // We use this empty structure as a placeholder for dynamic theming.
+      xAxes: [{}],
+      yAxes: [
+        {
+          id: 'y-axis-0',
+          position: 'left',
+        },
+        {
+          id: 'y-axis-1',
+          position: 'right',
+          gridLines: {
+            color: 'rgba(255,0,0,0.3)',
+          },
+          ticks: {
+            fontColor: 'red',
+          }
+        }
+      ]
+    },
+    annotation: {
+      annotations: [
+        {
+          type: 'line',
+          mode: 'vertical',
+          scaleID: 'x-axis-0',
+          value: 'March',
+          borderColor: 'orange',
+          borderWidth: 2,
+          label: {
+            enabled: true,
+            fontColor: 'orange',
+            content: 'LineAnno'
+          }
+        },
+      ],
+    },
+  };
+  public lineChartColors: Color[] = [
+    { // red
+      backgroundColor:'rgba(255, 0, 0,0.3)',
+      borderColor:'rgba(255, 0, 0,1)',
+      pointBackgroundColor:'rgba(255, 0, 0,1)',
+      pointBorderColor:'#fff',
+      pointHoverBackgroundColor:'#fff',
+      pointHoverBorderColor: 'rgba(255, 0, 0,0.8)'
+    },
+    { // blue
+      backgroundColor:'rgba(2,87,154,0.2)',
+      borderColor:'rgba(2,87,154,1)',
+      pointBackgroundColor:'rgba(2, 87, 154,1)',
+      pointBorderColor:'#fff',
+      pointHoverBackgroundColor:'#fff',
+      pointHoverBorderColor:'rgba(2,87,154,0.8)'
+    }
+  ];
+  public lineChartLegend = true;
+  public lineChartType = 'line';
+  public lineChartPlugins = [pluginAnnotations];
+
+  @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
+
   public temperatureId: number = null;
   public humidityId: number = null;
+  public renderLineChartFlag : boolean = false;
+
   public lineChart: any = {
     labels: [],
     series: [[], []]
@@ -142,28 +218,62 @@ export class FarmMapComponent implements OnInit {
                   let temperatureData=data;
                   this.wiseconnService.getDataByMeasure(this.humidityId,this.dateRange).subscribe((data) => {
                     let humidityData=data;
-                    for (var i = 0; i < temperatureData.length; i+=30) {
+                    temperatureData=temperatureData.map((element)=>{
+                      element.chart="temperature";
+                      return element
+                    })
+                    humidityData=humidityData.map((element)=>{
+                      element.chart="humidity";
+                      return element
+                    })
+                    let chartData=temperatureData.concat(humidityData);
+                    chartData.sort(function (a, b) {
+                      if (moment(a.time).isAfter(b.time)) {
+                        return 1;
+                      }
+                      if (!moment(a.time).isAfter(b.time)) {
+                        return -1;
+                      }
+                      // a must be equal to b
+                      return 0;
+                    });
+                    chartData = chartData.filter((element) => {
+                      if(moment(element.time).minutes()==0 || moment(element.time).minutes()==30)
+                        return element;
+                    });
+                    for (var i = 1; i < chartData.length; i+=2) {
                       if(this.lineChart.labels.filter((element) => {
-                        return element == moment(temperatureData[i].time).format("YYYY-MM-DD");
+                        return element === chartData[i].time;//.format("YYYY-MM-DD hh:mm:ss");
                       }).length == 0) {
-                        this.lineChart.labels.push(moment(temperatureData[i].time).format("YYYY-MM-DD"));
+                        this.lineChartLabels.push(chartData[i].time);
                       }
-                      this.lineChart.series[0].push(temperatureData[i].value);
+                      if (chartData[i].chart==="temperature") {
+                        this.lineChartData[0].data.push(chartData[i].value);
+                      } 
+                      if(chartData[i-1].chart==="humidity"){
+                        this.lineChartData[1].data.push(chartData[i-1].value);
+                      }                                                        
                       if (i == 0) {
                         this.renderCharts();
                       }
                     }
-                    for (var i = 0; i < humidityData.length; i+=30) {
-                      if(this.lineChart.labels.filter((element) => {return element == moment(humidityData[i].time).format("YYYY-MM-DD")}).length==0){
-
-                        this.lineChart.labels.push(moment(humidityData[i].time).format("YYYY-MM-DD"));
-
-                      }
-                      this.lineChart.series[1].push(humidityData[i].value);
-                      if (i == 0) {
-                        this.renderCharts();
-                      }
-                    }
+                    // for (var i = 0; i < humidityData.length; i++) {
+                    //   if(humidityData[i+1]){
+                    //     if(moment(humidityData[i].time).format("YYYY-MM-DD")==moment(humidityData[i+1].time).format("YYYY-MM-DD")&&moment(humidityData[i].time).minutes()==0 || moment(humidityData[i].time).minutes()==30){
+                    //       if(this.lineChart.labels.filter((element) => {
+                    //         return moment(element).format("YYYY-MM-DD hh:mm:ss") == moment(humidityData[i].time).format("YYYY-MM-DD hh:mm:ss");
+                    //       }).length==0){
+                    //         this.lineChartLabels.push(humidityData[i].time);
+                    //         // this.lineChart.labels.push(moment(humidityData[i].time).format("YYYY-MM-DD"));
+                    //       }
+                    //       this.lineChartData[1].data.push(humidityData[i].value);
+                    //       // this.lineChart.series[1].push(humidityData[i].value);
+                    //     }
+                    //   }
+                    //   if (i == 0) {
+                    //     this.renderCharts(temperatureData.length,humidityData.length);
+                    //   }
+                    // }
                   });
                 });
               }
@@ -197,8 +307,6 @@ export class FarmMapComponent implements OnInit {
   getFarms() {
     this.wiseconnService.getFarms().subscribe((data: any) => {
       this.farms = data;
-
-
       switch (localStorage.getItem("username").toLowerCase()) {
         case "agrifut":
           this.farms = this.farms.filter((element) => {
@@ -216,20 +324,6 @@ export class FarmMapComponent implements OnInit {
           break;
       }
     })
-  }
-  renderLineChart() {
-    new Chartist.Line('.ct-chart.line-chart', {
-      labels: this.lineChart.labels,
-      series: this.lineChart.series
-    }, {
-      fullWidth: true,
-      // plugins: [
-      //   Chartist.plugins.tooltip()
-      // ],
-      chartPadding: {
-        right: 40
-      }
-    });
   }
   renderBarChart() {
     new Chartist.Bar('.ct-chart.bar-chart', {
@@ -252,8 +346,10 @@ export class FarmMapComponent implements OnInit {
     });
 
   }
+
+
   renderCharts() {
-    this.renderLineChart();
+      this.renderLineChartFlag=true;
     // this.renderBarChart();
   }
   renderMap() {

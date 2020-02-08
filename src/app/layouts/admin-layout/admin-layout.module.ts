@@ -23,6 +23,8 @@ import {
   MatTooltipModule,
   MatSelectModule
 } from '@angular/material';
+import { ChartsModule } from 'ng2-charts';
+
 import { ClientComponent } from 'app/client/client.component';
 import { FarmClientComponent } from 'app/farm-client/farm-client.component';
 import { SafePipePipe } from 'app/pipe/safe-pipe.pipe';
@@ -41,7 +43,8 @@ import { FarmMapPolygonComponent } from 'app/farm-map-polygon/farm-map-polygon.c
     MatSelectModule,
     MatTooltipModule,
     NgbModule,
-    NgxLoadingModule.forRoot({})
+    NgxLoadingModule.forRoot({}),
+    ChartsModule
   ],
   declarations: [
     DashboardComponent,
