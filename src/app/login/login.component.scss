@@ -4,6 +4,30 @@
     /* background-attachment: fixed; */
     background-position: center center;
     background-size: cover;
+    .login{
+        background-color:#33547ce0;
+        border-radius: 35px;
+        text-align: center;
+        mat-icon{
+            color:#6fb060;
+        }
+    }
+
+   
+}
+.btn-login{
+    background-color: #6fb060;
+    color:white;
+    border-radius: 50px;
+    text-transform: inherit;
+    font-family: 'metropolis', sans-serif !important;
+    font-size: 14px;
+}
+.resetpassword{
+    color: #5586c1;
+    font-style: italic;
+    text-transform: inherit;
+    font-family: 'metropolis', sans-serif !important;
 }
 .selector {
    // background-image: url("./assets/img/backgrounds/2.jpg");
@@ -40,7 +64,7 @@ h2{
 }
 
 img{
-    width: 90px;
+    width: 130px;
     height: 100%;
 }
 
@@ -53,17 +77,15 @@ mat-card-title{
 button.mat-button.mat-raised-button.mat-primary {
     margin-top: 15px;
 }
-/*
-mat-form-field{
-    width: 100%;
-}
-span{
-    color:red;
-    padding-left: 2px;
-    cursor: pointer;
-}
 
-.ajs-button.ajs-ok {
-    color: #3f51b5 !important;
+::ng-deep {
+    .login .mat-form-field-underline {
+        background-color: #6fb060;
+    }
+    .login .mat-form-field-label{
+        color:#6fb060;
+    }
+    .mat-input-element.mat-form-field-autofill-control{
+        color:white !important;
+    }
 }
-*/

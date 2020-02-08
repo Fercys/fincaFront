@@ -358,12 +358,17 @@
     .row-title{
         color: #6fb060;
         text-transform: uppercase;
-        font-weight: 600;
+        font-weight: 800;
     }
     .row-subtitle{
         color: #000;
         text-transform: uppercase;
-        font-weight: 500;
+        font-weight: 700;
+    }
+    .row-subtitle-card{
+        color: #5c5957;
+        text-transform: uppercase;
+        font-weight: 700; 
     }
 }
 .off-canvas-sidebar .navbar-collapse{

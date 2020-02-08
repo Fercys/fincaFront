@@ -14,7 +14,7 @@ import { UpgradeComponent } from '../../upgrade/upgrade.component';
 import { FarmsComponent } from '../../farms/farms.component';
 import { FarmMapComponent } from '../../farm-map/farm-map.component';
 import { NgxLoadingModule } from 'ngx-loading';
-
+import {MatDialogModule} from '@angular/material/dialog';
 import {
   MatButtonModule,
   MatInputModule,
@@ -30,6 +30,7 @@ import { FarmClientComponent } from 'app/farm-client/farm-client.component';
 import { SafePipePipe } from 'app/pipe/safe-pipe.pipe';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FarmMapPolygonComponent } from 'app/farm-map-polygon/farm-map-polygon.component';
+import { DialogMessage } from 'app/farm-map/farm-map.component'
 @NgModule({
   imports: [
     CommonModule,
@@ -44,7 +45,8 @@ import { FarmMapPolygonComponent } from 'app/farm-map-polygon/farm-map-polygon.c
     MatTooltipModule,
     NgbModule,
     NgxLoadingModule.forRoot({}),
-    ChartsModule
+    ChartsModule,
+    MatDialogModule,
   ],
   declarations: [
     DashboardComponent,
@@ -60,7 +62,11 @@ import { FarmMapPolygonComponent } from 'app/farm-map-polygon/farm-map-polygon.c
     ClientComponent,
     FarmClientComponent,
     SafePipePipe,
-    FarmMapPolygonComponent
+    FarmMapPolygonComponent,
+    DialogMessage
+  ],
+  entryComponents:[
+    DialogMessage
   ]
 })
 
