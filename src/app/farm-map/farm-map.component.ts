@@ -143,6 +143,7 @@ export class FarmMapComponent implements OnInit {
 
   }
   init(id) {
+    this.renderLineChartFlag=false;
     this.getFarms();
 
     //rango de fechas para graficas
@@ -204,11 +205,13 @@ export class FarmMapComponent implements OnInit {
   getZones(id: any) {
     this.loading = true;
     this.wiseconnService.getZones(id).subscribe((data: any) => {
-      this.loading = false;
       this.zones = data;
+      console.log("zones:",this.zones);
+      this.loading = false;
       for (var i = this.zones.length - 1; i >= 0; i--) {
-        if (this.zones[i].name === "Estación Meteorológica" && this.zones[i].type.map((element) => { return element == "Weather" })[0]) {
+        if (this.zones[i].name == "Estación Metereológica") {
           this.weatherStation = this.zones[i];
+          this.loading = true;
           this.wiseconnService.getMeasuresOfZones(this.weatherStation.id).subscribe((data) => {
             let temperatureFlag, humidityFlag = false;
             for (var i = data.length - 1; i >= 0; i--) {
@@ -221,8 +224,11 @@ export class FarmMapComponent implements OnInit {
               if(this.temperatureId&&this.humidityId){
                 this.wiseconnService.getDataByMeasure(this.temperatureId,this.dateRange).subscribe((data) => {
                   let temperatureData=data;
+                  console.log("temperatureData:",temperatureData);
                   this.wiseconnService.getDataByMeasure(this.humidityId,this.dateRange).subscribe((data) => {
                     let humidityData=data;
+                    this.loading = false;
+                    console.log("humidityData:",humidityData);
                     temperatureData=temperatureData.map((element)=>{
                       element.chart="temperature";
                       return element
@@ -295,17 +301,18 @@ export class FarmMapComponent implements OnInit {
           text: 'Por favor revisar la data cargada en el campo, ya que no tiene data cargada!'
         })
       } else {
-        if (data[0].max != null) {
-          this.loadMap(data);
-        } else {
-          this.loadMap([]);
-          this.mediciones = [];
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Por favor revisar la data cargada en el campo, ya que presenta errores, (ubicaciones no cargada, falta data etc) !'
-          })
-        }
+
+         if (data[0].max != null) {
+           this.loadMap(data);
+         } else {
+           this.loadMap([]);
+           this.mediciones = [];
+           Swal.fire({
+             icon: 'error',
+             title: 'Oops...',
+             text: 'Por favor revisar la data cargada en el campo, ya que presenta errores, (ubicaciones no cargada, falta data etc) !'
+           })
+         }
       }
     });
   }
