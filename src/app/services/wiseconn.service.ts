@@ -56,6 +56,7 @@ export class WiseconnService {
     )
   }
   getMeterogoAgrifut(id): Observable<farmModels> {
+    console.log(this.baseurl + '/zones/'+id+"/measures");
     return this.http.get<farmModels>(this.baseurl + '/zones/'+id+"/measures", this.httpOptions)
     .pipe(
       retry(1),

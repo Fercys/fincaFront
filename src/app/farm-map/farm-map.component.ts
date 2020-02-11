@@ -45,7 +45,7 @@ export class FarmMapComponent implements OnInit {
   //graficas
   public lineChartData: ChartDataSets[] = [
     { data: [], label: 'Temperatura' },
-    { data: [], label: 'Humedad' },
+    { data: [], label: 'Humedad', yAxisID: 'y-axis-1' },
   ];
   public lineChartLabels: Label[] = [];
   public lineChartOptions: (ChartOptions & { annotation: any }) = {
@@ -483,29 +483,11 @@ export class FarmMapComponent implements OnInit {
           Triangle.setMap(map);
           addListenersOnPolygon(Triangle, element.id);
           this.loading = true;
-          wisservice.getMeterogoAgrifut(element.id).subscribe((data: {}) => {
+          wisservice.getMeterogoAgrifut(element.id).subscribe((data: any) => {
             this.loading = false;
             this.mediciones = data;
             console.log("mediciones:",this.mediciones);
             for (const item of this.mediciones) {
-              // if (item.name == "Velocidad Viento") {
-              //   item.name = "Vel. Viento"
-              // }
-              // if (item.name == "Direccion de viento") {
-              //   item.name = "Dir. Viento"
-              // }
-              // if (item.name == "Radiacion Solar") {
-              //   item.name = "Rad. Solar"
-              // }
-              // if (item.name == "Wind Direction" || item.name == "ATM pressure" || item.name == "Wind Speed (period)" || item.name == "Porciones de Frío" || item.name == "Horas Frío") {
-              //   this.deleteValueJson(item.name);
-              // }
-              // if (item.name == "Porciones de Frío") {
-              //   this.deleteValueJson(item.name);
-              // }
-              // if (item.name == "Horas Frío") {
-              //   this.deleteValueJson(item.name);
-              // }
                 if(item.name == "Velocidad Viento"){
                   item.name = "Vel. Viento"
                 }
