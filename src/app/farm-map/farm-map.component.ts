@@ -200,20 +200,17 @@ export class FarmMapComponent implements OnInit {
           this.url = "";
       }
     });
-    this.renderCharts();
   }
   getZones(id: any) {
     this.loading = true;
     this.wiseconnService.getZones(id).subscribe((data: any) => {
       this.zones = data;
-      console.log("zones:",this.zones);
       this.loading = false;
       for (var i = this.zones.length - 1; i >= 0; i--) {
         if (this.zones[i].name == "Estación Metereológica") {
           this.weatherStation = this.zones[i];
           this.loading = true;
           this.wiseconnService.getMeasuresOfZones(this.weatherStation.id).subscribe((data) => {
-            let temperatureFlag, humidityFlag = false;
             for (var i = data.length - 1; i >= 0; i--) {
               if (data[i].sensorType === "Temperature") {
                 this.temperatureId = data[i].id;
@@ -224,11 +221,9 @@ export class FarmMapComponent implements OnInit {
               if(this.temperatureId&&this.humidityId){
                 this.wiseconnService.getDataByMeasure(this.temperatureId,this.dateRange).subscribe((data) => {
                   let temperatureData=data;
-                  console.log("temperatureData:",temperatureData);
                   this.wiseconnService.getDataByMeasure(this.humidityId,this.dateRange).subscribe((data) => {
                     let humidityData=data;
                     this.loading = false;
-                    console.log("humidityData:",humidityData);
                     temperatureData=temperatureData.map((element)=>{
                       element.chart="temperature";
                       return element
@@ -263,10 +258,8 @@ export class FarmMapComponent implements OnInit {
                       } 
                       if(chartData[i-1].chart==="humidity"){
                         this.lineChartData[1].data.push(chartData[i-1].value);
-                      }                                                        
-                      if (i == 0) {
-                        this.renderCharts();
                       }
+                        this.renderCharts();
                     }
                     // for (var i = 0; i < humidityData.length; i++) {
                     //   if(humidityData[i+1]){
@@ -361,7 +354,7 @@ export class FarmMapComponent implements OnInit {
 
 
   renderCharts() {
-      this.renderLineChartFlag=true;
+    this.renderLineChartFlag=true;
     // this.renderBarChart();
   }
   renderMap() {
@@ -493,6 +486,7 @@ export class FarmMapComponent implements OnInit {
           wisservice.getMeterogoAgrifut(element.id).subscribe((data: {}) => {
             this.loading = false;
             this.mediciones = data;
+            console.log("mediciones:",this.mediciones);
             for (const item of this.mediciones) {
               // if (item.name == "Velocidad Viento") {
               //   item.name = "Vel. Viento"
