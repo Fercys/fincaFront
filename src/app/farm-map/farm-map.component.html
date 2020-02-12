@@ -192,34 +192,36 @@
           </div>
           <div class="card-body card-pronostic">
             <div class="table-responsive">
-              <table class="table table-title">
-                <thead>
-                  <th> <img src="{{climaToday.weatherIconUrl[0].value}} "> </th>
-                  <th> {{climaToday.temp_C}}°C </th>
-                  <th>
-                    <span>
-                      {{today | date:'dd/MM/yyyy'}}
-                    </span>
-                    <div>
-                      {{dataFarm.name}}
-                    </div>
-                  </th>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td *ngFor="let day of climaDay"> {{formatDate(day | date:'EE dd')}} </td>
-                  </tr>
-                  <tr>
-                    <td *ngFor="let icon of climaIcon"><img style="width: 22px; height:22px" src="{{icon}}"></td>
-                  </tr>
-                  <tr>
-                    <td *ngFor="let max of climaMax">Máx: {{max}}°C </td>
-                  </tr>
-                  <tr>
-                    <td *ngFor="let min of climaMin">Mín: {{min}}°C</td>
-                  </tr>
-                </tbody>
-              </table>
+              <a href="https://www.worldweatheronline.com/">                
+                <table class="table table-title">
+                  <thead>
+                    <th> <img src="{{climaToday.weatherIconUrl[0].value}} "> </th>
+                    <th> {{climaToday.temp_C}}°C </th>
+                    <th>
+                      <span>
+                        {{today | date:'dd/MM/yyyy'}}
+                      </span>
+                      <div>
+                        {{dataFarm.name}}
+                      </div>
+                    </th>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td *ngFor="let day of climaDay"> {{formatDate(day | date:'EE dd')}} </td>
+                    </tr>
+                    <tr>
+                      <td *ngFor="let icon of climaIcon"><img style="width: 22px; height:22px" src="{{icon}}"></td>
+                    </tr>
+                    <tr>
+                      <td *ngFor="let max of climaMax">Máx: {{max}}°C </td>
+                    </tr>
+                    <tr>
+                      <td *ngFor="let min of climaMin">Mín: {{min}}°C</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </a>
             </div>
           </div>
         </div>
