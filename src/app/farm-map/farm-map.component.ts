@@ -120,6 +120,7 @@ export class FarmMapComponent implements OnInit {
   climaIcon = [];
   climaMax = [];
   climaMin = [];
+
   constructor(
     private _route: ActivatedRoute,
     private wiseconnService: WiseconnService,
@@ -378,46 +379,33 @@ export class FarmMapComponent implements OnInit {
     var wisservice = this.wiseconnService;
     var redirect = this.router;
     var zones = this.zones;
+      
+
+    let tooltip = document.createElement("span");
     var addListenersOnPolygon = function (polygon, id) {
       //this.loading = true;
+    let map = document.getElementById("map-container").firstChild;
       let zone = zones.filter(element => element.id == id)[0];
-      window['google'].maps.event.addListener(polygon, 'mouseover', (event) => {
-        let map = document.getElementById("map-container").firstChild;
-        let tooltip = document.createElement("span");
+      window['google'].maps.event.addListener(polygon, 'mouseover', (event) => {        
         tooltip.id = 'tooltip-text';
         tooltip.style.backgroundColor = '#777777';
         tooltip.style.color = '#FFFFFF';
-        tooltip.style.left = event.tb.offsetX + 'px';
-        tooltip.style.top = event.tb.offsetY + 'px';
-        tooltip.style.padding = '10px 20px';
-        tooltip.style.position = 'absolute';
         tooltip.innerHTML = zone.name;
+        tooltip.style.position = 'absolute';
+        tooltip.style.padding = '10px 20px';
+        tooltip.style.bottom = '0px';
+        // tooltip.style.left = event.tb.offsetX + 'px';
+        // tooltip.style.top = event.tb.offsetY + 'px';
         map.appendChild(tooltip);
       });
       window['google'].maps.event.addListener(polygon, 'mouseout', (event) => {
-        let map = document.getElementById("map-container").firstChild;
-        let tooltip = document.getElementById("tooltip-text");
-        if (tooltip)
-          map.removeChild(tooltip);
+        var elem = document.querySelector('#tooltip-text');
+        elem.parentNode.removeChild(elem);
       });
-      window['google'].maps.event.addListener(polygon, 'click', () => {
-        //   var ids = 0;
-
-        //     this.ids = id;
-        //   this.obtenerMedidas(id);
+      window['google'].maps.event.addListener(polygon, 'click', () => {        
         wisservice.getMeasuresOfZones(id).subscribe((data: any) => {
           wisservice.getIrrigarionsRealOfZones(id).subscribe((dataIrrigations: any) => {
             redirect.navigate(['/farmpolygon', data[0].farmId, id]);
-
-            //     alert('ID Sector: '+id+'\nfarmId: '+data[0].farmId+ '\nESTATUS: '+dataIrrigations[0].status+
-            //   '\nZone ID: '+data[0].zoneId+
-            //   '\nName: '+data[0].name+' \nUnit: '+data[0].unit+ '\nLast Data: '+data[0].lastData+
-            //   '\nLast Data Date: '+data[0].lastDataDate+'\nMonitoring Time: '+data[0].monitoringTime+
-            //   '\nSenson Depth: '+data[0].sensorDepth+'\nDepth Unit: '+data[0].depthUnit+
-            //   '\nNode ID: '+data[0].nodeId//'\nExpansion Port: '+data[0].physicalConnection.expansionPort+
-            // // // '\nExpansionBoard: '+data[0].physicalConnection.expansionBoard+
-            // //  //'\nNode Port: '+data[0].physicalConnection.nodePort+'\nSensor Type: '+data[0].sensorType
-            //   );
           })
         });
       });
