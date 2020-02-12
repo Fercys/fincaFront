@@ -199,7 +199,7 @@ export class FarmMapComponent implements OnInit {
       this.zones = data;
       this.loading = false;
       for (var i = this.zones.length - 1; i >= 0; i--) {
-        if (this.zones[i].name == "Estación Metereológica") {
+        if (this.zones[i].name == "Estación Meteorológica" || this.zones[i].name == "Estación Metereológica") {
           this.weatherStation = this.zones[i];
           this.loading = true;
           this.wiseconnService.getMeasuresOfZones(this.weatherStation.id).subscribe((data) => {
@@ -240,9 +240,9 @@ export class FarmMapComponent implements OnInit {
                         return element;
                     });
                     for (var i = 1; i < chartData.length; i+=2) {
-                      if(this.lineChart.labels.filter((element) => {
+                      if(this.lineChartLabels.find((element) => {
                         return element === chartData[i].time;//.format("YYYY-MM-DD hh:mm:ss");
-                      }).length == 0) {
+                      }) === undefined) {
                         this.lineChartLabels.push(chartData[i].time);
                       }
                       if (chartData[i].chart==="temperature") {
@@ -253,23 +253,6 @@ export class FarmMapComponent implements OnInit {
                       }
                         this.renderCharts();
                     }
-                    // for (var i = 0; i < humidityData.length; i++) {
-                    //   if(humidityData[i+1]){
-                    //     if(moment(humidityData[i].time).format("YYYY-MM-DD")==moment(humidityData[i+1].time).format("YYYY-MM-DD")&&moment(humidityData[i].time).minutes()==0 || moment(humidityData[i].time).minutes()==30){
-                    //       if(this.lineChart.labels.filter((element) => {
-                    //         return moment(element).format("YYYY-MM-DD hh:mm:ss") == moment(humidityData[i].time).format("YYYY-MM-DD hh:mm:ss");
-                    //       }).length==0){
-                    //         this.lineChartLabels.push(humidityData[i].time);
-                    //         // this.lineChart.labels.push(moment(humidityData[i].time).format("YYYY-MM-DD"));
-                    //       }
-                    //       this.lineChartData[1].data.push(humidityData[i].value);
-                    //       // this.lineChart.series[1].push(humidityData[i].value);
-                    //     }
-                    //   }
-                    //   if (i == 0) {
-                    //     this.renderCharts(temperatureData.length,humidityData.length);
-                    //   }
-                    // }
                   });
                 });
               }
@@ -383,7 +366,6 @@ export class FarmMapComponent implements OnInit {
 
     let tooltip = document.createElement("span");
     var addListenersOnPolygon = function (polygon, id) {
-      //this.loading = true;
     let map = document.getElementById("map-container").firstChild;
       let zone = zones.filter(element => element.id == id)[0];
       window['google'].maps.event.addListener(polygon, 'mouseover', (event) => {        
