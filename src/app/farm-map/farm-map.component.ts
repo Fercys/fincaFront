@@ -71,22 +71,13 @@ export class FarmMapComponent implements OnInit {
       ]
     },
     annotation: {
-      annotations: [
-        {
-          type: 'line',
-          mode: 'vertical',
-          scaleID: 'x-axis-0',
-          value: 'March',
-          borderColor: 'orange',
-          borderWidth: 2,
-          label: {
-            enabled: true,
-            fontColor: 'orange',
-            content: 'LineAnno'
-          }
-        },
-      ],
+      annotations: [{}],
     },
+    elements: {
+        point: {
+            radius: 0
+        }
+    }
   };
   public lineChartColors: Color[] = [
     { // red
@@ -486,7 +477,6 @@ export class FarmMapComponent implements OnInit {
           wisservice.getMeterogoAgrifut(element.id).subscribe((data: any) => {
             this.loading = false;
             this.mediciones = data;
-            console.log("mediciones:",this.mediciones);
             for (const item of this.mediciones) {
                 if(item.name == "Velocidad Viento"){
                   item.name = "Vel. Viento"
@@ -602,7 +592,32 @@ export class FarmMapComponent implements OnInit {
      dialogRef.afterClosed().subscribe(result => {
        console.log('The dialog was closed');
      });
-  } 
+  }
+  formatDate(date:string){
+    let formatDate;
+    if(date.indexOf("Mon")==0){
+      formatDate=date.replace('Mon', 'Lunes')
+    }
+    if(date.indexOf("Tue")==0){
+      formatDate=date.replace('Tue', 'Martes')
+    }
+    if(date.indexOf("Wed")==0){
+      formatDate=date.replace('Wed', 'Miércoles')
+    }
+    if(date.indexOf("Thu")==0){
+      formatDate=date.replace('Thu', 'Jueves')
+    }
+    if(date.indexOf("Fri")==0){
+      formatDate=date.replace('Fri', 'Viernes')
+    }
+    if(date.indexOf("Sat")==0){
+      formatDate=date.replace('Sat', 'Sábado')
+    }
+    if(date.indexOf("Sun")==0){
+      formatDate=date.replace('Sun', 'Domingo')
+    }
+    return formatDate;
+  }
 }
 
 
