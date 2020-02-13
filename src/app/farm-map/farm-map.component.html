@@ -189,46 +189,45 @@
       <div class="col-md-4">
         <div *ngIf="climaLoading" class="container-fluid">
           <div class="row ">
-            <div class="col-md-4">
-            <h4 class="row-subtitle-card">Pronóstico </h4>
-          </div>
-          <div class="col-md-4">
-           <span>
-              {{today | date:'dd/MM/yyyy'}}
-            </span>
-          </div>
+            <h4 class="row-subtitle-card">Pronóstico</h4>
           </div>
           <div class="card-body card-pronostic">
-            <div class="table-responsive">
-              <a href="https://www.worldweatheronline.com/">                
-                <table class="table table-title">
-                  <thead>
-                    <!-- <th> <img src="{{climaToday.weatherIconUrl[0].value}} "> </th>
-                    <th> {{climaToday.temp_C}}°C </th> -->
-                    <th>
-                      
-                      <!-- <div>
-                        {{dataFarm.name}}
-                      </div> -->
-                    </th>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td *ngFor="let day of climaDay"> {{formatDate(day | date:'EE')}} </td>
-                    </tr>
-                    <tr>
-                      <td *ngFor="let icon of climaIcon"><img style="width: 22px; height:22px" src="{{icon}}"></td>
-                    </tr>
-                    <tr>
-                      <td *ngFor="let max of climaMax">Máx: <br> {{max}}°C </td>
-                    </tr>
-                    <tr>
-                      <td *ngFor="let min of climaMin">Mín:<br> {{min}}°C</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </a>
-            </div>
+            <table class="table-title">
+              <thead>
+                <th> <img src="{{climaToday.weatherIconUrl[0].value}} "> </th>
+                <th> {{climaToday.temp_C}}°C </th>
+                <th>
+                  <span>
+                    {{today | date:'dd/MM/yyyy'}}
+                  </span>
+                  <div>
+                    {{dataFarm.name}}
+                  </div>
+                </th>
+              </thead>
+            </table>
+            <table class="table-body">
+              <thead>
+              </thead>
+              <tbody>
+                <tr>
+                  <td> </td>  
+                  <td *ngFor="let day of climaDay"> {{formatDate(day | date:'EE ')}} </td>
+                </tr>
+                <tr>
+                  <td> </td>
+                  <td *ngFor="let icon of climaIcon"><img style="width: 22px; height:22px" src="{{icon}}"></td>
+                </tr>
+                <tr>
+                  <td>Máx: </td>
+                  <td *ngFor="let max of climaMax">{{max}}°C </td>
+                </tr>
+                <tr>
+                  <td>Min: </td>
+                  <td *ngFor="let min of climaMin">{{min}}°C</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

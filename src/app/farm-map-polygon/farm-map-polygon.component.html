@@ -236,15 +236,19 @@
                   </thead>
                   <tbody>
                     <tr>
+                      <td> </td>
                       <td *ngFor="let day of climaDay"> {{day | date:'EE dd'}} </td>
                     </tr>
                     <tr>
+                      <td> </td>
                       <td *ngFor="let icon of climaIcon"><img style="width: 22px; height:22px" src="{{icon}}"></td>
                     </tr>
                     <tr>
+                      <td>Máx: </td>
                       <td *ngFor="let max of climaMax">{{max}}°C </td>
                     </tr>
                     <tr>
+                      <td>Min: </td>
                       <td *ngFor="let min of climaMin">{{min}}°C</td>
                     </tr>
                   </tbody>

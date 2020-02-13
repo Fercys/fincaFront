@@ -374,7 +374,7 @@ export class FarmMapComponent implements OnInit {
         tooltip.style.color = '#FFFFFF';
         tooltip.innerHTML = zone.name;
         tooltip.style.position = 'absolute';
-        tooltip.style.padding = '10px 20px';
+        tooltip.style.padding = '20px 20px';
         tooltip.style.bottom = '0px';
         // tooltip.style.left = event.tb.offsetX + 'px';
         // tooltip.style.top = event.tb.offsetY + 'px';
