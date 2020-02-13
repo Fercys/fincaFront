@@ -378,7 +378,7 @@ export class FarmMapComponent implements OnInit {
         tooltip.style.color = '#FFFFFF';
         tooltip.innerHTML = zone.name;
         tooltip.style.position = 'absolute';
-        tooltip.style.padding = '10px 20px';
+        tooltip.style.padding = '20px 20px';
         tooltip.style.bottom = '0px';
         // tooltip.style.left = event.tb.offsetX + 'px';
         // tooltip.style.top = event.tb.offsetY + 'px';
@@ -570,25 +570,25 @@ export class FarmMapComponent implements OnInit {
   formatDate(date:string){
     let formatDate;
     if(date.indexOf("Mon")==0){
-      formatDate=date.replace('Mon', 'Lunes')
+      formatDate=date.replace('Mon', 'Lun')
     }
     if(date.indexOf("Tue")==0){
-      formatDate=date.replace('Tue', 'Martes')
+      formatDate=date.replace('Tue', 'Mar')
     }
     if(date.indexOf("Wed")==0){
-      formatDate=date.replace('Wed', 'Miércoles')
+      formatDate=date.replace('Wed', 'Mie')
     }
     if(date.indexOf("Thu")==0){
-      formatDate=date.replace('Thu', 'Jueves')
+      formatDate=date.replace('Thu', 'Jue')
     }
     if(date.indexOf("Fri")==0){
-      formatDate=date.replace('Fri', 'Viernes')
+      formatDate=date.replace('Fri', 'Vie')
     }
     if(date.indexOf("Sat")==0){
-      formatDate=date.replace('Sat', 'Sábado')
+      formatDate=date.replace('Sat', 'Sab')
     }
     if(date.indexOf("Sun")==0){
-      formatDate=date.replace('Sun', 'Domingo')
+      formatDate=date.replace('Sun', 'Dom')
     }
     return formatDate;
   }
