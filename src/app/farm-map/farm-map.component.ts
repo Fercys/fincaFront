@@ -34,6 +34,7 @@ export class FarmMapComponent implements OnInit {
   today = Date.now();
   dataFarm: any;
   public zones: any[] = [];
+  public weatherZones: any[] = [];
   public weatherStation: any = null;
   closeResult: string;
   clima: any;
@@ -107,10 +108,6 @@ export class FarmMapComponent implements OnInit {
   public humidityId: number = null;
   public renderLineChartFlag : boolean = false;
 
-  public lineChart: any = {
-    labels: [],
-    series: [[], []]
-  }
   farms;
 
   //Pronostico values
@@ -197,6 +194,13 @@ export class FarmMapComponent implements OnInit {
     this.loading = true;
     this.wiseconnService.getZones(id).subscribe((data: any) => {
       this.zones = data;
+      this.weatherZones = data.filter((element)=>{
+        if(element.type.find((element) => {
+            return element === 'Weather';
+          }) != undefined){
+          return element
+        }
+      });
       this.loading = false;
       for (var i = this.zones.length - 1; i >= 0; i--) {
         if (this.zones[i].name == "Estación Meteorológica" || this.zones[i].name == "Estación Metereológica") {
