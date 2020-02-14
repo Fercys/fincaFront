@@ -5,3 +5,6 @@
 .link-navbar-user b{
     color: #6fb060;
 }
+.img-filter-colors{
+    filter: invert(29%) sepia(81%) saturate(326%) hue-rotate(173deg) brightness(50%) contrast(97%);
+}

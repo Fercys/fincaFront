@@ -124,7 +124,8 @@ export class FarmMapComponent implements OnInit {
     public modalService: NgbModal,
     private router: Router,
     public weatherService: WeatherService,
-    private calendar: NgbCalendar) {
+    private calendar: NgbCalendar,
+    private dialogs: MatDialog) {
   }
 
   ngOnInit() {
@@ -559,12 +560,8 @@ export class FarmMapComponent implements OnInit {
     }
   }
   openDialog(): void {
-     const dialogRef = this.dialog.open(DialogMessage, {
+     const dialogRef = this.dialogs.open(DialogMessage, {
        panelClass: 'messagedialogcss'
-     });
-
-     dialogRef.afterClosed().subscribe(result => {
-       console.log('The dialog was closed');
      });
   }
   formatDate(date:string){

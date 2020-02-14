@@ -1,15 +1,14 @@
 
     <div class="message-dialog-title" mat-dialog-title>
         <span class="text">Nuevo mensaje</span>
-        <span class="icon">ICON</span>
+        <span class="icon"><img class="img-filter-colors" src="assets/icons/Mail.svg" style="width: 20px;height: 20px"></span>
     </div>
     <div mat-dialog-content>
       <mat-form-field>
-        <input matInput >
+        <textarea matInput></textarea>
       </mat-form-field>
     </div>
-    <div mat-dialog-actions>
-      <button mat-button (click)="onNoClick()">No</button>
-      <button mat-button  cdkFocusInitial>Ok</button>
+    <div style="float: right;" mat-dialog-actions>
+      <button class="btn btn-login" >Enviar</button>
     </div>
 
