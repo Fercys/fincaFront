@@ -48,7 +48,8 @@
                     <h4 class="row-subtitle">Clima</h4>
                   </div>
                   <div class="card-body ">
-                    <table>
+                    <div class="table-responsive">
+                      <table class="table">
                       <tbody>
                         <tr *ngFor="let data of mediciones">
                           <td class="name-weather">
@@ -79,6 +80,7 @@
                       </tbody>
                     </table>
                   </div>
+                </div>
             </div>
             <!-- <div class="table-responsive" style="background-color: powderblue;">
               <table class="table table-hover">
@@ -124,15 +126,15 @@
           <form class="form-inline form-date-range line">
               <div class="form-group hidden">
                 <div class="input-group">
-                  <input name="datepicker"
+                  <input name="datepickerFrom"
                          style="
                          background-color: transparent;
                          border: none;
                          visibility: hidden;"
                          ngbDatepicker
-                         #datepicker="ngbDatepicker"
+                         #datepickerFrom="ngbDatepicker"
                          [autoClose]="'outside'"
-                         (dateSelect)="onDateSelection($event)"
+                         (dateSelect)="onDateSelection($event,'from')"
                          [displayMonths]="1"
                          [dayTemplate]="t"
                          outsideDays="hidden"
@@ -158,10 +160,37 @@
                          [value]="formatter.format(fromDate)"
                          (input)="fromDate = validateInput(fromDate, dpFromDate.value)">
                   <div class="input-group-append">
-                    <button class="icon-calendar" (click)="datepicker.toggle()" type="button">
+                    <button class="icon-calendar" (click)="datepickerFrom.toggle()" type="button">
                       <img src="assets/icons/Calendar.svg" style="height: 25px">
                     </button>
                   </div>
+                </div>
+              </div>
+              <div class="form-group hidden">
+                <div class="input-group">
+                  <input name="datepickerTo"
+                         style="
+                         background-color: transparent;
+                         border: none;
+                         visibility: hidden;"
+                         ngbDatepicker
+                         #datepickerTo="ngbDatepicker"
+                         [autoClose]="'outside'"
+                         (dateSelect)="onDateSelection($event,'to')"
+                         [displayMonths]="1"
+                         [dayTemplate]="t"
+                         outsideDays="hidden"
+                         [startDate]="fromDate">
+                  <ng-template #t let-date let-focused="focused">
+                    <span class="custom-day"
+                          [class.focused]="focused"
+                          [class.range]="isRange(date)"
+                          [class.faded]="isHovered(date) || isInside(date)"
+                          (mouseenter)="hoveredDate = date"
+                          (mouseleave)="hoveredDate = null">
+                      {{ date.day }}
+                    </span>
+                  </ng-template>
                 </div>
               </div>
               <div class="form-group">
@@ -173,21 +202,21 @@
                          [value]="formatter.format(toDate)"
                          (input)="toDate = validateInput(toDate, dpToDate.value)">
                   <div class="input-group-append">
-                    <button class="icon-calendar"  (click)="datepicker.toggle()" type="button">
+                    <button class="icon-calendar"  (click)="datepickerTo.toggle()" type="button">
                       <img src="assets/icons/Calendar.svg" style="height: 25px">
                     </button>
                   </div>
                 </div>
               </div>
               <div class="form-inline">
-                <button class="btn-greem">Ver</button>
+                <button class="btn-greem" [disabled]="requestChartBtn" (click)="requestDataChart()">Ver</button>
               </div>
           </form>
         </div>
         <div class="line">
           <div class="buttons-time row">
             <div >
-              <button class="volver">Volver</button>
+              <button class="volver" (click)="goBack()" [disabled]="dateRangeHistory.length==1">Volver</button>
             </div>
             <div *ngFor="let data of times">
                 <button [ngClass]="{'times-active': data.value === selectedValue}" (click)="selectTime(data)"  class="times">{{data.value}}</button>
@@ -199,7 +228,22 @@
             <h4 class="row-subtitle">Temperatura/Humedad</h4>
           </div>
           <div class="card-body bg-white chard-size">
-            <div class="ct-chart line-chart "></div>
+            <div class="card-body bg-white chard-size">
+              <div class="flex" *ngIf="renderLineChartFlag">
+                <div class="flex-item">
+                  <div style="display: block;">
+                  <canvas baseChart width="400" height="400"
+                              [datasets]="lineChartData"
+                              [labels]="lineChartLabels"
+                              [options]="lineChartOptions"
+                              [colors]="lineChartColors"
+                              [legend]="lineChartLegend"
+                              [chartType]="lineChartType"
+                              [plugins]="lineChartPlugins"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="container-fluid top">

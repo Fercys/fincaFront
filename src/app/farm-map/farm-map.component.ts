@@ -4,6 +4,7 @@ import { WiseconnService } from 'app/services/wiseconn.service';
 import { element } from 'protractor';
 import { NgbModal, NgbDate, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 
+//graficas
 import { ChartDataSets, ChartOptions } from 'chart.js';
 import { Color, BaseChartDirective, Label } from 'ng2-charts';
 import * as pluginAnnotations from 'chartjs-plugin-annotation';
@@ -44,6 +45,7 @@ export class FarmMapComponent implements OnInit {
   public toDate: NgbDate;
   public dateRange: any = null;
   //graficas
+  @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
   public lineChartData: ChartDataSets[] = [
     { data: [], label: 'Temperatura' },
     { data: [], label: 'Humedad', yAxisID: 'y-axis-1' },
@@ -102,7 +104,6 @@ export class FarmMapComponent implements OnInit {
   public lineChartType = 'line';
   public lineChartPlugins = [pluginAnnotations];
 
-  @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
 
   public temperatureId: number = null;
   public humidityId: number = null;
