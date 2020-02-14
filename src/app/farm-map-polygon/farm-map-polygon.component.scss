@@ -208,3 +208,13 @@ iframe {
     float: right;
   }
 }
+
+@media screen and (max-width: 996px){
+  .input-center-flex{
+    justify-content: center;
+  }
+  .form-date-range{
+    text-align: center;
+  }
+}
+

@@ -151,12 +151,13 @@
               </div>
               <div class="form-group ">
                 <h6>*Fecha de Inicio</h6>
-                <div class="input-group">
+                <div class="input-group input-center-flex">
                   <input #dpFromDate
                          class="input-calendar" 
                          name="dpFromDate"
                          [value]="formatter.format(fromDate)"
-                         (input)="fromDate = validateInput(fromDate, dpFromDate.value)">
+                         (input)="fromDate = validateInput(fromDate, dpFromDate.value)"
+                         (click)="datepicker.toggle()">
                   <div class="input-group-append">
                     <button class="icon-calendar" (click)="datepicker.toggle()" type="button">
                       <img src="assets/icons/Calendar.svg" style="height: 25px">
@@ -166,12 +167,13 @@
               </div>
               <div class="form-group">
                   <h6>*Fecha Final</h6> 
-                <div class="input-group">
+                <div class="input-group input-center-flex">
                   <input #dpToDate
                          class="input-calendar"  
                          name="dpToDate"
                          [value]="formatter.format(toDate)"
-                         (input)="toDate = validateInput(toDate, dpToDate.value)">
+                         (input)="toDate = validateInput(toDate, dpToDate.value)"
+                         (click)="datepicker.toggle()">
                   <div class="input-group-append">
                     <button class="icon-calendar"  (click)="datepicker.toggle()" type="button">
                       <img src="assets/icons/Calendar.svg" style="height: 25px">
@@ -179,7 +181,7 @@
                   </div>
                 </div>
               </div>
-              <div class="form-inline">
+              <div class="form-inline input-center-flex">
                 <button class="btn-greem">Ver</button>
               </div>
           </form>
