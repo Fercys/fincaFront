@@ -12,6 +12,7 @@ import * as pluginAnnotations from 'chartjs-plugin-annotation';
 
 import * as Chartist from 'chartist';
 import * as moment from "moment";
+import Swal from 'sweetalert2'
 
 
 @Component({
@@ -144,7 +145,7 @@ export class FarmMapPolygonComponent implements OnInit {
         this.getZone = data;
         this.getZone.forEach(element =>{
           if(element.id == "727" || element.id== 727 || element.id == "6054" || element.id == 6054 || element.id == "13872" || element.id == 13872){
-            this.wiseconnService.getMeterogoAgrifut(element.id).subscribe((data: {}) => { 
+            this.wiseconnService.getMeterogoAgrifut(element.id).subscribe((data: any) => { 
               this.loading = false;
               this.mediciones=data;   
               for (const item of this.mediciones) {
@@ -194,7 +195,7 @@ export class FarmMapPolygonComponent implements OnInit {
           // //  //'\nNode Port: '+data[0].physicalConnection.nodePort+'\nSensor Type: '+data[0].sensorType
           //   );
           // })
-          // this.loadMap2(data); 
+          this.loadMap2(data); 
           this.wiseconnService.getFarm(this._route.snapshot.paramMap.get('id')).subscribe((data: {}) => {
             switch (data['account']['id']) { 
               case 63:
@@ -244,45 +245,52 @@ export class FarmMapPolygonComponent implements OnInit {
     let farmPolygon = data.find(function(element){
       return element['id'] == idFarm;
     }); 
-    const q = [farmPolygon.latitude, farmPolygon.longitude];
-    const key = "67a49d3ba5904bef87441658192312";
-    this.climaLoading = false;
-    this.weatherService.getWeather(key,q).subscribe((weather) => {
-      this.climaToday = weather.data.current_condition[0];
-      var clima = (weather.data.weather);
-      for (const data of clima) {
-        data.iconLabel = data.hourly[0].weatherIconUrl[0];
-        this.climaDay.push(data.date);
-        this.climaIcon.push(data.iconLabel.value);
-        this.climaMax.push(data.maxtempC);
-        this.climaMin.push(data.mintempC);
-        this.climaLoading = true;
-      }
-    });
-
-
-    if(farmPolygon.latitude == undefined && farmPolygon.latitude == undefined){
-      var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
-        center: {lat:  farmPolygon.polygon.path[0].lat, lng: farmPolygon.polygon.path[0].lng},
-        zoom:15,
-        mapTypeId: window['google'].maps.MapTypeId.HYBRID
+    console.log("farmPolygon.latitude && farmPolygon.longitude:",farmPolygon.latitude , farmPolygon.longitude)
+    if(farmPolygon.latitude && farmPolygon.longitude){
+      const q = [farmPolygon.latitude, farmPolygon.longitude];
+      const key = "67a49d3ba5904bef87441658192312";
+      this.climaLoading = false;
+      this.weatherService.getWeather(key,q).subscribe((weather) => {
+        this.climaToday = weather.data.current_condition[0];
+        var clima = (weather.data.weather);
+        for (const data of clima) {
+          data.iconLabel = data.hourly[0].weatherIconUrl[0];
+          this.climaDay.push(data.date);
+          this.climaIcon.push(data.iconLabel.value);
+          this.climaMax.push(data.maxtempC);
+          this.climaMin.push(data.mintempC);
+          this.climaLoading = true;
+        }
       });
+      if(farmPolygon.latitude == undefined && farmPolygon.latitude == undefined){
+        var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
+          center: {lat:  farmPolygon.polygon.path[0].lat, lng: farmPolygon.polygon.path[0].lng},
+          zoom:15,
+          mapTypeId: window['google'].maps.MapTypeId.HYBRID
+        });
+      }else{
+        var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
+          center: {lat: farmPolygon.latitude, lng: farmPolygon.longitude},
+          zoom:15,
+          mapTypeId: window['google'].maps.MapTypeId.HYBRID
+        });
+      } 
+      var flightPath = new window['google'].maps.Polygon({
+        paths: farmPolygon.polygon.path,
+        strokeColor: '#49AA4F',
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: '#49AA4F',
+        fillOpacity: 0.35,
+      });
+      flightPath.setMap(map);
     }else{
-      var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
-        center: {lat: farmPolygon.latitude, lng: farmPolygon.longitude},
-        zoom:15,
-        mapTypeId: window['google'].maps.MapTypeId.HYBRID
-      });
-    } 
-    var flightPath = new window['google'].maps.Polygon({
-      paths: farmPolygon.polygon.path,
-      strokeColor: '#49AA4F',
-      strokeOpacity: 0.8,
-      strokeWeight: 2,
-      fillColor: '#49AA4F',
-      fillOpacity: 0.35,
-    });
-    flightPath.setMap(map);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'No están cargada las coordenadas correctamente'
+      })
+    }     
   }
   renderMap() {
     window['initMap'] = () => {
@@ -386,8 +394,7 @@ export class FarmMapPolygonComponent implements OnInit {
               this.loading = true;
               wisservice.getMeterogoAgrifut(element.id).subscribe((data: {}) => { 
                 this.loading = false;
-                this.mediciones=data;   
-                console.log(data); 
+                this.mediciones=data;
               });
             }else{
 
@@ -576,6 +583,12 @@ export class FarmMapPolygonComponent implements OnInit {
                   }
                 });
               });
+            }else if(i==0){
+              Swal.fire({
+                icon: 'info',
+                title: 'Oops...',
+                text: 'No tiene configurado los sensores de humedad y temperatura'
+              })
             }
           }
         });
