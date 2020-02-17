@@ -283,7 +283,7 @@
                   <tbody>
                     <tr>
                       <td> </td>
-                      <td *ngFor="let day of climaDay"> {{day | date:'EE dd'}} </td>
+                      <td *ngFor="let day of climaDay"> {{formatDate(day | date:'EE ')}} </td>
                     </tr>
                     <tr>
                       <td> </td>

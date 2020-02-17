@@ -239,6 +239,31 @@ export class FarmMapPolygonComponent implements OnInit {
     });
 
   }
+  formatDate(date:string){
+    let formatDate;
+    if(date.indexOf("Mon")==0){
+      formatDate=date.replace('Mon', 'Lun')
+    }
+    if(date.indexOf("Tue")==0){
+      formatDate=date.replace('Tue', 'Mar')
+    }
+    if(date.indexOf("Wed")==0){
+      formatDate=date.replace('Wed', 'Mie')
+    }
+    if(date.indexOf("Thu")==0){
+      formatDate=date.replace('Thu', 'Jue')
+    }
+    if(date.indexOf("Fri")==0){
+      formatDate=date.replace('Fri', 'Vie')
+    }
+    if(date.indexOf("Sat")==0){
+      formatDate=date.replace('Sat', 'Sab')
+    }
+    if(date.indexOf("Sun")==0){
+      formatDate=date.replace('Sun', 'Dom')
+    }
+    return formatDate;
+  }
   loadMap2(data){
     this.weatherService;
     let idFarm = this._route.snapshot.paramMap.get('farm');
