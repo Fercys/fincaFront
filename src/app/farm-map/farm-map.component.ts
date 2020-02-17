@@ -84,7 +84,7 @@ export class FarmMapComponent implements OnInit {
   };
   public lineChartColors: Color[] = [
     { // red
-      backgroundColor:'rgba(255, 0, 0,0.3)',
+      backgroundColor:'rgba(255, 255, 255, 0.1)',
       borderColor:'rgba(255, 0, 0,1)',
       pointBackgroundColor:'rgba(255, 0, 0,1)',
       pointBorderColor:'#fff',
@@ -92,7 +92,7 @@ export class FarmMapComponent implements OnInit {
       pointHoverBorderColor: 'rgba(255, 0, 0,0.8)'
     },
     { // blue
-      backgroundColor:'rgba(2,87,154,0.2)',
+      backgroundColor:'rgba(255, 255, 255, 0.1)',
       borderColor:'rgba(2,87,154,1)',
       pointBackgroundColor:'rgba(2, 87, 154,1)',
       pointBorderColor:'#fff',
