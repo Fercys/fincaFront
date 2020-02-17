@@ -260,7 +260,7 @@ export class FarmMapComponent implements OnInit {
                     }
                   });
                 });
-              }else{
+              }else if(i==0){
                 Swal.fire({
                   icon: 'info',
                   title: 'Oops...',

@@ -245,6 +245,7 @@ export class FarmMapPolygonComponent implements OnInit {
     let farmPolygon = data.find(function(element){
       return element['id'] == idFarm;
     }); 
+    console.log("farmPolygon.latitude && farmPolygon.longitude:",farmPolygon.latitude , farmPolygon.longitude)
     if(farmPolygon.latitude && farmPolygon.longitude){
       const q = [farmPolygon.latitude, farmPolygon.longitude];
       const key = "67a49d3ba5904bef87441658192312";
@@ -582,7 +583,7 @@ export class FarmMapPolygonComponent implements OnInit {
                   }
                 });
               });
-            }else{
+            }else if(i==0){
               Swal.fire({
                 icon: 'info',
                 title: 'Oops...',
