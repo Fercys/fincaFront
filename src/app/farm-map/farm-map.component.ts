@@ -377,7 +377,8 @@ export class FarmMapComponent implements OnInit {
 
     let tooltip = document.createElement("span");
     var addListenersOnPolygon = function (polygon, id) {
-    let map = document.getElementById("map-container").firstChild;
+    let map = document.getElementById("map-container")?document.getElementById("map-container").firstChild:null;
+    if(map){
       let zone = zones.filter(element => element.id == id)[0];
       window['google'].maps.event.addListener(polygon, 'mouseover', (event) => {        
         tooltip.id = 'tooltip-text';
@@ -402,6 +403,8 @@ export class FarmMapComponent implements OnInit {
           })
         });
       });
+    }
+      
     }
 
     // var marker = new window['google'].maps.Marker({

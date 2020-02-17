@@ -101,7 +101,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     
     this.loading = true;
-    this.wiseconnService.getFarms().subscribe((data: {}) => {
+    this.wiseconnService.getFarms().subscribe((data: any) => {
       this.farms = data;
       localStorage.setItem("datafarms", JSON.stringify(this.farms));
       this.cant_farms=this.farms.length;
@@ -195,7 +195,5 @@ export class DashboardComponent implements OnInit {
 
       //start animation for the Emails Subscription Chart
       this.startAnimationForBarChart(websiteViewsChart);
-
-      console.log(this.farms);
   }
 }

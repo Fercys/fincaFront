@@ -244,8 +244,7 @@ export class FarmMapPolygonComponent implements OnInit {
     let idFarm = this._route.snapshot.paramMap.get('farm');
     let farmPolygon = data.find(function(element){
       return element['id'] == idFarm;
-    }); 
-    console.log("farmPolygon.latitude && farmPolygon.longitude:",farmPolygon.latitude , farmPolygon.longitude)
+    });
     if(farmPolygon.latitude && farmPolygon.longitude){
       const q = [farmPolygon.latitude, farmPolygon.longitude];
       const key = "67a49d3ba5904bef87441658192312";
@@ -322,8 +321,8 @@ export class FarmMapPolygonComponent implements OnInit {
 
         //     this.ids = id;
         //   this.obtenerMedidas(id);
-        wisservice.getMeasuresOfZones(id).subscribe((data: {}) => {     
-          wisservice.getIrrigarionsRealOfZones(id).subscribe((dataIrrigations: {}) => {
+        wisservice.getMeasuresOfZones(id).subscribe((data: any) => {     
+          wisservice.getIrrigarionsRealOfZones(id).subscribe((dataIrrigations: any) => {
 
             alert('ID Sector: '+id+'\nfarmId: '+data[0].farmId+ '\nESTATUS: '+dataIrrigations[0].status+
               '\nZone ID: '+data[0].zoneId+
@@ -379,7 +378,7 @@ export class FarmMapPolygonComponent implements OnInit {
         data.forEach(element => {
           // Construct the polygon.
           let idFarm = this._route.snapshot.paramMap.get('id');
-          wisservice.getIrrigarionsRealOfZones(idFarm).subscribe((dataIrrigations: {}) => {
+          wisservice.getIrrigarionsRealOfZones(idFarm).subscribe((dataIrrigations: any) => {
             if(idFarm == "727" || element.id== 727 || element.id == "6054" || element.id == 6054 || element.id == "13872" || element.id == 13872){
               var Triangle = new window['google'].maps.Polygon({
                 paths: element.polygon.path,

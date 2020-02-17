@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { WiseconnService } from '../services/wiseconn.service';
 
 @Component({
   selector: 'app-farms',
@@ -7,11 +8,28 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FarmsComponent implements OnInit {
   public farms;
-  constructor() { }
+  constructor(private wiseconnService: WiseconnService,) { }
 
-  ngOnInit() {
-    this.farms=JSON.parse(localStorage.getItem("datafarms"));
-    console.log(this.farms);
+  ngOnInit() { 
+    this.wiseconnService.getFarms().subscribe((data: any) => {
+      this.farms = data;
+      switch (localStorage.getItem("username").toLowerCase()) {
+        case "agrifut":
+          this.farms = this.farms.filter((element) => {
+            return element.id == 185 || element.id == 2110 || element.id == 1378 || element.id == 520
+          })
+          break;
+        case "santajuana":
+          this.farms = this.farms.filter((element) => {
+            return element.id == 719
+          })
+          break;
+
+        default:
+          // code...
+          break;
+      }
+    })
   }
 
 }
