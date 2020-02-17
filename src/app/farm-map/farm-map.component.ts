@@ -260,6 +260,12 @@ export class FarmMapComponent implements OnInit {
                     }
                   });
                 });
+              }else{
+                Swal.fire({
+                  icon: 'info',
+                  title: 'Oops...',
+                  text: 'No tiene configurado los sensores de humedad y temperatura'
+                })
               }
             }
           });
