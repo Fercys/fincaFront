@@ -13,6 +13,7 @@ import { FarmMapComponent } from '../../farm-map/farm-map.component';
 import { ClientComponent } from 'app/client/client.component';
 import { FarmClientComponent } from 'app/farm-client/farm-client.component';
 import { FarmMapPolygonComponent } from 'app/farm-map-polygon/farm-map-polygon.component';
+import { FreePlotterComponent } from 'app/free-plotter/free-plotter.component';
 
 export const AdminLayoutRoutes: Routes = [
     // {
@@ -70,4 +71,6 @@ export const AdminLayoutRoutes: Routes = [
     { path: 'client', component:  ClientComponent, pathMatch:  'full' },
     { path: 'client-farm/:id', component:  FarmClientComponent, pathMatch:  'full' },
     { path: 'farmpolygon/:id/:farm', component:  FarmMapPolygonComponent, pathMatch:  'full' },
+    { path: 'free-plotter', component:  FreePlotterComponent, pathMatch:  'full' },
+    
 ];
