@@ -24,7 +24,7 @@
     font-size: 14px;
 }
 .resetpassword{
-    color: #5586c1;
+    color: #565a60;
     font-style: italic;
     text-transform: inherit;
     font-family: 'metropolis', sans-serif !important;
@@ -80,10 +80,10 @@ button.mat-button.mat-raised-button.mat-primary {
 
 ::ng-deep {
     .login .mat-form-field-underline {
-        background-color: #6fb060;
+        background-color: white;
     }
     .login .mat-form-field-label{
-        color:#6fb060;
+        color:white;
     }
     .mat-input-element.mat-form-field-autofill-control{
         color:white !important;

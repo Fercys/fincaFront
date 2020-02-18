@@ -300,7 +300,7 @@ export class FarmMapComponent implements OnInit {
     this.wiseconnService.getFarms().subscribe((data: any) => {
       this.farms = data;
       switch (localStorage.getItem("username").toLowerCase()) {
-        case "agrifut":
+        case "agrifrut":
           this.farms = this.farms.filter((element) => {
             return element.id == 185 || element.id == 2110 || element.id == 1378 || element.id == 520
           })

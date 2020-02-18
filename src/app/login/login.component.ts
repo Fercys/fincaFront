@@ -70,7 +70,7 @@ export class LoginComponent implements OnInit,OnDestroy,AfterViewInit {
 		if ((usuario == 'Admin@cdtec.cl' || usuario == 'Admin') && password == '12345678') {
     		localStorage.setItem("username", usuario);
 			this._router.navigate(['/dashboard']);
-		}else if((usuario == 'Agrifut@cdtec.cl' || usuario == 'Agrifut') && password == '12345678'){
+		}else if((usuario == 'Agrifrut@cdtec.cl' || usuario == 'Agrifrut') && password == '12345678'){
     		localStorage.setItem("username", usuario);
 			this._router.navigate(['/farmmap/185']);//185,2110,1378,520
 		}else if((usuario == 'SantaJuana@cdtec.cl' || usuario == 'SantaJuana') && password == '12345678'){
