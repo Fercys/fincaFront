@@ -211,7 +211,7 @@
               </thead>
               <tbody>
                 <tr>
-                  <td> </td>  
+                  <td> </td>
                   <td *ngFor="let day of climaDay"> {{formatDate(day | date:'EE ')}} </td>
                 </tr>
                 <tr>
@@ -253,17 +253,26 @@
             </div>
           </div>
         </div>
-      </div>
-      <!-- <div class="col-md-4 ">
-        <div class="container-fluid">
+        <div class="container-fluid top">
           <div class="row ">
-            <h4 class="row-subtitle-card">Rainfall/Et0</h4>
+            <h4 class="row-subtitle-card">Rainfall+Et0</h4>
           </div>
           <div class="card-body bg-white chard-size">
-            <div class="ct-chart bar-chart  "></div>
+            <div  *ngIf="renderBarChartFlag">
+              <div style="display: block">
+                <canvas baseChart width="400" height="200"
+                  [datasets]="barChartData"
+                  [labels]="barChartLabels"
+                  [options]="barChartOptions"
+                  [plugins]="barChartPlugins"
+                  [legend]="barChartLegend"
+                  [chartType]="barChartType">
+                </canvas>
+              </div>
+            </div>
           </div>
-        </div>
-      </div> -->
+      </div>
+      </div>
     </div>
   </div>
 </div>

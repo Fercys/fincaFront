@@ -7,9 +7,10 @@ import Swal from 'sweetalert2';
 import { WiseconnService } from 'app/services/wiseconn.service';
 
 //graficas
-import { ChartDataSets, ChartOptions } from 'chart.js';
+import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
 import { Color, BaseChartDirective, Label } from 'ng2-charts';
 import * as pluginAnnotations from 'chartjs-plugin-annotation';
+import * as pluginDataLabels from 'chartjs-plugin-datalabels';
 
 import * as moment from "moment";
 
@@ -29,10 +30,11 @@ export class FreePlotterComponent implements OnInit {
 	toDate: NgbDate;
 	dateRange: any = null;
 	dateRangeHistory:any[]=[]
-  	selectedValue: any = '1S';
-  	hoveredDate: NgbDate;
-  	requestChartBtn: boolean =true;
+	selectedValue: any = '1S';
+	hoveredDate: NgbDate;
+	requestChartBtn: boolean =true;
 	//graficas
+	//line chart
 	@ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
 	lineChartData: ChartDataSets[] = [
 	{ data: [], label: 'Temperatura' },
@@ -91,18 +93,42 @@ export class FreePlotterComponent implements OnInit {
 	lineChartLegend = true;
 	lineChartType = 'line';
 	lineChartPlugins = [pluginAnnotations];
-
-
 	temperatureId: number = null;
 	humidityId: number = null;
-	renderLineChartFlag : boolean = false;
+	renderLineChartFlag: boolean = false;
+
+	//bar chart
+	barChartOptions: ChartOptions = {
+		responsive: true,
+		// We use these empty structures as placeholders for dynamic theming.
+		scales: { xAxes: [{}], yAxes: [{}] },
+		plugins: {
+			datalabels: {
+				anchor: 'end',
+				align: 'end',
+			}
+		}
+	};
+	barChartLabels: Label[] = [];
+	barChartType: ChartType = 'bar';
+	barChartLegend = true;
+	barChartPlugins = [];
+
+	barChartData: ChartDataSets[] = [
+	{ data: [], label: 'Rainfall (mm)' },
+	{ data: [], label: 'Et0 (mm)' }
+	];
+	rainId: number = null;
+	et0Id: number = null;
+	renderBarChartFlag: boolean = false;
+
 	times =[
-		{ value: '1D' , active: false},
-		{ value: '1S' , active: true},
-		{ value: '2S' , active: false},
-		{ value: '1M' , active: false},
-		{ value: '3M' , active: false},
-		{ value: '6M' , active: false},
+	{ value: '1D' , active: false},
+	{ value: '1S' , active: true},
+	{ value: '2S' , active: false},
+	{ value: '1M' , active: false},
+	{ value: '3M' , active: false},
+	{ value: '6M' , active: false},
 	]
 	constructor(
 		public wiseconnService: WiseconnService,
@@ -111,7 +137,7 @@ export class FreePlotterComponent implements OnInit {
 		public formatter: NgbDateParserFormatter) { }
 
 	ngOnInit() {//rango de fechas para graficas
-        this.dateRangeByDefault();
+		this.dateRangeByDefault();
 		this.getFarms();
 	}
 	getFarms() {
@@ -120,7 +146,7 @@ export class FreePlotterComponent implements OnInit {
 			this.loading=false;
 			this.farms = data;
 			switch (localStorage.getItem("username").toLowerCase()) {
-				case "agrifut":
+				case "agrifrut":
 				this.farms = this.farms.filter((element) => {
 					return element.id == 185 || element.id == 2110 || element.id == 1378 || element.id == 520
 				})
@@ -150,8 +176,18 @@ export class FreePlotterComponent implements OnInit {
 			this.loading = false;
 		});
 	}
-	renderCharts() {
-		this.renderLineChartFlag=true;
+	renderCharts(chart:string) {
+		switch (chart) {
+			case "line":
+				this.renderLineChartFlag=true;
+				break;
+			case "bar":
+				this.renderBarChartFlag=true;
+				break;
+			default:
+				// code...
+				break;
+		}
 	}
 	onSelect(select: string, id: number) {
 		switch (select) {
@@ -232,7 +268,13 @@ export class FreePlotterComponent implements OnInit {
 		});
 		this.requestDataChart(true);
 	}
-	requestDataChart(goBackFlag:boolean=false){
+	requestDataChart(goBackFlag:boolean=false){		
+		//bar chart
+		this.rainId=null;
+		this.et0Id=null;
+		//line chart
+		this.temperatureId=null;
+		this.humidityId=null;
 		this.dateRange = {
 			initTime: moment(this.fromDate.year + "-" + this.fromDate.month + "-" + this.fromDate.day).format("YYYY-MM-DD"),
 			endTime: moment(this.toDate.year + "-" + this.toDate.month + "-" + this.toDate.day).format("YYYY-MM-DD")
@@ -248,6 +290,58 @@ export class FreePlotterComponent implements OnInit {
 			this.loading = true;
 			this.wiseconnService.getMeasuresOfZones(this.zoneSelected.id).subscribe((data) => {
 				for (var i = data.length - 1; i >= 0; i--) {
+					//bar chart
+					if (data[i].sensorType === "Rain") {
+						this.rainId = data[i].id;
+					}
+					if (data[i].name.toLowerCase() === "et0") {
+						this.et0Id = data[i].id;
+					}
+					if(this.rainId&&this.et0Id){
+						this.wiseconnService.getDataByMeasure(this.rainId,this.dateRange).subscribe((data) => {
+							let rainData=data;
+							this.wiseconnService.getDataByMeasure(this.et0Id,this.dateRange).subscribe((data) => {
+								let et0Data=data;
+								this.loading = false;
+								rainData=rainData.map((element)=>{
+									element.chart="rain";
+									return element
+								})
+								et0Data=et0Data.map((element)=>{
+									element.chart="et0";
+									return element;
+								})
+								let chartData=rainData.concat(et0Data);
+								chartData.sort(function (a, b) {
+									if (moment(a.time).isAfter(b.time)) {
+										return 1;
+									}
+									if (!moment(a.time).isAfter(b.time)) {
+										return -1;
+									}
+									// a must be equal to b
+									return 0;
+								});
+								console.log("chartData:",chartData)
+								this.resetChartsValues("bar");
+								for (var i = 0; i < chartData.length; i++) {
+									if(chartData[i+1]){
+										if(chartData[i].time===chartData[i+1].time){
+											this.barChartLabels.push(chartData[i].time);										
+										}	
+									}									
+									if(chartData[i].chart=="rain") {
+										this.barChartData[0].data.push(chartData[i].value);
+									}
+									if(chartData[i].chart=="et0") {
+										this.barChartData[1].data.push(chartData[i].value);
+									}									
+									this.renderCharts("bar");
+								}
+							});
+						});
+					}
+					//line chart
 					if (data[i].sensorType === "Temperature") {
 						this.temperatureId = data[i].id;
 					}
@@ -283,7 +377,7 @@ export class FreePlotterComponent implements OnInit {
 									if(moment(element.time).minutes()==0 || moment(element.time).minutes()==30)
 										return element;
 								});
-								this.resetChartsValues();
+								this.resetChartsValues("line");
 								for (var i = 1; i < chartData.length; i+=2) {
 									if(this.lineChartLabels.find((element) => {
 										return element === chartData[i].time;//.format("YYYY-MM-DD hh:mm:ss");
@@ -296,7 +390,7 @@ export class FreePlotterComponent implements OnInit {
 									if(chartData[i-1].chart==="humidity"){
 										this.lineChartData[1].data.push(chartData[i-1].value);
 									}
-									this.renderCharts();
+									this.renderCharts("line");
 								}
 							});
 						});
@@ -316,11 +410,24 @@ export class FreePlotterComponent implements OnInit {
 				text: 'Debe seleccionar una zona'
 			})
 		}
+
 	}
-	resetChartsValues(){
-		this.lineChartLabels=[];
-		this.lineChartData[0].data=[];
-		this.lineChartData[1].data=[];
+	resetChartsValues(chart:string){
+		switch (chart) {
+			case "line":
+				this.lineChartLabels=[];
+				this.lineChartData[0].data=[];
+				this.lineChartData[1].data=[];
+				break;	
+			case "bar":
+				this.barChartLabels=[];
+				this.barChartData[0].data=[];
+				this.barChartData[1].data=[];
+				break;
+			default:
+				// code...
+				break;
+		}
 	} 
 	isHovered(date: NgbDate) {
 		return this.fromDate && !this.toDate && this.hoveredDate && date.after(this.fromDate) && date.before(this.hoveredDate);
@@ -334,5 +441,12 @@ export class FreePlotterComponent implements OnInit {
 	validateInput(currentValue: NgbDate, input: string): NgbDate {
 		const parsed = this.formatter.parse(input);
 		return parsed && this.calendar.isValid(NgbDate.from(parsed)) ? NgbDate.from(parsed) : currentValue;
+	}
+	// bar chart
+	chartClicked({ event, active }: { event: MouseEvent, active: {}[] }): void {
+		console.log(event, active);
+	}
+	chartHovered({ event, active }: { event: MouseEvent, active: {}[] }): void {
+		console.log(event, active);
 	}
 }

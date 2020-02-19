@@ -34,7 +34,7 @@ export class SidebarComponent implements OnInit {
     
     this.menuItems = ROUTES.filter(menuItem => {
       switch (localStorage.getItem("username").toLowerCase()) {
-        case "agrifut":
+        case "agrifrut":
           if (menuItem.title.toLowerCase()!="dashboard") {
             return menuItem;
           }

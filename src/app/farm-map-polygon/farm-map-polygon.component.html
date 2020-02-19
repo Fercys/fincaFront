@@ -253,7 +253,18 @@
               <h4 class="row-subtitle">Rainfall/Et0</h4>
             </div>
             <div class="card-body bg-white chard-size">
-              <div class="ct-chart bar-chart  "></div>
+              <div  *ngIf="renderBarChartFlag">
+                <div style="display: block">
+                  <canvas baseChart
+                    [datasets]="barChartData"
+                    [labels]="barChartLabels"
+                    [options]="barChartOptions"
+                    [plugins]="barChartPlugins"
+                    [legend]="barChartLegend"
+                    [chartType]="barChartType">
+                  </canvas>
+                </div>
+              </div>
             </div>
           </div>
       </div>
