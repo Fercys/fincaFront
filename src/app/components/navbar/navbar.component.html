@@ -38,7 +38,7 @@
                         <i class="material-icons">person</i>
                     </a>
                      <div class="dropdown-menu dropdown-menu-right"  aria-labelledby="dropProfile">
-                        <a *ngFor="let item of listTitles" (mouseover)="item.active = true"  (mouseleave)="item.active = false" class="dropdown-item" href="javascript:void(0)">{{item.title}}
+                        <a *ngFor="let item of listTitles" (mouseover)="item.active = true"  (mouseleave)="item.active = false" class="dropdown-item" [routerLink]="[item.path]">{{item.title}}
                             <img [ngClass]="{'img-filter-colors': item.active}" src="assets/icons/{{item.icon}}.svg" style="width: 15px;margin-left: 10px;">
                         </a>
                     </div>

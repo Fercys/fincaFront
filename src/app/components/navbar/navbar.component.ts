@@ -1,7 +1,8 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
-import { ROUTES } from '../sidebar/sidebar.component';
 import {Location, LocationStrategy, PathLocationStrategy} from '@angular/common';
 import { Router } from '@angular/router';
+
+import { ROUTES } from '../sidebar/sidebar.component';
 
 
 declare interface RouteInfo {
@@ -13,7 +14,7 @@ declare interface RouteInfo {
 }
 
 export const SidebarRoute: RouteInfo[] = [
-    { path: '/?', title: 'Ver Perfil',  icon: 'Profile', class: '', active : false },
+    { path: '/user-profile', title: 'Ver Perfil',  icon: 'Profile', class: '', active : false },
     { path: '/', title: 'Cerrar sesión',  icon:'Logout', class: '' , active : false},
 ];
 @Component({

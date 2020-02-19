@@ -1,19 +1,4 @@
 import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AdminLayoutRoutes } from './admin-layout.routing';
-import { DashboardComponent } from '../../dashboard/dashboard.component';
-import { UserProfileComponent } from '../../user-profile/user-profile.component';
-import { TableListComponent } from '../../table-list/table-list.component';
-import { TypographyComponent } from '../../typography/typography.component';
-import { IconsComponent } from '../../icons/icons.component';
-import { MapsComponent } from '../../maps/maps.component';
-import { NotificationsComponent } from '../../notifications/notifications.component';
-import { UpgradeComponent } from '../../upgrade/upgrade.component';
-import { FarmsComponent } from '../../farms/farms.component';
-import { FarmMapComponent } from '../../farm-map/farm-map.component';
-import { NgxLoadingModule } from 'ngx-loading';
 import {MatDialogModule} from '@angular/material/dialog';
 import {
   MatButtonModule,
@@ -23,14 +8,36 @@ import {
   MatTooltipModule,
   MatSelectModule
 } from '@angular/material';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 import { ChartsModule } from 'ng2-charts';
 
-import { ClientComponent } from 'app/client/client.component';
-import { FarmClientComponent } from 'app/farm-client/farm-client.component';
+import { NgxLoadingModule } from 'ngx-loading';
+
 import { SafePipePipe } from 'app/pipe/safe-pipe.pipe';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { ClientComponent } from 'app/client/client.component';
+import { DialogMessage } from 'app/farm-map/farm-map.component';
+import { FarmClientComponent } from 'app/farm-client/farm-client.component';
 import { FarmMapPolygonComponent } from 'app/farm-map-polygon/farm-map-polygon.component';
-import { DialogMessage } from 'app/farm-map/farm-map.component'
+
+import { DashboardComponent } from '../../dashboard/dashboard.component';
+import { FarmMapComponent } from '../../farm-map/farm-map.component';
+import { FarmsComponent } from '../../farms/farms.component';
+import { IconsComponent } from '../../icons/icons.component';
+import { MapsComponent } from '../../maps/maps.component';
+import { NotificationsComponent } from '../../notifications/notifications.component';
+import { ReportInstalationComponent } from '../../report-instalation/report-instalation.component';
+import { TableListComponent } from '../../table-list/table-list.component';
+import { TypographyComponent } from '../../typography/typography.component';
+import { UpgradeComponent } from '../../upgrade/upgrade.component';
+import { UserProfileComponent } from '../../user-profile/user-profile.component';
+
+import { AdminLayoutRoutes } from './admin-layout.routing';
 @NgModule({
   imports: [
     CommonModule,
@@ -47,6 +54,7 @@ import { DialogMessage } from 'app/farm-map/farm-map.component'
     NgxLoadingModule.forRoot({}),
     ChartsModule,
     MatDialogModule,
+    MatSlideToggleModule
   ],
   declarations: [
     DashboardComponent,
@@ -63,7 +71,8 @@ import { DialogMessage } from 'app/farm-map/farm-map.component'
     FarmClientComponent,
     SafePipePipe,
     FarmMapPolygonComponent,
-    DialogMessage
+    DialogMessage,
+    ReportInstalationComponent
   ],
   entryComponents:[
     DialogMessage
