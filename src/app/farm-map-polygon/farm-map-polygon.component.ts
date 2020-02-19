@@ -6,7 +6,7 @@ import { NgbModal,ModalDismissReasons , NgbDate, NgbCalendar, NgbDateParserForma
 import { WeatherService } from 'app/services/weather.service';
 
 //graficas
-import { ChartDataSets, ChartOptions } from 'chart.js';
+import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
 import { Color, BaseChartDirective, Label } from 'ng2-charts';
 import * as pluginAnnotations from 'chartjs-plugin-annotation';
 
@@ -108,14 +108,38 @@ export class FarmMapPolygonComponent implements OnInit {
   temperatureId: number = null;
   humidityId: number = null;
   renderLineChartFlag : boolean = false;
+  //bar chart
+  barChartOptions: ChartOptions = {
+    responsive: true,
+    // We use these empty structures as placeholders for dynamic theming.
+    scales: { xAxes: [{}], yAxes: [{}] },
+    plugins: {
+      datalabels: {
+        anchor: 'end',
+        align: 'end',
+      }
+    }
+  };
+  barChartLabels: Label[] = [];
+  barChartType: ChartType = 'bar';
+  barChartLegend = true;
+  barChartPlugins = [];
+
+  barChartData: ChartDataSets[] = [
+  { data: [], label: 'Rainfall (mm)' },
+  { data: [], label: 'Et0 (mm)' }
+  ];
+  rainId: number = null;
+  et0Id: number = null;
+  renderBarChartFlag: boolean = false;
 
   times =[
-  { value: '1D' , active: false},
-  { value: '1S' , active: true},
-  { value: '2S' , active: false},
-  { value: '1M' , active: false},
-  { value: '3M' , active: false},
-  { value: '6M' , active: false},
+    { value: '1D' , active: false},
+    { value: '1S' , active: true},
+    { value: '2S' , active: false},
+    { value: '1M' , active: false},
+    { value: '3M' , active: false},
+    { value: '6M' , active: false},
   ]
 
   //Pronostico values
@@ -207,16 +231,12 @@ export class FarmMapPolygonComponent implements OnInit {
               default:
               this.url="";
             }
-            this.renderCharts();
+            this.renderCharts("line");
+            this.renderCharts("bar");
             this.loading = false; 
           });
         });
     });    
-  }
-  
-  renderCharts() {
-    this.renderLineChartFlag=true;
-    // this.renderBarChart();
   }
   renderBarChart(){
     new Chartist.Bar('.ct-chart.bar-chart', {
@@ -530,6 +550,58 @@ export class FarmMapPolygonComponent implements OnInit {
         this.loading = true;
         this.wiseconnService.getMeasuresOfZones(this.weatherStationId).subscribe((data) => {
           for (var i = data.length - 1; i >= 0; i--) {
+            //bar chart
+            if (data[i].sensorType === "Rain") {
+              this.rainId = data[i].id;
+            }
+            if (data[i].name.toLowerCase() === "et0") {
+              this.et0Id = data[i].id;
+            }
+            if(this.rainId&&this.et0Id){
+              this.wiseconnService.getDataByMeasure(this.rainId,this.dateRange).subscribe((data) => {
+                let rainData=data;
+                this.wiseconnService.getDataByMeasure(this.et0Id,this.dateRange).subscribe((data) => {
+                  let et0Data=data;
+                  this.loading = false;
+                  rainData=rainData.map((element)=>{
+                    element.chart="rain";
+                    return element
+                  })
+                  et0Data=et0Data.map((element)=>{
+                    element.chart="et0";
+                    return element;
+                  })
+                  let chartData=rainData.concat(et0Data);
+                  chartData.sort(function (a, b) {
+                    if (moment(a.time).isAfter(b.time)) {
+                      return 1;
+                    }
+                    if (!moment(a.time).isAfter(b.time)) {
+                      return -1;
+                    }
+                    // a must be equal to b
+                    return 0;
+                  });
+                  console.log("chartData:",chartData)
+                  this.resetChartsValues("bar");
+                  for (var i = 0; i < chartData.length; i++) {
+                    if(chartData[i+1]){
+                      if(chartData[i].time===chartData[i+1].time){
+                        this.barChartLabels.push(chartData[i].time);                    
+                      }  
+                    }                  
+                    if(chartData[i].chart=="rain") {
+                      this.barChartData[0].data.push(chartData[i].value);
+                    }
+                    if(chartData[i].chart=="et0") {
+                      this.barChartData[1].data.push(chartData[i].value);
+                    }                  
+                    this.renderCharts("bar");
+                  }
+                });
+              });
+            }
+            //line chart
             if (data[i].sensorType === "Temperature") {
               this.temperatureId = data[i].id;
             }
@@ -565,7 +637,7 @@ export class FarmMapPolygonComponent implements OnInit {
                     if(moment(element.time).minutes()==0 || moment(element.time).minutes()==30)
                       return element;
                   });
-                  this.resetChartsValues();
+                  this.resetChartsValues("line");
                   for (var i = 1; i < chartData.length; i+=2) {
                     if(this.lineChartLabels.find((element) => {
                       return element === chartData[i].time;//.format("YYYY-MM-DD hh:mm:ss");
@@ -578,7 +650,7 @@ export class FarmMapPolygonComponent implements OnInit {
                     if(chartData[i-1].chart==="humidity"){
                       this.lineChartData[1].data.push(chartData[i-1].value);
                     }
-                    this.renderCharts();
+                    this.renderCharts("line");
                   }
                 });
               });
@@ -592,10 +664,36 @@ export class FarmMapPolygonComponent implements OnInit {
           }
         });
       }
-      resetChartsValues(){
-        this.lineChartLabels=[];
-        this.lineChartData[0].data=[];
-        this.lineChartData[1].data=[];
+      renderCharts(chart:string) {
+        switch (chart) {
+          case "line":
+            this.renderLineChartFlag=true;
+            break;
+          case "bar":
+            this.renderBarChartFlag=true;
+            break;
+          default:
+            this.renderBarChartFlag=true;            
+            this.renderLineChartFlag=true;
+            break;
+        }
+      }
+      resetChartsValues(chart:string){
+        switch (chart) {
+          case "line":
+            this.lineChartLabels=[];
+            this.lineChartData[0].data=[];
+            this.lineChartData[1].data=[];
+            break;  
+          case "bar":
+            this.barChartLabels=[];
+            this.barChartData[0].data=[];
+            this.barChartData[1].data=[];
+            break;
+          default:
+            // code...
+            break;
+        }
       }
       isHovered(date: NgbDate) {
         return this.fromDate && !this.toDate && this.hoveredDate && date.after(this.fromDate) && date.before(this.hoveredDate);
