@@ -14,7 +14,7 @@ export const ROUTES: RouteInfo[] = [
     { path: '/farms', title: 'Campos',  icon:'Campo-Verde', class: '' , active : false},
     { path: '/free-plotter', title: 'Graficador Libre',  icon:'Graficador-libre-verde', class: '', active : false },
     { path: '/?', title: 'Análisis de suelo',  icon:'Suelo', class: '', active : false },
-    { path: '/?', title: 'Reporte de Instalación',  icon:'Reporte', class: '', active : false },
+    { path: '/report-instalacion', title: 'Reporte de Instalación',  icon:'Reporte', class: '', active : false },
     { path: '/?', title: 'Configuración',  icon:'Configuracion', class: '', active : false }, 
     // { path: '/icons', title: 'Icons',  icon:'bubble_chart', class: '' },
     // { path: '/maps', title: 'Maps',  icon:'location_on', class: '' },

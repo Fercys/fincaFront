@@ -8,3 +8,11 @@
 .img-filter-colors{
     filter: invert(29%) sepia(81%) saturate(326%) hue-rotate(173deg) brightness(50%) contrast(97%);
 }
+
+
+  @media screen and (min-width: 996px) {
+     .navbar-brand{
+         display: none;
+     }
+  }
+
