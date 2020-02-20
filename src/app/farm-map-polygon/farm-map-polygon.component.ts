@@ -52,7 +52,7 @@ export class FarmMapPolygonComponent implements OnInit {
   ];
   lineChartLabels: Label[] = [];
   lineChartOptions: (ChartOptions & { annotation: any }) = {
-    responsive: true,
+    responsive: false,
     scales: {
       // We use this empty structure as a placeholder for dynamic theming.
       xAxes: [{}],
@@ -110,7 +110,7 @@ export class FarmMapPolygonComponent implements OnInit {
   renderLineChartFlag : boolean = false;
   //bar chart
   barChartOptions: ChartOptions = {
-    responsive: true,
+    responsive: false,
     // We use these empty structures as placeholders for dynamic theming.
     scales: { xAxes: [{}], yAxes: [{}] },
     plugins: {
