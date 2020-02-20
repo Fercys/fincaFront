@@ -231,10 +231,10 @@
           </div>
           <div class="card-body bg-white chard-size">
             <div class="card-body bg-white chard-size">
-              <div class="flex" *ngIf="renderLineChartFlag">
+              <div class="flex" *ngIf="renderLineChartFlag" style="overflow-x: scroll;">
                 <div class="flex-item">
-                  <div style="display: block;">
-                  <canvas baseChart width="400" height="200"
+                  <div style="display: block;margin: auto;">
+                  <canvas baseChart width="400" height="200" style="margin: auto;"
                               [datasets]="lineChartData"
                               [labels]="lineChartLabels"
                               [options]="lineChartOptions"
@@ -253,9 +253,9 @@
               <h4 class="row-subtitle">Rainfall/Et0</h4>
             </div>
             <div class="card-body bg-white chard-size">
-              <div  *ngIf="renderBarChartFlag">
-                <div style="display: block">
-                  <canvas baseChart
+              <div  *ngIf="renderBarChartFlag" style="overflow-x: scroll;">
+                <div style="display: block;">
+                  <canvas baseChart style="margin: auto;"
                     [datasets]="barChartData"
                     [labels]="barChartLabels"
                     [options]="barChartOptions"

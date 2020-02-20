@@ -52,7 +52,7 @@ export class FarmMapPolygonComponent implements OnInit {
   ];
   lineChartLabels: Label[] = [];
   lineChartOptions: (ChartOptions & { annotation: any }) = {
-    responsive: true,
+    responsive: false,
     scales: {
       // We use this empty structure as a placeholder for dynamic theming.
       xAxes: [{}],
@@ -110,7 +110,7 @@ export class FarmMapPolygonComponent implements OnInit {
   renderLineChartFlag : boolean = false;
   //bar chart
   barChartOptions: ChartOptions = {
-    responsive: true,
+    responsive: false,
     // We use these empty structures as placeholders for dynamic theming.
     scales: { xAxes: [{}], yAxes: [{}] },
     plugins: {
@@ -499,6 +499,20 @@ export class FarmMapPolygonComponent implements OnInit {
         var index:number = this.mediciones.indexOf(this.mediciones.find(x => x.name == value));
         if(index != -1) this.mediciones.splice(index, 1);
       }
+      format(value:string,chart:string){
+        switch (chart) {
+          case "line":
+            return moment(value).format('DD/MM/YYYY hh:mm:ss');
+            break;
+          case "bar":
+            return moment(value).format('DD') +" "+ moment(value).format('MMM');
+            break;
+          default:
+            return value;
+            break;
+        }
+        
+      }
       //datepicker
       onDateSelection(date: NgbDate,element:string) {
         switch (element) {
@@ -607,12 +621,11 @@ export class FarmMapPolygonComponent implements OnInit {
                     // a must be equal to b
                     return 0;
                   });
-                  console.log("chartData:",chartData)
                   this.resetChartsValues("bar");
                   for (var i = 0; i < chartData.length; i++) {
                     if(chartData[i+1]){
-                      if(chartData[i].time===chartData[i+1].time){
-                        this.barChartLabels.push(chartData[i].time);                    
+                      if(chartData[i].time===chartData[i+1].time&&chartData[i].chart=="et0"&&chartData[i+1].chart=="rain"){
+                        this.barChartLabels.push(this.format(chartData[i].time,"bar"));                    
                       }  
                     }                  
                     if(chartData[i].chart=="rain") {
@@ -667,7 +680,7 @@ export class FarmMapPolygonComponent implements OnInit {
                     if(this.lineChartLabels.find((element) => {
                       return element === chartData[i].time;//.format("YYYY-MM-DD hh:mm:ss");
                     }) === undefined) {
-                      this.lineChartLabels.push(chartData[i].time);
+                      this.lineChartLabels.push(this.format(chartData[i].time,null));
                     }
                     if (chartData[i].chart==="temperature") {
                       this.lineChartData[0].data.push(chartData[i].value);
