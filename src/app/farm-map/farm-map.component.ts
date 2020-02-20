@@ -215,6 +215,20 @@ export class FarmMapComponent implements OnInit {
       }
     });
   }
+  format(value:string,chart:string){
+    switch (chart) {
+      case "line":
+        return moment(value).format('DD/MM/YYYY hh:mm:ss');
+        break;
+      case "bar":
+        return moment(value).format('DD') +" "+ moment(value).format('MMM');
+        break;
+      default:
+        return value;
+        break;
+    }
+    
+  }
   getZones(id: any) {
     this.loading = true;
     this.wiseconnService.getZones(id).subscribe((data: any) => {
@@ -243,10 +257,8 @@ export class FarmMapComponent implements OnInit {
               if(this.rainId&&this.et0Id){
                 this.wiseconnService.getDataByMeasure(this.rainId,this.dateRange).subscribe((data) => {
                   let rainData=data;
-                  console.log("rainData:",rainData);
                   this.wiseconnService.getDataByMeasure(this.et0Id,this.dateRange).subscribe((data) => {
                     let et0Data=data;
-                    console.log("et0Data:",et0Data);
                     this.loading = false;
                     rainData=rainData.map((element)=>{
                       element.chart="rain";
@@ -267,12 +279,11 @@ export class FarmMapComponent implements OnInit {
                       // a must be equal to b
                       return 0;
                     });
-                    console.log("chartData:",chartData)
                     this.resetChartsValues("bar");
                     for (var i = 0; i < chartData.length; i++) {
                       if(chartData[i+1]){
                         if(chartData[i].time===chartData[i+1].time){
-                          this.barChartLabels.push(chartData[i].time);                    
+                          this.barChartLabels.push(this.format(chartData[i].time,"bar"));                    
                         }  
                       }                  
                       if(chartData[i].chart=="rain") {
@@ -326,7 +337,7 @@ export class FarmMapComponent implements OnInit {
                       if(this.lineChartLabels.find((element) => {
                         return element === chartData[i].time;//.format("YYYY-MM-DD hh:mm:ss");
                       }) === undefined) {
-                        this.lineChartLabels.push(chartData[i].time);
+                        this.lineChartLabels.push(this.format(chartData[i].time,null));
                       }
                       if (chartData[i].chart==="temperature") {
                         this.lineChartData[0].data.push(chartData[i].value);
