@@ -1,8 +1,18 @@
-.user-profile{
+.configuracion{
+    .central{
+        text-align: center;
+    }
     .card-header {
         display: flex;
     }
-    
+    hr.separated{
+        border: 0;
+        width: 95%;
+        background-color: whitesmoke;
+        height: 1px;
+        margin-left: 2%;
+        margin: 0 2%; 
+    }
     .justify-text-general {
         display: flex;
         align-items: center;
@@ -20,18 +30,34 @@
             padding-left: 0;
         }
     }
-    hr.separated{
-        border: 0;
-        width: 95%;
-        background-color: whitesmoke;
-        height: 1px;
-        margin-left: 2%;
-        margin: 0 2%; 
+    
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        th{
+            text-align: center;
+            background-color: #f2f3f5;
+            color: #868686;
+            border: 1px solid #e5e5e5;
+            padding: 8px;
+            text-transform: uppercase;
+        }
+        td{
+            text-align: center;
+            border: 1px solid #e5e5e5;
+            padding: 4px;
+        }
     }
+    
+    .btn-green {
+        background-color: #6fb060;
+        color: white;
+    }
+    
 }
 
 ::ng-deep {
-    .user-profile .mat-select-custom {
+    .configuracion .mat-select-custom {
         .mat-form-field-flex {
             background-color: white;
             border: 1px solid silver;
@@ -58,13 +84,13 @@
         }
     }
 
-    .user-profile .mat-select-custom mat-label {
+    .configuracion .mat-select-custom mat-label {
         font-weight: 500;
         color: #bfbfbf;
         text-transform: uppercase;
     }
 
-    .user-profile .mat-input-custom {
+    .configuracion .mat-input-custom {
         .mat-form-field-flex {
             border: 1px solid silver;
             border-radius: 5px;
@@ -75,9 +101,3 @@
         }
     }
 }
-
-.btn-green {
-    background-color: #6fb060;
-    color: white;
-}
-

@@ -16,6 +16,8 @@ import { TypographyComponent } from '../../typography/typography.component';
 import { UpgradeComponent } from '../../upgrade/upgrade.component';
 import { UserProfileComponent } from '../../user-profile/user-profile.component';
 import { FreePlotterComponent } from 'app/free-plotter/free-plotter.component';
+import { ConfigurationComponent } from '../../configuration/configuration.component';
+
 
 export const AdminLayoutRoutes: Routes = [
     // {
@@ -63,6 +65,7 @@ export const AdminLayoutRoutes: Routes = [
     { path: 'dashboard',      component: DashboardComponent },
     { path: 'user-profile',   component: UserProfileComponent },
     { path: 'report-instalacion',   component: ReportInstalationComponent },
+    { path: 'configuration',   component: ConfigurationComponent },
     { path: 'table-list',     component: TableListComponent },
     { path: 'typography',     component: TypographyComponent },
     { path: 'icons',          component: IconsComponent },

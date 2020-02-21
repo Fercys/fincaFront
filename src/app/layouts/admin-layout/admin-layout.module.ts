@@ -36,7 +36,7 @@ import { TableListComponent } from '../../table-list/table-list.component';
 import { TypographyComponent } from '../../typography/typography.component';
 import { UpgradeComponent } from '../../upgrade/upgrade.component';
 import { UserProfileComponent } from '../../user-profile/user-profile.component';
-
+import { ConfigurationComponent } from '../../configuration/configuration.component';
 import { AdminLayoutRoutes } from './admin-layout.routing';
 import { FreePlotterComponent } from 'app/free-plotter/free-plotter.component';
 @NgModule({
@@ -74,7 +74,8 @@ import { FreePlotterComponent } from 'app/free-plotter/free-plotter.component';
     SafePipePipe,
     FarmMapPolygonComponent,
     DialogMessage,
-    ReportInstalationComponent
+    ReportInstalationComponent,
+    ConfigurationComponent
   ],
   entryComponents:[
     DialogMessage
