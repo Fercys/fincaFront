@@ -10,6 +10,7 @@ declare interface RouteInfo {
     active: boolean
 }
 export const ROUTES: RouteInfo[] = [
+   { path: '/user-profile', title: 'Perfil',  icon: 'Usuario-verde', class: '', active : false },
     { path: '/dashboard', title: 'Dashboard',  icon: 'Dashboard-Verde', class: '', active : false },
     { path: '/farms', title: 'Campos',  icon:'Campo-Verde', class: '' , active : false},
     { path: '/free-plotter', title: 'Graficador Libre',  icon:'Graficador-libre-verde', class: '', active : false },
@@ -71,7 +72,7 @@ export class SidebarComponent implements OnInit {
      cond  ? value.active  = true : value.active  = false 
   }
   isCurrentRoute(routePath) {
-    if( this.router.url == routePath.path){
+    if( this.router.url === routePath.path){
       return true;
     }
     return false;

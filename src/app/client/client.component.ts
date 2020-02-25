@@ -11,7 +11,8 @@ export class ClientComponent implements OnInit {
   client: any = [];
   public loading = false;
   constructor(private wiseconnService: WiseconnService) { }
-
+  searchTable:any;
+  
   ngOnInit() {
     this.loading=true;
     this.wiseconnService.getFarms().subscribe((data: {}) => {

@@ -8,6 +8,7 @@ import { WiseconnService } from '../services/wiseconn.service';
 })
 export class FarmsComponent implements OnInit {
   public farms;
+  searchTable:any;
   constructor(private wiseconnService: WiseconnService,) { }
 
   ngOnInit() { 
