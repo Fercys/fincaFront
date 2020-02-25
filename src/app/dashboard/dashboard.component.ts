@@ -101,15 +101,16 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     
     this.loading = true;
-    this.wiseconnService.getFarms().subscribe((data: any) => {
-      this.farms = data;
+    this.wiseconnService.getFarms().subscribe((response: any) => {
+      console.log("getFarms:",response)
+      this.farms = response.data?response.data:response;
       localStorage.setItem("datafarms", JSON.stringify(this.farms));
       this.cant_farms=this.farms.length;
       var farm_client = this.farms.filter(function(item,index,array){ 
         if(index == 0){
           return true;
-        }else{ 
-          return item['account']['id'] == array[--index]['account']['id']? false: true;
+        }else{
+          return (item['account']['id'] == array[--index]['account']['id'])? false: true;
         }
       });
       this.users = farm_client.length;

@@ -142,9 +142,9 @@ export class FreePlotterComponent implements OnInit {
 	}
 	getFarms() {
 		this.loading=true;
-		this.wiseconnService.getFarms().subscribe((data: any) => {			
+		this.wiseconnService.getFarms().subscribe((response: any) => {			
 			this.loading=false;
-			this.farms = data;
+			this.farms = response.data?response.data:response;
 			switch (localStorage.getItem("username").toLowerCase()) {
 				case "agrifut":
 				this.farms = this.farms.filter((element) => {
@@ -165,12 +165,17 @@ export class FreePlotterComponent implements OnInit {
 	}
 	getZones(id:number=0) {
 		this.loading = true;
-		this.wiseconnService.getZones(id).subscribe((data: any) => {
+		this.wiseconnService.getZones(id).subscribe((response: any) => {
+			let data=response.data?response.data:response;
 			this.weatherZones = data.filter((element)=>{
-				if(element.type.find((element) => {
-					return element === 'Weather';
-				}) != undefined){
-					return element
+				if(element.type){
+					if(element.type.length>0){
+						if(element.type.find((element) => {
+							return element === 'Weather' || (element.description!=undefined&&element.description === 'Weather');
+						}) != undefined){
+							return element
+						}
+					}
 				}
 			});
 			this.loading = false;
@@ -271,16 +276,15 @@ export class FreePlotterComponent implements OnInit {
     format(value:string,chart:string){
       switch (chart) {
         case "line":
-          return moment(value).format('DD/MM/YYYY hh:mm:ss');
-          break;
+          	return moment(value).format('DD/MM/YYYY hh:mm:ss');
+          	break;
         case "bar":
-          return moment(value).format('DD') +" "+ moment(value).format('MMM');
-          break;
+          	return moment.utc(value).format('DD') +" "+ moment.utc(value).format('MMM');
+          	break;
         default:
-          return value;
-          break;
-      }
-      
+          	return value;
+          	break;
+      }      
     }
 	requestDataChart(goBackFlag:boolean=false){		
 		//bar chart
@@ -302,7 +306,8 @@ export class FreePlotterComponent implements OnInit {
 		}
 		if(this.zoneSelected){
 			this.loading = true;
-			this.wiseconnService.getMeasuresOfZones(this.zoneSelected.id).subscribe((data) => {
+			this.wiseconnService.getMeasuresOfZones(this.zoneSelected.id).subscribe((response) => {
+				let data=response.data?response.data:response;
 				for (var i = data.length - 1; i >= 0; i--) {
 					//bar chart
 					if (data[i].sensorType === "Rain") {
@@ -312,10 +317,10 @@ export class FreePlotterComponent implements OnInit {
 						this.et0Id = data[i].id;
 					}
 					if(this.rainId&&this.et0Id){
-						this.wiseconnService.getDataByMeasure(this.rainId,this.dateRange).subscribe((data) => {
-							let rainData=data;
-							this.wiseconnService.getDataByMeasure(this.et0Id,this.dateRange).subscribe((data) => {
-								let et0Data=data;
+						this.wiseconnService.getDataByMeasure(this.rainId,this.dateRange).subscribe((response) => {
+							let rainData=response.data?response.data:response;
+							this.wiseconnService.getDataByMeasure(this.et0Id,this.dateRange).subscribe((response) => {
+								let et0Data=response.data?response.data:response;
 								this.loading = false;
 								rainData=rainData.map((element)=>{
 									element.chart="rain";
@@ -362,10 +367,10 @@ export class FreePlotterComponent implements OnInit {
 						this.humidityId = data[i].id;
 					}
 					if(this.temperatureId&&this.humidityId){
-						this.wiseconnService.getDataByMeasure(this.temperatureId,this.dateRange).subscribe((data) => {
-							let temperatureData=data;
-							this.wiseconnService.getDataByMeasure(this.humidityId,this.dateRange).subscribe((data) => {
-								let humidityData=data;
+						this.wiseconnService.getDataByMeasure(this.temperatureId,this.dateRange).subscribe((response) => {
+							let temperatureData=response.data?response.data:response;
+							this.wiseconnService.getDataByMeasure(this.humidityId,this.dateRange).subscribe((response) => {
+								let humidityData=response.data?response.data:response;
 								this.loading = false;
 								temperatureData=temperatureData.map((element)=>{
 									element.chart="temperature";

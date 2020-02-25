@@ -4,12 +4,14 @@ import { Observable, throwError } from 'rxjs';
 import { retry, catchError } from 'rxjs/operators';
 import { farmModels } from '../models/farmModels';
 
+import { environment } from "../../environments/environment";
+
 @Injectable({
   providedIn: 'root'
 })
 export class WiseconnService {
 
-  baseurl = 'https://cors-anywhere.herokuapp.com/https://apiv2.wiseconn.com';
+  baseurl = environment.base_url;
 
   httpOptions = {
     headers: new HttpHeaders({
@@ -27,8 +29,8 @@ export class WiseconnService {
       catchError(this.errorHandl)
     )
   }
-  getFarm(id): Observable<farmModels> { 
-    return this.http.get<farmModels>(this.baseurl + '/farms/'+id, this.httpOptions)
+  getFarm(id): Observable<any> { 
+    return this.http.get<any>(this.baseurl + '/farms/'+id, this.httpOptions)
     .pipe(
       retry(1),
       catchError(this.errorHandl)
@@ -41,8 +43,8 @@ export class WiseconnService {
       catchError(this.errorHandl)
     )
   }
-  getIrrigarionsRealOfZones(id): Observable<farmModels> { 
-    return this.http.get<farmModels>(this.baseurl + '/zones/'+id+"/realIrrigations?initTime=2020-02-01&endTime=2020-02-29", this.httpOptions)
+  getIrrigarionsRealOfZones(id): Observable<any> { 
+    return this.http.get<any>(this.baseurl + '/zones/'+id+"/realIrrigations?initTime=2020-02-01&endTime=2020-02-29", this.httpOptions)
     .pipe(
       retry(1),
       catchError(this.errorHandl)
@@ -55,15 +57,15 @@ export class WiseconnService {
       catchError(this.errorHandl)
     )
   }
-  getMeterogoAgrifut(id): Observable<farmModels> {
-    return this.http.get<farmModels>(this.baseurl + '/zones/'+id+"/measures", this.httpOptions)
+  getMeterogoAgrifut(id): Observable<any> {
+    return this.http.get<any>(this.baseurl + '/zones/'+id+"/measures", this.httpOptions)
     .pipe(
       retry(1),
       catchError(this.errorHandl)
     )
   }
-  getMeterogoSantaPin(id): Observable<farmModels> { 
-    return this.http.get<farmModels>(this.baseurl + '/zones/'+id+"/measures", this.httpOptions)
+  getMeterogoSantaPin(id): Observable<any> { 
+    return this.http.get<any>(this.baseurl + '/zones/'+id+"/measures", this.httpOptions)
     .pipe(
       retry(1),
       catchError(this.errorHandl)
