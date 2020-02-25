@@ -28,7 +28,7 @@
                                   </th>
                               </thead>
                               <tbody>
-                                  <tr *ngFor="let data of farms | filter:searchTable">
+                                  <tr *ngFor="let data of farms | filter:searchTable" [routerLink]="['/farmmap',data.id]">
                                       <td>
                                           {{data.id}}
                                       </td>

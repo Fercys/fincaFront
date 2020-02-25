@@ -10,7 +10,7 @@
         </div>
           <div class="card card-plain">
               <div class="card-header card-header-success">
-                  <h4 class="card-title mt-0">Usuario</h4>
+                  <h4 class="card-title mt-0">Clientes</h4>
                   <p class="card-category">Datos de todos los usuarios registrados</p>
               </div>
               <div class="card-body">
@@ -28,7 +28,7 @@
                               </th>
                           </thead>
                           <tbody>
-                              <tr *ngFor="let data of client | filter:searchTable">
+                              <tr *ngFor="let data of client | filter:searchTable" [routerLink]="['/client-farm',data.account.id]">
                                   <td>
                                       {{data.account.id}}
                                   </td>
