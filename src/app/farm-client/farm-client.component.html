@@ -3,6 +3,11 @@
       <div class="row">
           
           <div class="col-md-12">
+            <div class="form-group pull-right">
+                <mat-form-field class="mat-input-custom">
+                    <input matInput placeholder="Campos..." [(ngModel)]="searchTable">
+                  </mat-form-field>
+            </div>
               <div class="card card-plain">
                   <div class="card-header card-header-success">
                       <h4 class="card-title mt-0">Campos</h4>
@@ -29,7 +34,7 @@
                                   </th>
                               </thead>
                               <tbody>
-                                  <tr *ngFor="let data of farms">
+                                  <tr *ngFor="let data of farms | filter:searchTable">
                                       <td>
                                           {{data.id}}
                                       </td>
@@ -42,7 +47,7 @@
                                       <td>
                                           {{data.timeZone}}
                                       </td>
-                                      <td>
+                                      <td  style="cursor: pointer;">
                                           <i class="material-icons" [routerLink]="['/farmmap',data.id]">find_in_page</i>
                                       </td>
                                   </tr>
