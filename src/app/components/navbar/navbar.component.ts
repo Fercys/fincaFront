@@ -37,7 +37,24 @@ export class NavbarComponent implements OnInit {
     }
 
     ngOnInit(){
-      this.username=localStorage.getItem("username");
+      //this.username=localStorage.getItem("username");
+      switch (localStorage.getItem("username").toLowerCase()) {
+        case "agrifrut":
+            this.username="Agrifrut";
+          break;
+          case "agrifrut@cdtec.cl":
+            this.username="Agrifrut";
+          break;
+        case "santajuana":
+            this.username="SantaJuana";
+          break;  
+          case "santajuana@cdtec.cl":
+            this.username="SantaJuana";
+            break;      
+        default:
+            this.username="Admin";
+          break;
+      }
       this.listTitles = SidebarRoute.filter(listTitle => listTitle);
       const navbar: HTMLElement = this.element.nativeElement;
       this.toggleButton = navbar.getElementsByClassName('navbar-toggler')[0];

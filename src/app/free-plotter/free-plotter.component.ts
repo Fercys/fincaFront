@@ -151,7 +151,17 @@ export class FreePlotterComponent implements OnInit {
 					return element.id == 185 || element.id == 2110 || element.id == 1378 || element.id == 520
 				})
 				break;
+				case "agrifrut@cdtec.cl":
+				this.farms = this.farms.filter((element) => {
+					return element.id == 185 || element.id == 2110 || element.id == 1378 || element.id == 520
+				})
+				break;
 				case "santajuana":
+				this.farms = this.farms.filter((element) => {
+					return element.id == 719
+				})
+				break;
+				case "santajuana@cdtec.cl":
 				this.farms = this.farms.filter((element) => {
 					return element.id == 719
 				})

@@ -39,11 +39,21 @@ export class SidebarComponent implements OnInit {
             return menuItem;
           }
           break;
+          case "agrifrut@cdtec.cl":
+          if (menuItem.title.toLowerCase()!="dashboard") {
+            return menuItem;
+          }
+          break;
         case "santajuana":
           if (menuItem.title.toLowerCase()!="dashboard") {
             return menuItem;
           }
-          break;        
+          break;      
+          case "santajuana@cdtec.cl":
+          if (menuItem.title.toLowerCase()!="dashboard") {
+            return menuItem;
+          }
+          break;    
         default:
           return menuItem;
           break;
