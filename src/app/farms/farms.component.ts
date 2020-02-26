@@ -11,6 +11,9 @@ export class FarmsComponent implements OnInit {
   constructor(private wiseconnService: WiseconnService,) { }
 
   ngOnInit() { 
+    if(this.wiseconnService.farmId){
+      this.wiseconnService.farmId=null;
+    }
     this.wiseconnService.getFarms().subscribe((data: any) => {
       this.farms = data.data?data.data:data;
       switch (localStorage.getItem("username").toLowerCase()) {

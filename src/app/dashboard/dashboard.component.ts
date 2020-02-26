@@ -120,10 +120,11 @@ export class DashboardComponent implements OnInit {
       seq2 = 0;
   };
   ngOnInit() {
-    
+    if(this.wiseconnService.farmId){
+      this.wiseconnService.farmId=null;
+    }
     this.loading = true;
     this.wiseconnService.getFarms().subscribe((response: any) => {
-      console.log("getFarms:",response)
       this.farms = response.data?response.data:response;
       localStorage.setItem("datafarms", JSON.stringify(this.farms));
       this.cant_farms=this.farms.length;

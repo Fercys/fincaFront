@@ -13,6 +13,7 @@ import { NotificationsComponent } from '../../notifications/notifications.compon
 import { UpgradeComponent } from '../../upgrade/upgrade.component';
 import { FarmsComponent } from '../../farms/farms.component';
 import { FarmMapComponent } from '../../farm-map/farm-map.component';
+import { SoilAnalysisComponent } from '../../soil-analysis/soil-analysis.component';
 import { FreePlotterComponent } from '../../free-plotter/free-plotter.component';
 import { NgxLoadingModule } from 'ngx-loading';
 import {MatDialogModule} from '@angular/material/dialog';
@@ -61,6 +62,7 @@ import { DialogMessage } from 'app/farm-map/farm-map.component'
     FarmsComponent,
     FarmMapComponent,
     FreePlotterComponent,
+    SoilAnalysisComponent,
     ClientComponent,
     FarmClientComponent,
     SafePipePipe,

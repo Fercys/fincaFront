@@ -135,7 +135,7 @@ export class FarmMapComponent implements OnInit {
   barChartPlugins = [];
 
   barChartData: ChartDataSets[] = [
-  { data: [], label: 'Rainfall (mm)' },
+  { data: [], label: 'Precipitación (mm)' },
   { data: [], label: 'Et0 (mm)' }
   ];
   rainId: number = null;
@@ -234,8 +234,7 @@ export class FarmMapComponent implements OnInit {
       default:
         return value;
         break;
-    }
-    
+    }    
   }
   getZones(id: any) {
     this.loading = true;
@@ -346,7 +345,7 @@ export class FarmMapComponent implements OnInit {
                       if(this.lineChartLabels.find((element) => {
                         return element === chartData[i].time;//.format("YYYY-MM-DD hh:mm:ss");
                       }) === undefined) {
-                        this.lineChartLabels.push(this.format(chartData[i].time,null));
+                        this.lineChartLabels.push(this.format(chartData[i].time,"line"));
                       }
                       if (chartData[i].chart==="temperature") {
                         this.lineChartData[0].data.push(chartData[i].value);

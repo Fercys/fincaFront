@@ -12,6 +12,7 @@ import { environment } from "../../environments/environment";
 export class WiseconnService {
 
   baseurl = environment.base_url;
+  farmId:number=null;
 
   httpOptions = {
     headers: new HttpHeaders({
@@ -29,7 +30,8 @@ export class WiseconnService {
       catchError(this.errorHandl)
     )
   }
-  getFarm(id): Observable<any> { 
+  getFarm(id): Observable<any> {
+    this.farmId=parseInt(id);
     return this.http.get<any>(this.baseurl + '/farms/'+id, this.httpOptions)
     .pipe(
       retry(1),
