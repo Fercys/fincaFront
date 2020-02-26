@@ -503,7 +503,7 @@ export class FarmMapComponent implements OnInit {
           elem.parentNode.removeChild(elem);
       });
       window['google'].maps.event.addListener(polygon, 'click', () => {
-        let farmId=this.zones[0].farmId?this.zones[0].farmId:this.zones[0].id_farm;
+        let farmId=zones[0].farmId?zones[0].farmId:zones[0].id_farm;
         redirect.navigate(['/farmpolygon', farmId, id]);
       });
     }

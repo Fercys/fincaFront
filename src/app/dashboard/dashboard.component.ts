@@ -68,6 +68,27 @@ export class DashboardComponent implements OnInit {
         let marker = new window['google'].maps.Marker({
           position: {lat: element['latitude'], lng: element['longitude']},          
         });
+        //tooltip
+        let tooltip = document.createElement("span");
+        let mapContainer = document.getElementById("map-container")?document.getElementById("map-container").firstChild:null;
+        if(mapContainer){
+          marker.addListener('mouseover', (event) => {
+            tooltip.id = 'tooltip-text';
+            tooltip.style.backgroundColor = '#777777';
+            tooltip.style.color = '#FFFFFF';
+            tooltip.innerHTML = element.name;
+            tooltip.style.position = 'absolute';
+            tooltip.style.padding = '20px 20px';
+            tooltip.style.bottom = '0px';
+            mapContainer.appendChild(tooltip);
+          });
+          marker.addListener('mouseout', (event) => {
+            var elem = document.querySelector('#tooltip-text');
+              if(elem)
+                elem.parentNode.removeChild(elem);
+          });
+        }
+       
         marker.addListener('click', () => {
           this.router.navigate(['/farmmap', element['id']]);
         });
