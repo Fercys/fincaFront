@@ -490,7 +490,7 @@ export class FarmMapComponent implements OnInit {
         tooltip.id = 'tooltip-text';
         tooltip.style.backgroundColor = '#777777';
         tooltip.style.color = '#FFFFFF';
-        tooltip.innerHTML = zone.name;
+        tooltip.innerHTML = zone.name + " - " + zone.status;
         tooltip.style.position = 'absolute';
         tooltip.style.padding = '20px 20px';
         tooltip.style.bottom = '0px';
@@ -594,6 +594,12 @@ export class FarmMapComponent implements OnInit {
         } else {
           if (data != "") {
             if (data[0].status == "Executed OK") {
+              this.zones.map((zone)=>{
+                if(zone.id==element.id||zone.id_wiseconn==element.id){
+                  element.status=data[0].status
+                }
+                return element;
+              });
               var Triangle = new window['google'].maps.Polygon({
                 paths: element.path?element.path:element.polygon.path,
                 strokeColor: '#49AA4F',
@@ -606,6 +612,12 @@ export class FarmMapComponent implements OnInit {
               addListenersOnPolygon(Triangle, element.id);
             } else {
               if (data[0].status == "Running") {
+                this.zones.map((zone)=>{
+                  if(zone.id==element.id||zone.id_wiseconn==element.id){
+                    element.status=data[0].status
+                  }
+                  return element;
+                });
                 var Triangle = new window['google'].maps.Polygon({
                   paths: element.path?element.path:element.polygon.path,
                   strokeColor: '#419FD5',
