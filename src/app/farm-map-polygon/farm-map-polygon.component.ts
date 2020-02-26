@@ -53,6 +53,10 @@ export class FarmMapPolygonComponent implements OnInit {
   lineChartLabels: Label[] = [];
   lineChartOptions: (ChartOptions & { annotation: any }) = {
     responsive: false,
+    tooltips: { 
+      mode: 'index', 
+      intersect: false 
+    },
     scales: {
       // We use this empty structure as a placeholder for dynamic theming.
       xAxes: [{}],
@@ -111,6 +115,10 @@ export class FarmMapPolygonComponent implements OnInit {
   //bar chart
   barChartOptions: ChartOptions = {
     responsive: false,
+    tooltips: { 
+      mode: 'index', 
+      intersect: false 
+    },
     // We use these empty structures as placeholders for dynamic theming.
     scales: { xAxes: [{}], yAxes: [{}] },
     plugins: {

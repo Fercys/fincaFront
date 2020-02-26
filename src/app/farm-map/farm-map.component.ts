@@ -52,7 +52,11 @@ export class FarmMapComponent implements OnInit {
   ];
   public lineChartLabels: Label[] = [];
   public lineChartOptions: (ChartOptions & { annotation: any }) = {
-    responsive: false,
+    responsive: false, 
+    tooltips: { 
+      mode: 'index', 
+      intersect: false 
+    },
     scales: {
       // We use this empty structure as a placeholder for dynamic theming.
       xAxes: [{}],
@@ -112,6 +116,10 @@ export class FarmMapComponent implements OnInit {
   //bar chart
   barChartOptions: ChartOptions = {
     responsive: false,
+    tooltips: { 
+      mode: 'index', 
+      intersect: false 
+    },
     // We use these empty structures as placeholders for dynamic theming.
     scales: { xAxes: [{}], yAxes: [{}] },
     plugins: {
@@ -218,7 +226,7 @@ export class FarmMapComponent implements OnInit {
   format(value:string,chart:string){
     switch (chart) {
       case "line":
-        return moment(value).format('DD/MM/YYYY hh:mm:ss');
+        return moment(value).format('DD') +" "+ moment(value).format('MMM');
         break;
       case "bar":
         return moment(value).format('DD') +" "+ moment(value).format('MMM');
