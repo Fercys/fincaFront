@@ -40,7 +40,10 @@ export class FreePlotterComponent implements OnInit {
 	{ data: [], label: 'Temperatura' },
 	{ data: [], label: 'Humedad', yAxisID: 'y-axis-1' },
 	];
-	lineChartLabels: Label[] = [];
+	lineChartLabels={
+	    labels:[],
+	    values:[]
+	  };
 	lineChartOptions: (ChartOptions & { annotation: any }) = {
 		responsive: false,
 		scales: {
@@ -276,7 +279,7 @@ export class FreePlotterComponent implements OnInit {
     format(value:string,chart:string){
       switch (chart) {
         case "line":
-          	return moment(value).format('DD/MM/YYYY hh:mm:ss');
+          	return moment.utc(value).format('DD') +" "+ moment.utc(value).format('MMM');
           	break;
         case "bar":
           	return moment.utc(value).format('DD') +" "+ moment.utc(value).format('MMM');
@@ -397,11 +400,12 @@ export class FreePlotterComponent implements OnInit {
 								});
 								this.resetChartsValues("line");
 								for (var i = 1; i < chartData.length; i+=2) {
-									if(this.lineChartLabels.find((element) => {
-										return element === chartData[i].time;//.format("YYYY-MM-DD hh:mm:ss");
-									}) === undefined) {
-										this.lineChartLabels.push(this.format(chartData[i].time,null));
-									}
+									if(this.lineChartLabels.values.find((element) => {
+				                      return element === chartData[i].time;
+				                    }) === undefined) {
+				                      this.lineChartLabels.values.push(this.format(chartData[i].time,null));
+				                      this.lineChartLabels.labels.push(this.format(chartData[i].time,"line"));
+				                    }
 									if (chartData[i].chart==="temperature") {
 										this.lineChartData[0].data.push(chartData[i].value);
 									} 
@@ -433,9 +437,10 @@ export class FreePlotterComponent implements OnInit {
 	resetChartsValues(chart:string){
 		switch (chart) {
 			case "line":
-				this.lineChartLabels=[];
-				this.lineChartData[0].data=[];
-				this.lineChartData[1].data=[];
+				this.lineChartLabels.labels=[];
+		        this.lineChartLabels.values=[];
+		        this.lineChartData[0].data=[];
+		        this.lineChartData[1].data=[];
 				break;	
 			case "bar":
 				this.barChartLabels=[];
