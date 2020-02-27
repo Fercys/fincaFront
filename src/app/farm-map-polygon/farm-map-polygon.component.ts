@@ -50,7 +50,10 @@ export class FarmMapPolygonComponent implements OnInit {
   { data: [], label: 'Temperatura' },
   { data: [], label: 'Humedad', yAxisID: 'y-axis-1' },
   ];
-  lineChartLabels: Label[] = [];
+  lineChartLabels={
+    labels:[],
+    values:[]
+  };
   lineChartOptions: (ChartOptions & { annotation: any }) = {
     responsive: false,
     tooltips: { 
@@ -651,11 +654,12 @@ export class FarmMapPolygonComponent implements OnInit {
                   });
                   this.resetChartsValues("line");
                   for (var i = 1; i < chartData.length; i+=2) {
-                    if(this.lineChartLabels.find((element) => {
-                      return element === chartData[i].time;//.format("YYYY-MM-DD hh:mm:ss");
-                    }) === undefined) {
-                      this.lineChartLabels.push(this.format(chartData[i].time,"line"));
-                    }
+                    if(this.lineChartLabels.values.find((element) => {
+                        return element === chartData[i].time;
+                      }) === undefined) {
+                        this.lineChartLabels.values.push(this.format(chartData[i].time,null));
+                        this.lineChartLabels.labels.push(this.format(chartData[i].time,"line"));
+                      }
                     if (chartData[i].chart==="temperature") {
                       this.lineChartData[0].data.push(chartData[i].value);
                     } 
@@ -693,7 +697,8 @@ export class FarmMapPolygonComponent implements OnInit {
       resetChartsValues(chart:string){
         switch (chart) {
           case "line":
-            this.lineChartLabels=[];
+            this.lineChartLabels.labels=[];
+            this.lineChartLabels.values=[];
             this.lineChartData[0].data=[];
             this.lineChartData[1].data=[];
             break;  

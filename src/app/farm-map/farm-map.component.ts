@@ -50,7 +50,10 @@ export class FarmMapComponent implements OnInit {
     { data: [], label: 'Temperatura' },
     { data: [], label: 'Humedad', yAxisID: 'y-axis-1' },
   ];
-  public lineChartLabels: Label[] = [];
+  public lineChartLabels={
+    labels:[],
+    values:[]
+  };
   public lineChartOptions: (ChartOptions & { annotation: any }) = {
     responsive: false, 
     tooltips: { 
@@ -342,10 +345,11 @@ export class FarmMapComponent implements OnInit {
                         return element;
                     });
                     for (var i = 1; i < chartData.length; i+=2) {                      
-                      if(this.lineChartLabels.find((element) => {
-                        return element === chartData[i].time;//.format("YYYY-MM-DD hh:mm:ss");
+                      if(this.lineChartLabels.values.find((element) => {
+                        return element === chartData[i].time;
                       }) === undefined) {
-                        this.lineChartLabels.push(this.format(chartData[i].time,"line"));
+                        this.lineChartLabels.values.push(this.format(chartData[i].time,null));
+                        this.lineChartLabels.labels.push(this.format(chartData[i].time,"line"));
                       }
                       if (chartData[i].chart==="temperature") {
                         this.lineChartData[0].data.push(chartData[i].value);
@@ -451,6 +455,21 @@ export class FarmMapComponent implements OnInit {
     }
     return pathData;
   }
+  getSpanishStatus(status:string){
+    let spanishStatus;
+    switch (status.toLowerCase()) {
+      case "running":
+        spanishStatus="Regando";
+        break;
+      case "executed ok":
+        spanishStatus="Ok";
+        break;
+      default:
+        // code...
+        break;
+    }
+    return spanishStatus;
+  }
   renderMap() {
 
     window['initMap'] = () => {
@@ -483,29 +502,43 @@ export class FarmMapComponent implements OnInit {
 
     let tooltip = document.createElement("span");
     var addListenersOnPolygon = function (polygon, id) {
-    let map = document.getElementById("map-container")?document.getElementById("map-container").firstChild:null;
-    if(map){
-      let zone = zones.filter(element => element.id == id || element.id_wiseconn == id)[0];
-      window['google'].maps.event.addListener(polygon, 'mouseover', (event) => {        
-        tooltip.id = 'tooltip-text';
-        tooltip.style.backgroundColor = '#777777';
-        tooltip.style.color = '#FFFFFF';
-        tooltip.innerHTML = zone.name + " - " + zone.status;
-        tooltip.style.position = 'absolute';
-        tooltip.style.padding = '20px 20px';
-        tooltip.style.bottom = '0px';
-        map.appendChild(tooltip);
-      });
-      window['google'].maps.event.addListener(polygon, 'mouseout', (event) => {
-        var elem = document.querySelector('#tooltip-text');
-        if(elem)
-          elem.parentNode.removeChild(elem);
-      });
-      window['google'].maps.event.addListener(polygon, 'click', () => {
-        let farmId=zones[0].farmId?zones[0].farmId:zones[0].id_farm;
-        redirect.navigate(['/farmpolygon', farmId, id]);
-      });
-    }
+      let mapContainer = document.getElementById("map-container")?document.getElementById("map-container").firstChild:null;
+      if(mapContainer){
+        let zone = zones.filter(element => element.id == id || element.id_wiseconn == id)[0];
+        window['google'].maps.event.addListener(polygon, 'mouseover', (event) => {        
+          tooltip.id = 'tooltip-text';
+          tooltip.style.backgroundColor = '#777777';
+          tooltip.style.color = '#FFFFFF';
+          if(zone.status!=undefined){
+            switch ((zone.status).toLowerCase()) {
+              case "running":
+                tooltip.innerHTML = zone.name + " - Regando";
+                break;
+              case "executed ok":
+                tooltip.innerHTML = zone.name + " - Ok";
+                break;
+              default:
+                break;
+            }
+          }else{
+            tooltip.innerHTML = zone.name;
+          }
+          
+          tooltip.style.position = 'absolute';
+          tooltip.style.padding = '20px 20px';
+          tooltip.style.bottom = '0px';
+          mapContainer.appendChild(tooltip);
+        });
+        window['google'].maps.event.addListener(polygon, 'mouseout', (event) => {
+          var elem = document.querySelector('#tooltip-text');
+          if(elem)
+            elem.parentNode.removeChild(elem);
+        });
+        window['google'].maps.event.addListener(polygon, 'click', () => {
+          let farmId=zones[0].farmId?zones[0].farmId:zones[0].id_farm;
+          redirect.navigate(['/farmpolygon', farmId, id]);
+        });
+      }
       
     }
 
@@ -559,6 +592,13 @@ export class FarmMapComponent implements OnInit {
             fillColor: '#E5C720',
             fillOpacity: 0.35,
           });
+          // Marker Image
+          // var image = "https://i.imgur.com/C7gyw7N.png";
+          // var marker = new window['google'].maps.Marker({
+          //     position: {lat: element.latitude, lng: element.longitude},
+          //     map: map,
+          //     icon: image
+          // });
           Triangle.setMap(map);
           addListenersOnPolygon(Triangle, element.id);
           this.loading = true;
@@ -620,12 +660,19 @@ export class FarmMapComponent implements OnInit {
                 });
                 var Triangle = new window['google'].maps.Polygon({
                   paths: element.path?element.path:element.polygon.path,
-                  strokeColor: '#419FD5',
+                  strokeColor: '#419FD5',                  
                   strokeOpacity: 0.8,
                   strokeWeight: 2,
                   fillColor: '#419FD5',
                   fillOpacity: 0.35,
                 });
+                // Marker Image
+                // var image = "https://i.imgur.com/C7gyw7N.png";
+                // var marker = new window['google'].maps.Marker({
+                //     position: {lat: element.latitude, lng: element.longitude},
+                //     map: map,
+                //     icon: image
+                // });
                 Triangle.setMap(map);
                 addListenersOnPolygon(Triangle,element.id);
               } else {
@@ -653,7 +700,8 @@ export class FarmMapComponent implements OnInit {
   resetChartsValues(chart:string){
     switch (chart) {
       case "line":
-        this.lineChartLabels=[];
+        this.lineChartLabels.labels=[];
+        this.lineChartLabels.values=[];
         this.lineChartData[0].data=[];
         this.lineChartData[1].data=[];
         break;  
