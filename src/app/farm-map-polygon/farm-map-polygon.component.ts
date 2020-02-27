@@ -50,9 +50,16 @@ export class FarmMapPolygonComponent implements OnInit {
   { data: [], label: 'Temperatura' },
   { data: [], label: 'Humedad', yAxisID: 'y-axis-1' },
   ];
-  lineChartLabels: Label[] = [];
+  lineChartLabels={
+    labels:[],
+    values:[]
+  };
   lineChartOptions: (ChartOptions & { annotation: any }) = {
     responsive: false,
+    tooltips: { 
+      mode: 'index', 
+      intersect: false 
+    },
     scales: {
       // We use this empty structure as a placeholder for dynamic theming.
       xAxes: [{}],
@@ -111,6 +118,10 @@ export class FarmMapPolygonComponent implements OnInit {
   //bar chart
   barChartOptions: ChartOptions = {
     responsive: false,
+    tooltips: { 
+      mode: 'index', 
+      intersect: false 
+    },
     // We use these empty structures as placeholders for dynamic theming.
     scales: { xAxes: [{}], yAxes: [{}] },
     plugins: {
@@ -126,7 +137,7 @@ export class FarmMapPolygonComponent implements OnInit {
   barChartPlugins = [];
 
   barChartData: ChartDataSets[] = [
-  { data: [], label: 'Rainfall (mm)' },
+  { data: [], label: 'Precipitación (mm)' },
   { data: [], label: 'Et0 (mm)' }
   ];
   rainId: number = null;
@@ -163,15 +174,16 @@ export class FarmMapPolygonComponent implements OnInit {
     this.weatherStationId=this._route.snapshot.paramMap.get('farm');
     this.dateRangeByDefault();
     this.wiseconnService.getMeterogoAgrifut(this._route.snapshot.paramMap.get('farm'))
-    .subscribe((data: any) => { 
-      this.farmData = data; 
-      this.wiseconnService.getZones(this._route.snapshot.paramMap.get('id')).subscribe((data: any) => {
-        this.getZone = data;
+    .subscribe((response: any) => { 
+      this.farmData = response.data?response.data:response; 
+      this.wiseconnService.getZones(this._route.snapshot.paramMap.get('id')).subscribe((response: any) => {
+        this.getZone = response.data?response.data:response; 
         this.getZone.forEach(element =>{
-          if(element.id == "727" || element.id== 727 || element.id == "6054" || element.id == 6054 || element.id == "13872" || element.id == 13872){
-            this.wiseconnService.getMeterogoAgrifut(element.id).subscribe((data: any) => { 
+          let id= element.id_wiseconn?element.id_wiseconn:element.id;
+          if(parseInt(id) == 727 || parseInt(id) == 6054 || parseInt(id) == 13872){
+            this.wiseconnService.getMeterogoAgrifut(element.id).subscribe((response: any) => { 
               this.loading = false;
-              this.mediciones=data;   
+              this.mediciones=response.data?response.data:response; 
               for (const item of this.mediciones) {
                 if(item.name == "Velocidad Viento"){
                   item.name = "Vel. Viento"
@@ -219,9 +231,10 @@ export class FarmMapPolygonComponent implements OnInit {
           // //  //'\nNode Port: '+data[0].physicalConnection.nodePort+'\nSensor Type: '+data[0].sensorType
           //   );
           // })
-          this.loadMap2(data); 
-          this.wiseconnService.getFarm(this._route.snapshot.paramMap.get('id')).subscribe((data: {}) => {
-            switch (data['account']['id']) { 
+          this.loadMap2(this.getZone); 
+          this.wiseconnService.getFarm(this._route.snapshot.paramMap.get('id')).subscribe((response: any) => {
+            let accountId=response.data?response.data:response;
+            switch (accountId) { 
               case 63:
               this.url="https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3435/Campos/Agrifrut";
               break;
@@ -237,52 +250,6 @@ export class FarmMapPolygonComponent implements OnInit {
           });
         });
     });    
-  }
-  renderBarChart(){
-    new Chartist.Bar('.ct-chart.bar-chart', {
-      labels: ['Jan', 'Feb', 'Mar', 'Apr'],
-      series: [
-      [5, 4, 3, 7]
-      ]
-    }, {
-      seriesBarDistance: 10,
-      axisX: {
-        offset: 60
-      },
-      axisY: {
-        offset: 80,
-        labelInterpolationFnc: function(value) {
-          return value + ' CHF'
-        },
-        scaleMinSpace: 15
-      }
-    });
-
-  }
-  formatDate(date:string){
-    let formatDate;
-    if(date.indexOf("Mon")==0){
-      formatDate=date.replace('Mon', 'Lun')
-    }
-    if(date.indexOf("Tue")==0){
-      formatDate=date.replace('Tue', 'Mar')
-    }
-    if(date.indexOf("Wed")==0){
-      formatDate=date.replace('Wed', 'Mie')
-    }
-    if(date.indexOf("Thu")==0){
-      formatDate=date.replace('Thu', 'Jue')
-    }
-    if(date.indexOf("Fri")==0){
-      formatDate=date.replace('Fri', 'Vie')
-    }
-    if(date.indexOf("Sat")==0){
-      formatDate=date.replace('Sat', 'Sab')
-    }
-    if(date.indexOf("Sun")==0){
-      formatDate=date.replace('Sun', 'Dom')
-    }
-    return formatDate;
   }
   loadMap2(data){
     this.weatherService;
@@ -306,9 +273,10 @@ export class FarmMapPolygonComponent implements OnInit {
           this.climaLoading = true;
         }
       });
+      let path=farmPolygon.polygon?farmPolygon.polygon.path[0]:farmPolygon.path[0];
       if(farmPolygon.latitude == undefined && farmPolygon.latitude == undefined){
         var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
-          center: {lat:  farmPolygon.polygon.path[0].lat, lng: farmPolygon.polygon.path[0].lng},
+          center: {lat:  path.lat, lng: path.lng},
           zoom:15,
           mapTypeId: window['google'].maps.MapTypeId.HYBRID
         });
@@ -320,7 +288,7 @@ export class FarmMapPolygonComponent implements OnInit {
         });
       } 
       var flightPath = new window['google'].maps.Polygon({
-        paths: farmPolygon.polygon.path,
+        paths: path,
         strokeColor: '#49AA4F',
         strokeOpacity: 0.8,
         strokeWeight: 2,
@@ -348,12 +316,19 @@ export class FarmMapPolygonComponent implements OnInit {
   loadMap = (data) => {
     if(data.length == 0){
       var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
-        center: {lat: -32.89963602180464, lng: -70.90243510967417},
+        center: {
+          lat: -32.89963602180464, 
+          lng: -70.90243510967417
+        },
         zoom:15
       });
     }else{
+      let path=data[10].polygon?data[10].polygon.path[0]:data[10].path[0];
       var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
-        center: {lat: data[10].polygon.path[0].lat, lng: data[10].polygon.path[0].lng},
+        center: {
+          lat: path.lat, 
+          lng:path.lng
+        },
         zoom:15
       });
     }    
@@ -423,10 +398,11 @@ export class FarmMapPolygonComponent implements OnInit {
         data.forEach(element => {
           // Construct the polygon.
           let idFarm = this._route.snapshot.paramMap.get('id');
+          let paths=element.path?element.path:element.polygon.path;
           wisservice.getIrrigarionsRealOfZones(idFarm).subscribe((dataIrrigations: any) => {
             if(idFarm == "727" || element.id== 727 || element.id == "6054" || element.id == 6054 || element.id == "13872" || element.id == 13872){
               var Triangle = new window['google'].maps.Polygon({
-                paths: element.polygon.path,
+                paths: paths,
                 strokeColor: '#E5C720',
                 strokeOpacity: 0.8,
                 strokeWeight: 2,
@@ -444,7 +420,7 @@ export class FarmMapPolygonComponent implements OnInit {
 
               if(dataIrrigations[0].status == "Executed OK"){
                 var Triangle = new window['google'].maps.Polygon({
-                  paths: element.polygon.path,
+                  paths: paths,
                   strokeColor: '#49AA4F',
                   strokeOpacity: 0.8,
                   strokeWeight: 2,
@@ -456,7 +432,7 @@ export class FarmMapPolygonComponent implements OnInit {
               }else{
                 if(dataIrrigations[0].status == "Running"){
                   var Triangle = new window['google'].maps.Polygon({
-                    paths: element.polygon.path,
+                    paths: paths,
                     strokeColor: '#419FD5',
                     strokeOpacity: 0.8,
                     strokeWeight: 2,
@@ -467,7 +443,7 @@ export class FarmMapPolygonComponent implements OnInit {
                   addListenersOnPolygon(Triangle, element.id);
                 }else{
                   var Triangle = new window['google'].maps.Polygon({
-                    paths: element.polygon.path,
+                    paths: paths,
                     strokeColor: '#FF0000',
                     strokeOpacity: 0.8,
                     strokeWeight: 2,
@@ -502,7 +478,7 @@ export class FarmMapPolygonComponent implements OnInit {
       format(value:string,chart:string){
         switch (chart) {
           case "line":
-            return moment(value).format('DD/MM/YYYY hh:mm:ss');
+            return moment(value).format('DD') +" "+ moment(value).format('MMM');
             break;
           case "bar":
             return moment(value).format('DD') +" "+ moment(value).format('MMM');
@@ -587,7 +563,8 @@ export class FarmMapPolygonComponent implements OnInit {
           });
         }
         this.loading = true;
-        this.wiseconnService.getMeasuresOfZones(this.weatherStationId).subscribe((data) => {
+        this.wiseconnService.getMeasuresOfZones(this.weatherStationId).subscribe((response) => {
+          let data=response.data?response.data:response;
           for (var i = data.length - 1; i >= 0; i--) {
             //bar chart
             if (data[i].sensorType === "Rain") {
@@ -597,10 +574,10 @@ export class FarmMapPolygonComponent implements OnInit {
               this.et0Id = data[i].id;
             }
             if(this.rainId&&this.et0Id){
-              this.wiseconnService.getDataByMeasure(this.rainId,this.dateRange).subscribe((data) => {
-                let rainData=data;
-                this.wiseconnService.getDataByMeasure(this.et0Id,this.dateRange).subscribe((data) => {
-                  let et0Data=data;
+              this.wiseconnService.getDataByMeasure(this.rainId,this.dateRange).subscribe((response) => {
+                let rainData=response.data?response.data:response;
+                this.wiseconnService.getDataByMeasure(this.et0Id,this.dateRange).subscribe((response) => {
+                  let et0Data=response.data?response.data:response;
                   this.loading = false;
                   rainData=rainData.map((element)=>{
                     element.chart="rain";
@@ -611,7 +588,7 @@ export class FarmMapPolygonComponent implements OnInit {
                     return element;
                   })
                   let chartData=rainData.concat(et0Data);
-                  chartData.sort(function (a, b) {
+                  chartData.sort( (a, b) => {
                     if (moment(a.time).isAfter(b.time)) {
                       return 1;
                     }
@@ -647,10 +624,10 @@ export class FarmMapPolygonComponent implements OnInit {
               this.humidityId = data[i].id;
             }
             if(this.temperatureId&&this.humidityId){
-              this.wiseconnService.getDataByMeasure(this.temperatureId,this.dateRange).subscribe((data) => {
-                let temperatureData=data;
-                this.wiseconnService.getDataByMeasure(this.humidityId,this.dateRange).subscribe((data) => {
-                  let humidityData=data;
+              this.wiseconnService.getDataByMeasure(this.temperatureId,this.dateRange).subscribe((response) => {
+                let temperatureData=response.data?response.data:response;
+                this.wiseconnService.getDataByMeasure(this.humidityId,this.dateRange).subscribe((response) => {
+                  let humidityData=response.data?response.data:response;
                   this.loading = false;
                   temperatureData=temperatureData.map((element)=>{
                     element.chart="temperature";
@@ -677,11 +654,12 @@ export class FarmMapPolygonComponent implements OnInit {
                   });
                   this.resetChartsValues("line");
                   for (var i = 1; i < chartData.length; i+=2) {
-                    if(this.lineChartLabels.find((element) => {
-                      return element === chartData[i].time;//.format("YYYY-MM-DD hh:mm:ss");
-                    }) === undefined) {
-                      this.lineChartLabels.push(this.format(chartData[i].time,null));
-                    }
+                    if(this.lineChartLabels.values.find((element) => {
+                        return element === chartData[i].time;
+                      }) === undefined) {
+                        this.lineChartLabels.values.push(this.format(chartData[i].time,null));
+                        this.lineChartLabels.labels.push(this.format(chartData[i].time,"line"));
+                      }
                     if (chartData[i].chart==="temperature") {
                       this.lineChartData[0].data.push(chartData[i].value);
                     } 
@@ -719,7 +697,8 @@ export class FarmMapPolygonComponent implements OnInit {
       resetChartsValues(chart:string){
         switch (chart) {
           case "line":
-            this.lineChartLabels=[];
+            this.lineChartLabels.labels=[];
+            this.lineChartLabels.values=[];
             this.lineChartData[0].data=[];
             this.lineChartData[1].data=[];
             break;  

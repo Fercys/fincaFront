@@ -14,8 +14,11 @@ export class FarmsComponent implements OnInit {
 
   ngOnInit() { 
     this.loading = true;
+    if(this.wiseconnService.farmId){
+      this.wiseconnService.farmId=null;
+    }
     this.wiseconnService.getFarms().subscribe((data: any) => {
-      this.farms = data;
+      this.farms = data.data?data.data:data;
       switch (localStorage.getItem("username").toLowerCase()) {
         case "agrifrut":
           this.farms = this.farms.filter((element) => {

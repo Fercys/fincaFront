@@ -40,6 +40,7 @@ import { UserProfileComponent } from '../../user-profile/user-profile.component'
 import { ConfigurationComponent } from '../../configuration/configuration.component';
 import { AdminLayoutRoutes } from './admin-layout.routing';
 import { FreePlotterComponent } from 'app/free-plotter/free-plotter.component';
+import { SoilAnalysisComponent } from 'app/soil-analysis/soil-analysis.component';
 
 @NgModule({
   imports: [
@@ -72,6 +73,7 @@ import { FreePlotterComponent } from 'app/free-plotter/free-plotter.component';
     FarmsComponent,
     FarmMapComponent,
     FreePlotterComponent,
+    SoilAnalysisComponent,
     ClientComponent,
     FarmClientComponent,
     SafePipePipe,
