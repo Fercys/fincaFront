@@ -273,10 +273,9 @@ export class FarmMapPolygonComponent implements OnInit {
           this.climaLoading = true;
         }
       });
-      let path=farmPolygon.polygon?farmPolygon.polygon.path[0]:farmPolygon.path[0];
       if(farmPolygon.latitude == undefined && farmPolygon.latitude == undefined){
         var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
-          center: {lat:  path.lat, lng: path.lng},
+          center: {lat:  farmPolygon.polygon.path[0].lat, lng: farmPolygon.polygon.path[0].lng},
           zoom:15,
           mapTypeId: window['google'].maps.MapTypeId.HYBRID
         });
@@ -288,7 +287,7 @@ export class FarmMapPolygonComponent implements OnInit {
         });
       } 
       var flightPath = new window['google'].maps.Polygon({
-        paths: path,
+        paths: farmPolygon.polygon.path,
         strokeColor: '#49AA4F',
         strokeOpacity: 0.8,
         strokeWeight: 2,
@@ -304,6 +303,7 @@ export class FarmMapPolygonComponent implements OnInit {
       })
     }     
   }
+
   renderMap() {
     window['initMap'] = () => {
       this.loadMap(null);     
