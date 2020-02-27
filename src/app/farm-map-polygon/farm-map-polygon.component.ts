@@ -362,6 +362,7 @@ export class FarmMapPolygonComponent implements OnInit {
 
       });  
     }
+    
     // var marker = new window['google'].maps.Marker({
       //   position: {lat: -32.232403, lng: -70.827825},
       //   map: map,
