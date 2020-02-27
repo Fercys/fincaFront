@@ -147,7 +147,7 @@
 				<div class="flex " *ngIf="renderLineChartFlag" style="overflow-x: scroll;">
 					<div class="flex-item" >
 						<div class="w-100" style="display: block;" >
-							<canvas baseChart width="400" height="400"  style="margin: auto;"
+							<canvas baseChart width="700" height="300"  style="margin: auto;"
 							[datasets]="lineChartData"
 							[labels]="lineChartLabels.labels"
 							[options]="lineChartOptions"
@@ -167,7 +167,7 @@
 			<div class="card-body bg-white chard-size">
 				<div *ngIf="renderBarChartFlag" style="overflow-x: scroll;">
 					<div class="w-100" style="display: block;">
-						<canvas baseChart width="400" height="200" style="margin: auto;"
+						<canvas baseChart width="700" height="300" style="margin: auto;"
 							[datasets]="barChartData"
 							[labels]="barChartLabels"
 							[options]="barChartOptions"
