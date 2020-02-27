@@ -8,10 +8,12 @@ import { WiseconnService } from '../services/wiseconn.service';
 })
 export class FarmsComponent implements OnInit {
   public farms;
+  public loading = false;
   searchTable:any;
   constructor(private wiseconnService: WiseconnService,) { }
 
   ngOnInit() { 
+    this.loading = true;
     this.wiseconnService.getFarms().subscribe((data: any) => {
       this.farms = data;
       switch (localStorage.getItem("username").toLowerCase()) {
@@ -39,6 +41,7 @@ export class FarmsComponent implements OnInit {
           // code...
           break;
       }
+      this.loading = false;
     })
   }
 
