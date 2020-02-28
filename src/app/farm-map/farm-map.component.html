@@ -138,8 +138,13 @@
               <div class="col-lg-6 col-md-6 col-sm-6">
                 <table class="table-legent">
                   <thead>
+<<<<<<< HEAD
                     <th *ngIf="statusRegando">
                       <div class="square-temp" style=" background-color: #419FD5;"></div>
+=======
+                    <th>
+                      <div class="square-temp" style=" background-color: #ed69a3;"></div>
+>>>>>>> origin/reinaldo
                       <span style="color: black; font-size: 10px; margin-left: 10px;">Regando</span>
                     </th>
                     <th>
@@ -264,6 +269,7 @@
                   [datasets]="barChartData"
                   [labels]="barChartLabels"
                   [options]="barChartOptions"
+                  [colors]="barChartColors"
                   [plugins]="barChartPlugins"
                   [legend]="barChartLegend"
                   [chartType]="barChartType">
