@@ -790,16 +790,16 @@ export class FarmMapComponent implements OnInit {
                 }else if(element.polygon.path){
                   lng=element.polygon.path[0].lng;
                 }
-                var marker = new window['google'].maps.Marker({
-                    position: {lat: lat, lng: lng},
-                    map: map,
-                    icon: {
-                        url: "../../assets/icons/map/Ok-01.svg", // url
-                        scaledSize: new window['google'].maps.Size(30, 30), // scaled size
-                        origin: new window['google'].maps.Point(0,0), // origin
-                        anchor: new window['google'].maps.Point(0, 0) // anchor
-                    }
-                });
+                // var marker = new window['google'].maps.Marker({
+                //     position: {lat: lat, lng: lng},
+                //     map: map,
+                //     icon: {
+                //         url: "../../assets/icons/map/Ok-01.svg", // url
+                //         scaledSize: new window['google'].maps.Size(30, 30), // scaled size
+                //         origin: new window['google'].maps.Point(0,0), // origin
+                //         anchor: new window['google'].maps.Point(0, 0) // anchor
+                //     }
+                // });
               Triangle.setMap(map);
               addListenersOnPolygon(Triangle, element.id);
             } else {
