@@ -707,12 +707,11 @@ export class FarmMapComponent implements OnInit {
             fillOpacity: 0.35,
           });
           // Marker Image
-          // var image = "https://i.imgur.com/C7gyw7N.png";
-          // var marker = new window['google'].maps.Marker({
-          //     position: {lat: element.latitude, lng: element.longitude},
-          //     map: map,
-          //     icon: image
-          // });
+          var marker = new window['google'].maps.Marker({
+              position: {lat: element.latitude, lng: element.longitude},
+              map: map,
+              icon: "https://i.imgur.com/C7gyw7N.png"
+          });
           Triangle.setMap(map);
           addListenersOnPolygon(Triangle, element.id);
           this.loading = true;
@@ -762,6 +761,33 @@ export class FarmMapComponent implements OnInit {
                 fillColor: '#49AA4F',
                 fillOpacity: 0.35,
               });
+              // Marker Image
+              let lat;
+              let lng;
+                if(element.latitude){
+                  lat=element.latitude;
+                }else if(element.path){
+                  lat=element.path[0].lat;
+                }else if(element.polygon.path){
+                  lat=element.polygon.path[0].lat;
+                }
+                if(element.longitude){
+                  lng=element.longitude;
+                }else if(element.path){
+                  lng=element.path[0].lng;
+                }else if(element.polygon.path){
+                  lng=element.polygon.path[0].lng;
+                }
+                var marker = new window['google'].maps.Marker({
+                    position: {lat: lat, lng: lng},
+                    map: map,
+                    icon: {
+                        url: "../../assets/icons/map/Ok-01.svg", // url
+                        scaledSize: new window['google'].maps.Size(30, 30), // scaled size
+                        origin: new window['google'].maps.Point(0,0), // origin
+                        anchor: new window['google'].maps.Point(0, 0) // anchor
+                    }
+                });
               Triangle.setMap(map);
               addListenersOnPolygon(Triangle, element.id);
             } else {
@@ -781,12 +807,32 @@ export class FarmMapComponent implements OnInit {
                   fillOpacity: 0.35,
                 });
                 // Marker Image
-                // var image = "https://i.imgur.com/C7gyw7N.png";
-                // var marker = new window['google'].maps.Marker({
-                //     position: {lat: element.latitude, lng: element.longitude},
-                //     map: map,
-                //     icon: image
-                // });
+                let lat;
+                let lng;
+                if(element.latitude){
+                  lat=element.latitude;
+                }else if(element.path){
+                  lat=element.path[0].lat;
+                }else if(element.polygon.path){
+                  lat=element.polygon.path[0].lat;
+                }
+                if(element.longitude){
+                  lng=element.longitude;
+                }else if(element.path){
+                  lng=element.path[0].lng;
+                }else if(element.polygon.path){
+                  lng=element.polygon.path[0].lng;
+                }
+                var marker = new window['google'].maps.Marker({
+                    position: {lat: lat, lng: lng},
+                    map: map,
+                    icon: {
+                        url: "../../assets/icons/map/Regando-01.svg", // url
+                        scaledSize: new window['google'].maps.Size(30, 30), // scaled size
+                        origin: new window['google'].maps.Point(0,0), // origin
+                        anchor: new window['google'].maps.Point(0, 0) // anchor
+                    }
+                });
                 Triangle.setMap(map);
                 addListenersOnPolygon(Triangle,element.id);
               } else {
