@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal,ModalDismissReasons , NgbDate, NgbCalendar, NgbDateParserFormatter} from '@ng-bootstrap/ng-bootstrap';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import Swal from 'sweetalert2';
-
+import {Location} from '@angular/common';
 import { WiseconnService } from 'app/services/wiseconn.service';
 
 //graficas
@@ -134,7 +134,8 @@ export class FreePlotterComponent implements OnInit {
 		public wiseconnService: WiseconnService,
 		public router: Router,
 		public calendar: NgbCalendar, 
-		public formatter: NgbDateParserFormatter) { }
+		public formatter: NgbDateParserFormatter,
+		private _location: Location) { }
 
 	ngOnInit() {//rango de fechas para graficas
 		this.dateRangeByDefault();
@@ -462,4 +463,15 @@ export class FreePlotterComponent implements OnInit {
 	chartHovered({ event, active }: { event: MouseEvent, active: {}[] }): void {
 		console.log(event, active);
 	}
+
+	isMobileMenu() {
+		if ($(window).width() > 991) {
+			return false;
+		}
+		return true;
+	  }
+	
+	  backClicked() {
+		this._location.back();
+	  }
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { WiseconnService } from '../services/wiseconn.service';
+import {Location} from '@angular/common';
 
 @Component({
   selector: 'app-farms',
@@ -9,7 +10,8 @@ import { WiseconnService } from '../services/wiseconn.service';
 export class FarmsComponent implements OnInit {
   public farms;
   searchTable:any;
-  constructor(private wiseconnService: WiseconnService,) { }
+  constructor(private wiseconnService: WiseconnService,
+    private _location: Location) { }
 
   ngOnInit() { 
     this.wiseconnService.getFarms().subscribe((data: any) => {
@@ -32,5 +34,18 @@ export class FarmsComponent implements OnInit {
       }
     })
   }
+
+
+  isMobileMenu() {
+    if ($(window).width() > 991) {
+        return false;
+    }
+    return true;
+  }
+
+  backClicked() {
+    this._location.back();
+  }
+
 
 }

@@ -1,4 +1,16 @@
 .configuracion{
+    .back-history {
+        height: 30px;
+        margin-top: -5px;
+        margin-right: 5px;
+        float: right;
+        background-color: white;
+        padding: 2%;
+        border-radius: 50%;
+      }
+      .no-visible{
+        display: none;
+      }
     .central{
         text-align: center;
     }

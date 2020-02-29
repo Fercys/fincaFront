@@ -4,6 +4,7 @@ import { WiseconnService } from 'app/services/wiseconn.service';
 import { element } from 'protractor';
 import { NgbModal,ModalDismissReasons , NgbDate, NgbCalendar, NgbDateParserFormatter} from '@ng-bootstrap/ng-bootstrap';
 import { WeatherService } from 'app/services/weather.service';
+import {Location} from '@angular/common';
 
 //graficas
 import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
@@ -156,7 +157,8 @@ export class FarmMapPolygonComponent implements OnInit {
     public modalService: NgbModal, 
     public weatherService: WeatherService,
     private calendar: NgbCalendar, 
-    public formatter: NgbDateParserFormatter) {
+    public formatter: NgbDateParserFormatter,
+    private _location: Location) {
   }
   ngOnInit() {
     this.loading = true;
@@ -749,4 +751,16 @@ export class FarmMapPolygonComponent implements OnInit {
         const parsed = this.formatter.parse(input);
         return parsed && this.calendar.isValid(NgbDate.from(parsed)) ? NgbDate.from(parsed) : currentValue;
       }
+
+      isMobileMenu() {
+        if ($(window).width() > 991) {
+            return false;
+        }
+        return true;
+      }
+    
+      backClicked() {
+        this._location.back();
+      }
+      
     }

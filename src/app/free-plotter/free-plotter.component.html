@@ -1,6 +1,9 @@
 
 <div class="main-content">
 	<div class="container-fluid">
+		<div >
+			<img (click)="backClicked()" [ngClass]="{'no-visible': !isMobileMenu()}" class="back-history" src="assets/icons/back.svg">
+		</div>
 		<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>
 		<div class="row">
 			<h4 class="row-title">Graficador Libre</h4>

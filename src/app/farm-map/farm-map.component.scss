@@ -1,3 +1,15 @@
+.back-history {
+  height: 30px;
+  margin-top: -5px;
+  margin-right: 5px;
+  float: right;
+  background-color: white;
+  padding: 2%;
+  border-radius: 50%;
+}
+.no-visible {
+  display: none;
+}
 iframe {
   width: 100%;
   height: 531px;
@@ -12,11 +24,11 @@ iframe {
   padding: 1% 0 1% 0;
   font-size: 20px;
 }
-.labels-row{
+.labels-row {
   @media screen and (min-width: 995px) {
     padding: 15px 0 15px 0;
   }
-  div:nth-child(2){
+  div:nth-child(2) {
     text-align: center;
   }
 }
@@ -34,7 +46,7 @@ iframe {
       height: 15px;
       margin-right: 10px;
     }
-    span:nth-child(1){
+    span:nth-child(1) {
       margin-top: -3px;
     }
     span:nth-child(2) {
@@ -66,7 +78,7 @@ iframe {
       background-color: #6fb060;
       margin-left: 5px;
       padding: 4px 20px 0 25px;
-      margin-top: 10px; 
+      margin-top: 10px;
     }
 
     img {
@@ -237,19 +249,21 @@ iframe {
   .barra {
     margin-bottom: 0;
   }
-  .barra > div > div > .container-fluid{
+  .barra > div > div > .container-fluid {
     margin-top: 15px;
   }
-  .cards-farms  > div > div:nth-child(2) , .cards-farms  > div > div:nth-child(3){
+  .cards-farms > div > div:nth-child(2),
+  .cards-farms > div > div:nth-child(3) {
     margin-top: 10px;
   }
-  .pronostic-table{
+  .pronostic-table {
     margin-top: 20px;
   }
-  .date-title, .buttons-farm{
+  .date-title,
+  .buttons-farm {
     display: none;
   }
-  .barra > .row{
+  .barra > .row {
     flex-direction: column-reverse !important;
   }
 }
@@ -257,4 +271,3 @@ iframe {
 .table-responsive {
   overflow-x: hidden !important;
 }
-

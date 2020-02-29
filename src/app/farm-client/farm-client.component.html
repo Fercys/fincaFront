@@ -1,7 +1,9 @@
 <div class="main-content">
   <div class="container-fluid">
+    <div class="back-history">
+        <img (click)="backClicked()" [ngClass]="{'no-visible': !isMobileMenu()}"  src="assets/icons/back.svg">
+    </div>      
       <div class="row">
-          
           <div class="col-md-12">
             <div class="form-group pull-right">
                 <mat-form-field class="mat-input-custom">

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-
+import {Location} from '@angular/common';
 @Component({
   selector: 'app-farm-client',
   templateUrl: './farm-client.component.html',
@@ -11,7 +11,8 @@ export class FarmClientComponent implements OnInit {
   public id;
   public url;
   searchTable: any;
-  constructor(private _route: ActivatedRoute) {  }
+  constructor(private _route: ActivatedRoute,
+    private _location: Location) {  }
 
   ngOnInit() { 
     this.id = this._route.snapshot.paramMap.get('id');    
@@ -30,4 +31,16 @@ export class FarmClientComponent implements OnInit {
       return element['account']['id'] != this.id;
     },this); 
   }
+
+  isMobileMenu() {
+    if ($(window).width() > 991) {
+        return false;
+    }
+    return true;
+  }
+
+  backClicked() {
+    this._location.back();
+  }
+
 }

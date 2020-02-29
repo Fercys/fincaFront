@@ -23,6 +23,9 @@
     <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>
   </div>
   <div class="container-fluid">
+    <div >
+      <img (click)="backClicked()" [ngClass]="{'no-visible': !isMobileMenu()}" class="back-history" src="assets/icons/back.svg">
+  </div>
       <div class="row">
         <div class="col-lg-4">
             <h4 class="row-title">Analisis del clima</h4>

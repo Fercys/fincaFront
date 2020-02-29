@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {Location} from '@angular/common';
+
 
 @Component({
   selector: 'app-user-profile',
@@ -13,7 +15,7 @@ export class UserProfileComponent implements OnInit {
     zone: { active: false}
   }
   
-  constructor() { }
+  constructor(    private _location: Location) { }
 
   ngOnInit() {
   }
@@ -27,5 +29,16 @@ export class UserProfileComponent implements OnInit {
       default:
         break;
     }
+  }
+
+  isMobileMenu() {
+    if ($(window).width() > 991) {
+        return false;
+    }
+    return true;
+  }
+
+  backClicked() {
+    this._location.back();
   }
 }

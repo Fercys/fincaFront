@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { WiseconnService } from 'app/services/wiseconn.service';
 import { element } from 'protractor';
 import { NgbModal, NgbDate, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
+import {Location} from '@angular/common';
 
 //graficas
 import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
@@ -150,7 +151,8 @@ export class FarmMapComponent implements OnInit {
     private router: Router,
     public weatherService: WeatherService,
     private calendar: NgbCalendar,
-    private dialogs: MatDialog) {
+    private dialogs: MatDialog,
+    private _location: Location) {
   }
 
   ngOnInit() {
@@ -692,6 +694,17 @@ export class FarmMapComponent implements OnInit {
     return formatDate;
   }
    
+  isMobileMenu() {
+    if ($(window).width() > 991) {
+        return false;
+    }
+    return true;
+  }
+
+  backClicked() {
+    this._location.back();
+  }
+
 }
 
 @Component({
