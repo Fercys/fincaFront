@@ -130,7 +130,8 @@ export class FarmMapPolygonComponent implements OnInit {
             id: 'y-axis-0',
             position: 'left',
             ticks: {
-                fontSize: 7
+              fontSize: 7,
+              max:100
             }
           },        
         ] 
@@ -624,6 +625,7 @@ export class FarmMapPolygonComponent implements OnInit {
         this.loading = true;
         this.wiseconnService.getMeasuresOfZones(this.weatherStationId).subscribe((response) => {
           let data=response.data?response.data:response;
+          console.log("data:",data)
           for (var i = data.length - 1; i >= 0; i--) {
             //bar chart
             if (data[i].sensorType != undefined && data[i].name != undefined){
@@ -632,17 +634,20 @@ export class FarmMapPolygonComponent implements OnInit {
               }
             }
             if (data[i].sensorType != undefined && data[i].name != undefined){
-              if ((data[i].sensorType).toLowerCase() === "wind velocity" && (data[i].name).toLowerCase() === "velocidad viento") {
+              if ((data[i].sensorType).toLowerCase() === "wind velocity" && 
+                ((data[i].name).toLowerCase() === "velocidad viento"||(data[i].name).toLowerCase() === "wind speed (period)")) {
                 this.windVelocityId = data[i].id;
               }
             }
             if (data[i].sensorType != undefined && data[i].name != undefined){
-              if ((data[i].sensorType).toLowerCase() === "wind direction" && (data[i].name).toLowerCase() === "direccion de viento") {
+              if ((data[i].sensorType).toLowerCase() === "wind direction" && 
+                ((data[i].name).toLowerCase() === "direccion de viento"||(data[i].name).toLowerCase() === "wind direction")) {
                 this.windDirectionId = data[i].id;
               }
             }
             if (data[i].sensorType != undefined && data[i].name != undefined){
-              if ((data[i].sensorType).toLowerCase() === "solar radiation" && (data[i].name).toLowerCase() === "radiacion solar") {
+              if ((data[i].sensorType).toLowerCase() === "solar radiation" && 
+                ((data[i].name).toLowerCase() === "radiacion solar"||(data[i].name).toLowerCase() === "Solar radiation ")) {
                 this.radiationId = data[i].id;
               }
             }
@@ -698,6 +703,7 @@ export class FarmMapPolygonComponent implements OnInit {
                             return element;
                           }
                         })
+                        console.log("chartData:",chartData)
                         this.resetChartsValues("bar");
                         for (var i = 0; i < chartData.length; i++) {
                           if(chartData[i+1]&&chartData[i+2]&&chartData[i+3]&&chartData[i+4]){
@@ -767,7 +773,7 @@ if(this.temperatureId&&this.humidityId){
           return element;
       });
       this.resetChartsValues("line");
-      for (var i = 1; i < chartData.length; i+=2) {
+      for (var i = 0; i < chartData.length; i++) {
         if(this.lineChartLabels.values.find((element) => {
           return element === chartData[i].time;
         }) === undefined) {
@@ -777,8 +783,8 @@ if(this.temperatureId&&this.humidityId){
         if (chartData[i].chart==="temperature") {
           this.lineChartData[0].data.push(chartData[i].value);
         } 
-        if(chartData[i-1].chart==="humidity"){
-          this.lineChartData[1].data.push(chartData[i-1].value);
+        if(chartData[i].chart==="humidity"){
+          this.lineChartData[1].data.push(chartData[i].value);
         }
         this.renderCharts("line");
       }
