@@ -195,9 +195,9 @@ export class FarmMapComponent implements OnInit {
   barChartData: ChartDataSets[] = [
   { data: [], label: 'Precipitación (mm)' }, 
   { data: [], label: 'Et0 (mm)' },
-  { data: [], label: 'Velocidad de viento' },
-  { data: [], label: 'Dirección de viento' },
-  { data: [], label: 'Radiación' }  
+  // { data: [], label: 'Velocidad de viento' },
+  // { data: [], label: 'Dirección de viento' },
+  // { data: [], label: 'Radiación' }  
   ];
   windVelocityId: number = null;
   windDirectionId: number = null;
@@ -406,15 +406,15 @@ export class FarmMapComponent implements OnInit {
                             if(chartData[i].chart=="et0") {
                               this.barChartData[1].data.push(chartData[i].value);
                             }
-                            if(chartData[i].chart=="windvelocity") {
-                              this.barChartData[2].data.push(chartData[i].value);
-                            }
-                            if(chartData[i].chart=="winddirection") {
-                              this.barChartData[3].data.push(chartData[i].value);
-                            }
-                            if(chartData[i].chart=="radiation") {
-                              this.barChartData[4].data.push(chartData[i].value);
-                            }
+                            // if(chartData[i].chart=="windvelocity") {
+                            //   this.barChartData[2].data.push(chartData[i].value);
+                            // }
+                            // if(chartData[i].chart=="winddirection") {
+                            //   this.barChartData[3].data.push(chartData[i].value);
+                            // }
+                            // if(chartData[i].chart=="radiation") {
+                            //   this.barChartData[4].data.push(chartData[i].value);
+                            // }
                             this.renderCharts("bar");
                           }
                         });
@@ -880,7 +880,7 @@ export class FarmMapComponent implements OnInit {
         break;  
       case "bar":
         this.barChartLabels=[];
-        for (var i = 0; i < 5; i++) {
+        for (var i = 0; i < 2; i++) {
           this.barChartData[i].data=[];
         }
         break;
