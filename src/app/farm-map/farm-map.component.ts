@@ -227,11 +227,7 @@ export class FarmMapComponent implements OnInit {
 
   ngOnInit() {
     this.init(0);
-
-  }
-  setLocalStorageItem(key,value){
-    localStorage.setItem(key,value);
-  }
+  }  
   init(id) {
     this.renderLineChartFlag=false;
     this.getFarms();
@@ -248,20 +244,44 @@ export class FarmMapComponent implements OnInit {
       if(parseInt(localStorage.getItem("lastFarmId"))==parseInt(this._route.snapshot.paramMap.get('id'))){
         this.mediciones = JSON.parse(localStorage.getItem('lastMeasurements'));
         this.zones = JSON.parse(localStorage.getItem('lastZones'));
-        console.log("zones:",this.zones);
         this.lineChartLabels = JSON.parse(localStorage.getItem('lastLineChartLabels'));
         let lineChartData=JSON.parse(localStorage.getItem('lastLineChartData'));
-        for (var i = 0; i < lineChartData.length; i++) {
-          this.lineChartData[i].data=lineChartData[i].data;
+        if(lineChartData){
+          for (var i = 0; i < lineChartData.length; i++) {
+            this.lineChartData[i].data=lineChartData[i].data;
+          }
         }
+        
         this.barChartLabels = JSON.parse(localStorage.getItem('lastBarChartLabels'));
         let barChartData=JSON.parse(localStorage.getItem('lastBarChartData'));
-        for (var i = 0; i < barChartData.length; i++) {
-          this.barChartData[i].data=barChartData[i].data;
+        if(barChartData){
+          for (var i = 0; i < barChartData.length; i++) {
+            this.barChartData[i].data=barChartData[i].data;
+          }
         }
         this.renderLineChartFlag=true;
         this.renderBarChartFlag=true;
-        this.loadMap(this.zones);
+
+        let polygonDatas=JSON.parse(localStorage.getItem('lastPolygonData'));
+        let map=new window['google'].maps.Map(this.mapElement.nativeElement, JSON.parse(localStorage.getItem('lastMapData')));
+        for (var i = 0; i < polygonDatas.length; i++) {
+          var Triangle = new window['google'].maps.Polygon(polygonDatas[i].data);
+          Triangle.setMap(map);
+          this.addListenersOnPolygon(Triangle,polygonDatas[i].element.id);
+          let id= polygonDatas[i].element.id_wiseconn?polygonDatas[i].element.id_wiseconn:polygonDatas[i].element.id;
+          if (parseInt(id) == 727 || parseInt(id) == 6054 || parseInt(id) == 13872){
+            // Marker Image          
+            this.addMarkerImage(map, polygonDatas[i].element, "https://i.imgur.com/C7gyw7N.png");
+          }else if (polygonDatas[i].element.status!=undefined){
+            if((polygonDatas[i].element.status).toLowerCase() == "executed ok") {            
+                // Marker Image          
+                this.addMarkerImage(map, polygonDatas[i].element, "../../assets/icons/map/Ok-01.svg");
+            }else if((polygonDatas[i].element.status).toLowerCase() == "running"){
+              // Marker Image          
+              this.addMarkerImage(map, polygonDatas[i].element,  "../../assets/icons/map/Regando-01.svg"); 
+            }
+          } 
+        }
       }else{
         this.setLocalStorageItem("lastFarmId",this._route.snapshot.paramMap.get('id'));
         if (id == 0) {
@@ -273,11 +293,13 @@ export class FarmMapComponent implements OnInit {
         }  
       }
     }else{
-      this.setLocalStorageItem("lastFarmId",this._route.snapshot.paramMap.get('id'));
+        console.log("294")
       if (id == 0) {
+        console.log("296")
         idFarm = (this._route.snapshot.paramMap.get('id'));
         this.getZones(this._route.snapshot.paramMap.get('id'));
       } else {
+        console.log("300")
         idFarm = id;
         this.getZones(id);
       }  
@@ -322,6 +344,9 @@ export class FarmMapComponent implements OnInit {
           this.url = "";
       }
     });
+  }
+  setLocalStorageItem(key,value){
+    localStorage.setItem(key,value);
   }
   format(value:string,chart:string){
     switch (chart) {
@@ -545,8 +570,9 @@ export class FarmMapComponent implements OnInit {
   }
   getZones(id: any) {
     this.loading = true;
-
     this.wiseconnService.getZones(id).subscribe((response: any) => {
+      this.loading = false; 
+      this.setLocalStorageItem("lastFarmId",this._route.snapshot.paramMap.get('id'));
       this.zones = response.data?response.data:response;
       this.setLocalStorageItem("lastZones",this.getJSONStringify(this.zones));
       this.getChartInformation();
@@ -556,8 +582,7 @@ export class FarmMapComponent implements OnInit {
           }) != undefined){
           return element
         }
-      });
-      this.loading = false;      
+      });     
     });
   }
   getFarms() {
@@ -598,7 +623,6 @@ export class FarmMapComponent implements OnInit {
     cache = null;
     return result;
   }
-
   renderCharts(chart:string) {
     switch (chart) {
       case "line":
@@ -638,32 +662,7 @@ export class FarmMapComponent implements OnInit {
         break;
     }
     return pathData;
-  }
-  getSpanishStatus(status:string){
-    let spanishStatus;
-    switch (status.toLowerCase()) {
-      case "running":
-        spanishStatus="Regando";
-        break;
-      case "executed ok":
-        spanishStatus="Ok";
-        break;
-      default:
-        // code...
-        break;
-    }
-    return spanishStatus;
-  }
-  renderMap() {
-
-    window['initMap'] = () => {
-      this.loadMap(null);
-    }
-    if (!window.document.getElementById('google-map-script')) {
-    } else {
-      this.loadMap(null);
-    }
-  }
+  }  
   processMeasurements(){
     for (const item of this.mediciones) {
         if(item.name == "Velocidad Viento"){
@@ -691,75 +690,99 @@ export class FarmMapComponent implements OnInit {
     this.deleteValueJson("Et0");
     this.deleteValueJson("Etp");
   }
-  loadMap = (data) => {
+  addMarkerImage(map,element,urlImage){
+    let lat;
+    let lng;
+    if(element.latitude){
+      lat=element.latitude;
+    }else if(element.path){
+      lat=element.path[0].lat;
+    }else if(element.polygon.path){
+      lat=element.polygon.path[0].lat;
+    }
+    if(element.longitude){
+      lng=element.longitude;
+    }else if(element.path){
+      lng=element.path[0].lng;
+    }else if(element.polygon.path){
+      lng=element.polygon.path[0].lng;
+    }
+    var marker = new window['google'].maps.Marker({
+        position: {lat: lat, lng: lng},
+        map: map,
+        icon: {
+            url: urlImage, // url
+            scaledSize: new window['google'].maps.Size(30, 30), // scaled size
+            origin: new window['google'].maps.Point(0,0), // origin
+            anchor: new window['google'].maps.Point(0, 0) // anchor
+        }
+    });
+  }
+  addListenersOnPolygon(polygon, id){
+    let tooltip = document.createElement("span");
+    let mapContainer = document.getElementById("map-container")?document.getElementById("map-container").firstChild:null;
+    if(mapContainer){
+      let zone = this.zones.filter(element => element.id == id || element.id_wiseconn == id)[0];
+      window['google'].maps.event.addListener(polygon, 'mouseover', (event) => {        
+        tooltip.id = 'tooltip-text';
+        tooltip.style.backgroundColor = '#777777';
+        tooltip.style.color = '#FFFFFF';
+        if(zone.status!=undefined){
+          switch ((zone.status).toLowerCase()) {
+            case "running":
+            tooltip.innerHTML = zone.name + " - Regando";
+            break;
+            case "executed ok":
+            tooltip.innerHTML = zone.name + " - Ok";
+            break;
+            default:
+            break;
+          }
+        }else{
+          tooltip.innerHTML = zone.name;
+        }
+
+        tooltip.style.position = 'absolute';
+        tooltip.style.padding = '20px 20px';
+        tooltip.style.bottom = '0px';
+        mapContainer.appendChild(tooltip);
+        console.log("mouseover")
+      });
+      window['google'].maps.event.addListener(polygon, 'mouseout', (event) => {
+        var elem = document.querySelector('#tooltip-text');
+        if(elem)
+          elem.parentNode.removeChild(elem);
+      });
+      window['google'].maps.event.addListener(polygon, 'click', () => {
+        let farmId=this.zones[0].farmId?this.zones[0].farmId:this.zones[0].id_farm;
+        this.router.navigate(['/farmpolygon', farmId, id]);
+      });
+    }
+  }
+  loadMap(data) {
     if (data.length == 0) {
       var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
         center: { lat: -32.89963602180464, lng: -70.90243510967417 },
         zoom: 15,
         mapTypeId: window['google'].maps.MapTypeId.HYBRID
       });
+      this.setLocalStorageItem("lastMapData",this.getJSONStringify({
+        center: { lat: -32.89963602180464, lng: -70.90243510967417 },
+        zoom: 15,
+        mapTypeId: window['google'].maps.MapTypeId.HYBRID
+      }));
     } else {
       var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
         center: { lat: this.getPathData(data,'lat'), lng: this.getPathData(data,'lng') },
         zoom: 15,
         mapTypeId: window['google'].maps.MapTypeId.HYBRID
       });
+      this.setLocalStorageItem("lastMapData",this.getJSONStringify({
+        center: { lat: this.getPathData(data,'lat'), lng: this.getPathData(data,'lng') },
+        zoom: 15,
+        mapTypeId: window['google'].maps.MapTypeId.HYBRID
+      }));
     }
-
-    //Funcion de Click
-    var wisservice = this.wiseconnService;
-    var redirect = this.router;
-    var zones = this.zones;
-
-    let tooltip = document.createElement("span");
-    var addListenersOnPolygon = function (polygon, id) {
-      let mapContainer = document.getElementById("map-container")?document.getElementById("map-container").firstChild:null;
-      if(mapContainer){
-        let zone = zones.filter(element => element.id == id || element.id_wiseconn == id)[0];
-        window['google'].maps.event.addListener(polygon, 'mouseover', (event) => {        
-          tooltip.id = 'tooltip-text';
-          tooltip.style.backgroundColor = '#777777';
-          tooltip.style.color = '#FFFFFF';
-          if(zone.status!=undefined){
-            switch ((zone.status).toLowerCase()) {
-              case "running":
-                tooltip.innerHTML = zone.name + " - Regando";
-                break;
-              case "executed ok":
-                tooltip.innerHTML = zone.name + " - Ok";
-                break;
-              default:
-                break;
-            }
-          }else{
-            tooltip.innerHTML = zone.name;
-          }
-          
-          tooltip.style.position = 'absolute';
-          tooltip.style.padding = '20px 20px';
-          tooltip.style.bottom = '0px';
-          mapContainer.appendChild(tooltip);
-        });
-        window['google'].maps.event.addListener(polygon, 'mouseout', (event) => {
-          var elem = document.querySelector('#tooltip-text');
-          if(elem)
-            elem.parentNode.removeChild(elem);
-        });
-        window['google'].maps.event.addListener(polygon, 'click', () => {
-          let farmId=zones[0].farmId?zones[0].farmId:zones[0].id_farm;
-          redirect.navigate(['/farmpolygon', farmId, id]);
-        });
-      }
-      
-    }
-
-    // var marker = new window['google'].maps.Marker({
-    //   position: {lat: -32.232403, lng: -70.827825},
-    //   map: map,
-    //   title: 'Hello World!',
-    //   draggable: true,
-    //   animation: window['google'].maps.Animation.DROP,
-    // });
 
     var contentString = '<div id="content">' +
       '<div id="siteNotice">' +
@@ -785,32 +808,30 @@ export class FarmMapComponent implements OnInit {
     var infowindow = new window['google'].maps.InfoWindow({
       content: contentString
     });
+    var wisservice = this.wiseconnService;
 
-    // marker.addListener('click', function() {
-    //   infowindow.open(map, marker);
-    // });
+    let polygonDatas=[];
     data.forEach(element => {
       // Construct the polygon.
       wisservice.getIrrigarionsRealOfZones(element.id).subscribe((response: any) => {
         let data=response.data?response.data:response;
         let id= element.id_wiseconn?element.id_wiseconn:element.id;
         if (parseInt(id) == 727 || parseInt(id) == 6054 || parseInt(id) == 13872){
-          var Triangle = new window['google'].maps.Polygon({
+          let polygonData={
             paths: element.path?element.path:element.polygon.path,
             strokeColor: '#E5C720',
             strokeOpacity: 0.8,
             strokeWeight: 2,
             fillColor: '#E5C720',
             fillOpacity: 0.35,
-          });
-          // Marker Image
-          var marker = new window['google'].maps.Marker({
-              position: {lat: element.latitude, lng: element.longitude},
-              map: map,
-              icon: "https://i.imgur.com/C7gyw7N.png"
-          });
+          };
+          var Triangle = new window['google'].maps.Polygon(polygonData);
+          polygonDatas.push({element:element,data:polygonData});
+          this.setLocalStorageItem("lastPolygonData",JSON.stringify(polygonDatas));
+          // Marker Image          
+          this.addMarkerImage(map, element, "https://i.imgur.com/C7gyw7N.png");
           Triangle.setMap(map);
-          addListenersOnPolygon(Triangle, element.id);
+          this.addListenersOnPolygon(Triangle, element.id);
           this.loading = true;
           wisservice.getMeterogoAgrifut(element.id).subscribe((response: any) => {
             this.loading = false;
@@ -827,43 +848,22 @@ export class FarmMapComponent implements OnInit {
                 }
                 return element;
               });
-              var Triangle = new window['google'].maps.Polygon({
+              let polygonData={
                 paths: element.path?element.path:element.polygon.path,
                 strokeColor: '#49AA4F',
                 strokeOpacity: 0.8,
                 strokeWeight: 2,
                 fillColor: '#49AA4F',
                 fillOpacity: 0.35,
-              });
-              // Marker Image
-              let lat;
-              let lng;
-                if(element.latitude){
-                  lat=element.latitude;
-                }else if(element.path){
-                  lat=element.path[0].lat;
-                }else if(element.polygon.path){
-                  lat=element.polygon.path[0].lat;
-                }
-                if(element.longitude){
-                  lng=element.longitude;
-                }else if(element.path){
-                  lng=element.path[0].lng;
-                }else if(element.polygon.path){
-                  lng=element.polygon.path[0].lng;
-                }
-                var marker = new window['google'].maps.Marker({
-                    position: {lat: lat, lng: lng},
-                    map: map,
-                    icon: {
-                        url: "../../assets/icons/map/Ok-01.svg", // url
-                        scaledSize: new window['google'].maps.Size(30, 30), // scaled size
-                        origin: new window['google'].maps.Point(0,0), // origin
-                        anchor: new window['google'].maps.Point(0, 0) // anchor
-                    }
-                });
+              };
+              var Triangle = new window['google'].maps.Polygon(polygonData);              
+              polygonDatas.push({element:element,data:polygonData});
+              this.setLocalStorageItem("lastPolygonData",JSON.stringify(polygonDatas));
+              // Marker Image          
+              this.addMarkerImage(map, element, "../../assets/icons/map/Ok-01.svg");              
               Triangle.setMap(map);
-              addListenersOnPolygon(Triangle, element.id);
+              this.addListenersOnPolygon(Triangle, element.id);
+              console.log("Triangle:",Triangle)
             } else {
               if (data[0].status == "Running") {
                 this.zones.map((zone)=>{
@@ -872,58 +872,35 @@ export class FarmMapComponent implements OnInit {
                   }
                   return element;
                 });
-                var Triangle = new window['google'].maps.Polygon({
+                let polygonData={
                   paths: element.path?element.path:element.polygon.path,
-                  strokeColor: '#419FD5',                  
+                  strokeColor: '#419FD5',
                   strokeOpacity: 0.8,
                   strokeWeight: 2,
                   fillColor: '#419FD5',
                   fillOpacity: 0.35,
-                });
-                // Marker Image
-                let lat;
-                let lng;
-                if(element.latitude){
-                  lat=element.latitude;
-                }else if(element.path){
-                  lat=element.path[0].lat;
-                }else if(element.polygon.path){
-                  lat=element.polygon.path[0].lat;
-                }
-                if(element.longitude){
-                  lng=element.longitude;
-                }else if(element.path){
-                  lng=element.path[0].lng;
-                }else if(element.polygon.path){
-                  lng=element.polygon.path[0].lng;
-                }
-                var marker = new window['google'].maps.Marker({
-                    position: {lat: lat, lng: lng},
-                    map: map,
-                    icon: {
-                        url: "../../assets/icons/map/Regando-01.svg", // url
-                        scaledSize: new window['google'].maps.Size(30, 30), // scaled size
-                        origin: new window['google'].maps.Point(0,0), // origin
-                        anchor: new window['google'].maps.Point(0, 0) // anchor
-                    }
-                });
+                };
+                var Triangle = new window['google'].maps.Polygon(polygonData);                
+                polygonDatas.push({element:element,data:polygonData});
+                this.setLocalStorageItem("lastPolygonData",JSON.stringify(polygonDatas));
+                 // Marker Image          
+                this.addMarkerImage(map, element,  "../../assets/icons/map/Regando-01.svg");                  
                 Triangle.setMap(map);
-                addListenersOnPolygon(Triangle,element.id);
+                this.addListenersOnPolygon(Triangle,element.id);
               } else {
-                var Triangle = new window['google'].maps.Polygon({
+                let polygonData={
                   paths: element.path?element.path:element.polygon.path,
                   strokeColor: '#FF0000',
                   strokeOpacity: 0.8,
                   strokeWeight: 2,
                   fillColor: '#FF0000',
                   fillOpacity: 0.35,
-                });
+                };
+                var Triangle = new window['google'].maps.Polygon(polygonData);
                 Triangle.setMap(map);
-                addListenersOnPolygon(Triangle,element.id);
-                //  var map2 = new window['google'].maps.Map(this.mapElement.nativeElement, {          
-                //     center: {lat: element.polygon.path[0].lat, lng: element.polygon.path[0].lng},
-                //     zoom:15
-                //   });
+                this.addListenersOnPolygon(Triangle,element.id);                
+                polygonDatas.push({element:element,data:polygonData});              
+                this.setLocalStorageItem("lastPolygonData",JSON.stringify(polygonDatas));
               }
             }
           }
@@ -936,8 +913,9 @@ export class FarmMapComponent implements OnInit {
       case "line":
         this.lineChartLabels.labels=[];
         this.lineChartLabels.values=[];
-        this.lineChartData[0].data=[];
-        this.lineChartData[1].data=[];
+        for (var i = 0; i < 2; i++) {
+          this.lineChartData[i].data=[];
+        }
         break;  
       case "bar":
         this.barChartLabels=[];
@@ -954,31 +932,42 @@ export class FarmMapComponent implements OnInit {
     var index: number = this.mediciones.indexOf(this.mediciones.find(x => x.name == value));
     if (index != -1) this.mediciones.splice(index, 1);
   }
-  obtenerMedidas(id) {
-    this.wiseconnService.getMeasuresOfZones(this.id).subscribe((data: any) => {
-    })
-  }
   open(content, sizeValue) {
     this.modalService.open(content, {size: sizeValue} );
   }
   onSelect(select: string, id: number) {
-    let redirect = this.router;
-    let wisservice = this.wiseconnService;
-
     switch (select) {
       case "farm":
-        redirect.navigate(['/farmmap', id]);
+        this.router.navigate(['/farmmap', id]);
         this.init(id);
         break;
       case "zone":
         let farmId=this.zones[0].farmId?this.zones[0].farmId:this.zones[0].id_farm;
-        redirect.navigate(['/farmpolygon',farmId, id]);
+        this.router.navigate(['/farmpolygon',farmId, id]);
         break;
       default:
-        // code...
         break;
     }
+  }  
+  formatDate(date:string){
+    let formatDate;
+    let days=[
+      {ing:"Mon",spa:"Lun"},
+      {ing:"Tue",spa:"Mar"},
+      {ing:"Wed",spa:"Mie"},
+      {ing:"Thu",spa:"Jue"},
+      {ing:"Fri",spa:"Vie"},
+      {ing:"Sat",spa:"Sab"},
+      {ing:"Sun",spa:"Dom"}
+    ];
+    for (var i = 0; i < days.length; i++) {      
+      if(date.indexOf(days[i].ing)==0){
+        formatDate=date.replace(days[i].ing, days[i].spa);
+      }
+    }    
+    return formatDate;
   }
+  //por factorizar
   openDialog(): void {
      const dialogRef = this.dialog.open(DialogMessage, {
        panelClass: 'messagedialogcss'
@@ -988,30 +977,14 @@ export class FarmMapComponent implements OnInit {
        console.log('The dialog was closed');
      });
   }
-  formatDate(date:string){
-    let formatDate;
-    if(date.indexOf("Mon")==0){
-      formatDate=date.replace('Mon', 'Lun')
+  renderMap() {
+    window['initMap'] = () => {
+      this.loadMap(null);
     }
-    if(date.indexOf("Tue")==0){
-      formatDate=date.replace('Tue', 'Mar')
+    if (!window.document.getElementById('google-map-script')) {
+    } else {
+      this.loadMap(null);
     }
-    if(date.indexOf("Wed")==0){
-      formatDate=date.replace('Wed', 'Mie')
-    }
-    if(date.indexOf("Thu")==0){
-      formatDate=date.replace('Thu', 'Jue')
-    }
-    if(date.indexOf("Fri")==0){
-      formatDate=date.replace('Fri', 'Vie')
-    }
-    if(date.indexOf("Sat")==0){
-      formatDate=date.replace('Sat', 'Sab')
-    }
-    if(date.indexOf("Sun")==0){
-      formatDate=date.replace('Sun', 'Dom')
-    }
-    return formatDate;
   }
    
 }
