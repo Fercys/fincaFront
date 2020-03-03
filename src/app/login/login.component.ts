@@ -38,7 +38,6 @@ export class LoginComponent implements OnInit,OnDestroy,AfterViewInit {
 	ngOnInit() {
 		localStorage.clear();
 		this.screenHeight = window.innerHeight;
-		console.log('este es mi height inicial: '+this.screenHeight.toString())
 		this.login[0].style.height = this.screenHeight.toString()+'px';
 		
 		this.elementRef.nativeElement.ownerDocument.body.style.backgroundImage = './assets/img/backgrounds/2.jpg';

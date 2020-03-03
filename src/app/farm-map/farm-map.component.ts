@@ -13,6 +13,8 @@ import Swal from 'sweetalert2'
 
 import { WeatherService } from 'app/services/weather.service';
 
+import * as util from 'util' // has no default export
+import { inspect } from 'util' // or directly
 
 import * as Chartist from 'chartist';
 import * as moment from "moment";
@@ -227,6 +229,9 @@ export class FarmMapComponent implements OnInit {
     this.init(0);
 
   }
+  setLocalStorageItem(key,value){
+    localStorage.setItem(key,value);
+  }
   init(id) {
     this.renderLineChartFlag=false;
     this.getFarms();
@@ -239,15 +244,47 @@ export class FarmMapComponent implements OnInit {
       endTime: moment(this.toDate.year + "-" + this.toDate.month + "-" + this.toDate.day).format("YYYY-MM-DD")
     };
     let idFarm;
-    if (id == 0) {
-      idFarm = (this._route.snapshot.paramMap.get('id'));
-      this.getZones(this._route.snapshot.paramMap.get('id'));
-    } else {
-      idFarm = id;
-      this.getZones(id);
+    if(localStorage.getItem("lastFarmId")!=undefined){
+      if(parseInt(localStorage.getItem("lastFarmId"))==parseInt(this._route.snapshot.paramMap.get('id'))){
+        this.mediciones = JSON.parse(localStorage.getItem('lastMeasurements'));
+        this.zones = JSON.parse(localStorage.getItem('lastZones'));
+        console.log("zones:",this.zones);
+        this.lineChartLabels = JSON.parse(localStorage.getItem('lastLineChartLabels'));
+        let lineChartData=JSON.parse(localStorage.getItem('lastLineChartData'));
+        for (var i = 0; i < lineChartData.length; i++) {
+          this.lineChartData[i].data=lineChartData[i].data;
+        }
+        this.barChartLabels = JSON.parse(localStorage.getItem('lastBarChartLabels'));
+        let barChartData=JSON.parse(localStorage.getItem('lastBarChartData'));
+        for (var i = 0; i < barChartData.length; i++) {
+          this.barChartData[i].data=barChartData[i].data;
+        }
+        this.renderLineChartFlag=true;
+        this.renderBarChartFlag=true;
+        this.loadMap(this.zones);
+      }else{
+        this.setLocalStorageItem("lastFarmId",this._route.snapshot.paramMap.get('id'));
+        if (id == 0) {
+          idFarm = (this._route.snapshot.paramMap.get('id'));
+          this.getZones(this._route.snapshot.paramMap.get('id'));
+        } else {
+          idFarm = id;
+          this.getZones(id);
+        }  
+      }
+    }else{
+      this.setLocalStorageItem("lastFarmId",this._route.snapshot.paramMap.get('id'));
+      if (id == 0) {
+        idFarm = (this._route.snapshot.paramMap.get('id'));
+        this.getZones(this._route.snapshot.paramMap.get('id'));
+      } else {
+        idFarm = id;
+        this.getZones(id);
+      }  
     }
+    
     this.climaLoading = false;
-    this.wiseconnService.getFarm(idFarm).subscribe((response) => {
+    this.wiseconnService.getFarm(this._route.snapshot.paramMap.get('id')).subscribe((response) => {
       this.dataFarm = response.data?response.data:response;
       this.selected = this.dataFarm.name;
       this.weatherService;
@@ -299,26 +336,14 @@ export class FarmMapComponent implements OnInit {
         break;
     }    
   }
-  getZones(id: any) {
-    this.loading = true;
-    this.wiseconnService.getZones(id).subscribe((response: any) => {
-      this.zones = response.data?response.data:response;
-      this.weatherZones = this.zones.filter((element)=>{
-        if(element.type && element.type.find((element) => {
-            return element === 'Weather' || element.description === 'Weather';
-          }) != undefined){
-          return element
-        }
-      });
-      this.loading = false;
-      for (var i = this.zones.length - 1; i >= 0; i--) {
+  getChartInformation(){
+    for (var i = 0; i < this.zones.length; i++) {
         if (this.zones[i].name == "Estación Meteorológica" || this.zones[i].name == "Estación Metereológica") {
           this.weatherStation = this.zones[i];
           this.loading = true;
           this.wiseconnService.getMeasuresOfZones(this.weatherStation.id).subscribe((response) => {
             let data=response.data?response.data:response;
-            console.log("data:",data)
-            for (var i = data.length - 1; i >= 0; i--) {
+            for (var i = 0; i < data.length; i++) {
               //bar chart
               if (data[i].sensorType != undefined && data[i].name != undefined){
                 if ((data[i].sensorType).toLowerCase() === "rain" && (data[i].name).toLowerCase() === "pluviometro") {
@@ -400,7 +425,7 @@ export class FarmMapComponent implements OnInit {
                           for (var i = 0; i < chartData.length; i++) {
                             if(chartData[i+1]&&chartData[i+2]&&chartData[i+3]&&chartData[i+4]){
                               if(chartData[i].time===chartData[i+1].time && chartData[i+1].time===chartData[i+2].time && chartData[i+2].time===chartData[i+3].time && chartData[i+3].time===chartData[i+4].time){
-                                this.barChartLabels.push(this.format(chartData[i].time,"bar"));                    
+                                this.barChartLabels.push(this.format(chartData[i].time,"bar")); 
                               }  
                             }
                             if(chartData[i].chart=="rain") {
@@ -418,7 +443,9 @@ export class FarmMapComponent implements OnInit {
                             if(chartData[i].chart=="radiation") {
                               this.barChartData[4].data.push(chartData[i].value);
                             }
-                            this.renderCharts("bar");
+                            if(i+1==chartData.length){
+                              this.renderCharts("bar");
+                            }
                           }
                         });
                         
@@ -464,7 +491,7 @@ export class FarmMapComponent implements OnInit {
                       if(moment(element.time).minutes()==0 || moment(element.time).minutes()==30)
                         return element;
                     });
-                    for (var i = 1; i < chartData.length; i+=2) {                      
+                    for (var i = 0; i < chartData.length; i++) {                      
                       if(this.lineChartLabels.values.find((element) => {
                         return element === chartData[i].time;
                       }) === undefined) {
@@ -474,14 +501,16 @@ export class FarmMapComponent implements OnInit {
                       if (chartData[i].chart==="temperature") {
                         this.lineChartData[0].data.push(chartData[i].value);
                       } 
-                      if(chartData[i-1].chart==="humidity"){
-                        this.lineChartData[1].data.push(chartData[i-1].value);
+                      if(chartData[i].chart==="humidity"){
+                        this.lineChartData[1].data.push(chartData[i].value);
                       }
+                      if(i+1==chartData.length){
                         this.renderCharts("line");
+                      }
                     }
                   });
                 });
-              }else if(i==0){
+              }else if(i==data.length){
                 Swal.fire({
                   icon: 'info',
                   title: 'Oops...',
@@ -500,10 +529,9 @@ export class FarmMapComponent implements OnInit {
           title: 'Oops...',
           text: 'Por favor revisar la data cargada en el campo, ya que no tiene data cargada!'
         })
-      } else {
-
+      }else {
          if (this.zones[0].max != null) {
-            this.loadMap(this.zones);
+          this.loadMap(this.zones);
          } else {
            this.loadMap([]);
            this.mediciones = [];
@@ -513,7 +541,23 @@ export class FarmMapComponent implements OnInit {
              text: 'Por favor revisar la data cargada en el campo, ya que presenta errores, (ubicaciones no cargada, falta data etc) !'
            })
          }
-      }
+      } 
+  }
+  getZones(id: any) {
+    this.loading = true;
+
+    this.wiseconnService.getZones(id).subscribe((response: any) => {
+      this.zones = response.data?response.data:response;
+      this.setLocalStorageItem("lastZones",this.getJSONStringify(this.zones));
+      this.getChartInformation();
+      this.weatherZones = this.zones.filter((element)=>{
+        if(element.type && element.type.find((element) => {
+            return element === 'Weather' || element.description === 'Weather';
+          }) != undefined){
+          return element
+        }
+      });
+      this.loading = false;      
     });
   }
   getFarms() {
@@ -539,13 +583,33 @@ export class FarmMapComponent implements OnInit {
       }
     })
   }
+  getJSONStringify(data) {
+    var cache = [];
+    var result =null;
+    result=JSON.stringify(data, function(key, value) {
+        if (typeof value === 'object' && value !== null) {
+            if (cache.indexOf(value) !== -1) {
+                return;
+            }
+            cache.push(value);
+        }
+        return value;
+    });
+    cache = null;
+    return result;
+  }
+
   renderCharts(chart:string) {
     switch (chart) {
       case "line":
         this.renderLineChartFlag=true;
+        this.setLocalStorageItem("lastLineChartLabels",this.getJSONStringify(this.lineChartLabels));
+        this.setLocalStorageItem("lastLineChartData",this.getJSONStringify(this.lineChartData));
         break;
       case "bar":
         this.renderBarChartFlag=true;
+        this.setLocalStorageItem("lastBarChartLabels",this.getJSONStringify(this.barChartLabels));
+        this.setLocalStorageItem("lastBarChartData",this.getJSONStringify(this.barChartData));
         break;
       default:
         // code...
@@ -599,6 +663,33 @@ export class FarmMapComponent implements OnInit {
     } else {
       this.loadMap(null);
     }
+  }
+  processMeasurements(){
+    for (const item of this.mediciones) {
+        if(item.name == "Velocidad Viento"){
+          item.name = "Vel. Viento"
+        }
+        if(item.name == "Direccion de viento") {
+          item.name = "Dir. Viento"
+        }
+        if(item.name == "Radiacion Solar"){
+          item.name = "Rad. Solar"
+        }   
+        if(item.name == "Station Relative Humidity"){
+          item.name = " Sta. Rel. Humidity "
+        }  
+        if(item.name == "Wind Direction" || item.name ==  "ATM pressure" || item.name ==  "Wind Speed (period)" || item.name ==  "Porciones de Frío" || item.name ==  "Horas Frío"){
+          this.deleteValueJson(item.name);
+        }    
+        if(item.name == "Porciones de Frío")  {
+          this.deleteValueJson(item.name);
+        }
+        if(item.name == "Horas Frío")  {
+          this.deleteValueJson(item.name);
+        }    
+    }
+    this.deleteValueJson("Et0");
+    this.deleteValueJson("Etp");
   }
   loadMap = (data) => {
     if (data.length == 0) {
@@ -724,32 +815,9 @@ export class FarmMapComponent implements OnInit {
           wisservice.getMeterogoAgrifut(element.id).subscribe((response: any) => {
             this.loading = false;
             this.mediciones = response.data?response.data:response;
-            for (const item of this.mediciones) {
-                if(item.name == "Velocidad Viento"){
-                  item.name = "Vel. Viento"
-                }
-                if(item.name == "Direccion de viento") {
-                  item.name = "Dir. Viento"
-                }
-                if(item.name == "Radiacion Solar"){
-                  item.name = "Rad. Solar"
-                }   
-                if(item.name == "Station Relative Humidity"){
-                  item.name = " Sta. Rel. Humidity "
-                }  
-                if(item.name == "Wind Direction" || item.name ==  "ATM pressure" || item.name ==  "Wind Speed (period)" || item.name ==  "Porciones de Frío" || item.name ==  "Horas Frío"){
-                  this.deleteValueJson(item.name);
-                }    
-                if(item.name == "Porciones de Frío")  {
-                  this.deleteValueJson(item.name);
-                }
-                if(item.name == "Horas Frío")  {
-                  this.deleteValueJson(item.name);
-                }    
-            }
-            this.deleteValueJson("Et0");
-            this.deleteValueJson("Etp");
-          });
+            this.setLocalStorageItem("lastMeasurements",this.getJSONStringify(this.mediciones));
+            this.processMeasurements();
+          })      
         } else {
           if (data != "") {
             if (data[0].status == "Executed OK") {
