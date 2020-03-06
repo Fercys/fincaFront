@@ -51,10 +51,7 @@ export class WeatherMonitoringComponent implements OnInit {
     { data: [], label: 'Temperatura' },
     { data: [], label: 'Humedad', yAxisID: 'y-axis-1' },
   ];
-  public lineChartLabels={
-    labels:[],
-    values:[]
-  };
+  public lineChartLabels: Label[] = [];
   public lineChartOptions: (ChartOptions & { annotation: any }) = {
     responsive: false, 
     tooltips: { 
@@ -236,6 +233,7 @@ export class WeatherMonitoringComponent implements OnInit {
         if(localStorage.getItem("lastFarmId")!=undefined && (parseInt(localStorage.getItem("lastFarmId"))==parseInt(this.farm.id))){
           this.zones = JSON.parse(localStorage.getItem('lastZones'));
           this.loadMap();
+          this.getChartInformation();
         }else{
           this.getZones();
         }
@@ -246,7 +244,7 @@ export class WeatherMonitoringComponent implements OnInit {
     })
   }
   filterFarmsByUser(){
-    if(localStorage.getItem("username")){      
+    if(localStorage.getItem("username")){
       switch (localStorage.getItem("username").toLowerCase()) {
         case "agrifrut":
           this.farms = this.farms.filter((element) => {
@@ -291,6 +289,7 @@ export class WeatherMonitoringComponent implements OnInit {
       this.setLocalStorageItem("lastFarmId",this.farm.id);
       this.setLocalStorageItem("lastZones",this.getJSONStringify(this.zones));
       this.loadMap();
+      this.getChartInformation();
     });
   }
   getWeather(){
@@ -335,11 +334,23 @@ export class WeatherMonitoringComponent implements OnInit {
   onSelect(select: string, id: number) {
     switch (select) {
       case "farm":
+        this.setLocalStorageItem("lastLineChartLabels",this.getJSONStringify(this.lineChartLabels));
+        this.setLocalStorageItem("lastLineChartData",this.getJSONStringify(this.lineChartData));
+
+        this.setLocalStorageItem("lastBarChartLabels",this.getJSONStringify(this.barChartLabels));
+        this.setLocalStorageItem("lastBarChartData",this.getJSONStringify(this.barChartData));
+
         this.farm=this.getFarm(id);
         this.getZones();
         this.getWeather();
         break;
       case "zone":
+        this.setLocalStorageItem("lastLineChartLabels",this.getJSONStringify(this.lineChartLabels));
+        this.setLocalStorageItem("lastLineChartData",this.getJSONStringify(this.lineChartData));
+
+        this.setLocalStorageItem("lastBarChartLabels",this.getJSONStringify(this.barChartLabels));
+        this.setLocalStorageItem("lastBarChartData",this.getJSONStringify(this.barChartData));
+
         this.router.navigate(['/farmpolygon',this.farm.id, id]);
         break;
       default:
@@ -352,23 +363,21 @@ export class WeatherMonitoringComponent implements OnInit {
   format(value:string,chart:string){
     switch (chart) {
       case "line":
-        return moment.utc(value).format('DD') +" "+ moment(value).format('MMM');
+        return moment.utc(value).format("DD/MM/YYYY hh:mm:ss");
         break;
       case "bar":
         return moment.utc(value).format('DD') +" "+ moment(value).format('MMM');
         break;
       default:
-        return moment.utc(value).format("DD/MM/YYYY hh:mm:ss");
+        return moment.utc(value).format('DD') +" "+ moment(value).format('MMM');
         break;
     }
-    return moment.utc(value).format("DD/MM/YYYY hh:mm:ss");
+    return value;
   }
-
-  init(id) {
+  
+  getChartInformation(){
     this.renderLineChartFlag=false;
     this.renderBarChartFlag=false;
-    this.getFarms();
-
     //rango de fechas para graficas
     this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -5);
     this.toDate = this.calendar.getToday();
@@ -376,111 +385,6 @@ export class WeatherMonitoringComponent implements OnInit {
       initTime: moment(this.fromDate.year + "-" + this.fromDate.month + "-" + this.fromDate.day).format("YYYY-MM-DD"),
       endTime: moment(this.toDate.year + "-" + this.toDate.month + "-" + this.toDate.day).format("YYYY-MM-DD")
     };
-    let idFarm;
-    if(localStorage.getItem("lastFarmId")!=undefined){
-      if(parseInt(localStorage.getItem("lastFarmId"))==parseInt(this._route.snapshot.paramMap.get('id'))){
-        this.measurements = JSON.parse(localStorage.getItem('lastMeasurements'));
-        this.zones = JSON.parse(localStorage.getItem('lastZones'));
-        this.lineChartLabels = JSON.parse(localStorage.getItem('lastLineChartLabels'));
-        let lineChartData=JSON.parse(localStorage.getItem('lastLineChartData'));
-        if(lineChartData){
-          for (var i = 0; i < lineChartData.length; i++) {
-            this.lineChartData[i].data=lineChartData[i].data;
-          }
-        }
-        
-        this.barChartLabels = JSON.parse(localStorage.getItem('lastBarChartLabels'));
-        let barChartData=JSON.parse(localStorage.getItem('lastBarChartData'));
-        if(barChartData){
-          for (var i = 0; i < barChartData.length; i++) {
-            this.barChartData[i].data=barChartData[i].data;
-          }
-        }
-        this.renderLineChartFlag=true;
-        this.renderBarChartFlag=true;
-
-        let polygonDatas=JSON.parse(localStorage.getItem('lastPolygonData'));
-        let map=new window['google'].maps.Map(this.mapElement.nativeElement, JSON.parse(localStorage.getItem('lastMapData')));
-        for (var i = 0; i < polygonDatas.length; i++) {
-          var Triangle = new window['google'].maps.Polygon(polygonDatas[i].data);
-          Triangle.setMap(map);
-          this.addListenersOnPolygon(Triangle,polygonDatas[i].element.id);
-          let id= polygonDatas[i].element.id_wiseconn?polygonDatas[i].element.id_wiseconn:polygonDatas[i].element.id;
-          if (parseInt(id) == 727 || parseInt(id) == 6054 || parseInt(id) == 13872){
-            // Marker Image          
-            this.addMarkerImage(map, polygonDatas[i].element, "https://i.imgur.com/C7gyw7N.png");
-          }else if (polygonDatas[i].element.status!=undefined){
-            if((polygonDatas[i].element.status).toLowerCase() == "executed ok") {            
-                // Marker Image          
-                this.addMarkerImage(map, polygonDatas[i].element, "../../assets/icons/map/Ok-01.svg");
-            }else if((polygonDatas[i].element.status).toLowerCase() == "running"){
-              // Marker Image          
-              this.addMarkerImage(map, polygonDatas[i].element,  "../../assets/icons/map/Regando-01.svg"); 
-            }
-          } 
-        }
-      }else{
-        this.setLocalStorageItem("lastFarmId",this._route.snapshot.paramMap.get('id'));
-        if (id == 0) {
-          idFarm = (this._route.snapshot.paramMap.get('id'));
-          this.getZones();
-        } else {
-          idFarm = id;
-          this.getZones();
-        }  
-      }
-    }else{
-      if (id == 0) {
-        idFarm = (this._route.snapshot.paramMap.get('id'));
-        this.getZones();
-      } else {
-        idFarm = id;
-        this.getZones();
-      }  
-    }
-    
-    // this.climaLoading = false;
-    // this.wiseconnService.getFarm(this._route.snapshot.paramMap.get('id')).subscribe((response) => {
-    //   this.dataFarm = response.data?response.data:response;
-    //   this.selected = this.dataFarm.name;
-    //   this.weatherService;
-    //   const q = [this.dataFarm.latitude, this.dataFarm.longitude];
-    //   if (q[0] != null) {
-    //     const key = "7da96f2f52f54be7a1b123737202102";
-    //     this.weatherService.getWeather(key, q).subscribe((weather) => {
-    //       this.climaDay = [];
-    //       this.climaIcon = [];
-    //       this.climaMax = [];
-    //       this.climaMin = [];
-    //       this.climaToday = weather.data.current_condition[0];
-    //       var clima = (weather.data.weather);
-    //       for (const data of clima) {
-    //         data.iconLabel = data.hourly[0].weatherIconUrl[0];
-    //         this.climaDay.push(data.date);
-    //         this.climaIcon.push(data.iconLabel.value);
-    //         this.climaMax.push(data.maxtempC);
-    //         this.climaMin.push(data.mintempC);
-    //       }
-    //       this.climaLoading = true;
-    //     });
-    //   }
-    //   switch (this.dataFarm.name) {
-    //     case "Agrifrut":
-    //       this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3435/Campos:l/Agrifrut:f";
-    //       break;
-    //     case "Agrifrut II (Nogales y Parrones)":
-    //       this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3435/Campos:l/Agrifrut%20II%20(Nogales%20y%20Parrones):f";
-    //       break;
-    //     case "Santa Juana de Chincolco":
-    //       this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3507/Campos:l/Agricola%20Santa%20Juana%20de%20Chincolco%20SA:f";
-    //       break;
-    //     default:
-    //       this.url = "";
-    //   }
-    // });
-  }
-  
-  getChartInformation(){
     for (var i = 0; i < this.zones.length; i++) {
         if (this.zones[i].name == "Estación Meteorológica" || this.zones[i].name == "Estación Metereológica") {
           this.weatherStation = this.zones[i];
@@ -488,7 +392,6 @@ export class WeatherMonitoringComponent implements OnInit {
           this.wiseconnService.getMeasuresOfZones(this.weatherStation.id).subscribe((response) => {
             let data=response.data?response.data:response;
             for (var i = 0; i < data.length; i++) {
-              console.log("data:",data)
               //bar chart
               if (data[i].sensorType != undefined && data[i].name != undefined){
                 if ((data[i].sensorType).toLowerCase() === "rain" && (data[i].name).toLowerCase() === "pluviometro") {
@@ -567,11 +470,10 @@ export class WeatherMonitoringComponent implements OnInit {
                           })
                           this.resetChartsValues("bar");
                           let maxLabelValue=0;
-                          console.log("chartData:",chartData)
                           for (var i = 0; i < chartData.length; i++) {
                             if(chartData[i+1]&&chartData[i+2]&&chartData[i+3]&&chartData[i+4]){
                               if(chartData[i].time===chartData[i+1].time && chartData[i+1].time===chartData[i+2].time && chartData[i+2].time===chartData[i+3].time && chartData[i+3].time===chartData[i+4].time){
-                                this.barChartLabels.push(this.format(chartData[i].time,null)); 
+                                this.barChartLabels.push(this.format(chartData[i].time,"bar")); 
                               }  
                             }
                             if(chartData[i].chart=="rain") {
@@ -639,11 +541,10 @@ export class WeatherMonitoringComponent implements OnInit {
                         return element;
                     });
                     for (var i = 0; i < chartData.length; i++) {                      
-                      if(this.lineChartLabels.values.find((element) => {
-                        return element === chartData[i].time;
+                      if(this.lineChartLabels.find((element) => {
+                        return element === this.format(chartData[i].time,"line");
                       }) === undefined) {
-                        this.lineChartLabels.values.push(this.format(chartData[i].time,null));
-                        this.lineChartLabels.labels.push(this.format(chartData[i].time,null));
+                        this.lineChartLabels.push(this.format(chartData[i].time,"line"));
                       }
                       if (chartData[i].chart==="temperature") {
                         this.lineChartData[0].data.push(chartData[i].value);
@@ -710,13 +611,9 @@ export class WeatherMonitoringComponent implements OnInit {
     switch (chart) {
       case "line":
         this.renderLineChartFlag=true;
-        this.setLocalStorageItem("lastLineChartLabels",this.getJSONStringify(this.lineChartLabels));
-        this.setLocalStorageItem("lastLineChartData",this.getJSONStringify(this.lineChartData));
         break;
       case "bar":
         this.renderBarChartFlag=true;
-        this.setLocalStorageItem("lastBarChartLabels",this.getJSONStringify(this.barChartLabels));
-        this.setLocalStorageItem("lastBarChartData",this.getJSONStringify(this.barChartData));
         break;
       default:
         // code...
@@ -844,7 +741,6 @@ export class WeatherMonitoringComponent implements OnInit {
     }
   }
   loadMap() {
-    console.log("loadMap()")
     if (this.zones.length == 0) {
       Swal.fire({icon: 'info',title: 'Información sobre el mapa',text: 'Sin zonas registradas'});
       var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
@@ -1000,15 +896,14 @@ export class WeatherMonitoringComponent implements OnInit {
   resetChartsValues(chart:string){
     switch (chart) {
       case "line":
-        this.lineChartLabels.labels=[];
-        this.lineChartLabels.values=[];
+        this.lineChartLabels=[];
         for (var i = 0; i < 2; i++) {
           this.lineChartData[i].data=[];
         }
         break;  
       case "bar":
         this.barChartLabels=[];
-        for (var i = 0; i < 2; i++) {
+        for (var i = 0; i < 5; i++) {
           this.barChartData[i].data=[];
         }
         break;

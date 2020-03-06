@@ -33,38 +33,7 @@ export class SidebarComponent implements OnInit {
   constructor( public router: Router) {  }
   ngOnInit() {
     
-    this.menuItems = ROUTES.filter(menuItem => {
-      switch (localStorage.getItem("username").toLowerCase()) {
-        case "agrifrut":
-          if (menuItem.title.toLowerCase()=="dashboard") {
-            menuItem.path='/weather-monitoring';
-            return menuItem;
-          }
-          break;
-          case "agrifrut@cdtec.cl":
-          if (menuItem.title.toLowerCase()=="dashboard") {
-            menuItem.path='/weather-monitoring';
-            return menuItem;
-          }
-          break;
-        case "santajuana":
-          if (menuItem.title.toLowerCase()=="dashboard") {
-            menuItem.path='/weather-monitoring';
-            return menuItem;
-          }
-          break;      
-          case "santajuana@cdtec.cl":
-          if (menuItem.title.toLowerCase()=="dashboard") {
-            menuItem.path='/weather-monitoring';
-            return menuItem;
-          }
-          break;    
-        default:
-          return menuItem;
-          break;
-      }
-      
-    });
+      this.menuItems = ROUTES.filter(menuItem => menuItem);
   }
   isMobileMenu() {
       if ($(window).width() > 991) {
