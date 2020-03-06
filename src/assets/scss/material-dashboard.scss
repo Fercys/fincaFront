@@ -15,70 +15,87 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
- @import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
 
- @import "core/variables";
- @import "core/mixins";
- @import "~bootstrap/scss/bootstrap";
+@import "core/variables";
+@import "core/mixins";
+@import "~bootstrap/scss/bootstrap";
 
-
- // Core Components
- @import "core/buttons";
- @import "core/checkboxes";
- @import "core/radios";
- @import "core/forms";
- @import "core/input-group";
- @import "core/images";
- @import "core/navbar";
- @import "core/alerts";
- @import "core/type";
- @import "core/tabs";
- @import "core/tooltip";
- @import "core/popover";
- @import "core/dropdown";
- @import "core/togglebutton";
- @import "core/ripples";
- @import "core/footers";
- @import "core/sidebar-and-main-panel";
- @import "core/fixed-plugin";
- @import "core/tables";
- @import "core/misc";
+// Core Components
+@import "core/buttons";
+@import "core/checkboxes";
+@import "core/radios";
+@import "core/forms";
+@import "core/input-group";
+@import "core/images";
+@import "core/navbar";
+@import "core/alerts";
+@import "core/type";
+@import "core/tabs";
+@import "core/tooltip";
+@import "core/popover";
+@import "core/dropdown";
+@import "core/togglebutton";
+@import "core/ripples";
+@import "core/footers";
+@import "core/sidebar-and-main-panel";
+@import "core/fixed-plugin";
+@import "core/tables";
+@import "core/misc";
 
 @import "core/cards";
 @import "core/cards/card-stats";
 @import "core/cards/card-profile";
 @import "core/cards/card-plain";
 
- //plugin scss
- @import "core/plugins/animate";
- @import "core/plugins/chartist";
- @import "core/plugins/perfect-scrollbar";
+//plugin scss
+@import "core/plugins/animate";
+@import "core/plugins/chartist";
+@import "core/plugins/perfect-scrollbar";
 
- @import "core/responsive";
+@import "core/responsive";
 
 @import "core/angular-modal.scss";
 
-@import '../../../node_modules/@angular/material/theming';
+@import "../../../node_modules/@angular/material/theming";
 
 @include mat-core();
 
 $custom-theme-primary: mat-palette($mat-green, 500, 800, A700);
 $custom-theme-accent: mat-palette($mat-indigo, 800, 900, A400);
 $custom-theme-warn: mat-palette($mat-green, 700, 800, A700);
-$custom-theme: mat-light-theme($custom-theme-primary, $custom-theme-accent, $custom-theme-warn);
+$custom-theme: mat-light-theme(
+  $custom-theme-primary,
+  $custom-theme-accent,
+  $custom-theme-warn
+);
 
 @include angular-material-theme($custom-theme);
 
-
 @font-face {
-    font-family: 'metropolis';
-    src: url('assets/font/Metropolis-Regular.otf');
+  font-family: "metropolis";
+  src: url("assets/font/Metropolis-Regular.otf");
+}
+
+body {
+  font-family: "metropolis", sans-serif !important;
+}
+.mat-form-field,
+.mat-button,
+.mat-raised-button,
+.mat-icon-button,
+.mat-stroked-button,
+.mat-flat-button,
+.mat-fab,
+.mat-mini-fab {
+  font-family: "metropolis", sans-serif !important;
+}
+.messagedialogcss {
+  @media screen and (max-width: 995px) {
+    width: 400px !important;
   }
-  
-  body {
-    font-family: 'metropolis', sans-serif !important;
+  @media screen and (min-width: 996px) {
+    width: 800px !important;
+    padding-top: 70px;
   }
-  .mat-form-field, 
-  .mat-button, .mat-raised-button, .mat-icon-button, .mat-stroked-button, .mat-flat-button, .mat-fab, .mat-mini-fab{
-    font-family: 'metropolis', sans-serif !important;
-  }
+}

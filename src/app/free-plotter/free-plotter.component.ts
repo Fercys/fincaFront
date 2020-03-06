@@ -182,9 +182,9 @@ export class FreePlotterComponent implements OnInit {
 	barChartData: ChartDataSets[] = [
 	  { data: [], label: 'Precipitación (mm)' }, 
 	  { data: [], label: 'Et0 (mm)' },
-	  { data: [], label: 'Velocidad de viento' },
-	  { data: [], label: 'Dirección de viento' },
-	  { data: [], label: 'Radiación' }  
+	//   { data: [], label: 'Velocidad de viento' },
+	//   { data: [], label: 'Dirección de viento' },
+	//   { data: [], label: 'Radiación' }  
 	  ];
 	  windVelocityId: number = null;
 	  windDirectionId: number = null;
@@ -217,12 +217,22 @@ export class FreePlotterComponent implements OnInit {
 			this.loading=false;
 			this.farms = response.data?response.data:response;
 			switch (localStorage.getItem("username").toLowerCase()) {
-				case "agrifut":
+				case "agrifrut":
+				this.farms = this.farms.filter((element) => {
+					return element.id == 185 || element.id == 2110 || element.id == 1378 || element.id == 520
+				})
+				break;
+				case "agrifrut@cdtec.cl":
 				this.farms = this.farms.filter((element) => {
 					return element.id == 185 || element.id == 2110 || element.id == 1378 || element.id == 520
 				})
 				break;
 				case "santajuana":
+				this.farms = this.farms.filter((element) => {
+					return element.id == 719
+				})
+				break;
+				case "santajuana@cdtec.cl":
 				this.farms = this.farms.filter((element) => {
 					return element.id == 719
 				})
@@ -469,15 +479,15 @@ export class FreePlotterComponent implements OnInit {
 		                            if(chartData[i].chart=="et0") {
 		                              this.barChartData[1].data.push(chartData[i].value);
 		                            }
-		                            if(chartData[i].chart=="windvelocity") {
-		                              this.barChartData[2].data.push(chartData[i].value);
-		                            }
-		                            if(chartData[i].chart=="winddirection") {
-		                              this.barChartData[3].data.push(chartData[i].value);
-		                            }
-		                            if(chartData[i].chart=="radiation") {
-		                              this.barChartData[4].data.push(chartData[i].value);
-		                            }
+		                            // if(chartData[i].chart=="windvelocity") {
+		                            //   this.barChartData[2].data.push(chartData[i].value);
+		                            // }
+		                            // if(chartData[i].chart=="winddirection") {
+		                            //   this.barChartData[3].data.push(chartData[i].value);
+		                            // }
+		                            // if(chartData[i].chart=="radiation") {
+		                            //   this.barChartData[4].data.push(chartData[i].value);
+		                            // }
 		                            this.renderCharts("bar");
 		                          }
 		                        });
@@ -571,7 +581,7 @@ export class FreePlotterComponent implements OnInit {
 				break;	
 			case "bar":
 				this.barChartLabels=[];
-				for (var i = 0; i < 5; i++) {
+				for (var i = 0; i < 2; i++) {
 		          this.barChartData[i].data=[];
 		        }
 				break;

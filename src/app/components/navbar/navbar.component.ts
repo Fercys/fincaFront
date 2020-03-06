@@ -1,8 +1,22 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
-import { ROUTES } from '../sidebar/sidebar.component';
 import {Location, LocationStrategy, PathLocationStrategy} from '@angular/common';
 import { Router } from '@angular/router';
 
+import { ROUTES } from '../sidebar/sidebar.component';
+
+
+declare interface RouteInfo {
+    path: string;
+    title: string;
+    icon: string;
+    class: string;
+    active: boolean
+}
+
+export const SidebarRoute: RouteInfo[] = [
+    { path: '/user-profile', title: 'Ver Perfil',  icon: 'Profile', class: '', active : false },
+    { path: '/', title: 'Cerrar sesión',  icon:'Logout', class: '' , active : false},
+];
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
@@ -15,14 +29,33 @@ export class NavbarComponent implements OnInit {
     private toggleButton: any;
     private sidebarVisible: boolean;
     public username:string=null;
+    activeHover = false;
+
     constructor(location: Location,  private element: ElementRef, private router: Router) {
       this.location = location;
           this.sidebarVisible = false;
     }
 
     ngOnInit(){
-      this.username=localStorage.getItem("username");
-      this.listTitles = ROUTES.filter(listTitle => listTitle);
+      //this.username=localStorage.getItem("username");
+      switch (localStorage.getItem("username").toLowerCase()) {
+        case "agrifrut":
+            this.username="Agrifrut";
+          break;
+          case "agrifrut@cdtec.cl":
+            this.username="Agrifrut";
+          break;
+        case "santajuana":
+            this.username="SantaJuana";
+          break;  
+          case "santajuana@cdtec.cl":
+            this.username="SantaJuana";
+            break;      
+        default:
+            this.username="Admin";
+          break;
+      }
+      this.listTitles = SidebarRoute.filter(listTitle => listTitle);
       const navbar: HTMLElement = this.element.nativeElement;
       this.toggleButton = navbar.getElementsByClassName('navbar-toggler')[0];
       this.router.events.subscribe((event) => {

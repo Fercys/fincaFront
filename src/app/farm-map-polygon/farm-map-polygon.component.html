@@ -153,12 +153,13 @@
               </div>
               <div class="form-group ">
                 <h6>*Fecha de Inicio</h6>
-                <div class="input-group">
+                <div class="input-group input-center-flex">
                   <input #dpFromDate
                          class="input-calendar" 
                          name="dpFromDate"
                          [value]="formatter.format(fromDate)"
-                         (input)="fromDate = validateInput(fromDate, dpFromDate.value)">
+                         (input)="fromDate = validateInput(fromDate, dpFromDate.value)"
+                         (click)="datepicker.toggle()">
                   <div class="input-group-append">
                     <button class="icon-calendar" (click)="datepickerFrom.toggle()" type="button">
                       <img src="assets/icons/Calendar.svg" style="height: 25px">
@@ -195,12 +196,13 @@
               </div>
               <div class="form-group">
                   <h6>*Fecha Final</h6> 
-                <div class="input-group">
+                <div class="input-group input-center-flex">
                   <input #dpToDate
                          class="input-calendar"  
                          name="dpToDate"
                          [value]="formatter.format(toDate)"
-                         (input)="toDate = validateInput(toDate, dpToDate.value)">
+                         (input)="toDate = validateInput(toDate, dpToDate.value)"
+                         (click)="datepicker.toggle()">
                   <div class="input-group-append">
                     <button class="icon-calendar"  (click)="datepickerTo.toggle()" type="button">
                       <img src="assets/icons/Calendar.svg" style="height: 25px">
@@ -232,7 +234,7 @@
               <div class="flex" *ngIf="renderLineChartFlag" style="overflow-x: scroll;">
                 <div class="flex-item">
                   <div style="display: block;margin: auto;">
-                  <canvas baseChart width="400" height="400" style="margin: auto;"
+                  <canvas baseChart width="600" height="300" style="margin: auto;"
                               [datasets]="lineChartData"
                               [labels]="lineChartLabels.labels"
                               [options]="lineChartOptions"
@@ -253,7 +255,7 @@
             <div class="card-body bg-white chard-size">
               <div  *ngIf="renderBarChartFlag" style="overflow-x: scroll;">
                 <div style="display: block;">
-                  <canvas baseChart style="margin: auto;"
+                  <canvas baseChart width="600" height="300" style="margin: auto;"
                     [datasets]="barChartData"
                     [labels]="barChartLabels"
                     [options]="barChartOptions"
@@ -273,44 +275,42 @@
                 <h4 class="row-subtitle">Pronostico</h4>
               </div>
               <div class="card-body card-pronostic">
-                <div class="table-responsive">
-                  <table class="table-title">
-                    <thead>
-                      <th> <img src="{{climaToday.weatherIconUrl[0].value}} "> </th>
-                      <th> {{climaToday.temp_C}}°C </th>
-                      <th>
-                        <span>
-                          {{today | date:'dd/MM/yyyy'}}
-                        </span>
-                        <div>
-                          {{farmData[0].name}}
-                        </div>
-                      </th>
-                    </thead>
-                  </table>
-                  <table class="table-body">
-                    <thead>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td> </td>
-                        <td *ngFor="let day of climaDay"> {{day | date:'EE dd'}} </td>
-                      </tr>
-                      <tr>
-                        <td> </td>
-                        <td *ngFor="let icon of climaIcon"><img style="width: 22px; height:22px" src="{{icon}}"></td>
-                      </tr>
-                      <tr>
-                        <td>Máx: </td>
-                        <td *ngFor="let max of climaMax">{{max}}°C </td>
-                      </tr>
-                      <tr>
-                        <td>Min: </td>
-                        <td *ngFor="let min of climaMin">{{min}}°C</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+                <table class="table-title">
+                  <thead>
+                    <th> <img src="{{climaToday.weatherIconUrl[0].value}} "> </th>
+                    <th> {{climaToday.temp_C}}°C </th>
+                    <th>
+                      <span>
+                        {{today | date:'dd/MM/yyyy'}}
+                      </span>
+                      <div>
+                        {{farmData[0].name}}
+                      </div>
+                    </th>
+                  </thead>
+                </table>
+                <table class="table-body">
+                  <thead>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td> </td>
+                      <td *ngFor="let day of climaDay"> {{day | date:'EE '}} </td>
+                    </tr>
+                    <tr>
+                      <td> </td>
+                      <td *ngFor="let icon of climaIcon"><img style="width: 22px; height:22px" src="{{icon}}"></td>
+                    </tr>
+                    <tr>
+                      <td>Máx: </td>
+                      <td *ngFor="let max of climaMax">{{max}}°C </td>
+                    </tr>
+                    <tr>
+                      <td>Min: </td>
+                      <td *ngFor="let min of climaMin">{{min}}°C</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
       </div>

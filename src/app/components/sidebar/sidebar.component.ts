@@ -10,15 +10,16 @@ declare interface RouteInfo {
     active: boolean
 }
 export const ROUTES: RouteInfo[] = [
+   { path: '/user-profile', title: 'Perfil',  icon: 'Usuario-verde', class: '', active : false },
     { path: '/dashboard', title: 'Dashboard',  icon: 'Dashboard-Verde', class: '', active : false },
+    { path: '/weather-monitoring', title: 'Monitoreo del clima',  icon:'Graficador-libre-verde', class: '', active : false },
     { path: '/farms', title: 'Campos',  icon:'Campo-Verde', class: '' , active : false},
-    { path: '/free-plotter', title: 'Graficador Libre',  icon:'Graficador-libre-verde', class: '', active : false },
-    { path: '/soil-analysis', title: 'Análisis de suelo',  icon:'Suelo', class: '', active : false },
-    { path: '/?', title: 'Reporte de Instalación',  icon:'Reporte', class: '', active : false },
-    { path: '/?', title: 'Configuración',  icon:'Configuracion', class: '', active : false }, 
+    { path: '/free-plotter', title: 'Analizador Grafico',  icon:'Graficador-libre-verde', class: '', active : false },
+    { path: '/soil-analysis', title: 'Humedad de Suelo',  icon:'Suelo', class: '', active : false },
+    { path: '/report-instalacion', title: 'Reporte de Instalación',  icon:'Reporte', class: '', active : false },
+    { path: '/configuration', title: 'Configuración',  icon:'Configuracion', class: '', active : false }
     // { path: '/icons', title: 'Icons',  icon:'bubble_chart', class: '' },
     // { path: '/maps', title: 'Maps',  icon:'location_on', class: '' },
-    // { path: '/notifications', title: 'Notifications',  icon:'notifications', class: '' },
     // { path: '/upgrade', title: 'Upgrade to PRO',  icon:'unarchive', class: 'active-pro' },
 ];
 
@@ -34,16 +35,30 @@ export class SidebarComponent implements OnInit {
     
     this.menuItems = ROUTES.filter(menuItem => {
       switch (localStorage.getItem("username").toLowerCase()) {
-        case "agrifut":
-          if (menuItem.title.toLowerCase()!="dashboard") {
+        case "agrifrut":
+          if (menuItem.title.toLowerCase()=="dashboard") {
+            menuItem.path='/weather-monitoring';
+            return menuItem;
+          }
+          break;
+          case "agrifrut@cdtec.cl":
+          if (menuItem.title.toLowerCase()=="dashboard") {
+            menuItem.path='/weather-monitoring';
             return menuItem;
           }
           break;
         case "santajuana":
-          if (menuItem.title.toLowerCase()!="dashboard") {
+          if (menuItem.title.toLowerCase()=="dashboard") {
+            menuItem.path='/weather-monitoring';
             return menuItem;
           }
-          break;        
+          break;      
+          case "santajuana@cdtec.cl":
+          if (menuItem.title.toLowerCase()=="dashboard") {
+            menuItem.path='/weather-monitoring';
+            return menuItem;
+          }
+          break;    
         default:
           return menuItem;
           break;
@@ -61,7 +76,7 @@ export class SidebarComponent implements OnInit {
      cond  ? value.active  = true : value.active  = false 
   }
   isCurrentRoute(routePath) {
-    if( this.router.url == routePath.path){
+    if( this.router.url === routePath.path){
       return true;
     }
     return false;

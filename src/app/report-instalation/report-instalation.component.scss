@@ -1,0 +1,103 @@
+.card-header {
+    display: flex;
+}
+hr.separated{
+    border: 0;
+    width: 95%;
+    background-color: whitesmoke;
+    height: 1px;
+    margin-left: 2%;
+    margin: 0 2%; 
+}
+.justify-text-general {
+    display: flex;
+    align-items: center;
+
+    .mat-form-field {
+        padding-left: 0;
+    }
+}
+
+.justify-text-password {
+    display: flex;
+    align-items: center;
+
+    .mat-form-field {
+        padding-left: 0;
+    }
+}
+
+.table-responsive {
+    border-collapse: collapse;
+    width: 100%;
+    overflow: hidden; 
+    @media screen and (max-width: 995px) {
+       display: block;
+       overflow: auto; 
+      }
+    th{
+        text-align: center;
+        background-color: #f2f3f5;
+        color: #868686;
+        border: 1px solid #e5e5e5;
+        padding: 8px;
+        text-transform: uppercase;
+    }
+    td{
+        text-align: center;
+        border: 1px solid #e5e5e5;
+        padding: 4px;
+    }
+}
+
+.btn-green {
+    background-color: #6fb060;
+    color: white;
+}
+
+::ng-deep {
+    .justify-text-general .mat-select-custom, .justify-text-password .mat-select-custom{
+        .mat-form-field-flex {
+            background-color: white;
+            border: 1px solid silver;
+            border-radius: 5px;
+        }
+
+        .mat-form-field-underline {
+            display: none;
+        }
+
+        .mat-form-field-label {
+            text-align: center;
+        }
+
+        .mat-form-field-label-wrapper {
+            // Center Text Vertical Select
+            top: -1.14375em !important;
+        }
+
+        .mat-select-arrow {
+            //Center Row Vertical Select
+            margin: 0 15px 10px 0 !important;
+            color: #bfbfbf;
+        }
+    }
+
+    .justify-text-general .mat-select-custom mat-label, .justify-text-password .mat-select-custom mat-label {
+        font-weight: 500;
+        color: #bfbfbf;
+        text-transform: uppercase;
+    }
+
+    .justify-text-general .mat-input-custom ,  .justify-text-password .mat-input-custom  {
+        margin: 7px 0 -13px 0;
+        .mat-form-field-flex {
+            border: 1px solid silver;
+            border-radius: 5px;
+        }
+
+        .mat-form-field-underline {
+            display: none;
+        }
+    }
+}

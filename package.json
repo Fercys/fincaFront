@@ -50,6 +50,7 @@
     "moment": "2.24.0",
     "moment-timezone": "^0.5.28",
     "ng2-charts": "^2.3.0",
+    "ng2-search-filter": "^0.5.1",
     "ngx-loading": "^2.0.1",
     "perfect-scrollbar": "1.1.0",
     "popper.js": "1.15.0",

@@ -11,12 +11,15 @@ import Swal from 'sweetalert2';
 export class SoilAnalysisComponent implements OnInit {	
   public url:string=null;
   public farm:any=null;
+  public loading = true;
   constructor(public router: Router,public wiseconnService: WiseconnService) { }
 
   ngOnInit() {
+    this.loading = true;
   	if(this.wiseconnService.farmId){
   		this.getFarm(this.wiseconnService.farmId);
   	}else{
+      this.loading = false;
   		Swal.fire({
 	         icon: 'error',
 	         title: 'Oops...',
@@ -26,6 +29,7 @@ export class SoilAnalysisComponent implements OnInit {
   }
   getFarm(id:number){
   	this.wiseconnService.getFarm(id).subscribe((response) => {
+    this.loading = false;
       this.farm = response.data?response.data:response;
       switch (this.farm.name) {
         case "Agrifrut":

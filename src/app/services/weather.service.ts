@@ -15,7 +15,7 @@ export class WeatherService {
   httpOptions = {
     headers: new HttpHeaders({
       'Accept': 'application/json',
-      'api_key':'67a49d3ba5904bef87441658192312',
+      'api_key':'7da96f2f52f54be7a1b123737202102',
     })
   }
 

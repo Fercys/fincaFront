@@ -3,9 +3,14 @@
     <div class="row">
           
       <div class="col-md-12">
+        <div class="form-group pull-right">
+            <mat-form-field class="mat-input-custom">
+                <input matInput placeholder="Buscar Cliente..." [(ngModel)]="searchTable">
+              </mat-form-field>
+        </div>
           <div class="card card-plain">
               <div class="card-header card-header-success">
-                  <h4 class="card-title mt-0">Usuario</h4>
+                  <h4 class="card-title mt-0">Clientes</h4>
                   <p class="card-category">Datos de todos los usuarios registrados</p>
               </div>
               <div class="card-body">
@@ -23,14 +28,14 @@
                               </th>
                           </thead>
                           <tbody>
-                              <tr *ngFor="let data of client">
+                              <tr *ngFor="let data of client | filter:searchTable" [routerLink]="['/client-farm',data.account.id]" style="cursor: pointer;">
                                   <td>
                                       {{data.account.id}}
                                   </td>
                                   <td>
                                       {{data.account.name}}
                                   </td>
-                                  <td>
+                                  <td style="cursor: pointer;">
                                     <i class="material-icons" [routerLink]="['/client-farm',data.account.id]">find_in_page</i>
                                 </td>
                               </tr> 

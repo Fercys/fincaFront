@@ -20,7 +20,7 @@
 </ng-template>
 <ng-template #message let-modal>
     <div class="modal-header">
-        <h5 class="modal-title">Message</h5>
+        <h5 class="modal-title">Mensaje</h5>
         <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -36,34 +36,25 @@
     <div class="row">
       <h4 class="row-title">Dashboard</h4>
     </div>
-    <div class="row">
+    <div class="row" *ngIf="farm">
       <div class="col-md-1" style="display: table; height: 45px;">
         <span style="display: table-cell; vertical-align: middle;">Campo</span>
       </div>
       <mat-form-field class="col-md-6 mat-select-custom" floatLabel="never">
-        <mat-label>{{selected}}</mat-label>
+        <mat-label>{{farm.name}}</mat-label>
         <mat-select>
           <mat-option *ngFor="let farm of farms" (click)="onSelect('farm',farm.id)">{{farm.name}}</mat-option>
         </mat-select>
       </mat-form-field>
-      <div class="col-md-1" style="display: table; height: 45px;">
-        <span style="display: table-cell; vertical-align: middle;">Sector</span>
-      </div>
-      <mat-form-field class="col-md-4 mat-select-custom" floatLabel="never">
-        <mat-label>Seleccionar Sector</mat-label>
-        <mat-select>
-          <mat-option  *ngFor="let zone of weatherZones" (click)="onSelect('zone',zone.id)">{{zone.name}}</mat-option>
-        </mat-select>
-      </mat-form-field>
     </div>
-    <div class="row">
+    <div class="row labels-row">
       <div class="col-md-4">
         <div>
-          <span>{{today | date:'MMMM dd/MM/yyyy'}} </span>
+          <span class="date-title">{{today | date:'MMMM dd/MM/yyyy'}} </span>
         </div>
       </div>
-      <div class="col-md-8">
-        <span *ngIf="dataFarm" class="title-farm">{{dataFarm.name}}</span>
+      <div class="col-md-8 ">
+        <span *ngIf="farm" class="title-farm">{{farm.name}}</span>
       </div>
     </div>
   </div>
@@ -73,59 +64,49 @@
   <div class="container-fluid barra">
     <div class="row">
       <div class="col-lg-4 col-md-4 col-sm-4">
-        <div class="buttons-farm">
-          <div (click)="open(message, 'sm')" class="btn btns-message btn-block">
-            <span><img src="/assets/icons/message-icon.png"></span>
-            <span>Message</span>
+        <div *ngIf="climaLoading" class="container-fluid">
+          <div class="row ">
+            <h4 class="row-subtitle-card">Pronóstico</h4>
+          </div>
+          <div class="card-body card-pronostic">
+            <table class="table-title">
+              <thead>
+                <th> <img src="{{climaToday.weatherIconUrl[0].value}} "> </th>
+                <th> {{climaToday.temp_C}}°C </th>
+                <th>
+                  <span>
+                    {{today | date:'dd/MM/yyyy'}}
+                  </span>
+                  <div>
+                    {{farm.name}}
+                  </div>
+                </th>
+              </thead>
+            </table>
+            <table class="table-body">
+              <thead>
+              </thead>
+              <tbody>
+                <tr>
+                  <td> </td>
+                  <td *ngFor="let day of climaDay"> {{translateDate(day | date:'EE ')}} </td>
+                </tr>
+                <tr>
+                  <td> </td>
+                  <td *ngFor="let icon of climaIcon"><img style="width: 22px; height:22px" src="{{icon}}"></td>
+                </tr>
+                <tr>
+                  <td>Máx: </td>
+                  <td *ngFor="let max of climaMax">{{max}}°C </td>
+                </tr>
+                <tr>
+                  <td>Min: </td>
+                  <td *ngFor="let min of climaMin">{{min}}°C</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
-        <div class="buttons-farm">
-            <div class="btn btns-alerts btn-block">
-              <span><img src="/assets/icons/alert-icon.png"></span>
-              <span>Alerts</span>
-            </div>
-        </div>
-        <!-- Cuadro de Clima -->
-        <div *ngIf="mediciones" class="container-fluid">
-          <div class="row " >
-            <h4 class="row-subtitle-card" style="margin-top: 15px;">Clima</h4>
-          </div>
-          <div class="card-body card-weather">
-            <div class="table-responsive">
-              <table class="table">
-                <tbody>
-                  <tr *ngFor="let data of mediciones">
-                    <td class="name-weather">
-                      {{data.name}}
-                    </td>
-                    <td class="icon-weather">
-                      <img *ngIf="data.name =='Station Temperature' || data.name=='Temperatura'"
-                        src="assets/icons/Temperatura.svg">
-                      <img *ngIf="data.name =='Rafaga de viento' || data.name=='Dir. Viento'"
-                        src="assets/icons/Direccion-del-Viento.svg">
-                      <img *ngIf="data.name =='Wind Direction' || data.name=='Vel. Viento'" src="assets/icons/Viento.svg">
-                      <img *ngIf="data.name =='Wind Speed (period)'"
-                        src="https://www.dropcontrol.com/img/widgets/ico_velocidad.gif">
-                      <img *ngIf="data.name =='Station Relative Humidity' || data.name=='Humedad'"
-                        src="assets/icons/Gota.svg">
-                      <img *ngIf="data.name =='Solar radiation ' || data.name=='Rad. Solar'" src="assets/icons/Sol.svg">
-                      <img *ngIf="data.name =='Horas Frío'"
-                        src=" https://www.dropcontrol.com/img/widgets/ico_pluviometria.gif?uv=1">
-                      <img *ngIf="data.name =='Porciones de Frío'"
-                        src=" https://www.dropcontrol.com/img/widgets/ico_pluviometria.gif?uv=1">
-                      <img *ngIf="data.name =='Pluviometro'" src="assets/icons/Lluvia.svg">
-                    </td>
-                    <td>
-                      {{data.lastData}} {{data.unit}}
-                    </td>
-
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <!-- Fin de Cuadro de Clima -->
       </div>
       <div class="col-lg-8 col-md-8 col-sm-8">
         <!-- <div #mapRef id="map-container" style="width:100%;height:100%"></div> -->
@@ -138,7 +119,7 @@
               <div class="col-lg-6 col-md-6 col-sm-6">
                 <table class="table-legent">
                   <thead>
-                    <th>
+                    <th *ngIf="statusRegando">
                       <div class="square-temp" style=" background-color: #419FD5;"></div>
                       <span style="color: black; font-size: 10px; margin-left: 10px;">Regando</span>
                     </th>
@@ -146,11 +127,11 @@
                       <div class="square-temp" style=" background-color: #49AA4F;"></div>
                       <span style="color: black; font-size: 10px; margin-left: 10px;">Ok</span>
                     </th>
-                    <th>
+                    <th *ngIf="status">
                       <div class="square-temp" style=" background-color: rgb(233, 58, 189);"></div>
                       <span style="color: black; font-size: 10px; margin-left: 10px;">Estresado</span>
                     </th>
-                    <th>
+                    <th *ngIf="status">
                       <div class="square-temp" style="background-color: red;"></div>
                       <span style="color: black; font-size: 10px; margin-left: 10px;">Seco</span>
                     </th>
@@ -184,98 +165,5 @@
       </div>
     </div>
   </div>
-  <div class="container-fluid cards-farms">
-    <div class="row">
-      <div class="col-md-4">
-        <div *ngIf="climaLoading" class="container-fluid">
-          <div class="row ">
-            <h4 class="row-subtitle-card">Pronóstico</h4>
-          </div>
-          <div class="card-body card-pronostic">
-            <div class="table-responsive">
-              <table class="table">
-                <thead>
-                  <th> <img src="{{climaToday.weatherIconUrl[0].value}} "> </th>
-                  <th> {{climaToday.temp_C}}°C </th>
-                  <th>
-                    <span>
-                      {{today | date:'dd/MM/yyyy'}}
-                    </span>
-                    <div>
-                      {{dataFarm.name}}
-                    </div>
-                  </th>
-                </thead>
-              </table>
-              <table class="table-body">
-                <thead>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td> </td>  
-                    <td *ngFor="let day of climaDay"> {{formatDate(day | date:'EE ')}} </td>
-                  </tr>
-                  <tr>
-                    <td> </td>
-                    <td *ngFor="let icon of climaIcon"><img style="width: 22px; height:22px" src="{{icon}}"></td>
-                  </tr>
-                  <tr>
-                    <td>Máx: </td>
-                    <td *ngFor="let max of climaMax">{{max}}°C </td>
-                  </tr>
-                  <tr>
-                    <td>Min: </td>
-                    <td *ngFor="let min of climaMin">{{min}}°C</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-8" >
-        <div class="container-fluid">
-          <div class="row ">
-            <h4 class="row-subtitle-card">Temperatura/Humedad</h4>
-          </div>
-          <div class="card-body bg-white chard-size">
-            <div class="flex" *ngIf="renderLineChartFlag" style="overflow-x: scroll;">
-              <div class="flex-item">
-                <div style="display: block;">
-                <canvas baseChart width="400" height="400" style="margin: auto;"
-                            [datasets]="lineChartData"
-                            [labels]="lineChartLabels.labels"
-                            [options]="lineChartOptions"
-                            [colors]="lineChartColors"
-                            [legend]="lineChartLegend"
-                            [chartType]="lineChartType"
-                            [plugins]="lineChartPlugins"></canvas>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="container-fluid top">
-          <div class="row ">
-            <h4 class="row-subtitle-card">Precipitación+Et0</h4>
-          </div>
-          <div class="card-body bg-white chard-size">
-            <div  *ngIf="renderBarChartFlag" style="overflow-x: scroll;">
-              <div style="display: block">
-                <canvas baseChart style="margin: auto;"
-                  [datasets]="barChartData"
-                  [labels]="barChartLabels"
-                  [options]="barChartOptions"
-                  [colors]="barChartColors"
-                  [plugins]="barChartPlugins"
-                  [legend]="barChartLegend"
-                  [chartType]="barChartType">
-                </canvas>
-              </div>
-            </div>
-          </div>
-      </div>
-      </div>
-    </div>
-  </div>
+  
 </div>

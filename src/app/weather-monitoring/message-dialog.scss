@@ -1,0 +1,36 @@
+
+::ng-deep {
+    .message-dialog-title {
+        position: absolute;
+        background-color: #6fb060;
+        padding: 5px 15px 5px 15px;
+        margin: -70px 0 0 -25px;
+        .text{
+            color: white;
+            font-size: 10px;
+        }
+    }
+    .mat-form-field-flex{
+        background-color: white;
+    }
+    .mat-dialog-container{
+        background-color: #f1f3f4;
+    }
+    .mat-form-field-appearance-legacy .mat-form-field-underline{
+        display: none;
+    }
+    .mat-form-field-appearance-legacy .mat-form-field-wrapper{
+        padding-bottom: 0;
+    }
+}
+.img-filter-colors{
+    filter: brightness(1000%);
+    margin-left: 10px;
+}
+
+.btn-login{
+    background-color:#6fb060;
+    color:white;
+    border-radius: 35px;
+    text-align: center;
+}

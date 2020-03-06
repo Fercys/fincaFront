@@ -193,9 +193,9 @@ export class FarmMapPolygonComponent implements OnInit {
   barChartData: ChartDataSets[] = [
   { data: [], label: 'Precipitación (mm)' }, 
   { data: [], label: 'Et0 (mm)' },
-  { data: [], label: 'Velocidad de viento' },
-  { data: [], label: 'Dirección de viento' },
-  { data: [], label: 'Radiación' }  
+  // { data: [], label: 'Velocidad de viento' },
+  // { data: [], label: 'Dirección de viento' },
+  // { data: [], label: 'Radiación' }  
   ];
   windVelocityId: number = null;
   windDirectionId: number = null;
@@ -319,7 +319,7 @@ export class FarmMapPolygonComponent implements OnInit {
     });
     if(farmPolygon.latitude && farmPolygon.longitude){
       const q = [farmPolygon.latitude, farmPolygon.longitude];
-      const key = "67a49d3ba5904bef87441658192312";
+      const key = "7da96f2f52f54be7a1b123737202102";
       this.climaLoading = false;
       this.weatherService.getWeather(key,q).subscribe((weather) => {
         this.climaToday = weather.data.current_condition[0];
@@ -422,6 +422,7 @@ export class FarmMapPolygonComponent implements OnInit {
 
       });  
     }
+    
     // var marker = new window['google'].maps.Marker({
       //   position: {lat: -32.232403, lng: -70.827825},
       //   map: map,
@@ -625,7 +626,6 @@ export class FarmMapPolygonComponent implements OnInit {
         this.loading = true;
         this.wiseconnService.getMeasuresOfZones(this.weatherStationId).subscribe((response) => {
           let data=response.data?response.data:response;
-          console.log("data:",data)
           for (var i = data.length - 1; i >= 0; i--) {
             //bar chart
             if (data[i].sensorType != undefined && data[i].name != undefined){
@@ -717,15 +717,15 @@ export class FarmMapPolygonComponent implements OnInit {
                           if(chartData[i].chart=="et0") {
                             this.barChartData[1].data.push(chartData[i].value);
                           }
-                          if(chartData[i].chart=="windvelocity") {
-                            this.barChartData[2].data.push(chartData[i].value);
-                          }
-                          if(chartData[i].chart=="winddirection") {
-                            this.barChartData[3].data.push(chartData[i].value);
-                          }
-                          if(chartData[i].chart=="radiation") {
-                            this.barChartData[4].data.push(chartData[i].value);
-                          }
+                          // if(chartData[i].chart=="windvelocity") {
+                          //   this.barChartData[2].data.push(chartData[i].value);
+                          // }
+                          // if(chartData[i].chart=="winddirection") {
+                          //   this.barChartData[3].data.push(chartData[i].value);
+                          // }
+                          // if(chartData[i].chart=="radiation") {
+                          //   this.barChartData[4].data.push(chartData[i].value);
+                          // }
                           this.renderCharts("bar");
                         }
                       });
@@ -824,7 +824,7 @@ resetChartsValues(chart:string){
     break;  
     case "bar":
         this.barChartLabels=[];
-        for (var i = 0; i < 5; i++) {
+        for (var i = 0; i < 2; i++) {
               this.barChartData[i].data=[];
             }
     break;
