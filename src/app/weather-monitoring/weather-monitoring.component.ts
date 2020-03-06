@@ -356,10 +356,11 @@ export class WeatherMonitoringComponent implements OnInit {
   setLocalStorageItem(key,value){
     localStorage.setItem(key,value);
   }
-  format(value:string,chart:string){
+  momentFormat(value:string,chart:string){
+    //moment.utc(value).format("DD/MM/YYYY hh:mm:ss");
     switch (chart) {
       case "line":
-        return moment.utc(value).format("DD/MM/YYYY hh:mm:ss");
+        return moment.utc(value).format('DD') +" "+ moment(value).format('MMM');
         break;
       case "bar":
         return moment.utc(value).format('DD') +" "+ moment(value).format('MMM');
@@ -441,7 +442,7 @@ export class WeatherMonitoringComponent implements OnInit {
                   for (var i = 0; i < chartData.length; i++) {
                     if(chartData[i+1]){
                       if(chartData[i].time===chartData[i+1].time){
-                        this.barChartLabels.push(this.format(chartData[i].time,"bar")); 
+                        this.barChartLabels.push(this.momentFormat(chartData[i].time,"bar")); 
                       }  
                     }
                     if(chartData[i].chart=="rain") {
@@ -495,9 +496,9 @@ export class WeatherMonitoringComponent implements OnInit {
                     });
                     for (var i = 0; i < chartData.length; i++) {                      
                       if(this.lineChartLabels.find((element) => {
-                        return element === this.format(chartData[i].time,"line");
+                        return element === this.momentFormat(chartData[i].time,"line");
                       }) === undefined) {
-                        this.lineChartLabels.push(this.format(chartData[i].time,"line"));
+                        this.lineChartLabels.push(this.momentFormat(chartData[i].time,"line"));
                       }
                       if (chartData[i].chart==="temperature") {
                         this.lineChartData[0].data.push(chartData[i].value);
