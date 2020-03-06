@@ -27,6 +27,7 @@ import { FarmClientComponent } from 'app/farm-client/farm-client.component';
 import { FarmMapPolygonComponent } from 'app/farm-map-polygon/farm-map-polygon.component';
 
 import { DashboardComponent } from '../../dashboard/dashboard.component';
+import { AdminDashboardComponent } from '../../admin-dashboard/admin-dashboard.component';
 import { FarmMapComponent } from '../../farm-map/farm-map.component';
 import { WeatherMonitoringComponent } from '../../weather-monitoring/weather-monitoring.component';
 import { FarmsComponent } from '../../farms/farms.component';
@@ -64,6 +65,7 @@ import { SoilAnalysisComponent } from 'app/soil-analysis/soil-analysis.component
   ],
   declarations: [
     DashboardComponent,
+    AdminDashboardComponent,
     WeatherMonitoringComponent,
     UserProfileComponent,
     TableListComponent,

@@ -66,15 +66,9 @@ export class LoginComponent implements OnInit,OnDestroy,AfterViewInit {
 		const usuario= target.querySelector('#usuario').value;
 		const password= target.querySelector('#password').value;
 	  
-		if ((usuario == 'Admin@cdtec.cl' || usuario == 'Admin') && password == '12345678') {
+		if ((usuario == 'Admin@cdtec.cl' || usuario == 'Admin' || usuario == 'Agrifrut@cdtec.cl' || usuario == 'Agrifrut' || usuario == 'SantaJuana@cdtec.cl' || usuario == 'SantaJuana') && password == '12345678') {
     		localStorage.setItem("username", usuario);
 			this._router.navigate(['/dashboard']);
-		}else if((usuario == 'Agrifrut@cdtec.cl' || usuario == 'Agrifrut') && password == '12345678'){
-    		localStorage.setItem("username", usuario);
-			this._router.navigate(['/farmmap/185']);//185,2110,1378,520
-		}else if((usuario == 'SantaJuana@cdtec.cl' || usuario == 'SantaJuana') && password == '12345678'){
-    		localStorage.setItem("username", usuario);
-			this._router.navigate(['/farmmap/719']);//719
 		}else{
 			Swal.fire({
 				icon: 'error',
