@@ -41,9 +41,20 @@
         <span style="display: table-cell; vertical-align: middle;">Campo</span>
       </div>
       <mat-form-field class="col-md-6 mat-select-custom" floatLabel="never">
-        <mat-label>{{selected}}</mat-label>
+        <mat-label>{{farm?farm.name:'Campo'}}</mat-label>
         <mat-select>
           <mat-option *ngFor="let farm of farms" (click)="onSelect('farm',farm.id)">{{farm.name}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <div class="col-md-1" style="display: table; height: 45px;">
+        <span style="display: table-cell; vertical-align: middle;">Sector</span>
+      </div>
+      <mat-form-field class="col-md-6 mat-select-custom" floatLabel="never">
+        <mat-label>{{zone?zone.name:'Sector'}}</mat-label>
+        <mat-select>
+          <mat-option *ngFor="let zone of zones" (click)="onSelect('zone',zone.id)">{{zone.name}}</mat-option>
         </mat-select>
       </mat-form-field>
     </div>
@@ -162,19 +173,17 @@
       </div>
     </div>
   </div>
-  <div class="container-fluid">
+  <!-- <div class="container-fluid">
     <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>
   </div>
   <div class="container-fluid">
     <div class="row">
-      <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12">
           <div #mapRef id="map-container" style="width:100%;height:50%">
           </div>
         </div>
-      </div>
     </div>
-  </div>
+  </div> -->
   <div class="container-fluid cards-farms">
     <div class="row">
       <div class="col-md-4">
@@ -192,7 +201,7 @@
                     {{today | date:'dd/MM/yyyy'}}
                   </span>
                   <div>
-                    {{dataFarm.name}}
+                    {{farm.name}}
                   </div>
                 </th>
               </thead>
@@ -203,7 +212,7 @@
               <tbody>
                 <tr>
                   <td> </td>
-                  <td *ngFor="let day of climaDay"> {{formatDate(day | date:'EE ')}} </td>
+                  <td *ngFor="let day of climaDay"> {{translateDate(day | date:'EE ')}} </td>
                 </tr>
                 <tr>
                   <td> </td>

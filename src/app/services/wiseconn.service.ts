@@ -39,7 +39,7 @@ export class WiseconnService {
     )
   }
   getZones(id): Observable<farmModels> { 
-    return this.http.get<farmModels>(this.baseurl + '/farms/'+id+"/zones", this.httpOptions)
+    return this.http.get<farmModels>(this.baseurl + '/farms/'+id+'/zones', this.httpOptions)
     .pipe(
       retry(1),
       catchError(this.errorHandl)

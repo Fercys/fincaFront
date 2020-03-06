@@ -28,12 +28,14 @@ export class WeatherMonitoringComponent implements OnInit {
   public url;
   public status=false;
   public measurements; //mediciones
-  public selected;
   public statusRegando=false;
   public dialog;
   public today = Date.now();
   public dataFarm: any;
+  public zone: any = null;
   public zones: any[] = [];
+  public farm: any=null;
+  public farms: any[] = [];
   public weatherZones: any[] = [];
   public weatherStation: any = null;
   public closeResult: string;
@@ -203,7 +205,6 @@ export class WeatherMonitoringComponent implements OnInit {
   public et0Id: number = null;
   public radiationId: number = null;
   public renderBarChartFlag: boolean = false;
-  public farms:any=[];
 
   //Pronostico values
   public climaLoading = false;
@@ -224,8 +225,145 @@ export class WeatherMonitoringComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.init(0);
-  }  
+    this.getFarms();
+  }
+  getFarms() {
+    this.wiseconnService.getFarms().subscribe((response: any) => {
+      this.farms = response.data?response.data:response;
+      this.filterFarmsByUser();
+      if(this.farms.length>0){
+        this.farm=this.farms[0];        
+        if(localStorage.getItem("lastFarmId")!=undefined && (parseInt(localStorage.getItem("lastFarmId"))==parseInt(this.farm.id))){
+          this.zones = JSON.parse(localStorage.getItem('lastZones'));
+          this.loadMap();
+        }else{
+          this.getZones();
+        }
+        this.getWeather()
+      }else{
+        Swal.fire({icon: 'error',title: 'Oops...',text: 'No existe ningún campo registrado'});
+      }      
+    })
+  }
+  filterFarmsByUser(){
+    if(localStorage.getItem("username")){      
+      switch (localStorage.getItem("username").toLowerCase()) {
+        case "agrifrut":
+          this.farms = this.farms.filter((element) => {
+            return element.id == 185 || element.id == 2110 || element.id == 1378 || element.id == 520
+          })
+          break;
+          case "agrifrut@cdtec.cl":
+          this.farms = this.farms.filter((element) => {
+            let id= element.id_wiseconn?element.id_wiseconn:element.id;
+            return id == 185 || id == 2110 || id == 1378 || id == 520
+          })
+          break;
+        case "santajuana":
+          this.farms = this.farms.filter((element) => {
+            let id= element.id_wiseconn?element.id_wiseconn:element.id;
+            return id == 719
+          })
+          break;
+          case "santajuana@cdtec.cl":
+            this.farms = this.farms.filter((element) => {
+              return element.id == 719
+            })
+            break;
+        default:
+          // code...
+          break;
+      }
+    }else{
+      this.router.navigate(['/login']);
+    }
+  } 
+  getFarm(id){
+    return this.farms.find(element =>{
+      return element.id==id || element.id_wiseconn==id
+    });
+  } 
+  getZones() {
+    this.loading = true;
+    this.wiseconnService.getZones(this.farm.id).subscribe((response: any) => {
+      this.loading = false; 
+      this.zones = response.data?response.data:response;
+      this.setLocalStorageItem("lastFarmId",this.farm.id);
+      this.setLocalStorageItem("lastZones",this.getJSONStringify(this.zones));
+      this.loadMap();
+    });
+  }
+  getWeather(){
+    if (this.farm.latitude && this.farm.longitude) {
+      this.climaLoading = false;
+      this.weatherService.getWeather("7da96f2f52f54be7a1b123737202102", [this.farm.latitude, this.farm.longitude]).subscribe((response) => {
+        this.climaLoading = true;
+        this.resetWeatherValues(response);
+        for (const element of response.data.weather) {
+          element.iconLabel = element.hourly[0].weatherIconUrl[0];
+          this.climaDay.push(element.date);
+          this.climaIcon.push(element.iconLabel.value);
+          this.climaMax.push(element.maxtempC);
+          this.climaMin.push(element.mintempC);
+        }
+      });
+    }
+    this.setUrlValue();
+  }
+  setUrlValue(){
+    switch (this.farm.name) {
+      case "Agrifrut":
+        this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3435/Campos:l/Agrifrut:f";
+        break;
+      case "Agrifrut II (Nogales y Parrones)":
+        this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3435/Campos:l/Agrifrut%20II%20(Nogales%20y%20Parrones):f";
+        break;
+      case "Santa Juana de Chincolco":
+        this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3507/Campos:l/Agricola%20Santa%20Juana%20de%20Chincolco%20SA:f";
+        break;
+      default:
+        this.url = "";
+    }
+  }
+  resetWeatherValues(response){
+    this.climaDay = [];
+    this.climaIcon = [];
+    this.climaMax = [];
+    this.climaMin = [];
+    this.climaToday = response.data.current_condition[0];
+  }
+  onSelect(select: string, id: number) {
+    switch (select) {
+      case "farm":
+        this.farm=this.getFarm(id);
+        this.getZones();
+        this.getWeather();
+        break;
+      case "zone":
+        this.router.navigate(['/farmpolygon',this.farm.id, id]);
+        break;
+      default:
+        break;
+    }
+  } 
+  setLocalStorageItem(key,value){
+    localStorage.setItem(key,value);
+  }
+  format(value:string,chart:string){
+    switch (chart) {
+      case "line":
+        return moment.utc(value).format('DD') +" "+ moment(value).format('MMM');
+        break;
+      case "bar":
+        return moment.utc(value).format('DD') +" "+ moment(value).format('MMM');
+        break;
+      default:
+        return moment.utc(value).format("DD/MM/YYYY hh:mm:ss");
+        break;
+    }
+    return moment.utc(value).format("DD/MM/YYYY hh:mm:ss");
+  }
+
   init(id) {
     this.renderLineChartFlag=false;
     this.renderBarChartFlag=false;
@@ -285,79 +423,63 @@ export class WeatherMonitoringComponent implements OnInit {
         this.setLocalStorageItem("lastFarmId",this._route.snapshot.paramMap.get('id'));
         if (id == 0) {
           idFarm = (this._route.snapshot.paramMap.get('id'));
-          this.getZones(this._route.snapshot.paramMap.get('id'));
+          this.getZones();
         } else {
           idFarm = id;
-          this.getZones(id);
+          this.getZones();
         }  
       }
     }else{
       if (id == 0) {
         idFarm = (this._route.snapshot.paramMap.get('id'));
-        this.getZones(this._route.snapshot.paramMap.get('id'));
+        this.getZones();
       } else {
         idFarm = id;
-        this.getZones(id);
+        this.getZones();
       }  
     }
     
-    this.climaLoading = false;
-    this.wiseconnService.getFarm(this._route.snapshot.paramMap.get('id')).subscribe((response) => {
-      this.dataFarm = response.data?response.data:response;
-      this.selected = this.dataFarm.name;
-      this.weatherService;
-      const q = [this.dataFarm.latitude, this.dataFarm.longitude];
-      if (q[0] != null) {
-        const key = "7da96f2f52f54be7a1b123737202102";
-        this.weatherService.getWeather(key, q).subscribe((weather) => {
-          this.climaDay = [];
-          this.climaIcon = [];
-          this.climaMax = [];
-          this.climaMin = [];
-          this.climaToday = weather.data.current_condition[0];
-          var clima = (weather.data.weather);
-          for (const data of clima) {
-            data.iconLabel = data.hourly[0].weatherIconUrl[0];
-            this.climaDay.push(data.date);
-            this.climaIcon.push(data.iconLabel.value);
-            this.climaMax.push(data.maxtempC);
-            this.climaMin.push(data.mintempC);
-          }
-          this.climaLoading = true;
-        });
-      }
-      switch (this.dataFarm.name) {
-        case "Agrifrut":
-          this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3435/Campos:l/Agrifrut:f";
-          break;
-        case "Agrifrut II (Nogales y Parrones)":
-          this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3435/Campos:l/Agrifrut%20II%20(Nogales%20y%20Parrones):f";
-          break;
-        case "Santa Juana de Chincolco":
-          this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3507/Campos:l/Agricola%20Santa%20Juana%20de%20Chincolco%20SA:f";
-          break;
-        default:
-          this.url = "";
-      }
-    });
+    // this.climaLoading = false;
+    // this.wiseconnService.getFarm(this._route.snapshot.paramMap.get('id')).subscribe((response) => {
+    //   this.dataFarm = response.data?response.data:response;
+    //   this.selected = this.dataFarm.name;
+    //   this.weatherService;
+    //   const q = [this.dataFarm.latitude, this.dataFarm.longitude];
+    //   if (q[0] != null) {
+    //     const key = "7da96f2f52f54be7a1b123737202102";
+    //     this.weatherService.getWeather(key, q).subscribe((weather) => {
+    //       this.climaDay = [];
+    //       this.climaIcon = [];
+    //       this.climaMax = [];
+    //       this.climaMin = [];
+    //       this.climaToday = weather.data.current_condition[0];
+    //       var clima = (weather.data.weather);
+    //       for (const data of clima) {
+    //         data.iconLabel = data.hourly[0].weatherIconUrl[0];
+    //         this.climaDay.push(data.date);
+    //         this.climaIcon.push(data.iconLabel.value);
+    //         this.climaMax.push(data.maxtempC);
+    //         this.climaMin.push(data.mintempC);
+    //       }
+    //       this.climaLoading = true;
+    //     });
+    //   }
+    //   switch (this.dataFarm.name) {
+    //     case "Agrifrut":
+    //       this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3435/Campos:l/Agrifrut:f";
+    //       break;
+    //     case "Agrifrut II (Nogales y Parrones)":
+    //       this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3435/Campos:l/Agrifrut%20II%20(Nogales%20y%20Parrones):f";
+    //       break;
+    //     case "Santa Juana de Chincolco":
+    //       this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3507/Campos:l/Agricola%20Santa%20Juana%20de%20Chincolco%20SA:f";
+    //       break;
+    //     default:
+    //       this.url = "";
+    //   }
+    // });
   }
-  setLocalStorageItem(key,value){
-    localStorage.setItem(key,value);
-  }
-  format(value:string,chart:string){
-    switch (chart) {
-      case "line":
-        return moment.utc(value).format('DD') +" "+ moment(value).format('MMM');
-        break;
-      case "bar":
-        return moment.utc(value).format('DD') +" "+ moment(value).format('MMM');
-        break;
-      default:
-        return moment.utc(value).format("DD/MM/YYYY hh:mm:ss");
-        break;
-    }
-    return moment.utc(value).format("DD/MM/YYYY hh:mm:ss");
-  }
+  
   getChartInformation(){
     for (var i = 0; i < this.zones.length; i++) {
         if (this.zones[i].name == "Estación Meteorológica" || this.zones[i].name == "Estación Metereológica") {
@@ -547,7 +669,7 @@ export class WeatherMonitoringComponent implements OnInit {
         }
       }
       if (this.zones.length == 0) {
-        this.loadMap([]);
+        this.loadMap();
         this.measurements = [];
         Swal.fire({
           icon: 'error',
@@ -556,9 +678,9 @@ export class WeatherMonitoringComponent implements OnInit {
         })
       }else {
          if (this.zones[0].max != null) {
-          this.loadMap(this.zones);
+          this.loadMap();
          } else {
-           this.loadMap([]);
+           this.loadMap();
            this.measurements = [];
            Swal.fire({
              icon: 'error',
@@ -568,48 +690,7 @@ export class WeatherMonitoringComponent implements OnInit {
          }
       } 
   }
-  getZones(id: any) {
-    this.loading = true;
-    this.wiseconnService.getZones(id).subscribe((response: any) => {
-      this.loading = false; 
-      this.setLocalStorageItem("lastFarmId",this._route.snapshot.paramMap.get('id'));
-      this.zones = response.data?response.data:response;
-      this.setLocalStorageItem("lastZones",this.getJSONStringify(this.zones));
-      this.getChartInformation();     
-    });
-  }
-  getFarms() {
-    this.wiseconnService.getFarms().subscribe((response: any) => {
-      this.farms = response.data?response.data:response;
-      switch (localStorage.getItem("username").toLowerCase()) {
-        case "agrifrut":
-          this.farms = this.farms.filter((element) => {
-            return element.id == 185 || element.id == 2110 || element.id == 1378 || element.id == 520
-          })
-          break;
-          case "agrifrut@cdtec.cl":
-          this.farms = this.farms.filter((element) => {
-            let id= element.id_wiseconn?element.id_wiseconn:element.id;
-            return id == 185 || id == 2110 || id == 1378 || id == 520
-          })
-          break;
-        case "santajuana":
-          this.farms = this.farms.filter((element) => {
-            let id= element.id_wiseconn?element.id_wiseconn:element.id;
-            return id == 719
-          })
-          break;
-          case "santajuana@cdtec.cl":
-            this.farms = this.farms.filter((element) => {
-              return element.id == 719
-            })
-            break;
-        default:
-          // code...
-          break;
-      }
-    })
-  }
+  
   getJSONStringify(data) {
     var cache = [];
     var result =null;
@@ -642,26 +723,28 @@ export class WeatherMonitoringComponent implements OnInit {
         break;
     }
   }
-  getPathData(data:any,element:string){
-    let pathData;
-    switch (element) {
-      case "lat":
-        if(data[10].polygon!=undefined && data[10].polygon.path.length>0){
-          pathData=data[10].polygon.path[0].lat;
-        }else if(data[10].path!=undefined && data[10].path.length>0){
-          pathData=data[10].path[0].lat;
-        }
-        break;
-      case "lng":
-        if(data[10].polygon!=undefined && data[10].polygon.path.length>0){
-          pathData=data[10].polygon.path[0].lng;
-        }else if(data[10].path!=undefined && data[10].path.length>0){
-          pathData=data[10].path[0].lng;
-        }
-        break;
-      default:
-        // code...
-        break;
+  getPathData(element:string){
+    let pathData=[];
+    if(this.zones.length>=10){
+      switch (element) {
+        case "lat":
+          if(this.zones[10].polygon!=undefined && this.zones[10].polygon.path.length>0){
+            pathData=this.zones[10].polygon.path[0].lat;
+          }else if(this.zones[10].path!=undefined && this.zones[10].path.length>0){
+            pathData=this.zones[10].path[0].lat;
+          }
+          break;
+        case "lng":
+          if(this.zones[10].polygon!=undefined && this.zones[10].polygon.path.length>0){
+            pathData=this.zones[10].polygon.path[0].lng;
+          }else if(this.zones[10].path!=undefined && this.zones[10].path.length>0){
+            pathData=this.zones[10].path[0].lng;
+          }
+          break;
+        default:
+          // code...
+          break;
+      }
     }
     return pathData;
   }  
@@ -760,8 +843,10 @@ export class WeatherMonitoringComponent implements OnInit {
       });
     }
   }
-  loadMap(data) {
-    if (data.length == 0) {
+  loadMap() {
+    console.log("loadMap()")
+    if (this.zones.length == 0) {
+      Swal.fire({icon: 'info',title: 'Información sobre el mapa',text: 'Sin zonas registradas'});
       var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
         center: { lat: -32.89963602180464, lng: -70.90243510967417 },
         zoom: 15,
@@ -773,13 +858,16 @@ export class WeatherMonitoringComponent implements OnInit {
         mapTypeId: window['google'].maps.MapTypeId.HYBRID
       }));
     } else {
+      if(this.getPathData('lat').length==0&&this.getPathData('lng').length==0){
+        Swal.fire({icon: 'info',title: 'Información sobre el mapa',text: 'Datos de poligonos no registrados'});
+      }
       var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
-        center: { lat: this.getPathData(data,'lat'), lng: this.getPathData(data,'lng') },
+        center: { lat: this.getPathData('lat'), lng: this.getPathData('lng') },
         zoom: 15,
         mapTypeId: window['google'].maps.MapTypeId.HYBRID
       });
       this.setLocalStorageItem("lastMapData",this.getJSONStringify({
-        center: { lat: this.getPathData(data,'lat'), lng: this.getPathData(data,'lng') },
+        center: { lat: this.getPathData('lat'), lng: this.getPathData('lng') },
         zoom: 15,
         mapTypeId: window['google'].maps.MapTypeId.HYBRID
       }));
@@ -812,7 +900,7 @@ export class WeatherMonitoringComponent implements OnInit {
     var wisservice = this.wiseconnService;
 
     let polygonDatas=[];
-    data.forEach(element => {
+    this.zones.forEach(element => {
       // Construct the polygon.
       wisservice.getIrrigarionsRealOfZones(element.id).subscribe((response: any) => {
         let data=response.data?response.data:response;
@@ -935,23 +1023,9 @@ export class WeatherMonitoringComponent implements OnInit {
   }
   open(content, sizeValue) {
     this.modalService.open(content, {size: sizeValue} );
-  }
-  onSelect(select: string, id: number) {
-    switch (select) {
-      case "farm":
-        this.router.navigate(['/farmmap', id]);
-        this.init(id);
-        break;
-      case "zone":
-        let farmId=this.zones[0].farmId?this.zones[0].farmId:this.zones[0].id_farm;
-        this.router.navigate(['/farmpolygon',farmId, id]);
-        break;
-      default:
-        break;
-    }
   }  
-  formatDate(date:string){
-    let formatDate;
+  translateDate(date:string){
+    let newDate;
     let days=[
       {ing:"Mon",spa:"Lun"},
       {ing:"Tue",spa:"Mar"},
@@ -963,10 +1037,10 @@ export class WeatherMonitoringComponent implements OnInit {
     ];
     for (var i = 0; i < days.length; i++) {      
       if(date.indexOf(days[i].ing)==0){
-        formatDate=date.replace(days[i].ing, days[i].spa);
+        newDate=date.replace(days[i].ing, days[i].spa);
       }
     }    
-    return formatDate;
+    return newDate;
   }
   //por factorizar
   openDialog(): void {
@@ -976,11 +1050,11 @@ export class WeatherMonitoringComponent implements OnInit {
   }
   renderMap() {
     window['initMap'] = () => {
-      this.loadMap(null);
+      this.loadMap();
     }
     if (!window.document.getElementById('google-map-script')) {
     } else {
-      this.loadMap(null);
+      this.loadMap();
     }
   }
 }

@@ -36,12 +36,12 @@
     <div class="row">
       <h4 class="row-title">Dashboard</h4>
     </div>
-    <div class="row" *ngIf="farm">
+    <div class="row">
       <div class="col-md-1" style="display: table; height: 45px;">
         <span style="display: table-cell; vertical-align: middle;">Campo</span>
       </div>
       <mat-form-field class="col-md-6 mat-select-custom" floatLabel="never">
-        <mat-label>{{farm.name}}</mat-label>
+        <mat-label>{{farm?farm.name:'Campo'}}</mat-label>
         <mat-select>
           <mat-option *ngFor="let farm of farms" (click)="onSelect('farm',farm.id)">{{farm.name}}</mat-option>
         </mat-select>
@@ -152,7 +152,7 @@
       </div>
     </div>
   </div>
-  <div class="container-fluid">
+  <!-- <div class="container-fluid">
     <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>
   </div>
   <div class="container-fluid">
@@ -164,6 +164,6 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
   
 </div>

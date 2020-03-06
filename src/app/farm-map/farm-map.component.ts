@@ -20,9 +20,7 @@ export class FarmMapComponent implements OnInit {
   @ViewChild('mapRef', { static: true }) mapElement: ElementRef;
   private google_api_key = 'AIzaSyDx_dMfo0VnR_2CsF_wNw9Ayjd_HO6sMB0';
   public loading = false;
-  public id = 0;
   public url;
-  public status=false;
   public statusRegando=false;
   public dialog;
   public today = Date.now();
@@ -31,8 +29,7 @@ export class FarmMapComponent implements OnInit {
   public farms: any[] = [];
   public weatherStation: any = null;
   public closeResult: string;
-  public clima: any;
-  
+  public clima: any; 
 
   //Pronostico values
   public climaLoading = false;
@@ -187,7 +184,7 @@ export class FarmMapComponent implements OnInit {
       this.loading = false; 
       this.zones = response.data?response.data:response;
       this.setLocalStorageItem("lastFarmId",this.farm.id);
-      this.setLocalStorageItem("lastZones",this.getJSONStringify(this.zones));    
+      this.setLocalStorageItem("lastZones",this.getJSONStringify(this.zones));
       this.loadMap();
     });
   }  
@@ -466,7 +463,7 @@ export class FarmMapComponent implements OnInit {
     switch (select) {
       case "farm":
         this.farm=this.getFarm(id);
-        this.getZones();        
+        this.getZones();
         this.getWeather();
         break;
       default:
