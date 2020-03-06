@@ -34,9 +34,9 @@ export class WeatherMonitoringComponent implements OnInit {
   public dataFarm: any;
   public zone: any = null;
   public zones: any[] = [];
+  public weatherZones: any[] = [];
   public farm: any=null;
   public farms: any[] = [];
-  public weatherZones: any[] = [];
   public weatherStation: any = null;
   public closeResult: string;
   public clima: any;
@@ -192,15 +192,9 @@ export class WeatherMonitoringComponent implements OnInit {
   public barChartData: ChartDataSets[] = [
     { data: [], label: 'Precipitación (mm)' }, 
     { data: [], label: 'Et0 (mm)' },
-    { data: [], label: 'Velocidad de viento' },
-    { data: [], label: 'Dirección de viento' },
-    { data: [], label: 'Radiación' }  
   ];
-  public windVelocityId: number = null;
-  public windDirectionId: number = null;
   public rainId: number = null;
   public et0Id: number = null;
-  public radiationId: number = null;
   public renderBarChartFlag: boolean = false;
 
   //Pronostico values
@@ -232,6 +226,7 @@ export class WeatherMonitoringComponent implements OnInit {
         this.farm=this.farms[0];        
         if(localStorage.getItem("lastFarmId")!=undefined && (parseInt(localStorage.getItem("lastFarmId"))==parseInt(this.farm.id))){
           this.zones = JSON.parse(localStorage.getItem('lastZones'));
+          this.weatherZones=this.getWeatherZones();
           this.loadMap();
           this.getChartInformation();
         }else{
@@ -286,6 +281,7 @@ export class WeatherMonitoringComponent implements OnInit {
     this.wiseconnService.getZones(this.farm.id).subscribe((response: any) => {
       this.loading = false; 
       this.zones = response.data?response.data:response;
+      this.weatherZones=this.getWeatherZones();
       this.setLocalStorageItem("lastFarmId",this.farm.id);
       this.setLocalStorageItem("lastZones",this.getJSONStringify(this.zones));
       this.loadMap();
@@ -374,7 +370,15 @@ export class WeatherMonitoringComponent implements OnInit {
     }
     return value;
   }
-  
+  getWeatherZones(){
+    return this.zones.filter((element)=>{
+      if(element.type.find(element=>{
+        return element.toLowerCase() == "weather"
+      })!=undefined){
+        return element;
+        }
+    });
+  }
   getChartInformation(){
     this.renderLineChartFlag=false;
     this.renderBarChartFlag=false;
@@ -386,124 +390,73 @@ export class WeatherMonitoringComponent implements OnInit {
       endTime: moment(this.toDate.year + "-" + this.toDate.month + "-" + this.toDate.day).format("YYYY-MM-DD")
     };
     for (var i = 0; i < this.zones.length; i++) {
-        if (this.zones[i].name == "Estación Meteorológica" || this.zones[i].name == "Estación Metereológica") {
-          this.weatherStation = this.zones[i];
-          this.loading = true;
-          this.wiseconnService.getMeasuresOfZones(this.weatherStation.id).subscribe((response) => {
-            let data=response.data?response.data:response;
-            for (var i = 0; i < data.length; i++) {
-              //bar chart
-              if (data[i].sensorType != undefined && data[i].name != undefined){
-                if ((data[i].sensorType).toLowerCase() === "rain" && (data[i].name).toLowerCase() === "pluviometro") {
-                  this.rainId = data[i].id;
-                }
+      if (this.zones[i].name == "Estación Meteorológica" || this.zones[i].name == "Estación Metereológica") {
+        this.weatherStation = this.zones[i];
+        this.loading = true;
+        this.wiseconnService.getMeasuresOfZones(this.weatherStation.id).subscribe((response) => {
+          let data=response.data?response.data:response;
+          for (var i = 0; i < data.length; i++) {
+            //bar chart
+            if (data[i].sensorType != undefined && data[i].name != undefined){
+              if ((data[i].sensorType).toLowerCase() === "rain" && (data[i].name).toLowerCase() === "pluviometro") {
+                this.rainId = data[i].id;
               }
-              if (data[i].sensorType != undefined && data[i].name != undefined){
-                if ((data[i].sensorType).toLowerCase() === "wind velocity" && 
-                  ((data[i].name).toLowerCase() === "velocidad viento"||(data[i].name).toLowerCase() === "wind speed (period)")) {
-                  this.windVelocityId = data[i].id;
-                }
+            }
+            if ((data[i].name) != undefined){
+              if ((data[i].name).toLowerCase() === "et0") {
+                this.et0Id = data[i].id;
               }
-              if (data[i].sensorType != undefined && data[i].name != undefined){
-                if ((data[i].sensorType).toLowerCase() === "wind direction" && 
-                  ((data[i].name).toLowerCase() === "direccion de viento"||(data[i].name).toLowerCase() === "wind direction")) {
-                  this.windDirectionId = data[i].id;
-                }
-              }
-              if (data[i].sensorType != undefined && data[i].name != undefined){
-                if ((data[i].sensorType).toLowerCase() === "solar radiation" && 
-                  ((data[i].name).toLowerCase() === "radiacion solar"||(data[i].name).toLowerCase() === "Solar radiation ")) {
-                  this.radiationId = data[i].id;
-                }
-              }
-              if ((data[i].name) != undefined){
-                if ((data[i].name).toLowerCase() === "et0") {
-                  this.et0Id = data[i].id;
-                }
-              }
-              if(this.rainId&&this.et0Id&&this.windVelocityId&&this.windDirectionId&&this.radiationId){
-                this.wiseconnService.getDataByMeasure(this.rainId,this.dateRange).subscribe((response) => {
-                  let rainData=response.data?response.data:response;
-                  this.wiseconnService.getDataByMeasure(this.et0Id,this.dateRange).subscribe((response) => {
-                    let et0Data=response.data?response.data:response;
-                    this.wiseconnService.getDataByMeasure(this.windVelocityId,this.dateRange).subscribe((response) => {
-                      let windVelocityData=response.data?response.data:response;
-                      this.wiseconnService.getDataByMeasure(this.windDirectionId,this.dateRange).subscribe((response) => {
-                        let windDirectionData=response.data?response.data:response;
-                        this.wiseconnService.getDataByMeasure(this.radiationId,this.dateRange).subscribe((response) => {
-                          let radiationData=response.data?response.data:response;
-                          this.loading = false;
-                          rainData=rainData.map((element)=>{
-                            element.chart="rain";
-                            return element
-                          })
-                          et0Data=et0Data.map((element)=>{
-                            element.chart="et0";
-                            return element;
-                          })
-                          windVelocityData=windVelocityData.map((element)=>{
-                            element.chart="windvelocity";
-                            return element;
-                          })
-                          windDirectionData=windDirectionData.map((element)=>{
-                            element.chart="winddirection";
-                            return element;
-                          })
-                          radiationData=radiationData.map((element)=>{
-                            element.chart="radiation";
-                            return element;
-                          })
-                          let chartData=rainData.concat(et0Data.concat(windVelocityData.concat(windDirectionData.concat(radiationData))));
-                          chartData.sort(function (a, b) {
-                            if (moment(a.time).isAfter(b.time)) {
-                              return 1;
-                            }
-                            if (!moment(a.time).isAfter(b.time)) {
-                              return -1;
-                            }
-                            return 0;
-                          });
-                          chartData=chartData.filter((element)=>{
-                            if(moment.utc(element.time).format("HH:mm:ss")=="00:00:00"){                            
-                              return element;
-                            }
-                          })
-                          this.resetChartsValues("bar");
-                          let maxLabelValue=0;
-                          for (var i = 0; i < chartData.length; i++) {
-                            if(chartData[i+1]&&chartData[i+2]&&chartData[i+3]&&chartData[i+4]){
-                              if(chartData[i].time===chartData[i+1].time && chartData[i+1].time===chartData[i+2].time && chartData[i+2].time===chartData[i+3].time && chartData[i+3].time===chartData[i+4].time){
-                                this.barChartLabels.push(this.format(chartData[i].time,"bar")); 
-                              }  
-                            }
-                            if(chartData[i].chart=="rain") {
-                              this.barChartData[0].data.push(chartData[i].value);
-                            }
-                            if(chartData[i].chart=="et0") {
-                              this.barChartData[1].data.push(chartData[i].value);
-                            }
-                            if(chartData[i].chart=="windvelocity") {
-                              this.barChartData[2].data.push(chartData[i].value);
-                            }
-                            if(chartData[i].chart=="winddirection") {
-                              this.barChartData[3].data.push(chartData[i].value);
-                            }
-                            if(chartData[i].chart=="radiation") {
-                              this.barChartData[4].data.push(chartData[i].value);
-                            }
-                            if(i+1==chartData.length){
-                              this.renderCharts("bar");
-                            }
-
-                          }
-                        });
-                        
-                      });
-                      
-                    });
+            }
+            if(this.rainId&&this.et0Id){
+              this.wiseconnService.getDataByMeasure(this.rainId,this.dateRange).subscribe((response) => {
+                let rainData=response.data?response.data:response;
+                this.wiseconnService.getDataByMeasure(this.et0Id,this.dateRange).subscribe((response) => {
+                  let et0Data=response.data?response.data:response;
+                  this.loading = false;
+                  rainData=rainData.map((element)=>{
+                    element.chart="rain";
+                      return element
+                  })
+                  et0Data=et0Data.map((element)=>{
+                    element.chart="et0";
+                      return element;
+                  })                          
+                  let chartData=rainData.concat(et0Data);
+                  chartData.sort(function (a, b) {
+                    if (moment(a.time).isAfter(b.time)) {
+                      return 1;
+                    }
+                    if (!moment(a.time).isAfter(b.time)) {
+                      return -1;
+                    }
+                    return 0;
                   });
+                  chartData=chartData.filter((element)=>{
+                    if(moment.utc(element.time).format("HH:mm:ss")=="00:00:00"){                            
+                      return element;
+                    }
+                  })
+                  this.resetChartsValues("bar");
+                  let maxLabelValue=0;
+                  for (var i = 0; i < chartData.length; i++) {
+                    if(chartData[i+1]){
+                      if(chartData[i].time===chartData[i+1].time){
+                        this.barChartLabels.push(this.format(chartData[i].time,"bar")); 
+                      }  
+                    }
+                    if(chartData[i].chart=="rain") {
+                      this.barChartData[0].data.push(chartData[i].value);
+                    }
+                    if(chartData[i].chart=="et0") {
+                      this.barChartData[1].data.push(chartData[i].value);
+                    }
+                    if(i+1==chartData.length){
+                      this.renderCharts("bar");
+                    }
+                  }
                 });
-              }
+              });
+            }
               //line chart
               if (data[i].sensorType === "Temperature") {
                 this.temperatureId = data[i].id;
@@ -845,7 +798,7 @@ export class WeatherMonitoringComponent implements OnInit {
               polygonDatas.push({element:element,data:polygonData});
               this.setLocalStorageItem("lastPolygonData",JSON.stringify(polygonDatas));
               // Marker Image          
-              this.addMarkerImage(map, element, "../../assets/icons/map/Ok-01.svg");
+              // this.addMarkerImage(map, element, "../../assets/icons/map/Ok-01.svg");
               Triangle.setMap(map);
               this.addListenersOnPolygon(Triangle, element.id);
             } else {
@@ -893,7 +846,7 @@ export class WeatherMonitoringComponent implements OnInit {
       });
     });
   }
-  resetChartsValues(chart:string){
+  resetChartsValues(chart: string){
     switch (chart) {
       case "line":
         this.lineChartLabels=[];
@@ -903,7 +856,7 @@ export class WeatherMonitoringComponent implements OnInit {
         break;  
       case "bar":
         this.barChartLabels=[];
-        for (var i = 0; i < 5; i++) {
+        for (var i = 0; i < 2; i++) {
           this.barChartData[i].data=[];
         }
         break;

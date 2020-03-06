@@ -37,15 +37,19 @@
       <h4 class="row-title">Dashboard</h4>
     </div>
     <div class="row">
-      <div class="col-md-1" style="display: table; height: 45px;">
-        <span style="display: table-cell; vertical-align: middle;">Campo</span>
+      <div class="col-md-6">
+        <div class="form-group row">
+          <label for="farm" class="col-sm-2 col-form-label">Campo</label>
+          <div class="col-sm-10">
+            <mat-form-field class="mat-select-custom" floatLabel="never" id="farm">
+              <mat-label>{{farm?farm.name:'Campo'}}</mat-label>
+              <mat-select>
+                <mat-option *ngFor="let farm of farms" (click)="onSelect('farm',farm.id)">{{farm.name}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
       </div>
-      <mat-form-field class="col-md-6 mat-select-custom" floatLabel="never">
-        <mat-label>{{farm?farm.name:'Campo'}}</mat-label>
-        <mat-select>
-          <mat-option *ngFor="let farm of farms" (click)="onSelect('farm',farm.id)">{{farm.name}}</mat-option>
-        </mat-select>
-      </mat-form-field>
     </div>
     <div class="row labels-row">
       <div class="col-md-4">

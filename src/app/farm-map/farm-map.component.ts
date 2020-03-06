@@ -76,7 +76,7 @@ export class FarmMapComponent implements OnInit {
                 }else if (polygonDatas[i].element.status!=undefined){
                   if((polygonDatas[i].element.status).toLowerCase() == "executed ok") {            
                       // Marker Image          
-                      this.addMarkerImage(map, polygonDatas[i].element, "../../assets/icons/map/Ok-01.svg");
+                      // this.addMarkerImage(map, polygonDatas[i].element, "../../assets/icons/map/Ok-01.svg");
                   }else if((polygonDatas[i].element.status).toLowerCase() == "running"){
                     // Marker Image          
                     this.addMarkerImage(map, polygonDatas[i].element,  "../../assets/icons/map/Regando-01.svg"); 
@@ -98,6 +98,7 @@ export class FarmMapComponent implements OnInit {
       }    
     });
   }
+
   filterFarmsByUser(){
     if(localStorage.getItem("username")){      
       switch (localStorage.getItem("username").toLowerCase()) {
@@ -408,7 +409,7 @@ export class FarmMapComponent implements OnInit {
               polygonDatas.push({element:element,data:polygonData});
               this.setLocalStorageItem("lastPolygonData",JSON.stringify(polygonDatas));
               // Marker Image          
-              this.addMarkerImage(map, element, "../../assets/icons/map/Ok-01.svg");
+              // this.addMarkerImage(map, element, "../../assets/icons/map/Ok-01.svg");
               Triangle.setMap(map);
               this.addListenersOnPolygon(Triangle, element.id);
             } else {
