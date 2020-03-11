@@ -51,13 +51,13 @@
         </div>
       </div>
     </div>
-    <div class="row labels-row">
-      <div class="col-md-4">
+    <div class="row justify-content-end labels-row">
+      <!-- <div class="col-md-4">
         <div>
           <span class="date-title">{{today | date:'MMMM dd/MM/yyyy'}} </span>
         </div>
-      </div>
-      <div class="col-md-8 ">
+      </div> -->
+      <div class="col-md-8">
         <span *ngIf="farm" class="title-farm">{{farm.name}}</span>
       </div>
     </div>
@@ -69,9 +69,9 @@
     <div class="row">
       <div class="col-lg-4 col-md-4 col-sm-4">
         <div *ngIf="climaLoading" class="container-fluid">
-          <div class="row ">
+          <!-- <div class="row ">
             <h4 class="row-subtitle-card">Pronóstico</h4>
-          </div>
+          </div> -->
           <div class="card-body card-pronostic">
             <table class="table-title">
               <thead>
@@ -144,13 +144,13 @@
               </div>
             </div>
           </div>
-          <div class="col-md-6 irrimax-label">
+          <!-- <div class="col-md-6 irrimax-label">
             <h6 style="margin-top: 5%;">Ver analisis de suelo en</h6>
             <div (click)="open(content, 'xl')" class="btn btns-irrimax btn-radius">
                 <span>Irrimax<b>LIVE</b></span>
                 <span><img src="/assets/icons/IrrimaxLive.png"></span>
             </div>
-          </div>
+          </div> -->
         </div>
 
       </div>

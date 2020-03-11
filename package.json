@@ -13,7 +13,8 @@
   },
   "engines": {
     "node": "6.11.1",
-    "npm": "3.10.9"
+    "npm": "3.10.9",
+    "yarn": "^0.14.0"
   },
   "private": true,
   "dependencies": {
@@ -46,6 +47,7 @@
     "express": "4.17.1",
     "googleapis": "40.0.0",
     "hammerjs": "2.0.8",
+    "highcharts": "^8.0.4",
     "jquery": "3.4.1",
     "moment": "2.24.0",
     "moment-timezone": "^0.5.28",

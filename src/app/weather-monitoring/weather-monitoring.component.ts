@@ -46,6 +46,16 @@ export class WeatherMonitoringComponent implements OnInit {
   public toDate: NgbDate;
   public dateRange: any = null;
   //graficas
+  public lineData= [{
+          name: 'Temperatura',
+          data: [],
+          // yAxis: 0,
+      }, {
+          name: 'Humedad',
+          data: [],
+          yAxis: 1,
+      }];
+  //graficas
   @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
   public lineChartData: ChartDataSets[] = [
     { data: [], label: 'Temperatura' },
@@ -469,7 +479,7 @@ export class WeatherMonitoringComponent implements OnInit {
                 this.wiseconnService.getDataByMeasure(this.temperatureId,this.dateRange).subscribe((response) => {
                   let temperatureData=response.data?response.data:response;
                   this.wiseconnService.getDataByMeasure(this.humidityId,this.dateRange).subscribe((response) => {
-                    let humidityData=response.data?response.data:response;;
+                    let humidityData=response.data?response.data:response;
                     this.loading = false;
                     temperatureData=temperatureData.map((element)=>{
                       element.chart="temperature";
@@ -499,13 +509,22 @@ export class WeatherMonitoringComponent implements OnInit {
                         return element === this.momentFormat(chartData[i].time,"line");
                       }) === undefined) {
                         this.lineChartLabels.push(this.momentFormat(chartData[i].time,"line"));
+                        if(chartData[i].time==chartData[i+1].time){
+                          this.lineChartData[0].data.push(chartData[i].value);
+                          this.lineData[0].data.push(chartData[i].value);
+
+                          this.lineChartData[1].data.push(chartData[i+1].value);
+                          this.lineData[1].data.push(chartData[i+1].value);
+                        }
                       }
-                      if (chartData[i].chart==="temperature") {
-                        this.lineChartData[0].data.push(chartData[i].value);
-                      } 
-                      if(chartData[i].chart==="humidity"){
-                        this.lineChartData[1].data.push(chartData[i].value);
-                      }
+                      // if (chartData[i].chart==="temperature") {
+                      //   this.lineChartData[0].data.push(chartData[i].value);
+                      //   this.lineData[0].data.push(chartData[i].value);
+                      // } 
+                      // if(chartData[i].chart==="humidity"){
+                      //   this.lineChartData[1].data.push(chartData[i].value);
+                      //   this.lineData[1].data.push(chartData[i].value);
+                      // }
                       if(i+1==chartData.length){
                         this.renderCharts("line");
                       }
@@ -695,7 +714,7 @@ export class WeatherMonitoringComponent implements OnInit {
     }
   }
   loadMap() {
-    if (this.zones.length == 0) {
+    if (this.weatherZones.length == 0) {
       Swal.fire({icon: 'info',title: 'Información sobre el mapa',text: 'Sin zonas registradas'});
       var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
         center: { lat: -32.89963602180464, lng: -70.90243510967417 },
@@ -750,7 +769,7 @@ export class WeatherMonitoringComponent implements OnInit {
     var wisservice = this.wiseconnService;
 
     let polygonDatas=[];
-    this.zones.forEach(element => {
+    this.weatherZones.forEach(element => {
       // Construct the polygon.
       wisservice.getIrrigarionsRealOfZones(element.id).subscribe((response: any) => {
         let data=response.data?response.data:response;
@@ -766,7 +785,7 @@ export class WeatherMonitoringComponent implements OnInit {
           };
           var Triangle = new window['google'].maps.Polygon(polygonData);
           polygonDatas.push({element:element,data:polygonData});
-          this.setLocalStorageItem("lastPolygonData",JSON.stringify(polygonDatas));
+          this.setLocalStorageItem("lastPolygonWeatherData",JSON.stringify(polygonDatas));
           // Marker Image          
           this.addMarkerImage(map, element, "https://i.imgur.com/C7gyw7N.png");
           Triangle.setMap(map);
@@ -781,7 +800,7 @@ export class WeatherMonitoringComponent implements OnInit {
         } else {
           if (data != "") {
             if (data[0].status == "Executed OK") {
-              this.zones.map((zone)=>{
+              this.weatherZones.map((zone)=>{
                 if(zone.id==element.id||zone.id_wiseconn==element.id){
                   element.status=data[0].status
                 }
@@ -797,14 +816,14 @@ export class WeatherMonitoringComponent implements OnInit {
               };
               var Triangle = new window['google'].maps.Polygon(polygonData);              
               polygonDatas.push({element:element,data:polygonData});
-              this.setLocalStorageItem("lastPolygonData",JSON.stringify(polygonDatas));
+              this.setLocalStorageItem("lastPolygonWeatherData",JSON.stringify(polygonDatas));
               // Marker Image          
               // this.addMarkerImage(map, element, "../../assets/icons/map/Ok-01.svg");
               Triangle.setMap(map);
               this.addListenersOnPolygon(Triangle, element.id);
             } else {
               if (data[0].status == "Running") {
-                this.zones.map((zone)=>{
+                this.weatherZones.map((zone)=>{
                   if(zone.id==element.id||zone.id_wiseconn==element.id){
                     element.status=data[0].status
                   }                  
@@ -821,7 +840,7 @@ export class WeatherMonitoringComponent implements OnInit {
                 };
                 var Triangle = new window['google'].maps.Polygon(polygonData);                
                 polygonDatas.push({element:element,data:polygonData});
-                this.setLocalStorageItem("lastPolygonData",JSON.stringify(polygonDatas));
+                this.setLocalStorageItem("lastPolygonWeatherData",JSON.stringify(polygonDatas));
                  // Marker Image          
                 this.addMarkerImage(map, element,  "../../assets/icons/map/Regando-01.svg");                  
                 Triangle.setMap(map);
@@ -839,7 +858,7 @@ export class WeatherMonitoringComponent implements OnInit {
                 Triangle.setMap(map);
                 this.addListenersOnPolygon(Triangle,element.id);                
                 polygonDatas.push({element:element,data:polygonData});              
-                this.setLocalStorageItem("lastPolygonData",JSON.stringify(polygonDatas));
+                this.setLocalStorageItem("lastPolygonWeatherData",JSON.stringify(polygonDatas));
               }
             }
           }

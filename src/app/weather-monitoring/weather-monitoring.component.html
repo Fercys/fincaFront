@@ -81,7 +81,7 @@
   <div class="container-fluid barra">
     <div class="row">
       <div class="col-lg-4 col-md-4 col-sm-4">
-        <div class="buttons-farm">
+        <!-- <div class="buttons-farm">
           <div (click)="openDialog()" class="btn btns-message btn-block">
             <span><img src="/assets/icons/message-icon.png"></span>
             <span>Mensaje</span>
@@ -92,7 +92,7 @@
               <span><img src="/assets/icons/alert-icon.png"></span>
               <span>Alertas</span>
             </div>
-        </div>
+        </div> -->
         <!-- Cuadro de Clima -->
         <div *ngIf="measurements" class="container-fluid">
           <div class="row " >
@@ -226,7 +226,15 @@
           </div>
         </div>
       </div>
-      <div class="col-md-8" >
+      <div class="col-md-8">
+        <app-output-graph 
+          *ngIf="!loading" 
+          [title]="'TEMPERATURA/HUMEDAD'" 
+          [labels]="lineChartLabels" 
+          [data]="lineData" >            
+        </app-output-graph>
+      </div>
+      <!-- <div class="col-md-8" >
         <div class="container-fluid">
           <div class="row ">
             <h4 class="row-subtitle-card">Temperatura/Humedad</h4>
@@ -268,7 +276,7 @@
             </div>
           </div>
       </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </div>
