@@ -1,6 +1,7 @@
 import { Component, OnInit, OnChanges, Input, SimpleChanges  } from '@angular/core';
 import * as Highcharts from 'highcharts';
 import { HttpClient } from '@angular/common/http';
+import HC_exporting from 'highcharts/modules/exporting';
 
 declare var require: any;
 let Boost = require('highcharts/modules/boost');
@@ -11,6 +12,7 @@ Boost(Highcharts);
 noData(Highcharts);
 More(Highcharts);
 noData(Highcharts);
+HC_exporting(Highcharts);
 
 @Component({
   selector: 'app-output-graph',
