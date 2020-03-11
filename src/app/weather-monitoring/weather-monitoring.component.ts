@@ -910,12 +910,7 @@ export class WeatherMonitoringComponent implements OnInit {
     }    
     return newDate;
   }
-  //por factorizar
-  openDialog(): void {
-     const dialogRef = this.dialogs.open(DialogMessage, {
-       panelClass: 'messagedialogcss'
-     });
-  }
+  //por factorizar  
   renderMap() {
     window['initMap'] = () => {
       this.loadMap();
@@ -925,21 +920,4 @@ export class WeatherMonitoringComponent implements OnInit {
       this.loadMap();
     }
   }
-}
-@Component({
-  selector: 'message-dialog',
-  templateUrl: 'message-dialog.html',
-  styleUrls: ['./message-dialog.scss'],
-})
-export class DialogMessage {
-
-  constructor(
-    public dialogRef: MatDialogRef<DialogMessage>,
-    // @Inject(MAT_DIALOG_DATA) public data 
-    ) {}
-
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
-
 }

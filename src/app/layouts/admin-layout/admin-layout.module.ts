@@ -22,7 +22,7 @@ import { Ng2SearchPipeModule } from 'ng2-search-filter';
 
 import { SafePipePipe } from 'app/pipe/safe-pipe.pipe';
 import { ClientComponent } from 'app/client/client.component';
-import { DialogMessage } from 'app/weather-monitoring/weather-monitoring.component';
+import { DialogMessage } from 'app/farm-map/farm-map.component';
 import { FarmClientComponent } from 'app/farm-client/farm-client.component';
 import { FarmMapPolygonComponent } from 'app/farm-map-polygon/farm-map-polygon.component';
 

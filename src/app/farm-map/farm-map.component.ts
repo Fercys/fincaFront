@@ -481,5 +481,26 @@ export class FarmMapComponent implements OnInit {
       this.loadMap();
     }
   }
-   
+  openDialog(): void {
+     const dialogRef = this.dialogs.open(DialogMessage, {
+       panelClass: 'messagedialogcss'
+     });
+  }   
+}
+@Component({
+  selector: 'message-dialog',
+  templateUrl: 'message-dialog.html',
+  styleUrls: ['./message-dialog.scss'],
+})
+export class DialogMessage {
+
+  constructor(
+    public dialogRef: MatDialogRef<DialogMessage>,
+    // @Inject(MAT_DIALOG_DATA) public data 
+    ) {}
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
 }
