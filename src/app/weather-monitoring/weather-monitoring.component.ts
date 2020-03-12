@@ -1,4 +1,4 @@
-import { Component, OnInit,ViewChild,ElementRef ,Inject  } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef , Inject, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { element } from 'protractor';
 import { NgbModal, NgbDate, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
@@ -20,7 +20,7 @@ import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog
   templateUrl: './weather-monitoring.component.html',
   styleUrls: ['./weather-monitoring.component.scss']
 })
-export class WeatherMonitoringComponent implements OnInit {
+export class WeatherMonitoringComponent implements OnInit,OnDestroy {
   @ViewChild('mapRef', { static: true }) mapElement: ElementRef;
   private google_api_key = 'AIzaSyDx_dMfo0VnR_2CsF_wNw9Ayjd_HO6sMB0';
   public loading = false;
@@ -46,78 +46,85 @@ export class WeatherMonitoringComponent implements OnInit {
   public toDate: NgbDate;
   public dateRange: any = null;
   //graficas
-  public lineData= [{
-          name: 'Temperatura',
-          data: [],
-          // yAxis: 0,
-      }, {
-          name: 'Humedad',
-          data: [],
-          yAxis: 1,
-      }];
+  // public lineData= [{
+  //         name: 'Temperatura',
+  //         data: [],
+  //         // yAxis: 0,
+  //     }, {
+  //         name: 'Humedad',
+  //         data: [],
+  //         yAxis: 1,
+  //     }];
+  // public lineLabels={
+  //   values:[],
+  //   labels:[]
+  // }
   //graficas
-  @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
-  public lineChartData: ChartDataSets[] = [
-    { data: [], label: 'Temperatura' },
-    { data: [], label: 'Humedad', yAxisID: 'y-axis-1' },
+  // @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
+  public lineChartData: any[] = [
+    { data: [], name: 'Temperatura' },
+    { data: [], name: 'Humedad',yAxis: 1 },
   ];
-  public lineChartLabels: Label[] = [];
-  public lineChartOptions: (ChartOptions & { annotation: any }) = {
-    responsive: false, 
-    tooltips: { 
-      mode: 'index', 
-      intersect: false 
-    },
-    scales: {
-      // We use this empty structure as a placeholder for dynamic theming.
-      xAxes: [{}],
-      yAxes: [
-        {
-          id: 'y-axis-0',
-          position: 'left',
-        },
-        {
-          id: 'y-axis-1',
-          position: 'right',
-          gridLines: {
-            color: 'rgba(255,0,0,0.3)',
-          },
-          ticks: {
-            fontColor: 'red',
-          }
-        }
-      ]
-    },
-    annotation: {
-      annotations: [{}],
-    },
-    elements: {
-        point: {
-            radius: 0
-        }
-    }
-  };
-  public lineChartColors: Color[] = [
-    { // red
-      backgroundColor:'rgba(255, 255, 255, 0.1)',
-      borderColor:'#D12B34',
-      pointBackgroundColor:'rgba(255, 0, 0,1)',
-      pointBorderColor:'#fff',
-      pointHoverBackgroundColor:'#fff',
-      pointHoverBorderColor: 'rgba(255, 0, 0,0.8)'
-    },
-    { // celeste
-      backgroundColor:'rgba(255, 255, 255, 0.1)',
-      borderColor:'#00B9EE',
-      pointBackgroundColor:'rgba(2, 87, 154,1)',
-      pointBorderColor:'#fff',
-      pointHoverBackgroundColor:'#fff',
-      pointHoverBorderColor:'rgba(2,87,154,0.8)'
-    }
-  ];
-  public lineChartLegend = true;
-  public lineChartType = 'line';
-  public lineChartPlugins = [pluginAnnotations];
+  public lineChartLabels={
+      values:[],
+      labels:[]
+    };
+  // public lineChartOptions: (ChartOptions & { annotation: any }) = {
+  //   responsive: false, 
+  //   tooltips: { 
+  //     mode: 'index', 
+  //     intersect: false 
+  //   },
+  //   scales: {
+  //     // We use this empty structure as a placeholder for dynamic theming.
+  //     xAxes: [{}],
+  //     yAxes: [
+  //       {
+  //         id: 'y-axis-0',
+  //         position: 'left',
+  //       },
+  //       {
+  //         id: 'y-axis-1',
+  //         position: 'right',
+  //         gridLines: {
+  //           color: 'rgba(255,0,0,0.3)',
+  //         },
+  //         ticks: {
+  //           fontColor: 'red',
+  //         }
+  //       }
+  //     ]
+  //   },
+  //   annotation: {
+  //     annotations: [{}],
+  //   },
+  //   elements: {
+  //       point: {
+  //           radius: 0
+  //       }
+  //   }
+  // };
+  // public lineChartColors: Color[] = [
+  //   { // red
+  //     backgroundColor:'rgba(255, 255, 255, 0.1)',
+  //     borderColor:'#D12B34',
+  //     pointBackgroundColor:'rgba(255, 0, 0,1)',
+  //     pointBorderColor:'#fff',
+  //     pointHoverBackgroundColor:'#fff',
+  //     pointHoverBorderColor: 'rgba(255, 0, 0,0.8)'
+  //   },
+  //   { // celeste
+  //     backgroundColor:'rgba(255, 255, 255, 0.1)',
+  //     borderColor:'#00B9EE',
+  //     pointBackgroundColor:'rgba(2, 87, 154,1)',
+  //     pointBorderColor:'#fff',
+  //     pointHoverBackgroundColor:'#fff',
+  //     pointHoverBorderColor:'rgba(2,87,154,0.8)'
+  //   }
+  // ];
+  // public lineChartLegend = true;
+  // public lineChartType = 'line';
+  // public lineChartPlugins = [pluginAnnotations];
 
 
   public temperatureId: number = null;
@@ -291,6 +298,8 @@ export class WeatherMonitoringComponent implements OnInit {
     this.wiseconnService.getZones(this.farm.id).subscribe((response: any) => {
       this.loading = false; 
       this.zones = response.data?response.data:response;
+      console.log("farm.id:",this.farm.id)
+      console.log("zones:",this.zones)
       this.weatherZones=this.getWeatherZones();
       this.setLocalStorageItem("lastFarmId",this.farm.id);
       this.setLocalStorageItem("lastZones",this.getJSONStringify(this.zones));
@@ -367,20 +376,18 @@ export class WeatherMonitoringComponent implements OnInit {
     localStorage.setItem(key,value);
   }
   momentFormat(value:string,chart:string){
-    //moment.utc(value).format("DD/MM/YYYY hh:mm:ss");
-    switch (chart) {
-      case "line":
-        return moment.utc(value).format('DD') +" "+ moment(value).format('MMM');
-        break;
-      case "bar":
-        return moment.utc(value).format('DD') +" "+ moment(value).format('MMM');
-        break;
-      default:
-        return moment.utc(value).format('DD') +" "+ moment(value).format('MMM');
-        break;
+        switch (chart) {
+          case "line":
+              return moment.utc(value).format('DD') +" "+ moment.utc(value).format('MMM');
+              break;
+          case "bar":
+              return moment.utc(value).format('DD') +" "+ moment.utc(value).format('MMM');
+              break;
+          default:
+              return value;
+              break;
+        }      
     }
-    return value;
-  }
   getWeatherZones(){
     return this.zones.filter((element)=>{
       if(element.type.find(element=>{
@@ -391,6 +398,8 @@ export class WeatherMonitoringComponent implements OnInit {
     });
   }
   getChartInformation(){
+    this.resetChartsValues("line");
+    this.resetChartsValues("bar");
     this.renderLineChartFlag=false;
     this.renderBarChartFlag=false;
     //rango de fechas para graficas
@@ -447,7 +456,6 @@ export class WeatherMonitoringComponent implements OnInit {
                       return element;
                     }
                   })
-                  this.resetChartsValues("bar");
                   let maxLabelValue=0;
                   for (var i = 0; i < chartData.length; i++) {
                     if(chartData[i+1]){
@@ -504,36 +512,30 @@ export class WeatherMonitoringComponent implements OnInit {
                       if(moment(element.time).minutes()==0 || moment(element.time).minutes()==30)
                         return element;
                     });
-                    for (var i = 0; i < chartData.length; i++) {                      
-                      if(this.lineChartLabels.find((element) => {
-                        return element === this.momentFormat(chartData[i].time,"line");
-                      }) === undefined) {
-                        this.lineChartLabels.push(this.momentFormat(chartData[i].time,"line"));
-                        if(chartData[i].time==chartData[i+1].time){
+                    this.resetChartsValues("line");
+                    for (var i = 0; i < chartData.length; i++) {
+                      if(chartData[i+1]){
+                        if(this.lineChartLabels.values.find((element) => {
+                                  return element === chartData[i].time;
+                                }) === undefined) {
+                                  this.lineChartLabels.values.push(this.momentFormat(chartData[i].time,null));
+                                  this.lineChartLabels.labels.push(this.momentFormat(chartData[i].time,"line"));
+                                }
+                        if (chartData[i].chart==="temperature") {
                           this.lineChartData[0].data.push(chartData[i].value);
-                          this.lineData[0].data.push(chartData[i].value);
-
+                        } 
+                        if(chartData[i+1].chart==="humidity"){
                           this.lineChartData[1].data.push(chartData[i+1].value);
-                          this.lineData[1].data.push(chartData[i+1].value);
                         }
                       }
-                      // if (chartData[i].chart==="temperature") {
-                      //   this.lineChartData[0].data.push(chartData[i].value);
-                      //   this.lineData[0].data.push(chartData[i].value);
-                      // } 
-                      // if(chartData[i].chart==="humidity"){
-                      //   this.lineChartData[1].data.push(chartData[i].value);
-                      //   this.lineData[1].data.push(chartData[i].value);
-                      // }
-                      if(i+1==chartData.length){
-                        this.renderCharts("line");
-                      }
+                      
+                      this.renderCharts("line");
                     }
                   });
                 });
               }else if(i==data.length){
                 Swal.fire({
-                  icon: 'info',
+                  icon: 'error',
                   title: 'Oops...',
                   text: 'No tiene configurado los sensores de humedad y temperatura'
                 })
@@ -869,7 +871,8 @@ export class WeatherMonitoringComponent implements OnInit {
   resetChartsValues(chart: string){
     switch (chart) {
       case "line":
-        this.lineChartLabels=[];
+        this.lineChartLabels.values=[];
+        this.lineChartLabels.labels=[];
         for (var i = 0; i < 2; i++) {
           this.lineChartData[i].data=[];
         }
@@ -919,5 +922,13 @@ export class WeatherMonitoringComponent implements OnInit {
     } else {
       this.loadMap();
     }
+  }
+  
+  ngOnDestroy() {
+    // this.wiseconnService.getFarms().unsubscribe();
+    // this.wiseconnService.getZones().unsubscribe();
+    // this.weatherService.getWeather().unsubscribe();
+    // this.weatherService.getMeasuresOfZones().unsubscribe();
+    // this.weatherService.getDataByMeasure().unsubscribe();
   }
 }

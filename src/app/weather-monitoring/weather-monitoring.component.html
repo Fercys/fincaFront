@@ -219,8 +219,8 @@
         <app-output-graph 
           *ngIf="!loading" 
           [title]="'TEMPERATURA/HUMEDAD'" 
-          [labels]="lineChartLabels" 
-          [data]="lineData" >            
+          [labels]="lineChartLabels.labels" 
+          [data]="lineChartData" >            
         </app-output-graph>
       </div>
       <!-- <div class="col-md-8" >

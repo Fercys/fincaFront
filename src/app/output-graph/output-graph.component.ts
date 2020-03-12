@@ -1,6 +1,6 @@
 import { Component, OnInit, OnChanges, Input, SimpleChanges  } from '@angular/core';
-import * as Highcharts from 'highcharts';
 import { HttpClient } from '@angular/common/http';
+import * as Highcharts from 'highcharts';
 import HC_exporting from 'highcharts/modules/exporting';
 
 declare var require: any;
@@ -44,12 +44,14 @@ export class OutputGraphComponent implements OnInit, OnChanges {
 	        title: {
 	            text: null
 	        },
+	        // tickInterval: 5,
 	        labels: {
 	            format: '{value:.,0f}'
 	        },
 	        showFirstLabel: false
 	    }, { // right y axis
-	    		opposite: true,
+	    	opposite: true,
+	    	tickInterval: 5,
 	        labels: {
 	            format: '{value:.,0f}'
 	        },
@@ -75,11 +77,12 @@ export class OutputGraphComponent implements OnInit, OnChanges {
 	ngOnInit() {
 	}
 	ngOnChanges(changes: SimpleChanges) {
+		console.log("changes:",changes)
 		let options=this.options;
-		options.series=changes.data.currentValue;
-		options.xAxis.categories=changes.labels.currentValue;
-		options.title.text=changes.title.currentValue;
-		options.subtitle.text=changes.title.currentValue;
-		setTimeout(function(){ Highcharts.chart('chart-container', options); }, 10000);
+		options.series=changes.data?changes.data.currentValue:options.series;
+		options.xAxis.categories=changes.labels?changes.labels.currentValue:options.xAxis.categories;
+		options.title.text=changes.title?changes.title.currentValue:options.title.text;
+		options.subtitle.text=changes.title?changes.title.currentValue:options.subtitle.text;
+		setTimeout(function(){ Highcharts.chart('chart-container', options); }, 20000);
 	}
 }
