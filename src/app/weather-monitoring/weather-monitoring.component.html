@@ -216,12 +216,24 @@
         </div>
       </div>
       <div class="col-md-8">
-        <app-output-graph 
-          *ngIf="!loading" 
-          [title]="'TEMPERATURA/HUMEDAD'" 
-          [labels]="lineChartLabels.labels" 
-          [data]="lineChartData" >            
-        </app-output-graph>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-12">
+              <app-line-graph 
+                [title]="'TEMPERATURA/HUMEDAD'" 
+                [labels]="lineChartLabels.labels" 
+                [data]="lineChartData" >
+              </app-line-graph>
+            </div>
+            <div class="col-md-12">
+              <app-bar-graph
+              [title]="'Precipitación+Et0'"
+              [labels]="barChartLabels" 
+              [data]="barChartData" >
+              </app-bar-graph>
+            </div>
+          </div>
+        </div>       
       </div>
       <!-- <div class="col-md-8" >
         <div class="container-fluid">

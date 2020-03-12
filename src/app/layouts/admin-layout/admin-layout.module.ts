@@ -40,7 +40,8 @@ import { TypographyComponent } from '../../typography/typography.component';
 import { UpgradeComponent } from '../../upgrade/upgrade.component';
 import { UserProfileComponent } from '../../user-profile/user-profile.component';
 import { ConfigurationComponent } from '../../configuration/configuration.component';
-import { OutputGraphComponent } from '../../output-graph/output-graph.component';
+import { LineGraphComponent } from '../../line-graph/line-graph.component';
+import { BarGraphComponent } from '../../bar-graph/bar-graph.component';
 import { AdminLayoutRoutes } from './admin-layout.routing';
 import { FreePlotterComponent } from 'app/free-plotter/free-plotter.component';
 import { SoilAnalysisComponent } from 'app/soil-analysis/soil-analysis.component';
@@ -86,7 +87,8 @@ import { SoilAnalysisComponent } from 'app/soil-analysis/soil-analysis.component
     DialogMessage,
     ReportInstalationComponent,
     ConfigurationComponent,
-    OutputGraphComponent
+    LineGraphComponent,
+    BarGraphComponent
   ],
   entryComponents:[
     DialogMessage

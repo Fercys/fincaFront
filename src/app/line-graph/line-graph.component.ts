@@ -1,5 +1,4 @@
 import { Component, OnInit, OnChanges, Input, SimpleChanges  } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import * as Highcharts from 'highcharts';
 import HC_exporting from 'highcharts/modules/exporting';
 
@@ -15,14 +14,15 @@ noData(Highcharts);
 HC_exporting(Highcharts);
 
 @Component({
-  selector: 'app-output-graph',
-  templateUrl: './output-graph.component.html',
-  styleUrls: ['./output-graph.component.scss']
+  selector: 'app-line-graph',
+  templateUrl: './line-graph.component.html',
+  styleUrls: ['./line-graph.component.scss']
 })
-export class OutputGraphComponent implements OnInit, OnChanges {
+export class LineGraphComponent implements OnInit, OnChanges {
 	@Input() title:string;
 	@Input() data:number[];
 	@Input() labels:string[];
+
   	public options: any = {
 	    chart: {
 	        type: 'spline',
@@ -71,18 +71,19 @@ export class OutputGraphComponent implements OnInit, OnChanges {
 	        crosshairs: true
 	    },
 	}
-  	constructor(private http: HttpClient) { }
+  	constructor() { }
 
 
 	ngOnInit() {
 	}
 	ngOnChanges(changes: SimpleChanges) {
-		console.log("changes:",changes)
 		let options=this.options;
-		options.series=changes.data?changes.data.currentValue:options.series;
-		options.xAxis.categories=changes.labels?changes.labels.currentValue:options.xAxis.categories;
-		options.title.text=changes.title?changes.title.currentValue:options.title.text;
-		options.subtitle.text=changes.title?changes.title.currentValue:options.subtitle.text;
-		setTimeout(function(){ Highcharts.chart('chart-container', options); }, 20000);
+		this.options.series=changes.data?changes.data.currentValue:this.options.series;
+		this.options.xAxis.categories=changes.labels?changes.labels.currentValue:this.options.xAxis.categories;
+		this.options.title.text=changes.title?changes.title.currentValue:this.options.title.text;
+		this.options.subtitle.text=changes.title?changes.title.currentValue:this.options.subtitle.text;
+		if(this.options.xAxis.categories.length>0){
+			Highcharts.chart('line-chart', this.options);
+		}
 	}
 }
