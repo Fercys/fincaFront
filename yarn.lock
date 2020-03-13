@@ -3268,6 +3268,13 @@ hash.js@^1.0.0, hash.js@^1.0.3:
     inherits "^2.0.3"
     minimalistic-assert "^1.0.1"
 
+highcharts-angular@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.npm.taobao.org/highcharts-angular/download/highcharts-angular-2.4.0.tgz#cfa861c8ae60274080a5abbfd4057a323c8ea00f"
+  integrity sha1-z6hhyK5gJ0CApau/1AV6MjyOoA8=
+  dependencies:
+    tslib "^1.9.0"
+
 highcharts@^8.0.4:
   version "8.0.4"
   resolved "https://registry.npm.taobao.org/highcharts/download/highcharts-8.0.4.tgz#a717434012bd5f9b82b94b737d62acec501d360c"

@@ -3,10 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { element } from 'protractor';
 import { NgbModal, NgbDate, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 
-//graficas
-import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
-import { Color, BaseChartDirective, Label } from 'ng2-charts';
-import * as pluginAnnotations from 'chartjs-plugin-annotation';
 //notificaciones
 import Swal from 'sweetalert2'
 //servicios
@@ -15,6 +11,16 @@ import { WeatherService } from 'app/services/weather.service';
 
 import * as moment from "moment";
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+
+//graficas
+// tslint:disable-next-line:no-var-requires
+const Highcharts = require('highcharts/highstock');
+// tslint:disable-next-line:no-var-requires
+require('highcharts/highmaps');
+require('highcharts/modules/exporting')(Highcharts);
+require('highcharts/modules/solid-gauge')(Highcharts);
+require('highcharts/highcharts-more')(Highcharts);
+
 @Component({
   selector: 'app-weather-monitoring',
   templateUrl: './weather-monitoring.component.html',
@@ -45,362 +51,661 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
   public fromDate: NgbDate;
   public toDate: NgbDate;
   public dateRange: any = null;
+
   //graficas
-  // public lineData= [{
-    //         name: 'Temperatura',
-    //         data: [],
-    //         // yAxis: 0,
-    //     }, {
-      //         name: 'Humedad',
-      //         data: [],
-      //         yAxis: 1,
-      //     }];
-      // public lineLabels={
-        //   values:[],
-        //   labels:[]
-        // }
-        //graficas
-        // @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
-        public lineChartData: any[] = [
-        { data: [], name: 'Temperatura' },
-        { data: [], name: 'Humedad',yAxis: 1 },
-        ];
-        public lineChartLabels={
-          values:[],
-          labels:[]
-        };
-        // public lineChartOptions: (ChartOptions & { annotation: any }) = {
-          //   responsive: false, 
-          //   tooltips: { 
-            //     mode: 'index', 
-            //     intersect: false 
-            //   },
-            //   scales: {
-              //     // We use this empty structure as a placeholder for dynamic theming.
-              //     xAxes: [{}],
-              //     yAxes: [
-              //       {
-                //         id: 'y-axis-0',
-                //         position: 'left',
-                //       },
-                //       {
-                  //         id: 'y-axis-1',
-                  //         position: 'right',
-                  //         gridLines: {
-                    //           color: 'rgba(255,0,0,0.3)',
-                    //         },
-                    //         ticks: {
-                      //           fontColor: 'red',
-                      //         }
-                      //       }
-                      //     ]
-                      //   },
-                      //   annotation: {
-                        //     annotations: [{}],
-                        //   },
-                        //   elements: {
-                          //       point: {
-                            //           radius: 0
-                            //       }
-                            //   }
-                            // };
-                            // public lineChartColors: Color[] = [
-                            //   { // red
-                              //     backgroundColor:'rgba(255, 255, 255, 0.1)',
-                              //     borderColor:'#D12B34',
-                              //     pointBackgroundColor:'rgba(255, 0, 0,1)',
-                              //     pointBorderColor:'#fff',
-                              //     pointHoverBackgroundColor:'#fff',
-                              //     pointHoverBorderColor: 'rgba(255, 0, 0,0.8)'
-                              //   },
-                              //   { // celeste
-                                //     backgroundColor:'rgba(255, 255, 255, 0.1)',
-                                //     borderColor:'#00B9EE',
-                                //     pointBackgroundColor:'rgba(2, 87, 154,1)',
-                                //     pointBorderColor:'#fff',
-                                //     pointHoverBackgroundColor:'#fff',
-                                //     pointHoverBorderColor:'rgba(2,87,154,0.8)'
-                                //   }
-                                // ];
-                                // public lineChartLegend = true;
-                                // public lineChartType = 'line';
-                                // public lineChartPlugins = [pluginAnnotations];
+  //linechart
+  @ViewChild('lineChart', { static: true }) public lineChartElement: ElementRef;
+  private lineChart;
+  public lineChartData:any[]=[[],[]];
+  public lineChartLabels:any[]=[];
+  public lineChartOptions:any = {
+      chart: {
+          type: 'spline',
+
+      },
+      colors: ['#D12B34','#00B9EE'],
+      title: {
+          text: 'TEMPERATURA/HUMEDAD'
+      },
+      subtitle: {
+          text: 'TEMPERATURA/HUMEDAD'
+      },
+      xAxis: [{
+          categories: [],
+          startOnTick: true,
+          endOnTick: true,
+      }],
+       yAxis: [{ // left y axis
+          title: {
+              text: null
+          },
+          // tickInterval: 5,
+          labels: {
+              format: '{value:.,0f}'
+          },
+          showFirstLabel: false
+      }, { // right y axis
+        opposite: true,
+        tickInterval: 5,
+          labels: {
+              format: '{value:.,0f}'
+          },
+          showFirstLabel: false
+      }],
+      plotOptions: {
+          line: {
+              dataLabels: {
+                  enabled: false
+              },
+              enableMouseTracking: true,
+          }
+      },
+      series: [{ 
+          data: [], 
+          name: 'Temperatura',
+        type: 'line',
+        //yAxis: 0 
+        },{ 
+          data: [], 
+          name: 'Humedad',
+        type: 'line', 
+          yAxis: 1 
+        }],
+      tooltip: {
+          shared: true,
+          crosshairs: true
+      },
+  };
+  public temperatureId: number = null;
+  public humidityId: number = null;
+  public renderLineChartFlag: boolean = false;
+  //barchart
+  @ViewChild('barChart', { static: true }) public barChartElement: ElementRef;
+  private barChart;
+  public barChartData:any[]=[[],[]];
+  public barChartLabels:any[]=[];
+  public barChartOptions:any = {
+      chart: {
+          type: 'column'
+      },
+      colors: ['#D12B34','#00B9EE'],
+      title: {
+          text: null
+      },
+      subtitle: {
+          text: null
+      },
+      xAxis: {
+          categories: [
+          ],
+          crosshair: true
+      },
+      yAxis: {
+          // min: 0,
+          title: {
+              text:null
+          }
+      },
+      tooltip: {
+          headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+          pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+              '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+          footerFormat: '</table>',
+          shared: true,
+          useHTML: true
+      },
+      plotOptions: {
+          column: {
+              pointPadding: 0.2,
+              borderWidth: 0
+          }
+      },
+      series: [
+          { type: undefined,name: 'Precipitación (mm)', data: [] }, 
+          { type: undefined,name: 'Et0 (mm)', data: [] },
+      ]
+  };
+  public rainId: number = null;
+  public et0Id: number = null;
+  public renderBarChartFlag: boolean = false;
+
+  //Pronostico values
+  public climaLoading = false;
+  public climaToday: any;
+  public climaDay = [];
+  public climaIcon = [];
+  public climaMax = [];
+  public climaMin = [];
+  // //graficas
+  // // public lineData= [{
+  //   //         name: 'Temperatura',
+  //   //         data: [],
+  //   //         // yAxis: 0,
+  //   //     }, {
+  //     //         name: 'Humedad',
+  //     //         data: [],
+  //     //         yAxis: 1,
+  //     //     }];
+  //     // public lineLabels={
+  //       //   values:[],
+  //       //   labels:[]
+  //       // }
+  //       //graficas
+  //       // @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
+  //       public lineChartData: any[] = [{
+  //           name:'Temperatura',
+  //           data: [],
+  //           type: 'line'
+  //         },
+  //         {
+  //           name:'Humedad',
+  //           data: [],
+  //           type: 'line'
+  //         },
+  //       ];
+  //       public lineChartLabels={
+  //         values:[],
+  //         labels:[]
+  //       };
+  //       // public lineChartOptions: (ChartOptions & { annotation: any }) = {
+  //         //   responsive: false, 
+  //         //   tooltips: { 
+  //           //     mode: 'index', 
+  //           //     intersect: false 
+  //           //   },
+  //           //   scales: {
+  //             //     // We use this empty structure as a placeholder for dynamic theming.
+  //             //     xAxes: [{}],
+  //             //     yAxes: [
+  //             //       {
+  //               //         id: 'y-axis-0',
+  //               //         position: 'left',
+  //               //       },
+  //               //       {
+  //                 //         id: 'y-axis-1',
+  //                 //         position: 'right',
+  //                 //         gridLines: {
+  //                   //           color: 'rgba(255,0,0,0.3)',
+  //                   //         },
+  //                   //         ticks: {
+  //                     //           fontColor: 'red',
+  //                     //         }
+  //                     //       }
+  //                     //     ]
+  //                     //   },
+  //                     //   annotation: {
+  //                       //     annotations: [{}],
+  //                       //   },
+  //                       //   elements: {
+  //                         //       point: {
+  //                           //           radius: 0
+  //                           //       }
+  //                           //   }
+  //                           // };
+  //                           // public lineChartColors: Color[] = [
+  //                           //   { // red
+  //                             //     backgroundColor:'rgba(255, 255, 255, 0.1)',
+  //                             //     borderColor:'#D12B34',
+  //                             //     pointBackgroundColor:'rgba(255, 0, 0,1)',
+  //                             //     pointBorderColor:'#fff',
+  //                             //     pointHoverBackgroundColor:'#fff',
+  //                             //     pointHoverBorderColor: 'rgba(255, 0, 0,0.8)'
+  //                             //   },
+  //                             //   { // celeste
+  //                               //     backgroundColor:'rgba(255, 255, 255, 0.1)',
+  //                               //     borderColor:'#00B9EE',
+  //                               //     pointBackgroundColor:'rgba(2, 87, 154,1)',
+  //                               //     pointBorderColor:'#fff',
+  //                               //     pointHoverBackgroundColor:'#fff',
+  //                               //     pointHoverBorderColor:'rgba(2,87,154,0.8)'
+  //                               //   }
+  //                               // ];
+  //                               // public lineChartLegend = true;
+  //                               // public lineChartType = 'line';
+  //                               // public lineChartPlugins = [pluginAnnotations];
 
 
-                                public temperatureId: number = null;
-                                public humidityId: number = null;
-                                public renderLineChartFlag : boolean = false;
+  //                               public temperatureId: number = null;
+  //                               public humidityId: number = null;
+  //                               public renderLineChartFlag : boolean = false;
 
-                                //bar chart
-                                public barChartOptions: ChartOptions = {
-                                  responsive: false,
-                                  tooltips: { 
-                                    mode: 'index', 
-                                    intersect: false 
-                                  },
-                                  // We use these empty structures as placeholders for dynamic theming.
-                                  scales: { 
-                                    xAxes: [{}], 
-                                    yAxes: [
-                                    {
-                                      id: 'y-axis-0',
-                                      position: 'left',
-                                      ticks: {
-                                        fontSize: 7,
-                                        max:100
-                                      }
-                                    },        
-                                    ] 
-                                  },
-                                  plugins: {
-                                    datalabels: {
-                                      anchor: 'end',
-                                      align: 'end',
-                                    }
-                                  }
-                                };
-                                barChartColors: Color[] = [
-                                { // blue
-                                  backgroundColor:'#0168b3',
-                                  borderColor:'#0168b3',
-                                  pointBackgroundColor:'rgba(255, 0, 0,1)',
-                                  pointBorderColor:'#fff',
-                                  pointHoverBackgroundColor:'#fff',
-                                  pointHoverBorderColor: 'rgba(255, 0, 0,0.8)'
-                                },
-                                { // gray
-                                  backgroundColor:'#b5b5b5',
-                                  borderColor:'#b5b5b5',
-                                  pointBackgroundColor:'rgba(255, 0, 0,1)',
-                                  pointBorderColor:'#fff',
-                                  pointHoverBackgroundColor:'#fff',
-                                  pointHoverBorderColor: 'rgba(255, 0, 0,0.8)'
-                                },
-                                { 
-                                  backgroundColor:'#905ca7',
-                                  borderColor:'#905ca7',
-                                  pointBackgroundColor:'rgba(255, 0, 0,1)',
-                                  pointBorderColor:'#fff',
-                                  pointHoverBackgroundColor:'#fff',
-                                  pointHoverBorderColor: 'rgba(255, 0, 0,0.8)'
-                                },
-                                { 
-                                  backgroundColor:'#94c11e',
-                                  borderColor:'#94c11e',
-                                  pointBackgroundColor:'rgba(255, 0, 0,1)',
-                                  pointBorderColor:'#fff',
-                                  pointHoverBackgroundColor:'#fff',
-                                  pointHoverBorderColor: 'rgba(255, 0, 0,0.8)'
-                                },
-                                { 
-                                  backgroundColor:'#ffd200',
-                                  borderColor:'#ffd200',
-                                  pointBackgroundColor:'rgba(255, 0, 0,1)',
-                                  pointBorderColor:'#fff',
-                                  pointHoverBackgroundColor:'#fff',
-                                  pointHoverBorderColor: 'rgba(255, 0, 0,0.8)'
-                                },
-                                ];
-                                public barChartLabels: any[] = [];
-                                public barChartType: ChartType = 'bar';
-                                public barChartLegend = true;
-                                public barChartPlugins = [];
+  //                               //bar chart
+  //                               public barChartOptions: ChartOptions = {
+  //                                 responsive: false,
+  //                                 tooltips: { 
+  //                                   mode: 'index', 
+  //                                   intersect: false 
+  //                                 },
+  //                                 // We use these empty structures as placeholders for dynamic theming.
+  //                                 scales: { 
+  //                                   xAxes: [{}], 
+  //                                   yAxes: [
+  //                                   {
+  //                                     id: 'y-axis-0',
+  //                                     position: 'left',
+  //                                     ticks: {
+  //                                       fontSize: 7,
+  //                                       max:100
+  //                                     }
+  //                                   },        
+  //                                   ] 
+  //                                 },
+  //                                 plugins: {
+  //                                   datalabels: {
+  //                                     anchor: 'end',
+  //                                     align: 'end',
+  //                                   }
+  //                                 }
+  //                               };
+  //                               barChartColors: Color[] = [
+  //                               { // blue
+  //                                 backgroundColor:'#0168b3',
+  //                                 borderColor:'#0168b3',
+  //                                 pointBackgroundColor:'rgba(255, 0, 0,1)',
+  //                                 pointBorderColor:'#fff',
+  //                                 pointHoverBackgroundColor:'#fff',
+  //                                 pointHoverBorderColor: 'rgba(255, 0, 0,0.8)'
+  //                               },
+  //                               { // gray
+  //                                 backgroundColor:'#b5b5b5',
+  //                                 borderColor:'#b5b5b5',
+  //                                 pointBackgroundColor:'rgba(255, 0, 0,1)',
+  //                                 pointBorderColor:'#fff',
+  //                                 pointHoverBackgroundColor:'#fff',
+  //                                 pointHoverBorderColor: 'rgba(255, 0, 0,0.8)'
+  //                               },
+  //                               { 
+  //                                 backgroundColor:'#905ca7',
+  //                                 borderColor:'#905ca7',
+  //                                 pointBackgroundColor:'rgba(255, 0, 0,1)',
+  //                                 pointBorderColor:'#fff',
+  //                                 pointHoverBackgroundColor:'#fff',
+  //                                 pointHoverBorderColor: 'rgba(255, 0, 0,0.8)'
+  //                               },
+  //                               { 
+  //                                 backgroundColor:'#94c11e',
+  //                                 borderColor:'#94c11e',
+  //                                 pointBackgroundColor:'rgba(255, 0, 0,1)',
+  //                                 pointBorderColor:'#fff',
+  //                                 pointHoverBackgroundColor:'#fff',
+  //                                 pointHoverBorderColor: 'rgba(255, 0, 0,0.8)'
+  //                               },
+  //                               { 
+  //                                 backgroundColor:'#ffd200',
+  //                                 borderColor:'#ffd200',
+  //                                 pointBackgroundColor:'rgba(255, 0, 0,1)',
+  //                                 pointBorderColor:'#fff',
+  //                                 pointHoverBackgroundColor:'#fff',
+  //                                 pointHoverBorderColor: 'rgba(255, 0, 0,0.8)'
+  //                               },
+  //                               ];
+  //                               public barChartLabels: any[] = [];
+  //                               public barChartType: ChartType = 'bar';
+  //                               public barChartLegend = true;
+  //                               public barChartPlugins = [];
 
-                                public barChartData: any[] = [
-                                { type: undefined,name: 'Precipitación (mm)', data: [] }, 
-                                { type: undefined,name: 'Et0 (mm)', data: [] },
-                                ];
-                                public rainId: number = null;
-                                public et0Id: number = null;
-                                public renderBarChartFlag: boolean = false;
+  //                               public barChartData: any[] = [
+  //                               { type: undefined,name: 'Precipitación (mm)', data: [] }, 
+  //                               { type: undefined,name: 'Et0 (mm)', data: [] },
+  //                               ];
+  //                               public rainId: number = null;
+  //                               public et0Id: number = null;
+  //                               public renderBarChartFlag: boolean = false;
 
-                                //Pronostico values
-                                public climaLoading = false;
-                                public climaToday: any;
-                                public climaDay = [];
-                                public climaIcon = [];
-                                public climaMax = [];
-                                public climaMin = [];
+                                
 
-                                constructor(
-                                  private _route: ActivatedRoute,
-                                  private wiseconnService: WiseconnService,
-                                  public modalService: NgbModal,
-                                  private router: Router,
-                                  public weatherService: WeatherService,
-                                  private calendar: NgbCalendar,
-                                  private dialogs: MatDialog) {
-                                }
+  constructor(
+    private _route: ActivatedRoute,
+    private wiseconnService: WiseconnService,
+    public modalService: NgbModal,
+    private router: Router,
+    public weatherService: WeatherService,
+    private calendar: NgbCalendar,
+    private dialogs: MatDialog) {
+  }
 
-                                ngOnInit() {
-                                  this.getFarms();
-                                }
-                                getFarms() {
-                                  this.wiseconnService.getFarms().subscribe((response: any) => {
-                                    this.farms = response.data?response.data:response;
-                                    this.filterFarmsByUser();
-                                    if(this.farms.length>0){
-                                      this.farm=this.farms[0];        
-                                      if(localStorage.getItem("lastFarmId")!=undefined && (parseInt(localStorage.getItem("lastFarmId"))==parseInt(this.farm.id))){
-                                        this.zones = JSON.parse(localStorage.getItem('lastZones'));
-                                        this.weatherZones=this.getWeatherZones();
-                                        this.loadMap();
-                                        this.getChartInformation();
-                                      }else{
-                                        this.getZones();
-                                      }
-                                      this.getWeather()
-                                    }else{
-                                      Swal.fire({icon: 'error',title: 'Oops...',text: 'No existe ningún campo registrado'});
-                                    }      
-                                  })
-                                }
-                                filterFarmsByUser(){
-                                  if(localStorage.getItem("username")){
-                                    switch (localStorage.getItem("username").toLowerCase()) {
-                                      case "agrifrut":
-                                      this.farms = this.farms.filter((element) => {
-                                        return element.id == 185 || element.id == 2110 || element.id == 1378 || element.id == 520
-                                      })
-                                      break;
-                                      case "agrifrut@cdtec.cl":
-                                      this.farms = this.farms.filter((element) => {
-                                        let id= element.id_wiseconn?element.id_wiseconn:element.id;
-                                        return id == 185 || id == 2110 || id == 1378 || id == 520
-                                      })
-                                      break;
-                                      case "santajuana":
-                                      this.farms = this.farms.filter((element) => {
-                                        let id= element.id_wiseconn?element.id_wiseconn:element.id;
-                                        return id == 719
-                                      })
-                                      break;
-                                      case "santajuana@cdtec.cl":
-                                      this.farms = this.farms.filter((element) => {
-                                        return element.id == 719
-                                      })
-                                      break;
-                                      default:
-                                      // code...
-                                      break;
-                                    }
-                                  }else{
-                                    this.router.navigate(['/login']);
-                                  }
-                                } 
-                                getFarm(id){
-                                  return this.farms.find(element =>{
-                                    return element.id==id || element.id_wiseconn==id
-                                  });
-                                } 
-                                getZones() {
-                                  this.loading = true;
-                                  this.wiseconnService.getZones(this.farm.id).subscribe((response: any) => {
-                                    this.loading = false; 
-                                    this.zones = response.data?response.data:response;
-                                    this.weatherZones=this.getWeatherZones();
-                                    this.setLocalStorageItem("lastFarmId",this.farm.id);
-                                    this.setLocalStorageItem("lastZones",this.getJSONStringify(this.zones));
-                                    this.loadMap();
-                                    this.getChartInformation();
-                                  });
-                                }
-                                getWeather(){
-                                  if (this.farm.latitude && this.farm.longitude) {
-                                    this.climaLoading = false;
-                                    this.weatherService.getWeather("7da96f2f52f54be7a1b123737202102", [this.farm.latitude, this.farm.longitude]).subscribe((response) => {
-                                      this.climaLoading = true;
-                                      this.resetWeatherValues(response);
-                                      for (const element of response.data.weather) {
-                                        element.iconLabel = element.hourly[0].weatherIconUrl[0];
-                                        this.climaDay.push(element.date);
-                                        this.climaIcon.push(element.iconLabel.value);
-                                        this.climaMax.push(element.maxtempC);
-                                        this.climaMin.push(element.mintempC);
-                                      }
-                                    });
-                                  }
-                                  this.setUrlValue();
-                                }
-                                setUrlValue(){
-                                  switch (this.farm.name) {
-                                    case "Agrifrut":
-                                    this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3435/Campos:l/Agrifrut:f";
-                                    break;
-                                    case "Agrifrut II (Nogales y Parrones)":
-                                    this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3435/Campos:l/Agrifrut%20II%20(Nogales%20y%20Parrones):f";
-                                    break;
-                                    case "Santa Juana de Chincolco":
-                                    this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3507/Campos:l/Agricola%20Santa%20Juana%20de%20Chincolco%20SA:f";
-                                    break;
-                                    default:
-                                    this.url = "";
-                                  }
-                                }
-                                resetWeatherValues(response){
-                                  this.climaDay = [];
-                                  this.climaIcon = [];
-                                  this.climaMax = [];
-                                  this.climaMin = [];
-                                  this.climaToday = response.data.current_condition[0];
-                                }
-                                onSelect(select: string, id: number) {
-                                  switch (select) {
-                                    case "farm":
-                                    this.setLocalStorageItem("lastLineChartLabels",this.getJSONStringify(this.lineChartLabels));
-                                    this.setLocalStorageItem("lastLineChartData",this.getJSONStringify(this.lineChartData));
+  ngOnInit() {
+    this.getFarms();
+    this.highchartsShow();
+  }
+  getFarms() {
+    this.wiseconnService.getFarms().subscribe((response: any) => {
+      this.farms = response.data?response.data:response;
+      this.filterFarmsByUser();
+      if(this.farms.length>0){
+        this.farm=this.farms[0];        
+        if(localStorage.getItem("lastFarmId")!=undefined && (parseInt(localStorage.getItem("lastFarmId"))==parseInt(this.farm.id))){
+          this.zones = JSON.parse(localStorage.getItem('lastZones'));
+          this.weatherZones=this.getWeatherZones();
+          this.loadMap();
+          this.getChartInformation();
+        }else{
+          this.getZones();
+        }
+        this.getWeather()
+      }else{
+        Swal.fire({icon: 'error',title: 'Oops...',text: 'No existe ningún campo registrado'});
+      }      
+    })
+  }
+  filterFarmsByUser(){
+    if(localStorage.getItem("username")){
+      switch (localStorage.getItem("username").toLowerCase()) {
+        case "agrifrut":
+        this.farms = this.farms.filter((element) => {
+          return element.id == 185 || element.id == 2110 || element.id == 1378 || element.id == 520
+        })
+        break;
+        case "agrifrut@cdtec.cl":
+        this.farms = this.farms.filter((element) => {
+          let id= element.id_wiseconn?element.id_wiseconn:element.id;
+          return id == 185 || id == 2110 || id == 1378 || id == 520
+        })
+        break;
+        case "santajuana":
+        this.farms = this.farms.filter((element) => {
+          let id= element.id_wiseconn?element.id_wiseconn:element.id;
+          return id == 719
+        })
+        break;
+        case "santajuana@cdtec.cl":
+        this.farms = this.farms.filter((element) => {
+          return element.id == 719
+        })
+        break;
+        default:
+        // code...
+        break;
+      }
+    }else{
+      this.router.navigate(['/login']);
+    }
+  } 
+  getFarm(id){
+    return this.farms.find(element =>{
+      return element.id==id || element.id_wiseconn==id
+    });
+  } 
+  getZones() {
+    this.loading = true;
+    this.wiseconnService.getZones(this.farm.id).subscribe((response: any) => {
+      this.loading = false; 
+      this.zones = response.data?response.data:response;
+      this.weatherZones=this.getWeatherZones();
+      this.setLocalStorageItem("lastFarmId",this.farm.id);
+      this.setLocalStorageItem("lastZones",this.getJSONStringify(this.zones));
+      this.loadMap();
+      this.getChartInformation();
+    });
+  }
+  getWeather(){
+    if (this.farm.latitude && this.farm.longitude) {
+      this.climaLoading = false;
+      this.weatherService.getWeather("7da96f2f52f54be7a1b123737202102", [this.farm.latitude, this.farm.longitude]).subscribe((response) => {
+        this.climaLoading = true;
+        this.resetWeatherValues(response);
+        for (const element of response.data.weather) {
+          element.iconLabel = element.hourly[0].weatherIconUrl[0];
+          this.climaDay.push(element.date);
+          this.climaIcon.push(element.iconLabel.value);
+          this.climaMax.push(element.maxtempC);
+          this.climaMin.push(element.mintempC);
+        }
+      });
+    }
+    this.setUrlValue();
+  }
+  setUrlValue(){
+    switch (this.farm.name) {
+      case "Agrifrut":
+      this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3435/Campos:l/Agrifrut:f";
+      break;
+      case "Agrifrut II (Nogales y Parrones)":
+      this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3435/Campos:l/Agrifrut%20II%20(Nogales%20y%20Parrones):f";
+      break;
+      case "Santa Juana de Chincolco":
+      this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3507/Campos:l/Agricola%20Santa%20Juana%20de%20Chincolco%20SA:f";
+      break;
+      default:
+      this.url = "";
+    }
+  }
+  resetWeatherValues(response){
+    this.climaDay = [];
+    this.climaIcon = [];
+    this.climaMax = [];
+    this.climaMin = [];
+    this.climaToday = response.data.current_condition[0];
+  }
+  onSelect(select: string, id: number) {
+    switch (select) {
+      case "farm":
+      this.setLocalStorageItem("lastLineChartLabels",this.getJSONStringify(this.lineChartLabels));
+      this.setLocalStorageItem("lastLineChartData",this.getJSONStringify(this.lineChartData));
+      this.setLocalStorageItem("lastBarChartLabels",this.getJSONStringify(this.barChartLabels));
+      this.setLocalStorageItem("lastBarChartData",this.getJSONStringify(this.barChartData));
+      this.farm=this.getFarm(id);
+      this.getZones();
+      this.getWeather();
+      break;
+      case "zone":
+      this.setLocalStorageItem("lastLineChartLabels",this.getJSONStringify(this.lineChartLabels));
+      this.setLocalStorageItem("lastLineChartData",this.getJSONStringify(this.lineChartData));
+      this.setLocalStorageItem("lastBarChartLabels",this.getJSONStringify(this.barChartLabels));
+      this.setLocalStorageItem("lastBarChartData",this.getJSONStringify(this.barChartData));
+      this.router.navigate(['/farmpolygon',this.farm.id, id]);
+      break;
+      default:
+      break;
+    }
+  } 
+  setLocalStorageItem(key,value){
+    localStorage.setItem(key,value);
+  }
+  momentFormat(value:string,chart:string){
+    switch (chart) {
+      case "line":
+      return moment.utc(value).format('DD') +" "+ moment.utc(value).format('MMM');
+      break;
+      case "bar":
+      return moment.utc(value).format('DD') +" "+ moment.utc(value).format('MMM');
+      break;
+      default:
+      return value;
+      break;
+    }      
+  }
+  getWeatherZones(){
+    return this.zones.filter((element)=>{
+      if(element.type.find(element=>{
+        return element.toLowerCase() == "weather"
+      })!=undefined){
+        return element;
+      }
+    });
+  }
 
-                                    this.setLocalStorageItem("lastBarChartLabels",this.getJSONStringify(this.barChartLabels));
-                                    this.setLocalStorageItem("lastBarChartData",this.getJSONStringify(this.barChartData));
-
-                                    this.farm=this.getFarm(id);
-                                    this.getZones();
-                                    this.getWeather();
-                                    break;
-                                    case "zone":
-                                    this.setLocalStorageItem("lastLineChartLabels",this.getJSONStringify(this.lineChartLabels));
-                                    this.setLocalStorageItem("lastLineChartData",this.getJSONStringify(this.lineChartData));
-
-                                    this.setLocalStorageItem("lastBarChartLabels",this.getJSONStringify(this.barChartLabels));
-                                    this.setLocalStorageItem("lastBarChartData",this.getJSONStringify(this.barChartData));
-
-                                    this.router.navigate(['/farmpolygon',this.farm.id, id]);
-                                    break;
-                                    default:
-                                    break;
-                                  }
-                                } 
-                                setLocalStorageItem(key,value){
-                                  localStorage.setItem(key,value);
-                                }
-                                momentFormat(value:string,chart:string){
-                                  switch (chart) {
-                                    case "line":
-                                    return moment.utc(value).format('DD') +" "+ moment.utc(value).format('MMM');
-                                    break;
-                                    case "bar":
-                                    return moment.utc(value).format('DD') +" "+ moment.utc(value).format('MMM');
-                                    break;
-                                    default:
-                                    return value;
-                                    break;
-                                  }      
-                                }
-                                getWeatherZones(){
-                                  return this.zones.filter((element)=>{
-                                    if(element.type.find(element=>{
-                                      return element.toLowerCase() == "weather"
-                                    })!=undefined){
-                                      return element;
-                                    }
-                                  });
-                                }
+//   getChartInformation(){
+//     this.resetChartsValues("line");
+//     this.resetChartsValues("bar");
+//     //bar chart
+//     this.rainId=null;
+//     this.et0Id=null;
+//     //line chart
+//     this.temperatureId=null;
+//     this.humidityId=null;
+//     this.dateRange = {
+//       initTime: moment(this.fromDate.year + "-" + this.fromDate.month + "-" + this.fromDate.day).format("YYYY-MM-DD"),
+//       endTime: moment(this.toDate.year + "-" + this.toDate.month + "-" + this.toDate.day).format("YYYY-MM-DD")
+//     };
+//     if(this.zoneSelected){
+//       this.loading = true;
+//       this.wiseconnService.getMeasuresOfZones(this.zoneSelected.id).subscribe((response) => {
+//         let data=response.data?response.data:response;
+//         let barFlag=false;
+//         let lineFlag=false;
+//         let j=0;
+//         while (!lineFlag && j < data.length) {
+//                     //line chart
+//                     if (data[j].sensorType === "Temperature") {
+//                       this.temperatureId = data[j].id;
+//                     }
+//                     if (data[j].sensorType === "Humidity") {
+//                       this.humidityId = data[j].id;
+//                     }
+//                      if(this.temperatureId&&this.humidityId){
+//                           lineFlag=true;
+//                           this.wiseconnService.getDataByMeasure(this.temperatureId,this.dateRange).subscribe((response) => {
+//                             let temperatureData=response.data?response.data:response;
+//                             this.wiseconnService.getDataByMeasure(this.humidityId,this.dateRange).subscribe((response) => {
+//                               let humidityData=response.data?response.data:response;
+//                               // this.loading = false;
+//                               temperatureData=temperatureData.map((element)=>{
+//                                 element.chart="temperature";
+//                                 return element
+//                               })
+//                               humidityData=humidityData.map((element)=>{
+//                                 element.chart="humidity";
+//                                 return element
+//                               })
+//                               let chartData=temperatureData.concat(humidityData);
+//                               chartData.sort(function (a, b) {
+//                                 if (moment(a.time).isAfter(b.time)) {
+//                                   return 1;
+//                                 }
+//                                 if (!moment(a.time).isAfter(b.time)) {
+//                                   return -1;
+//                                 }
+//                                 // a must be equal to b
+//                                 return 0;
+//                               });
+//                               chartData = chartData.filter((element) => {
+//                                 if(moment(element.time).minutes()==0 || moment(element.time).minutes()==30)
+//                                   return element;
+//                               });
+//                               for (var i = 0; i < chartData.length ; i++) {
+//                                 if(chartData[i+1]){
+//                                   if(this.lineChartLabels.values.find((element) => {
+//                                     return element === chartData[i].time;
+//                                   }) === undefined) {
+//                                     if((chartData[i].chart==="temperature")&&(chartData[i+1].chart==="humidity")){
+//                                       this.lineChartLabels.values.push(this.momentFormat(chartData[i].time,null));
+//                                       this.lineChartLabels.labels.push(this.momentFormat(chartData[i].time,"line"));
+//                                       this.lineChartData[0].push(chartData[i].value);
+//                                     this.lineChartData[1].push(chartData[i+1].value);
+//                                     console.log("this.lineChartData:",this.lineChartData)
+//                                     }
+//                                   }                                                    
+//                                 }
+//                                 this.renderCharts("line");
+//                               }
+//                             });
+//                           });
+//                         }else if(j==data.length){
+//                           Swal.fire({
+//                             icon: 'error',
+//                             title: 'Oops...',
+//                             text: 'No tiene configurado los sensores de humedad y temperatura'
+//                           })
+//                         }
+//                     j++;
+//         }
+//         j=0;
+//         while (!barFlag && j < data.length) {
+//           //bar chart
+//           if (data[j].sensorType != undefined && data[j].name != undefined){
+//             if ((data[j].sensorType).toLowerCase() === "rain" && (data[j].name).toLowerCase() === "pluviometro") {
+//               this.rainId = data[j].id;
+//             }
+//           }
+//           if ((data[j].name) != undefined){
+//             if ((data[j].name).toLowerCase() === "et0") {
+//               this.et0Id = data[j].id;
+//             }
+//           }
+//           if(this.rainId&&this.et0Id){
+//             barFlag=true;
+//             this.wiseconnService.getDataByMeasure(this.rainId,this.dateRange).subscribe((response) => {
+//               let rainData=response.data?response.data:response;
+//               this.wiseconnService.getDataByMeasure(this.et0Id,this.dateRange).subscribe((response) => {
+//                 let et0Data=response.data?response.data:response;
+//                 this.loading = false;
+//                 rainData=rainData.map((element)=>{
+//                   element.chart="rain";
+//                   return element
+//                 })
+//                 et0Data=et0Data.map((element)=>{
+//                   element.chart="et0";
+//                   return element;
+//                 })                          
+//                 let chartData=rainData.concat(et0Data);
+//                 chartData.sort(function (a, b) {
+//                   if (moment(a.time).isAfter(b.time)) {
+//                     return 1;
+//                   }
+//                   if (!moment(a.time).isAfter(b.time)) {
+//                     return -1;
+//                   }
+//                   return 0;
+//                 });
+//                 chartData=chartData.filter((element)=>{
+//                   if(moment.utc(element.time).format("HH:mm:ss")=="00:00:00"){                            
+//                     return element;
+//                   }
+//                 })
+//                 let maxLabelValue=0;
+//                 for (var i = 0; i < chartData.length; i++) {
+//                   if(chartData[i+1]){
+//                     if(chartData[i].time===chartData[i+1].time){
+//                       this.barChartLabels.push(this.momentFormat(chartData[i].time,"bar")); 
+//                     }
+//                     if(chartData[i].chart=="rain") {
+//                       this.barChartData[0].push(chartData[i].value);
+//                     }
+//                     if(chartData[i].chart=="et0") {
+//                       this.barChartData[1].push(chartData[i].value);
+//                     }
+//                   }
+                  
+//                   if(i+1==chartData.length){
+//                     this.renderCharts("bar");
+//                   }
+//                 }
+//               });
+//             });
+//           }else if(j==data.length){
+//             Swal.fire({
+//               icon: 'error',
+//               title: 'Oops...',
+//               text: 'No tiene configurado los sensores de rain y et0'
+//             })
+//           }
+//           j++;
+//         }
+//       });
+//     }else{
+//       Swal.fire({
+//         icon: 'error',
+//         title: 'Oops...',
+//         text: 'Debe seleccionar una zona'
+//       })
+//     }
+// }
+  highchartsShow(){
+    this.lineChartOptions.chart['renderTo'] = this.lineChartElement.nativeElement;
+      this.lineChart = Highcharts.chart(this.lineChartOptions);
+      this.barChartOptions.chart['renderTo'] = this.barChartElement.nativeElement;
+      this.barChart = Highcharts.chart(this.barChartOptions);
+  }
                                 getChartInformation(){
                                   this.resetChartsValues("line");
                                   this.resetChartsValues("bar");
-                                  this.renderLineChartFlag=false;
-                                  this.renderBarChartFlag=false;
-                                  //rango de fechas para graficas
+                                  //bar chart
+                                  this.rainId=null;
+                                  this.et0Id=null;
+                                  //line chart
+                                  this.temperatureId=null;
+                                  this.humidityId=null;                                  
                                   this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -5);
                                   this.toDate = this.calendar.getToday();
                                   this.dateRange = {
@@ -414,155 +719,146 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
                                       weatherStationFlag=true;
                                       this.weatherStation = this.zones[i];
                                       this.wiseconnService.getMeasuresOfZones(this.weatherStation.id).subscribe((response) => {
-                                        this.loading = true;
-                                        let data=response.data?response.data:response;
-                                        let barFlag=false;
-                                        let lineFlag=false;
-                                        let j=0;
-                                        while (!lineFlag && j < data.length) {
-                                          //line chart
-                                          if (data[j].sensorType === "Temperature") {
-                                            this.temperatureId = data[j].id;
-                                          }
-                                          if (data[j].sensorType === "Humidity") {
-                                            this.humidityId = data[j].id;
-                                          }
-                                          if(this.temperatureId&&this.humidityId){
-                                            lineFlag=true;
-                                            this.wiseconnService.getDataByMeasure(this.temperatureId,this.dateRange).subscribe((response) => {
-                                              let temperatureData=response.data?response.data:response;
-                                              this.wiseconnService.getDataByMeasure(this.humidityId,this.dateRange).subscribe((response) => {
-                                                let humidityData=response.data?response.data:response;
-                                                this.loading = false;
-                                                temperatureData=temperatureData.map((element)=>{
-                                                  element.chart="temperature";
-                                                  return element
-                                                })
-                                                humidityData=humidityData.map((element)=>{
-                                                  element.chart="humidity";
-                                                  return element
-                                                })
-                                                let chartData=temperatureData.concat(humidityData);
-                                                chartData.sort(function (a, b) {
-                                                  if (moment(a.time).isAfter(b.time)) {
-                                                    return 1;
-                                                  }
-                                                  if (!moment(a.time).isAfter(b.time)) {
-                                                    return -1;
-                                                  }
-                                                  // a must be equal to b
-                                                  return 0;
-                                                });
-                                                chartData = chartData.filter((element) => {
-                                                  if(moment(element.time).minutes()==0 || moment(element.time).minutes()==30)
-                                                    return element;
-                                                });
-                                                this.resetChartsValues("line");
-                                                for (var i = 0; i < chartData.length; i++) {
-                                                  if(chartData[i+1]){
-                                                    if(this.lineChartLabels.values.find((element) => {
-                                                      return element === chartData[i].time;
-                                                    }) === undefined) {
-                                                      if((chartData[i].chart==="temperature")&&(chartData[i+1].chart==="humidity")){
-                                                        this.lineChartLabels.values.push(this.momentFormat(chartData[i].time,null));
-                                                        this.lineChartLabels.labels.push(this.momentFormat(chartData[i].time,"line"));
-                                                      }
-
-                                                    }
-                                                    if (chartData[i].chart==="temperature") {
-                                                      this.lineChartData[0].data.push(chartData[i].value);
-                                                    } 
-                                                    if(chartData[i+1].chart==="humidity"){
-                                                      this.lineChartData[1].data.push(chartData[i+1].value);
-                                                    }
-                                                  }
-                                                  this.renderCharts("line");
-                                                }
-                                              });
-                                            });
-                                          }else if(j==data.length){
-                                            Swal.fire({
-                                              icon: 'error',
-                                              title: 'Oops...',
-                                              text: 'No tiene configurado los sensores de humedad y temperatura'
-                                            })
-                                          }
-                                          j++;
-                                        }
-                                        j=0;
-                                        while (!barFlag && j < data.length) {
-                                          //bar chart
-                                          if (data[j].sensorType != undefined && data[j].name != undefined){
-                                            if ((data[j].sensorType).toLowerCase() === "rain" && (data[j].name).toLowerCase() === "pluviometro") {
-                                              this.rainId = data[j].id;
-                                            }
-                                          }
-                                          if ((data[j].name) != undefined){
-                                            if ((data[j].name).toLowerCase() === "et0") {
-                                              this.et0Id = data[j].id;
-                                            }
-                                          }
-                                          if(this.rainId&&this.et0Id){
-                                            barFlag=true;
-                                            this.wiseconnService.getDataByMeasure(this.rainId,this.dateRange).subscribe((response) => {
-                                              let rainData=response.data?response.data:response;
-                                              this.wiseconnService.getDataByMeasure(this.et0Id,this.dateRange).subscribe((response) => {
-                                                let et0Data=response.data?response.data:response;
-                                                this.loading = false;
-                                                rainData=rainData.map((element)=>{
-                                                  element.chart="rain";
-                                                  return element
-                                                })
-                                                et0Data=et0Data.map((element)=>{
-                                                  element.chart="et0";
-                                                  return element;
-                                                })                          
-                                                let chartData=rainData.concat(et0Data);
-                                                chartData.sort(function (a, b) {
-                                                  if (moment(a.time).isAfter(b.time)) {
-                                                    return 1;
-                                                  }
-                                                  if (!moment(a.time).isAfter(b.time)) {
-                                                    return -1;
-                                                  }
-                                                  return 0;
-                                                });
-                                                chartData=chartData.filter((element)=>{
-                                                  if(moment.utc(element.time).format("HH:mm:ss")=="00:00:00"){                            
-                                                    return element;
-                                                  }
-                                                })
-                                                let maxLabelValue=0;
-                                                for (var i = 0; i < chartData.length; i++) {
-                                                  if(chartData[i+1]){
-                                                    if(chartData[i].time===chartData[i+1].time){
-                                                      this.barChartLabels.push(this.momentFormat(chartData[i].time,"bar"));
-                                                      console.log("barChartLabels:",this.barChartLabels) 
-                                                    }
-                                                    if(chartData[i].chart=="rain") {
-                                                      this.barChartData[0].data.push(chartData[i].value);
-                                                    }
-                                                    if(chartData[i].chart=="et0") {
-                                                      this.barChartData[1].data.push(chartData[i].value);
-                                                    }
-                                                  }
-                                                  
-                                                  if(i+1==chartData.length){
-                                                    this.renderCharts("bar");
-                                                  }
-                                                }
-                                              });
-                                            });
-                                          }else if(j==data.length){
-                                            Swal.fire({
-                                              icon: 'error',
-                                              title: 'Oops...',
-                                              text: 'No tiene configurado los sensores de rain y et0'
-                                            })
-                                          }
-                                          j++;
-                                        }
-                                      });
+        let data=response.data?response.data:response;
+        let barFlag=false;
+        let lineFlag=false;
+        let j=0;
+        while (!lineFlag && j < data.length) {
+                    //line chart
+                    if (data[j].sensorType === "Temperature") {
+                      this.temperatureId = data[j].id;
+                    }
+                    if (data[j].sensorType === "Humidity") {
+                      this.humidityId = data[j].id;
+                    }
+                     if(this.temperatureId&&this.humidityId){
+                          lineFlag=true;
+                          this.wiseconnService.getDataByMeasure(this.temperatureId,this.dateRange).subscribe((response) => {
+                            let temperatureData=response.data?response.data:response;
+                            this.wiseconnService.getDataByMeasure(this.humidityId,this.dateRange).subscribe((response) => {
+                              let humidityData=response.data?response.data:response;
+                              // this.loading = false;
+                              temperatureData=temperatureData.map((element)=>{
+                                element.chart="temperature";
+                                return element
+                              })
+                              humidityData=humidityData.map((element)=>{
+                                element.chart="humidity";
+                                return element
+                              })
+                              let chartData=temperatureData.concat(humidityData);
+                              chartData.sort(function (a, b) {
+                                if (moment(a.time).isAfter(b.time)) {
+                                  return 1;
+                                }
+                                if (!moment(a.time).isAfter(b.time)) {
+                                  return -1;
+                                }
+                                // a must be equal to b
+                                return 0;
+                              });
+                              chartData = chartData.filter((element) => {
+                                let hour=moment(element.time).hours();
+                                if(hour==0 || hour==2 || hour==4 || hour==6 ||hour==8 || hour==10 || hour==12 || hour==16 || hour==18 || hour==20 || hour==22)
+                                  return element;
+                              });
+                              for (var i = 0; i < chartData.length ; i++) {
+                                if(chartData[i+1]){
+                                  if((chartData[i].chart==="temperature")&&(chartData[i+1].chart==="humidity")){
+                                    this.lineChartLabels.push(this.momentFormat(chartData[i].time,"line"));
+                                    this.lineChartData[0].push(chartData[i].value);
+                                    this.lineChartData[1].push(chartData[i+1].value);
+                                  }                                                  
+                                } 
+                              }
+                              this.renderCharts("line");
+                            });
+                          });
+                        }else if(j==data.length){
+                          Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'No tiene configurado los sensores de humedad y temperatura'
+                          })
+                        }
+                    j++;
+        }
+        j=0;
+        while (!barFlag && j < data.length) {
+          //bar chart
+          if (data[j].sensorType != undefined && data[j].name != undefined){
+            if ((data[j].sensorType).toLowerCase() === "rain" && (data[j].name).toLowerCase() === "pluviometro") {
+              this.rainId = data[j].id;
+            }
+          }
+          if ((data[j].name) != undefined){
+            if ((data[j].name).toLowerCase() === "et0") {
+              this.et0Id = data[j].id;
+            }
+          }
+          if(this.rainId&&this.et0Id){
+            barFlag=true;
+            this.wiseconnService.getDataByMeasure(this.rainId,this.dateRange).subscribe((response) => {
+              let rainData=response.data?response.data:response;
+              this.wiseconnService.getDataByMeasure(this.et0Id,this.dateRange).subscribe((response) => {
+                let et0Data=response.data?response.data:response;
+                this.loading = false;
+                rainData=rainData.map((element)=>{
+                  element.chart="rain";
+                  return element
+                })
+                et0Data=et0Data.map((element)=>{
+                  element.chart="et0";
+                  return element;
+                })                          
+                let chartData=rainData.concat(et0Data);
+                chartData.sort(function (a, b) {
+                  if (moment(a.time).isAfter(b.time)) {
+                    return 1;
+                  }
+                  if (!moment(a.time).isAfter(b.time)) {
+                    return -1;
+                  }
+                  return 0;
+                });
+                chartData=chartData.filter((element)=>{
+                  if(moment.utc(element.time).format("HH:mm:ss")=="00:00:00"){                            
+                    return element;
+                  }
+                })
+                let maxLabelValue=0;
+                for (var i = 0; i < chartData.length; i++) {
+                  if(chartData[i+1]){
+                    if(chartData[i].time===chartData[i+1].time){
+                      if(this.barChartLabels.find((element) => {
+                            return element === this.momentFormat(chartData[i].time,"bar");
+                        }) === undefined) {
+                            this.barChartLabels.push(this.momentFormat(chartData[i].time,"bar"));
+                          if(chartData[i].chart=="rain") {
+                        this.barChartData[0].push(chartData[i].value);
+                    }
+                    if(chartData[i].chart=="et0") {
+                      this.barChartData[1].push(chartData[i].value);
+                    }
+                        }
+                    }
+                  }  
+                  if(i+1==chartData.length){
+                    this.renderCharts("bar");
+                  }
+                }
+              });
+            });
+          }else if(j==data.length){
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: 'No tiene configurado los sensores de rain y et0'
+            })
+          }
+          j++;
+        }
+      });
 }
 i++;
 }
@@ -605,18 +901,24 @@ getJSONStringify(data) {
   return result;
 }
 renderCharts(chart:string) {
-  switch (chart) {
-    case "line":
-    this.renderLineChartFlag=true;
-    break;
-    case "bar":
-    this.renderBarChartFlag=true;
-    break;
-    default:
-    // code...
-    break;
+    switch (chart) {
+      case "line":
+          this.lineChart.series[0].setData(this.lineChartData[0]);
+          this.lineChart.series[1].setData(this.lineChartData[1]);
+          this.lineChart.xAxis[0].setCategories(this.lineChartLabels, true);
+        this.renderLineChartFlag=true;
+        break;
+      case "bar":
+        this.barChart.series[0].setData(this.barChartData[0]);
+          this.barChart.series[1].setData(this.barChartData[1]);
+          this.barChart.xAxis[0].setCategories(this.barChartLabels, true);
+        this.renderBarChartFlag=true;
+        break;
+      default:
+        // code...
+        break;
+    }
   }
-}
 getPathData(element:string){
   let pathData=[];
   if(this.zones.length>=10){
@@ -897,8 +1199,7 @@ resetChartsValues(chart: string){
   this.et0Id=null;
   switch (chart) {
     case "line":
-    this.lineChartLabels.values=[];
-    this.lineChartLabels.labels=[];
+    this.lineChartLabels=[];
     for (var i = 0; i < 2; i++) {
       this.lineChartData[i].data=[];
     }

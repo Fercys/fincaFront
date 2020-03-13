@@ -219,65 +219,14 @@
         <div class="container-fluid">
           <div class="row">
             <div class="col-md-12">
-              <app-line-graph 
-                [title]="'TEMPERATURA/HUMEDAD'" 
-                [labels]="lineChartLabels.labels" 
-                [data]="lineChartData" >
-              </app-line-graph>
+              <div #lineChart></div>
             </div>
             <div class="col-md-12">
-              <app-bar-graph
-              [title]="'Precipitación+Et0'"
-              [labels]="barChartLabels" 
-              [data]="barChartData" >
-              </app-bar-graph>
+              <div #barChart></div>
             </div>
           </div>
         </div>       
       </div>
-      <!-- <div class="col-md-8" >
-        <div class="container-fluid">
-          <div class="row ">
-            <h4 class="row-subtitle-card">Temperatura/Humedad</h4>
-          </div>
-          <div class="card-body bg-white chard-size">
-            <div class="flex" *ngIf="renderLineChartFlag" style="overflow-x: scroll;">
-              <div class="flex-item">
-                <div style="display: block;">
-                <canvas baseChart width="400" height="400" style="margin: auto;"
-                            [datasets]="lineChartData"
-                            [labels]="lineChartLabels"
-                            [options]="lineChartOptions"
-                            [colors]="lineChartColors"
-                            [legend]="lineChartLegend"
-                            [chartType]="lineChartType"
-                            [plugins]="lineChartPlugins"></canvas>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="container-fluid top">
-          <div class="row ">
-            <h4 class="row-subtitle-card">Precipitación+Et0</h4>
-          </div>
-          <div class="card-body bg-white chard-size">
-            <div  *ngIf="renderBarChartFlag" style="overflow-x: scroll;">
-              <div style="display: block">
-                <canvas baseChart style="margin: auto;"
-                  [datasets]="barChartData"
-                  [labels]="barChartLabels"
-                  [options]="barChartOptions"
-                  [colors]="barChartColors"
-                  [plugins]="barChartPlugins"
-                  [legend]="barChartLegend"
-                  [chartType]="barChartType">
-                </canvas>
-              </div>
-            </div>
-          </div>
-      </div>
-      </div> -->
     </div>
   </div>
 </div>

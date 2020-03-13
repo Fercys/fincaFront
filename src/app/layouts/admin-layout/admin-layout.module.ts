@@ -16,6 +16,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { ChartsModule } from 'ng2-charts';
+import { HighchartsChartModule } from 'highcharts-angular';
 
 import { NgxLoadingModule } from 'ngx-loading';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
@@ -40,8 +41,6 @@ import { TypographyComponent } from '../../typography/typography.component';
 import { UpgradeComponent } from '../../upgrade/upgrade.component';
 import { UserProfileComponent } from '../../user-profile/user-profile.component';
 import { ConfigurationComponent } from '../../configuration/configuration.component';
-import { LineGraphComponent } from '../../line-graph/line-graph.component';
-import { BarGraphComponent } from '../../bar-graph/bar-graph.component';
 import { AdminLayoutRoutes } from './admin-layout.routing';
 import { FreePlotterComponent } from 'app/free-plotter/free-plotter.component';
 import { SoilAnalysisComponent } from 'app/soil-analysis/soil-analysis.component';
@@ -61,6 +60,7 @@ import { SoilAnalysisComponent } from 'app/soil-analysis/soil-analysis.component
     NgbModule,
     NgxLoadingModule.forRoot({}),
     ChartsModule,
+    HighchartsChartModule,
     MatDialogModule,
     MatSlideToggleModule,
     Ng2SearchPipeModule
@@ -87,8 +87,6 @@ import { SoilAnalysisComponent } from 'app/soil-analysis/soil-analysis.component
     DialogMessage,
     ReportInstalationComponent,
     ConfigurationComponent,
-    LineGraphComponent,
-    BarGraphComponent
   ],
   entryComponents:[
     DialogMessage
