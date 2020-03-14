@@ -320,12 +320,6 @@ export class FreePlotterComponent implements OnInit {
 	requestDataChart(goBackFlag:boolean=false){
         this.resetChartsValues("line");
         this.resetChartsValues("bar");
-		//bar chart
-		this.rainId=null;
-		this.et0Id=null;
-		//line chart
-		this.temperatureId=null;
-		this.humidityId=null;
 		this.dateRange = {
 			initTime: moment(this.fromDate.year + "-" + this.fromDate.month + "-" + this.fromDate.day).format("YYYY-MM-DD"),
 			endTime: moment(this.toDate.year + "-" + this.toDate.month + "-" + this.toDate.day).format("YYYY-MM-DD")
@@ -385,21 +379,17 @@ export class FreePlotterComponent implements OnInit {
                               });
                               for (var i = 0; i < chartData.length ; i++) {
                               	if(chartData[i+1]){
-                              //     if(this.lineChartLabels.find((element) => {
-                              //       return element === this.momentFormat(chartData[i].time,"line");
-                              //     }) === undefined) {
                               		if((chartData[i].chart==="temperature")&&(chartData[i+1].chart==="humidity")){
                               		  this.lineChartLabels.push(this.momentFormat(chartData[i].time,"line"));
                               			this.lineChartData[0].push(chartData[i].value);
 	                          		  this.lineChartData[1].push(chartData[i+1].value);
                               		}
-                              //     }
                               	}
                               }
                               this.renderCharts("line");
                             });
                           });
-                        }else if(j==data.length){
+                        }else if(j+1==data.length){
                           Swal.fire({
                             icon: 'error',
                             title: 'Oops...',
@@ -472,7 +462,7 @@ export class FreePlotterComponent implements OnInit {
                         	this.renderCharts("bar");
                       });
                     });
-                  }else if(j==data.length){
+                  }else if(j+1==data.length){
                     Swal.fire({
                       icon: 'error',
                       title: 'Oops...',
@@ -517,20 +507,37 @@ export class FreePlotterComponent implements OnInit {
 	}
 	resetChartsValues(chart:string){
 		switch (chart) {
-			case "line":
-				this.lineChartLabels=[];
-		        this.lineChartLabels=[];
-		        this.lineChartData=[[],[]];
-				break;	
-			case "bar":
-				this.barChartLabels=[];
-		        this.barChartLabels=[];
-				this.barChartData=[[],[]];
-				break;
-			default:
-				// code...
-				break;
-		}
+		    case "line":
+		    
+		    this.temperatureId=null;
+		    this.humidityId=null;
+		    this.lineChart.series[0].setData([]);
+		    this.lineChart.series[1].setData([]);
+		    this.lineChart.xAxis[0].setCategories([]);
+
+		    this.lineChartLabels=[];
+		    for (var i = 0; i < 2; i++) {
+		      this.lineChartData[i]=[];
+		    }
+		    break;  
+		    case "bar":
+
+		    this.rainId=null;
+		    this.et0Id=null;
+		    
+		    this.barChart.series[0].setData([]);
+		    this.barChart.series[1].setData([]);  
+		    this.barChart.xAxis[0].setCategories([]);
+
+		    this.barChartLabels=[];
+		    for (var i = 0; i < 2; i++) {
+		      this.barChartData[i]=[];
+		    }
+		    break;
+		    default:
+		    // code...
+		    break;
+		  }
 	} 
 	isHovered(date: NgbDate) {
 		return this.fromDate && !this.toDate && this.hoveredDate && date.after(this.fromDate) && date.before(this.hoveredDate);
