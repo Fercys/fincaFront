@@ -343,7 +343,10 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
   getWeatherZones(){
     return this.zones.filter((element)=>{
       if(element.type.find(element=>{
-        return element.toLowerCase() == "weather"
+        if(element.description){
+          return element.description.toLowerCase() == "weather"
+        }
+        return element.toLowerCase() == "weather" 
       })!=undefined){
         return element;
       }
@@ -373,6 +376,7 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
                                       this.weatherStation = this.zones[i];
                                       this.wiseconnService.getMeasuresOfZones(this.weatherStation.id).subscribe((response) => {
         let data=response.data?response.data:response;
+                                      
         let barFlag=false;
         let lineFlag=false;
         let j=0;
