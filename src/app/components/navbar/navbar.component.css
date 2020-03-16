@@ -9,10 +9,45 @@
     filter: invert(29%) sepia(81%) saturate(326%) hue-rotate(173deg) brightness(50%) contrast(97%);
 }
 
+.navbar.navbar-transparent .navbar-toggler .navbar-toggler-icon {
+    background-color: #fff;
+}
+.navbar-toggler .icon-bar:nth-of-type(3) {
+	  top: 1px;
+}
 
-  @media screen and (min-width: 996px) {
-     .navbar-brand{
-         display: none;
-     }
-  }
+.navbar-toggler .icon-bar:nth-of-type(4) {
+  	top: 2px;
+}
 
+.navbar-toggler .icon-bar {
+	  position: relative;
+	  transition: all 500ms ease-in-out;
+}
+
+.navbar-toggler.toggled .icon-bar:nth-of-type(2) {
+	  top: 6px;
+	  transform: rotate(45deg);
+}
+
+.navbar-toggler.toggled .icon-bar:nth-of-type(3) {
+	  background-color: transparent;
+	  opacity: 0 !important;
+}
+.navbar-toggler .icon-bar:nth-of-type(3) {
+	opacity: 1 !important;
+}
+
+.navbar-toggler.toggled .icon-bar:nth-of-type(4) {
+	  top: -6px;
+	  transform: rotate(-45deg);
+}
+
+@media screen and (min-width: 996px) {
+    .navbar-brand{
+        display: none;
+    }
+    .navbar-expand-lg .navbar-toggler {
+	    display: block !important;
+	}
+}
