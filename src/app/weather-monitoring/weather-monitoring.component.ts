@@ -309,6 +309,7 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
       this.setLocalStorageItem("lastLineChartData",this.getJSONStringify(this.lineChartData));
       this.setLocalStorageItem("lastBarChartLabels",this.getJSONStringify(this.barChartLabels));
       this.setLocalStorageItem("lastBarChartData",this.getJSONStringify(this.barChartData));
+      this.wiseconnService.farmId=id;
       this.farm=this.getFarm(id);
       this.getZones();
       this.getWeather();
