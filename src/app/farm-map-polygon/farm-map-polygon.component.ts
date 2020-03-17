@@ -192,7 +192,7 @@ export class FarmMapPolygonComponent implements OnInit {
     this.weatherStationId=this._route.snapshot.paramMap.get('farm');
     this.wiseconnService.getMeterogoAgrifut(this._route.snapshot.paramMap.get('farm'))
     .subscribe((response: any) => { 
-      this.farmData = response.data?response.data:response; 
+      this.farmData = response.data?response.data:response;
       this.wiseconnService.getZones(this._route.snapshot.paramMap.get('id')).subscribe((response: any) => {
         this.getZone = response.data?response.data:response; 
         this.getZone.forEach(element =>{
@@ -274,9 +274,10 @@ export class FarmMapPolygonComponent implements OnInit {
           this.climaLoading = true;
         }
       });
+      let path=farmPolygon.polygon?farmPolygon.polygon.path:farmPolygon.path;
       if(farmPolygon.latitude == undefined && farmPolygon.latitude == undefined){
         var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
-          center: {lat:  farmPolygon.polygon.path[0].lat, lng: farmPolygon.polygon.path[0].lng},
+          center: {lat:  path[0].lat, lng: path[0].lng},
           zoom:15,
           mapTypeId: window['google'].maps.MapTypeId.HYBRID
         });
@@ -288,7 +289,7 @@ export class FarmMapPolygonComponent implements OnInit {
         });
       } 
       var flightPath = new window['google'].maps.Polygon({
-        paths: farmPolygon.polygon.path,
+        paths: path,
         strokeColor: '#49AA4F',
         strokeOpacity: 0.8,
         strokeWeight: 2,
@@ -389,7 +390,7 @@ export class FarmMapPolygonComponent implements OnInit {
         data.forEach(element => {
           // Construct the polygon.
           let idFarm = this._route.snapshot.paramMap.get('id');
-          let paths=element.path?element.path:element.polygon.path;
+          let paths=element.polygon?element.polygon.path:element.path;
           wisservice.getIrrigarionsRealOfZones(idFarm).subscribe((dataIrrigations: any) => {
             if(idFarm == "727" || element.id== 727 || element.id == "6054" || element.id == 6054 || element.id == "13872" || element.id == 13872){
               var Triangle = new window['google'].maps.Polygon({

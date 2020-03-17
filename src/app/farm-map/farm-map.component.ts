@@ -408,8 +408,9 @@ export class FarmMapComponent implements OnInit {
                 }
                 return element;
               });
+              let path=element.polygon?element.polygon.path:element.path;
               let polygonData={
-                paths: element.path?element.path:element.polygon.path,
+                paths: path,
                 strokeColor: '#49AA4F',
                 strokeOpacity: 0.8,
                 strokeWeight: 2,
