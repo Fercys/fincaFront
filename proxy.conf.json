@@ -3,5 +3,5 @@
         "target":"https://api.dev.aparicioconsulting.com",
         "secure":false,
         "changeOrigin":true
-    },
+    }
 }

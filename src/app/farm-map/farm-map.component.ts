@@ -293,13 +293,15 @@ export class FarmMapComponent implements OnInit {
         tooltip.style.backgroundColor = '#777777';
         tooltip.style.color = '#FFFFFF';
         if(zone.status!=undefined){
-          switch ((zone.status).toLowerCase()) {
-            case "running":
-            tooltip.innerHTML = zone.name + " - Regando";
+          switch ((zone.type.length)) {
+            case 1:
+            tooltip.innerHTML = zone.name + " - "+zone.type[0];
             break;
-            case "executed ok":
-            tooltip.innerHTML = zone.name + " - Ok";
+            case 2:
+            tooltip.innerHTML = zone.name + " - "+ zone.type[0]+" , "+ zone.type[1];
             break;
+            case 3:
+            tooltip.innerHTML = zone.name + " - "+ zone.type[0]+" , "+ zone.type[1]+" , "+ zone.type[2];
             default:
             break;
           }
