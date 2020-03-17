@@ -56,7 +56,6 @@ export class FarmMapComponent implements OnInit {
     this.wiseconnService.getFarms().subscribe((response: any) => {
       this.farms = response.data?response.data:response;
       this.filterFarmsByUser();
-      console.log("this._route.snapshot.paramMap.get('id'):",this._route.snapshot.paramMap.get('id'))
       this.farm=this.getFarm(this._route.snapshot.paramMap.get('id'));      
       this.wiseconnService.farmId=this.farm.id;
       if(this.farm){

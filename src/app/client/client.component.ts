@@ -15,19 +15,16 @@ export class ClientComponent implements OnInit {
   
   ngOnInit() {
     this.loading=true;
-    this.wiseconnService.getFarms().subscribe((data: {}) => {
-      let farms: any = [];
-      farms = data; 
-      var client = farms.filter(function(item,index,array){ 
+    this.wiseconnService.getFarms().subscribe((response: any) => {
+      this.farms = response.data?response.data:response;
+      this.client=this.farms.filter(function(item,index,array){ 
         if(index == 0){
           return true;
         }else{ 
           return item['account']['id'] == array[--index]['account']['id']? false: true;
         }
       });
-      this.client = client;
       this.loading=false;
-      console.log(client);
     })
   }
 
