@@ -535,7 +535,6 @@ export class FreePlotterComponent implements OnInit {
 		    }
 		    break;
 		    default:
-		    // code...
 		    break;
 		  }
 	} 
