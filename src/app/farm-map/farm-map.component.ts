@@ -291,16 +291,18 @@ export class FarmMapComponent implements OnInit {
         tooltip.id = 'tooltip-text';
         tooltip.style.backgroundColor = '#777777';
         tooltip.style.color = '#FFFFFF';
+        console.log(zone);
+        
         if(zone.status!=undefined){
           switch ((zone.type.length)) {
             case 1:
-            tooltip.innerHTML = zone.name + " - "+zone.type[0];
+            tooltip.innerHTML = zone.name + " - "+zone.type[0].description;
             break;
             case 2:
-            tooltip.innerHTML = zone.name + " - "+ zone.type[0]+" , "+ zone.type[1];
+            tooltip.innerHTML = zone.name + " - "+ zone.type[0].description+" , "+ zone.type[1].description;
             break;
             case 3:
-            tooltip.innerHTML = zone.name + " - "+ zone.type[0]+" , "+ zone.type[1]+" , "+ zone.type[2];
+            tooltip.innerHTML = zone.name + " - "+ zone.type[0].description+" , "+ zone.type[1].description+" , "+ zone.type[2].description;
             default:
             break;
           }

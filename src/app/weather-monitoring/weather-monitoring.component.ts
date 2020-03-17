@@ -132,10 +132,10 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
       },
       colors: ['#D12B34','#00B9EE'],
       title: {
-          text: null
+          text: 'PRECIPITACIÓN/ET0'
       },
       subtitle: {
-          text: null
+          text: 'PRECIPITACIÓN/ET0'
       },
       xAxis: {
           categories: [
@@ -145,7 +145,7 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
       yAxis: {
           // min: 0,
           title: {
-              text:null
+              text:'PRECIPITACIÓN/ET0'
           }
       },
       tooltip: {
@@ -681,13 +681,13 @@ addListenersOnPolygon(polygon, id){
       if(zone.status!=undefined){
         switch ((zone.type.length)) {
           case 1:
-          tooltip.innerHTML = zone.name + " - "+zone.type[0];
+          tooltip.innerHTML = zone.name + " - "+zone.type[0].description;
           break;
           case 2:
-          tooltip.innerHTML = zone.name + " - "+ zone.type[0]+" , "+ zone.type[1];
+          tooltip.innerHTML = zone.name + " - "+ zone.type[0].description+" , "+ zone.type[1].description;
           break;
           case 3:
-          tooltip.innerHTML = zone.name + " - "+ zone.type[0]+" , "+ zone.type[1]+" , "+ zone.type[2];
+          tooltip.innerHTML = zone.name + " - "+ zone.type[0].description+" , "+ zone.type[1].description+" , "+ zone.type[2].description;
           default:
           break;
         }

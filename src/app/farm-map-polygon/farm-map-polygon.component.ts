@@ -132,10 +132,10 @@ export class FarmMapPolygonComponent implements OnInit {
       },
       colors: ['#D12B34','#00B9EE'],
       title: {
-          text: null
+          text: 'PRECIPITACIÓN/ET0'
       },
       subtitle: {
-          text: null
+          text: 'PRECIPITACIÓN/ET0'
       },
       xAxis: {
           categories: [
@@ -145,7 +145,7 @@ export class FarmMapPolygonComponent implements OnInit {
       yAxis: {
           // min: 0,
           title: {
-              text:null
+              text:'PRECIPITACIÓN/ET0'
           }
       },
       tooltip: {
