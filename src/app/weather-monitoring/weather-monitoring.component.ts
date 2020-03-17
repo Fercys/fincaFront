@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef , Inject, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { element } from 'protractor';
-import { NgbModal, NgbDate, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal,ModalDismissReasons , NgbDate, NgbCalendar, NgbDateParserFormatter} from '@ng-bootstrap/ng-bootstrap';
 
 //notificaciones
 import Swal from 'sweetalert2'
@@ -51,6 +51,8 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
   public fromDate: NgbDate;
   public toDate: NgbDate;
   public dateRange: any = null;
+  public hoveredDate: NgbDate;
+  public requestChartBtn: boolean =true;
 
   //graficas
   //linechart
@@ -186,6 +188,7 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
     private router: Router,
     public weatherService: WeatherService,
     private calendar: NgbCalendar,
+    private formatter: NgbDateParserFormatter,
     private dialogs: MatDialog) {
   }
 
@@ -203,7 +206,10 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
           this.zones = JSON.parse(localStorage.getItem('lastZones'));
           this.weatherZones=this.getWeatherZones();
           this.loadMap();
+          this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -5);
+          this.toDate = this.calendar.getToday();
           this.getChartInformation();
+          this.processMapData();
         }else{
           this.getZones();
         }
@@ -261,6 +267,7 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
       this.setLocalStorageItem("lastZones",this.getJSONStringify(this.zones));
       this.loadMap();
       this.getChartInformation();
+      this.processMapData();
     });
   }
   getWeather(){
@@ -363,8 +370,7 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
                                 getChartInformation(){
                                   this.resetChartsValues("line");
                                   this.resetChartsValues("bar");                               
-                                  this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -5);
-                                  this.toDate = this.calendar.getToday();
+                                  
                                   this.dateRange = {
                                     initTime: moment(this.fromDate.year + "-" + this.fromDate.month + "-" + this.fromDate.day).format("YYYY-MM-DD"),
                                     endTime: moment(this.toDate.year + "-" + this.toDate.month + "-" + this.toDate.day).format("YYYY-MM-DD")
@@ -372,10 +378,12 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
                                   let weatherStationFlag=false;
                                   let i=0;
                                   while (!weatherStationFlag && i < this.zones.length) {
+                                      this.loading=true;
                                     if (this.zones[i].name == "Estación Meteorológica" || this.zones[i].name == "Estación Metereológica") {
                                       weatherStationFlag=true;
                                       this.weatherStation = this.zones[i];
                                       this.wiseconnService.getMeasuresOfZones(this.weatherStation.id).subscribe((response) => {
+        
         let data=response.data?response.data:response;
                                       
         let barFlag=false;
@@ -520,7 +528,12 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
 }
 i++;
 }
-if (this.zones.length == 0) {
+
+        this.loading=false;
+
+}
+processMapData(){
+  if (this.zones.length == 0) {
   this.loadMap();
   this.measurements = [];
   Swal.fire({
@@ -542,7 +555,6 @@ if (this.zones.length == 0) {
   }
 } 
 }
-
 getJSONStringify(data) {
   var cache = [];
   var result =null;
@@ -909,6 +921,34 @@ translateDate(date:string){
     }
   }    
   return newDate;
+}
+//datepicker
+onDateSelection(date: NgbDate,element:string) {
+  switch (element) {
+    case "from":
+    this.fromDate = date;
+    break;
+    case "to":
+    this.toDate = date;
+    break;
+    default:
+    // code...
+    break;
+  }
+  this.requestChartBtn=(this.fromDate && this.toDate && this.toDate.after(this.fromDate))?false:true;
+}
+isHovered(date: NgbDate) {
+  return this.fromDate && !this.toDate && this.hoveredDate && date.after(this.fromDate) && date.before(this.hoveredDate);
+}
+isInside(date: NgbDate) {
+  return date.after(this.fromDate) && date.before(this.toDate);
+}
+isRange(date: NgbDate) {
+  return date.equals(this.fromDate) || date.equals(this.toDate) || this.isInside(date) || this.isHovered(date);
+}
+validateInput(currentValue: NgbDate, input: string): NgbDate {
+  const parsed = this.formatter.parse(input);
+  return parsed && this.calendar.isValid(NgbDate.from(parsed)) ? NgbDate.from(parsed) : currentValue;
 }
 //por factorizar  
 renderMap() {
