@@ -24,7 +24,6 @@ export class LoginComponent implements OnInit,OnDestroy,AfterViewInit {
 	onResize(event) {
 		this.screenHeight = window.innerHeight;
 		this.screenWidth = window.innerWidth;
-		console.log(this.screenHeight, this.screenWidth);
 		this.login[0].style.height = this.screenHeight.toString()+'px';
 	}
 
@@ -66,7 +65,12 @@ export class LoginComponent implements OnInit,OnDestroy,AfterViewInit {
 		const usuario= target.querySelector('#usuario').value;
 		const password= target.querySelector('#password').value;
 	  	
-		if ((usuario == 'Admin@cdtec.cl' || usuario == 'Admin' || usuario == 'Agrifrut@cdtec.cl' || usuario == 'Agrifrut' || usuario == 'SantaJuana@cdtec.cl' || usuario == 'SantaJuana') && password == '12345678') {
+		if ((usuario == 'Admin@cdtec.cl' || 
+			usuario == 'Admin' || 
+			usuario == 'Agrifrut@cdtec.cl' || 
+			usuario == 'Agrifrut' || 
+			usuario == 'SantaJuana@cdtec.cl' || 
+			usuario == 'SantaJuana') && password == '12345678') {
     		localStorage.setItem("username", usuario);
 			this._router.navigate(['/dashboard']);
 		}else{

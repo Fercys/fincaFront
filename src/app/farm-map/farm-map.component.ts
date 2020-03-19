@@ -447,7 +447,6 @@ export class FarmMapComponent implements OnInit {
                 polygonDatas.push({element:element,data:polygonData});
                 this.setLocalStorageItem("lastPolygonData",JSON.stringify(polygonDatas));
                  // Marker Image
-                 console.log("element:",element)
                 this.addMarkerImage(map, element,  "../../assets/icons/map/Regando-01.svg");                  
                 Triangle.setMap(map);
                 this.addListenersOnPolygon(Triangle,element.id);
