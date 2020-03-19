@@ -642,33 +642,36 @@ processMeasurements(){
   this.deleteValueJson("Etp");
 }
 addMarkerImage(map,element,urlImage){
-  let lat;
-  let lng;
-  if(element.latitude){
-    lat=element.latitude;
-  }else if(element.path){
-    lat=element.path[0].lat;
-  }else if(element.polygon.path){
-    lat=element.polygon.path[0].lat;
-  }
-  if(element.longitude){
-    lng=element.longitude;
-  }else if(element.path){
-    lng=element.path[0].lng;
-  }else if(element.polygon.path){
-    lng=element.polygon.path[0].lng;
-  }
-  var marker = new window['google'].maps.Marker({
-    position: {lat: lat, lng: lng},
-    map: map,
-    icon: {
-      url: urlImage, // url
-      scaledSize: new window['google'].maps.Size(30, 30), // scaled size
-      origin: new window['google'].maps.Point(0,0), // origin
-      anchor: new window['google'].maps.Point(0, 0) // anchor
+    let lat;
+    let lng;
+    if(element.path!=undefined){
+      if(element.path.length>0){
+        lat=parseFloat(element.path[0].lat);
+        lng=parseFloat(element.path[0].lng);
+      }else if(element.latitude && element.longitude){
+        lat=parseFloat(element.latitude);
+        lng=parseFloat(element.longitude);
+      }
+    }else if(element.polygon!=undefined){
+      if(element.polygon.path.length>0){
+        lat=parseFloat(element.polygon.path[0].lat);
+        lng=parseFloat(element.polygon.path[0].lng);
+      }
     }
-  });
-}
+    if(lat && lng){
+      var marker = new window['google'].maps.Marker({
+          position: {lat: lat, lng: lng},
+          map: map,
+          icon: {
+              url: urlImage, // url
+              scaledSize: new window['google'].maps.Size(30, 30), // scaled size
+              origin: new window['google'].maps.Point(0,0), // origin
+              anchor: new window['google'].maps.Point(0, 0) // anchor
+          }
+      });
+    }
+    
+  }
 addListenersOnPolygon(polygon, id){
   let tooltip = document.createElement("span");
   let mapContainer = document.getElementById("map-container")?document.getElementById("map-container").firstChild:null;
@@ -787,14 +790,17 @@ loadMap() {
         // Marker Image          
         this.addMarkerImage(map, element, "https://i.imgur.com/C7gyw7N.png");
         Triangle.setMap(map);
-        this.addListenersOnPolygon(Triangle, element.id);
-        this.loading = true;
-        wisservice.getMeterogoAgrifut(element.id).subscribe((response: any) => {
-          this.loading = false;
-          this.measurements = response.data?response.data:response;
-          this.setLocalStorageItem("lastMeasurements",this.getJSONStringify(this.measurements));
-          this.processMeasurements();
-        })      
+        this.addListenersOnPolygon(Triangle, element.id);        
+        if (element.name == "Estación Meteorológica" || element.name == "Estación Metereológica") {
+          this.loading = true;
+          wisservice.getMeterogoAgrifut(element.id).subscribe((response: any) => {
+            this.loading = false;
+            this.measurements = response.data?response.data:response;
+            this.setLocalStorageItem("lastMeasurements",this.getJSONStringify(this.measurements));
+            this.processMeasurements();
+          }) 
+        }
+             
       } else {
         if (data != "") {
           if (data[0].status == "Executed OK") {
