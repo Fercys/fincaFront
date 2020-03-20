@@ -172,38 +172,47 @@ export class FreePlotterComponent implements OnInit {
 		this.getFarms();
   		this.highchartsShow();
 	}
-	
+	filterFarmsByUser(){
+	    if(localStorage.getItem("username")){      
+	      switch (localStorage.getItem("username").toLowerCase()) {
+	        case "agrifrut":
+	          this.farms = this.farms.filter((element) => {
+	            let id= element.id_wiseconn?element.id_wiseconn:element.id;
+	            return id == 185 || id == 2110 || id == 1378 || id == 520
+	          })
+	          break;
+	          case "agrifrut@cdtec.cl":
+	          this.farms = this.farms.filter((element) => {
+	            let id= element.id_wiseconn?element.id_wiseconn:element.id;
+	            return id == 185 || id == 2110 || id == 1378 || id == 520
+	          })
+	          break;
+	        case "santajuana":
+	          this.farms = this.farms.filter((element) => {
+	            let id= element.id_wiseconn?element.id_wiseconn:element.id;
+	            return id == 719
+	          })
+	          break;
+	          case "santajuana@cdtec.cl":
+	            this.farms = this.farms.filter((element) => {
+	              let id= element.id_wiseconn?element.id_wiseconn:element.id;
+	              return id == 719
+	            })
+	            break;
+	        default:
+	          // code...
+	          break;
+	      }
+	    }else{
+	      this.router.navigate(['/login']);
+	    }
+	  }
 	getFarms() {
 		this.loading=true;
 		this.wiseconnService.getFarms().subscribe((response: any) => {			
 			this.loading=false;
 			this.farms = response.data?response.data:response;
-			switch (localStorage.getItem("username").toLowerCase()) {
-				case "agrifrut":
-				this.farms = this.farms.filter((element) => {
-					return element.id == 185 || element.id == 2110 || element.id == 1378 || element.id == 520
-				})
-				break;
-				case "agrifrut@cdtec.cl":
-				this.farms = this.farms.filter((element) => {
-					return element.id == 185 || element.id == 2110 || element.id == 1378 || element.id == 520
-				})
-				break;
-				case "santajuana":
-				this.farms = this.farms.filter((element) => {
-					return element.id == 719
-				})
-				break;
-				case "santajuana@cdtec.cl":
-				this.farms = this.farms.filter((element) => {
-					return element.id == 719
-				})
-				break;
-
-				default:
-				// code...
-				break;
-			}
+			this.filterFarmsByUser();
 		})
 	}
 	getZones(id:number=0) {

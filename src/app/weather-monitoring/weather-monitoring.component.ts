@@ -220,38 +220,40 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
     })
   }
   filterFarmsByUser(){
-    if(localStorage.getItem("username")){
+    if(localStorage.getItem("username")){      
       switch (localStorage.getItem("username").toLowerCase()) {
         case "agrifrut":
-        this.farms = this.farms.filter((element) => {
-          return element.id == 185 || element.id == 2110 || element.id == 1378 || element.id == 520
-        })
-        break;
-        case "agrifrut@cdtec.cl":
-        this.farms = this.farms.filter((element) => {
-          let id= element.id_wiseconn?element.id_wiseconn:element.id;
-          return id == 185 || id == 2110 || id == 1378 || id == 520
-        })
-        break;
+          this.farms = this.farms.filter((element) => {
+            let id= element.id_wiseconn?element.id_wiseconn:element.id;
+            return id == 185 || id == 2110 || id == 1378 || id == 520
+          })
+          break;
+          case "agrifrut@cdtec.cl":
+          this.farms = this.farms.filter((element) => {
+            let id= element.id_wiseconn?element.id_wiseconn:element.id;
+            return id == 185 || id == 2110 || id == 1378 || id == 520
+          })
+          break;
         case "santajuana":
-        this.farms = this.farms.filter((element) => {
-          let id= element.id_wiseconn?element.id_wiseconn:element.id;
-          return id == 719
-        })
-        break;
-        case "santajuana@cdtec.cl":
-        this.farms = this.farms.filter((element) => {
-          return element.id == 719
-        })
-        break;
+          this.farms = this.farms.filter((element) => {
+            let id= element.id_wiseconn?element.id_wiseconn:element.id;
+            return id == 719
+          })
+          break;
+          case "santajuana@cdtec.cl":
+            this.farms = this.farms.filter((element) => {
+              let id= element.id_wiseconn?element.id_wiseconn:element.id;
+              return id == 719
+            })
+            break;
         default:
-        // code...
-        break;
+          // code...
+          break;
       }
     }else{
       this.router.navigate(['/login']);
     }
-  } 
+  }
   getFarm(id){
     return this.farms.find(element =>{
       return element.id==id || element.id_wiseconn==id
