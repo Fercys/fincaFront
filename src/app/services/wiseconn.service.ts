@@ -12,19 +12,30 @@ import { environment } from "../../environments/environment";
 export class WiseconnService {
 
   baseurl = environment.base_url;
+  prodEnv = environment.production;
   farmId:number=null;
 
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Accept': 'application/json',
-      'api_key':'9Ev6ftyEbHhylMoKFaok'
-    })
-  }
+  httpOptions:any=null;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) { 
+    if(this.prodEnv){
+      this.httpOptions={
+        headers: new HttpHeaders({
+          'Accept': 'application/json'
+        })
+      }
+    }else{
+      this.httpOptions={
+        headers: new HttpHeaders({
+          'Accept': 'application/json',
+          'api_key':'9Ev6ftyEbHhylMoKFaok'
+        })
+      }
+    }
+  }
   
-  getFarms(): Observable<farmModels> { 
-    return this.http.get<farmModels>(this.baseurl + '/farms', this.httpOptions)
+  getFarms(): Observable<any> { 
+    return this.http.get<any>(this.baseurl + '/farms', this.httpOptions)
     .pipe(
       retry(1),
       catchError(this.errorHandl)
@@ -38,8 +49,8 @@ export class WiseconnService {
       catchError(this.errorHandl)
     )
   }
-  getZones(id): Observable<farmModels> { 
-    return this.http.get<farmModels>(this.baseurl + '/farms/'+id+'/zones', this.httpOptions)
+  getZones(id): Observable<any> { 
+    return this.http.get<any>(this.baseurl + '/farms/'+id+'/zones', this.httpOptions)
     .pipe(
       retry(1),
       catchError(this.errorHandl)

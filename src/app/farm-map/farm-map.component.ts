@@ -266,9 +266,11 @@ export class FarmMapComponent implements OnInit {
         lng=parseFloat(element.longitude);
       }
     }else if(element.polygon!=undefined){
-      if(element.polygon.path.length>0){
-        lat=parseFloat(element.polygon.path[0].lat);
-        lng=parseFloat(element.polygon.path[0].lng);
+      if(element.polygon.path!=undefined){
+        if(element.polygon.path.length>0){
+          lat=parseFloat(element.polygon.path[0].lat);
+          lng=parseFloat(element.polygon.path[0].lng);
+        }
       }
     }
     if(lat && lng){
