@@ -64,7 +64,6 @@ export class LoginComponent implements OnInit,OnDestroy,AfterViewInit {
 		const target = event.target;
 		const usuario= target.querySelector('#usuario').value;
 		const password= target.querySelector('#password').value;
-	  	
 		if ((usuario == 'Admin@cdtec.cl' || 
 			usuario == 'Admin' || 
 			usuario == 'Agrifrut@cdtec.cl' || 

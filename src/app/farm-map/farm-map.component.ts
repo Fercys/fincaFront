@@ -56,9 +56,13 @@ export class FarmMapComponent implements OnInit {
     this.wiseconnService.getFarms().subscribe((response: any) => {
       this.farms = response.data?response.data:response;
       this.filterFarmsByUser();
-      this.farm=this.getFarm(this._route.snapshot.paramMap.get('id'));      
-      this.wiseconnService.farmId=this.farm.id;
+      if(this._route.snapshot.paramMap.get('id')){
+        this.farm=this.getFarm(this._route.snapshot.paramMap.get('id'));
+      }else if(this.farms.length>0){
+        this.farm=this.farms[0];
+      }
       if(this.farm){
+        this.wiseconnService.farmId=this.farm.id;
         if(localStorage.getItem("lastFarmId")!=undefined){
           if(parseInt(localStorage.getItem("lastFarmId"))==parseInt(this.farm.id)){
             this.zones = JSON.parse(localStorage.getItem('lastZones'));
@@ -105,7 +109,8 @@ export class FarmMapComponent implements OnInit {
       switch (localStorage.getItem("username").toLowerCase()) {
         case "agrifrut":
           this.farms = this.farms.filter((element) => {
-            return element.id == 185 || element.id == 2110 || element.id == 1378 || element.id == 520
+            let id= element.id_wiseconn?element.id_wiseconn:element.id;
+            return id == 185 || id == 2110 || id == 1378 || id == 520
           })
           break;
           case "agrifrut@cdtec.cl":
@@ -122,7 +127,8 @@ export class FarmMapComponent implements OnInit {
           break;
           case "santajuana@cdtec.cl":
             this.farms = this.farms.filter((element) => {
-              return element.id == 719
+              let id= element.id_wiseconn?element.id_wiseconn:element.id;
+              return id == 719
             })
             break;
         default:

@@ -370,7 +370,8 @@ export class FarmMapPolygonComponent implements OnInit {
           let idFarm = this._route.snapshot.paramMap.get('id');
           let paths=element.polygon?element.polygon.path:element.path;
           wisservice.getIrrigarionsRealOfZones(idFarm).subscribe((dataIrrigations: any) => {
-            if(idFarm == "727" || element.id== 727 || element.id == "6054" || element.id == 6054 || element.id == "13872" || element.id == 13872){
+            let id= element.id_wiseconn?element.id_wiseconn:element.id;
+            if(parseInt(id) == 727 || parseInt(id) == 6054 || parseInt(id) == 13872){
               var Triangle = new window['google'].maps.Polygon({
                 paths: paths,
                 strokeColor: '#E5C720',

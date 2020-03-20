@@ -24,6 +24,8 @@ export class ClientComponent implements OnInit {
           return item['account']['id'] == array[--index]['account']['id']? false: true;
         }
       });
+      console.log("this.farms:",this.farms)
+      console.log("this.client:",this.client)
       this.loading=false;
     })
   }
