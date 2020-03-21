@@ -30,7 +30,7 @@ export class FarmMapComponent implements OnInit {
   public weatherStation: any = null;
   public closeResult: string;
   public clima: any; 
-
+  public measurements:any[];
   //Pronostico values
   public climaLoading = false;
   public climaToday: any;
@@ -76,7 +76,15 @@ export class FarmMapComponent implements OnInit {
                 this.addListenersOnPolygon(Triangle,polygonDatas[i].element.id);
                 let id= polygonDatas[i].element.id_wiseconn?polygonDatas[i].element.id_wiseconn:polygonDatas[i].element.id;
                 if (parseInt(id) == 727 || parseInt(id) == 6054 || parseInt(id) == 13872){
-                  // Marker Image          
+                  if (polygonDatas[i].element.name == "Estación Meteorológica" || polygonDatas[i].element.name == "Estación Metereológica") {
+                    this.loading = true;
+                    this.wiseconnService.getMeterogoAgrifut(polygonDatas[i].element.id).subscribe((response: any) => { 
+                      this.loading = false;
+                       this.measurements =response.data?response.data:response;
+                      this.processMeasurements();
+                    });
+                   }
+                  // Marker Image
                   this.addMarkerImage(map, polygonDatas[i].element, "https://i.imgur.com/C7gyw7N.png");
                 }else if (polygonDatas[i].element.status!=undefined){
                   if((polygonDatas[i].element.status).toLowerCase() == "executed ok") {            
@@ -393,6 +401,15 @@ export class FarmMapComponent implements OnInit {
         let data=response.data?response.data:response;
         let id= element.id_wiseconn?element.id_wiseconn:element.id;
         if (parseInt(id) == 727 || parseInt(id) == 6054 || parseInt(id) == 13872){
+          if (element.name == "Estación Meteorológica" || element.name == "Estación Metereológica") {
+            this.loading = true;
+            wisservice.getMeterogoAgrifut(element.id).subscribe((response: any) => {
+              this.loading = false;
+              this.measurements = response.data?response.data:response;
+              this.setLocalStorageItem("lastMeasurements",this.getJSONStringify(this.measurements));
+              this.processMeasurements();
+            }) 
+          }
           let polygonData={
             paths: element.path?element.path:element.polygon.path,
             strokeColor: '#E5C720',
@@ -494,6 +511,37 @@ export class FarmMapComponent implements OnInit {
         break;
     }
   } 
+  processMeasurements(){
+    for (const item of this.measurements) {
+      if(item.name == "Velocidad Viento"){
+        item.name = "Vel. Viento"
+      }
+      if(item.name == "Direccion de viento") {
+        item.name = "Dir. Viento"
+      }
+      if(item.name == "Radiacion Solar"){
+        item.name = "Rad. Solar"
+      }   
+      if(item.name == "Station Relative Humidity"){
+        item.name = " Sta. Rel. Humidity "
+      }  
+      if(item.name == "Wind Direction" || item.name ==  "ATM pressure" || item.name ==  "Wind Speed (period)" || item.name ==  "Porciones de Frío" || item.name ==  "Horas Frío"){
+        this.deleteValueJson(item.name);
+      }    
+      if(item.name == "Porciones de Frío")  {
+        this.deleteValueJson(item.name);
+      }
+      if(item.name == "Horas Frío")  {
+        this.deleteValueJson(item.name);
+      }    
+    }
+    this.deleteValueJson("Et0");
+    this.deleteValueJson("Etp");
+  }
+  deleteValueJson(value){
+    var index:number = this.measurements.indexOf(this.measurements.find(x => x.name == value));
+    if(index != -1) this.measurements.splice(index, 1);
+  }
   //por refactorizar
   renderMap() {
     window['initMap'] = () => {

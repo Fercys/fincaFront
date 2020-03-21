@@ -80,6 +80,45 @@
               <span>Alertas</span>
             </div>
         </div> 
+          <div *ngIf="measurements" class="container-fluid card-weather">
+                  <div class="row ">
+                    <h4 class="row-subtitle">Clima</h4>
+                  </div>
+                  <div class="card-body ">
+                    <div class="table-responsive">
+                      <table class="table">
+                      <tbody>
+                        <tr *ngFor="let data of measurements">
+                          <td class="name-weather">
+                            {{data.name}}
+                          </td>
+                          <td class="icon-weather">
+                            <img *ngIf="data.name =='Station Temperature' || data.name=='Temperatura'"
+                              src="assets/icons/Temperatura.svg">
+                            <img *ngIf="data.name =='Rafaga de viento' || data.name=='Dir. Viento'"
+                              src="assets/icons/Direccion-del-Viento.svg">
+                            <img *ngIf="data.name =='Wind Direction' || data.name=='Vel. Viento'" src="assets/icons/Viento.svg">
+                            <img *ngIf="data.name =='Wind Speed (period)'"
+                              src="https://www.dropcontrol.com/img/widgets/ico_velocidad.gif">
+                            <img *ngIf="data.name =='Station Relative Humidity' || data.name=='Humedad'"
+                              src="assets/icons/Gota.svg">
+                            <img *ngIf="data.name =='Solar radiation ' || data.name=='Rad. Solar'" src="assets/icons/Sol.svg">
+                            <img *ngIf="data.name =='Horas Frío'"
+                              src=" https://www.dropcontrol.com/img/widgets/ico_pluviometria.gif?uv=1">
+                            <img *ngIf="data.name =='Porciones de Frío'"
+                              src=" https://www.dropcontrol.com/img/widgets/ico_pluviometria.gif?uv=1">
+                            <img *ngIf="data.name =='Pluviometro'" src="assets/icons/Lluvia.svg">
+                          </td>
+                          <td>
+                            {{data.lastData}} {{data.unit}}
+                          </td> 
+        
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+            </div>
         <div *ngIf="climaLoading" class="container-fluid">
           <div class="row ">
             <h4 class="row-subtitle-card">Pronóstico</h4>
