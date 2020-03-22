@@ -80,6 +80,13 @@ iframe {
     }
   }
 }
+.cursor-pointer {
+  cursor: pointer;
+}
+.card-bg-none{
+  background-color: transparent;
+  box-shadow: none;
+}
 .card-weather {
   background-color: white;
   border-radius: 7px;
