@@ -9,18 +9,23 @@ declare interface RouteInfo {
     class: string;
     active: boolean
 }
-export const ROUTES: RouteInfo[] = [
+export const ROUTESCLIENTES: RouteInfo[] = [
    { path: '/user-profile', title: 'Perfil',  icon: 'Usuario-verde', class: '', active : false },
     { path: '/dashboard', title: 'Dashboard',  icon: 'Dashboard-Verde', class: '', active : false },
     { path: '/weather-monitoring', title: 'Monitoreo del clima',  icon:'Graficador-libre-verde', class: '', active : false },
     { path: '/farms', title: 'Campos',  icon:'Campo-Verde', class: '' , active : false},
     { path: '/free-plotter', title: 'Analizador Grafico',  icon:'Graficador-libre-verde', class: '', active : false },
-    { path: '/soil-analysis', title: 'Humedad de Suelo',  icon:'Suelo', class: '', active : false },
-    { path: '/report-instalacion', title: 'Reporte de Instalación',  icon:'Reporte', class: '', active : false },
-    { path: '/configuration', title: 'Configuración',  icon:'Configuracion', class: '', active : false }
-    // { path: '/icons', title: 'Icons',  icon:'bubble_chart', class: '' },
-    // { path: '/maps', title: 'Maps',  icon:'location_on', class: '' },
-    // { path: '/upgrade', title: 'Upgrade to PRO',  icon:'unarchive', class: 'active-pro' },
+    { path: '/soil-analysis', title: 'Humedad de Suelo',  icon:'Suelo', class: '', active : false }
+];
+export const ROUTESADMIN: RouteInfo[] = [
+  { path: '/user-profile', title: 'Perfil',  icon: 'Usuario-verde', class: '', active : false },
+   { path: '/dashboard', title: 'Dashboard',  icon: 'Dashboard-Verde', class: '', active : false },
+   { path: '/weather-monitoring', title: 'Monitoreo del clima',  icon:'Graficador-libre-verde', class: '', active : false },
+   { path: '/farms', title: 'Campos',  icon:'Campo-Verde', class: '' , active : false},
+   { path: '/free-plotter', title: 'Analizador Grafico',  icon:'Graficador-libre-verde', class: '', active : false },
+   { path: '/soil-analysis', title: 'Humedad de Suelo',  icon:'Suelo', class: '', active : false },
+   { path: '/report-instalacion', title: 'Reporte de Instalación',  icon:'Reporte', class: '', active : false },
+   { path: '/configuration', title: 'Configuración',  icon:'Configuracion', class: '', active : false }
 ];
 
 @Component({
@@ -30,10 +35,31 @@ export const ROUTES: RouteInfo[] = [
 })
 export class SidebarComponent implements OnInit {
   menuItems: any[];
+  username="";
   constructor( public router: Router) {  }
   ngOnInit() {
-    
-      this.menuItems = ROUTES.filter(menuItem => menuItem);
+      switch (localStorage.getItem("username").toLowerCase()) {
+        case "agrifrut":
+            this.username="Agrifrut";
+          break;
+          case "agrifrut@cdtec.cl":
+            this.username="Agrifrut";
+          break;
+        case "santajuana":
+            this.username="SantaJuana";
+          break;  
+          case "santajuana@cdtec.cl":
+            this.username="SantaJuana";
+            break;      
+        default:
+            this.username="Admin";
+          break;
+      }
+      if(this.username == "Admin"){
+        this.menuItems = ROUTESADMIN.filter(menuItem => menuItem);
+      }else{
+        this.menuItems = ROUTESCLIENTES.filter(menuItem => menuItem);
+      }
   }
   isMobileMenu() {
       if ($(window).width() > 991) {

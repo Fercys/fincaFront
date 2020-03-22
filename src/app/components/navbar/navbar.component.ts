@@ -2,7 +2,6 @@ import { Component, OnInit, ElementRef } from '@angular/core';
 import {Location, LocationStrategy, PathLocationStrategy} from '@angular/common';
 import { Router } from '@angular/router';
 
-import { ROUTES } from '../sidebar/sidebar.component';
 
 
 declare interface RouteInfo {
