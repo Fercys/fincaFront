@@ -13,8 +13,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class DashboardComponent implements OnInit {
   username:string=null;
   constructor() { }  
-
-  
   ngOnInit() {
     if(localStorage.getItem("username")){
       this.username=localStorage.getItem("username").toLowerCase();

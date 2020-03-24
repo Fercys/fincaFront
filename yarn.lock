@@ -1561,7 +1561,7 @@ chardet@^0.7.0:
   resolved "https://registry.npm.taobao.org/chardet/download/chardet-0.7.0.tgz#90094849f0937f2eedc2425d0d28a9e5f0cbad9e"
   integrity sha1-kAlISfCTfy7twkJdDSip5fDLrZ4=
 
-chart.js@^2.4.0, chart.js@^2.9.3:
+chart.js@^2.4.0:
   version "2.9.3"
   resolved "https://registry.npm.taobao.org/chart.js/download/chart.js-2.9.3.tgz#ae3884114dafd381bc600f5b35a189138aac1ef7"
   integrity sha1-rjiEEU2v04G8YA9bNaGJE4qsHvc=
@@ -1569,10 +1569,10 @@ chart.js@^2.4.0, chart.js@^2.9.3:
     chartjs-color "^2.1.0"
     moment "^2.10.2"
 
-chartist@0.11.2:
-  version "0.11.2"
-  resolved "https://registry.npm.taobao.org/chartist/download/chartist-0.11.2.tgz#cd8aed966a81cc950d280b91224f97e39cf602d1"
-  integrity sha1-zYrtlmqBzJUNKAuRIk+X45z2AtE=
+chartist@^0.11.4:
+  version "0.11.4"
+  resolved "https://registry.npm.taobao.org/chartist/download/chartist-0.11.4.tgz#e96e1c573d8b67478920a3a6ae52359d9fc8d8b7"
+  integrity sha1-6W4cVz2LZ0eJIKOmrlI1nZ/I2Lc=
 
 chartjs-color-string@^0.6.0:
   version "0.6.0"
@@ -4758,6 +4758,11 @@ ngx-loading@^2.0.1:
   version "2.0.1"
   resolved "https://registry.npm.taobao.org/ngx-loading/download/ngx-loading-2.0.1.tgz#f28c3e21fe161bb5868b1a2f786ebc1c75d706b4"
   integrity sha1-8ow+If4WG7WGixoveG68HHXXBrQ=
+
+ngx-select-dropdown@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.npm.taobao.org/ngx-select-dropdown/download/ngx-select-dropdown-1.4.0.tgz#0cc8449de5a16136d1d5f5b2815931bae130b674"
+  integrity sha1-DMhEneWhYTbR1fWygVkxuuEwtnQ=
 
 nice-try@^1.0.4:
   version "1.0.5"

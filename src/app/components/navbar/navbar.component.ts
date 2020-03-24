@@ -77,7 +77,6 @@ export class NavbarComponent implements OnInit {
         const body = document.getElementsByTagName('body')[0];
         const sidebar = document.getElementsByClassName('sidebar')[0];
         const mainPanel = document.getElementsByClassName('main-panel')[0];
-        console.log("sidebar:",sidebar)
 
         setTimeout(function(){
             toggleButton.classList.add('toggled');

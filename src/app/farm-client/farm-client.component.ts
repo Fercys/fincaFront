@@ -14,9 +14,7 @@ export class FarmClientComponent implements OnInit {
   constructor(private _route: ActivatedRoute) {  }
 
   ngOnInit() { 
-    this.id = this._route.snapshot.paramMap.get('id');  
-    console.log(this.id);
-      
+    this.id = this._route.snapshot.paramMap.get('id');      
     switch (this.id) { 
       case "63":
         this.url="https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3435/Campos/Agrifrut";

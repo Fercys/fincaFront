@@ -10,15 +10,15 @@ declare interface RouteInfo {
     active: boolean
 }
 export const ROUTES: RouteInfo[] = [
-   { path: '/user-profile', title: 'Perfil',  icon: 'Usuario-verde', class: '', active : false },
+    { path: '/user-profile', title: 'Perfil',  icon: 'Usuario-verde', class: '', active : false },
     { path: '/dashboard', title: 'Dashboard',  icon: 'Dashboard-Verde', class: '', active : false },
+    { path: '/users', title: 'Usuarios',  icon:'Usuario-verde', class: '', active : false },
     { path: '/weather-monitoring', title: 'Monitoreo del clima',  icon:'Graficador-libre-verde', class: '', active : false },
     { path: '/farms', title: 'Campos',  icon:'Campo-Verde', class: '' , active : false},
     { path: '/free-plotter', title: 'Analizador Grafico',  icon:'Graficador-libre-verde', class: '', active : false },
     { path: '/soil-analysis', title: 'Humedad de Suelo',  icon:'Suelo', class: '', active : false },
     { path: '/report-instalacion', title: 'Reporte de Instalación',  icon:'Reporte', class: '', active : false },
     { path: '/configuration', title: 'Configuración',  icon:'Configuracion', class: '', active : false }
-    // { path: '/icons', title: 'Icons',  icon:'bubble_chart', class: '' },
     // { path: '/maps', title: 'Maps',  icon:'location_on', class: '' },
     // { path: '/upgrade', title: 'Upgrade to PRO',  icon:'unarchive', class: 'active-pro' },
 ];
@@ -32,8 +32,25 @@ export class SidebarComponent implements OnInit {
   menuItems: any[];
   constructor( public router: Router) {  }
   ngOnInit() {
-    
-      this.menuItems = ROUTES.filter(menuItem => menuItem);
+    if(localStorage.getItem("username")){
+      switch (localStorage.getItem("username").toLowerCase()) {
+        case "agrifrut":
+            this.menuItems = ROUTES.filter(menuItem => {return menuItem.title!='Usuarios'?menuItem:null;});
+          break;
+        case "agrifrut@cdtec.cl":
+            this.menuItems = ROUTES.filter(menuItem => {return menuItem.title!='Usuarios'?menuItem:null;});
+          break;
+        case "santajuana":
+            this.menuItems = ROUTES.filter(menuItem => {return menuItem.title!='Usuarios'?menuItem:null;});
+          break;  
+        case "santajuana@cdtec.cl":
+            this.menuItems = ROUTES.filter(menuItem => {return menuItem.title!='Usuarios'?menuItem:null;});
+            break;      
+        default:
+            this.menuItems = ROUTES.filter(menuItem => menuItem);
+          break;
+      }
+    }
   }
   isMobileMenu() {
       if ($(window).width() > 991) {

@@ -1,6 +1,6 @@
 {
     "/api/*":{
-        "target":"https://api.dev.aparicioconsulting.com",
+        "target":"http://localhost:8000",
         "secure":false,
         "changeOrigin":true
     }

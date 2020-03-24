@@ -19,6 +19,9 @@ export class FarmsComponent implements OnInit {
     if(this.wiseconnService.farmId){
       this.wiseconnService.farmId=null;
     }
+    this.getFarms();
+  }
+  getFarms(){
     this.wiseconnService.getFarms().subscribe((response: any) => {
       this.farms = response.data?response.data:response;
       if(localStorage.getItem("username")){  
@@ -57,5 +60,4 @@ export class FarmsComponent implements OnInit {
       this.loading = false;
     });
   }
-
 }

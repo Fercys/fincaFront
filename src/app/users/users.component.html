@@ -2,47 +2,52 @@
   <div class="container-fluid">
       <div class="row">          
           <div class="col-md-12">
-            <div class="form-group pull-right">
-                <mat-form-field class="mat-input-custom">
-                    <input matInput placeholder="Buscar Campos..." [(ngModel)]="searchTable">
-                  </mat-form-field>
-            </div>
-              <div class="card card-plain">
+          	<div>
+          		<div class="d-inline-block">          		
+	            	<button mat-raised-button type="submit" [routerLink]="['/user-form']" class="btn-green">Registrar</button>
+	          	</div>
+	            <div class="form-group pull-right">            	
+	                <mat-form-field class="mat-input-custom">
+	                  	<input matInput placeholder="Buscar Usuario..." [(ngModel)]="searchTable">
+	                </mat-form-field>
+	            </div>	
+          	</div>          	
+            <div class="card card-plain">
                   <div class="card-header card-header-success">
-                      <h4 class="card-title mt-0">Campos</h4>
-                      <p class="card-category"> Datos de todos los campos registrados</p>
+                      <h4 class="card-title mt-0">Usuarios</h4>
+                      <p class="card-category"> Datos de todos los usuarios registrados</p>
                   </div>
                   <div class="card-body">
                       <div class="table-responsive">
                           <table class="table table-hover">
                               <thead class="">
                                   <th>
-                                      ID
+                                      Nombre
                                   </th>
                                   <th>
-                                      Nombre
+                                      Apellido
                                   </th>
                                   <th>
                                       Opciones
                                   </th>
                               </thead>
                               <tbody>
-                                  <tr *ngFor="let data of farms | filter:searchTable" [routerLink]="['/farmmap',data.id]" style="cursor: pointer;">
-                                      <td>
-                                          {{data.id}}
-                                      </td>
+                                  <tr *ngFor="let data of users | filter:searchTable" [routerLink]="['/user',data.id]" style="cursor: pointer;">
                                       <td>
                                           {{data.name}}
                                       </td>
+                                      <td>
+                                          {{data.last_name}}
+                                      </td>
                                       <td  style="cursor: pointer;">
-                                          <i class="material-icons" [routerLink]="['/farmmap',data.id]">find_in_page</i>
+                                          <i class="material-icons" [routerLink]="['/user',data.id]">find_in_page</i>
                                       </td>
                                   </tr>
                               </tbody>
                           </table>
                       </div>
                   </div>
-              </div>
+            </div>
           </div>
       </div>
   </div>
