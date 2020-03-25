@@ -1,12 +1,13 @@
 <div class="main-content user-from">
   <div class="container-fluid">
+  	<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>
     <div class="row">
       <h4 class="row-title">Registro de usuario</h4>
     </div>
     <div class="row">
       <div class="col-md-12">
         <div class="card">
-        <form>
+        <form #userForm="ngForm">
 	        <div class="card-header">
 	          <span> <img src="assets/icons/Info-General.svg" class="icon-title"></span>
 	          <h4 class="card-title row-sub">Información General</h4>
@@ -17,28 +18,25 @@
 	                <div class="col-md-6 justify-text-general">
 	                  <mat-label class="col-md-3">Nombre</mat-label>
 	                  <mat-form-field class="col-md-9 mat-input-custom">
-	                    <input matInput>
+	                    <input [(ngModel)]="user.name" name="name" matInput>
 	                  </mat-form-field>
 	                </div>
 	                <div class="col-md-6 justify-text-general">
 	                  <mat-label class="col-md-3">Apellido</mat-label>
 	                  <mat-form-field class="col-md-9 mat-input-custom">
-	                    <input matInput>
+	                    <input [(ngModel)]="user.last_name" name="last_name" matInput>
 	                  </mat-form-field>
 	                </div>
 	                <div class="col-md-6 justify-text-general">
 	                  <mat-label class="col-md-3">Empresa</mat-label>
 	                  <mat-form-field class="col-md-9 mat-input-custom">
-	                    <input matInput>
+	                    <input [(ngModel)]="user.business" name="business" matInput>
 	                  </mat-form-field>
 	                </div>
 	                <div class="col-md-6 justify-text-general">
 	                  <mat-label class="col-md-3">Oficina</mat-label>
-	                  <mat-form-field class="col-md-9 mat-select-custom" floatLabel="never">
-	                    <mat-label>Seleccionar</mat-label>
-	                    <mat-select>
-	                      <mat-option>Oficina 1</mat-option>
-	                    </mat-select>
+	                  <mat-form-field class="col-md-9 mat-input-custom">
+	                    <input [(ngModel)]="user.office" name="office" matInput>
 	                  </mat-form-field>
 	                </div>
 	            </div>
@@ -53,13 +51,13 @@
 	                <div class="col-md-6 justify-text-password">
 	                  <mat-label class="col-md-4">Nueva Contraseña</mat-label>
 	                  <mat-form-field class="col-md-8 mat-input-custom">
-	                    <input matInput>
+	                    <input [(ngModel)]="user.password" name="password" matInput type="password" >
 	                  </mat-form-field>
 	                </div>
 	                <div class="col-md-6 justify-text-password">
 	                  <mat-label class="col-md-5">Confirmar Contraseña</mat-label>
 	                  <mat-form-field class="col-md-7 mat-input-custom">
-	                    <input matInput>
+	                    <input [(ngModel)]="user.password_confirmation" name="password_confirmation" matInput type="password" >
 	                  </mat-form-field>
 	                </div>
 	            </div>
@@ -74,25 +72,25 @@
 	                <div class="col-md-6 justify-text-password">
 	                  <mat-label class="col-md-4">Email</mat-label>
 	                  <mat-form-field class="col-md-8 mat-input-custom">
-	                    <input matInput>
+	                    <input [(ngModel)]="user.email" name="email" matInput type="email">
 	                  </mat-form-field>
 	                </div>
 	                <div class="col-md-6 justify-text-password">
 	                  <mat-label class="col-md-4">Región</mat-label>
 	                  <mat-form-field class="col-md-8 mat-input-custom">
-	                    <input matInput>
+	                    <input [(ngModel)]="user.region" name="region" matInput>
 	                  </mat-form-field>
 	                </div>
 	                <div class="col-md-6 justify-text-password">
 	                  <mat-label class="col-md-4">Teléfono</mat-label>
 	                  <mat-form-field class="col-md-8 mat-input-custom">
-	                    <input matInput>
+	                    <input [(ngModel)]="user.phone" name="phone" matInput>
 	                  </mat-form-field>
 	                </div>
 	                <div class="col-md-6 justify-text-password">
 	                  <mat-label class="col-md-4">Ciudad</mat-label>
 	                  <mat-form-field class="col-md-8 mat-input-custom">
-	                    <input matInput>
+	                    <input [(ngModel)]="user.city" name="city" matInput>
 	                  </mat-form-field>
 	                </div>
               	</div>
@@ -108,7 +106,7 @@
 						<div class="form-group">
 							<label style="font-weight: bold">Rol</label>
 							<div class="input-group">
-								<ngx-select-dropdown
+							<ngx-select-dropdown
 								[(ngModel)]="selectedRoles"
 								[ngModelOptions]="{standalone: true}"
 								(change)="selectionChanged($event,'role')"
@@ -125,7 +123,7 @@
 						<div class="form-group">
 							<label style="font-weight: bold">Campos</label>
 							<div class="input-group">
-								<ngx-select-dropdown
+							<ngx-select-dropdown
 								[(ngModel)]="selectedFarms"
 								[ngModelOptions]="{standalone: true}"
 								[multiple]="true"
@@ -139,7 +137,7 @@
 						</div>
 					</div> 
 	            </div>
-	            <button mat-raised-button type="submit" class=" btn-green pull-right">Actualizar</button>
+	            <button mat-raised-button type="submit" class="btn-green pull-right" (click)="create()">{{textBtn}}</button>
 	            <div class="clearfix"></div>
 	        </div>
 	    </form>

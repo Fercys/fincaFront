@@ -32,7 +32,7 @@
                                   </th>
                               </thead>
                               <tbody>
-                                  <tr *ngFor="let data of users | filter:searchTable" [routerLink]="['/user',data.id]" style="cursor: pointer;">
+                                  <tr *ngFor="let data of users | filter:searchTable" style="cursor: pointer;">
                                       <td>
                                           {{data.name}}
                                       </td>
@@ -40,7 +40,7 @@
                                           {{data.last_name}}
                                       </td>
                                       <td  style="cursor: pointer;">
-                                          <i class="material-icons" [routerLink]="['/user',data.id]">find_in_page</i>
+                                          <i class="material-icons" [routerLink]="['/user-form',data.id]">edit</i>
                                       </td>
                                   </tr>
                               </tbody>

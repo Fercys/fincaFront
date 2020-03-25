@@ -8,7 +8,7 @@ import { environment } from "../../environments/environment";
 @Injectable({
   providedIn: 'root'
 })
-export class UsersService {
+export class RoleService {
 
   baseurl = environment.base_url;
   prodEnv = environment.production;
@@ -22,8 +22,8 @@ export class UsersService {
       })
     }
   }  
-  getUsers(): Observable<any> { 
-    return this.http.get<any>(this.baseurl + '/users', this.httpOptions)
+  getRoles(): Observable<any> { 
+    return this.http.get<any>(this.baseurl + '/roles', this.httpOptions)
     .pipe(
       retry(1),
       catchError(this.errorHandl)

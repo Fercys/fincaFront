@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UsersService } from '../services/users.service';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-users',
@@ -9,20 +9,16 @@ import { UsersService } from '../services/users.service';
 export class UsersComponent implements OnInit {
   searchTable:any;
   loading:boolean=false;
-  users:any[]=[{
-  	name:"reinaldo",
-  	last_name:"gonzalez"
-  }];
-  constructor(private usersService: UsersService,) { }
+  users:any[]=[];
+  constructor(private userService: UserService,) { }
 
   ngOnInit() {
     this.getUsers();
   }
   getUsers(){
     this.loading = true;
-  	this.usersService.getUsers().subscribe((response: any) => {
-      this.users = response.data?response.data:response;
-      console.log("users:",this.users)      
+  	this.userService.getUsers().subscribe((response: any) => {
+      this.users = response.data?response.data:response;     
       this.loading = false;
     });
   }
