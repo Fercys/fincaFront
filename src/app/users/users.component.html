@@ -41,6 +41,7 @@
                                       </td>
                                       <td  style="cursor: pointer;">
                                           <i class="material-icons" [routerLink]="['/user-form',data.id]">edit</i>
+                                          <i class="material-icons" (click)="delete(data.id)">delete</i>
                                       </td>
                                   </tr>
                               </tbody>

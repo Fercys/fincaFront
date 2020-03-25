@@ -50,5 +50,20 @@ export class UserService {
       retry(1),
     );
   }
+  update(user_data: User,farms_data:Array<any>): Observable<any> {
+    return this.http.post<any>(this.baseurl + '/users/update/'+ user_data.id, {
+            user_data,
+            farms_data
+        }, this.httpOptions)
+    .pipe(
+      retry(1),
+    );
+  }
+  delete(id:number): Observable<any> {
+    return this.http.delete<any>(this.baseurl + '/users/delete/'+id, this.httpOptions)
+    .pipe(
+      retry(1),
+    );
+  }
 }
 

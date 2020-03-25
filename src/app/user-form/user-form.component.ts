@@ -127,17 +127,31 @@ export class UserFormComponent implements OnInit {
 				break;
 		}
 	}
-	create(){
+	save(){
 		this.loading=true;
-		this.userService.create(this.user, this.selectedFarms).subscribe((response: any) => {
-			this.loading=false;
-	   		let data = response.data?response.data:response;
-	   		this.notificationService.showSuccess('Operación realizada',response.message)
-	      	this.router.navigate(['/users']);
-	   	},
-	   	error => {
-			this.loading=false;
-	   		this.notificationService.showError('Error',error.error)
-	    });
+		if(this.user.id){
+			this.userService.update(this.user, this.selectedFarms).subscribe((response: any) => {
+				this.loading=false;
+		   		let data = response.data?response.data:response;
+		   		this.notificationService.showSuccess('Operación realizada',response.message)
+		      	this.router.navigate(['/users']);
+		   	},
+		   	error => {
+				this.loading=false;
+		   		this.notificationService.showError('Error',error.error)
+		    });    
+	    } 
+	    else{
+	      	this.userService.create(this.user, this.selectedFarms).subscribe((response: any) => {
+				this.loading=false;
+		   		let data = response.data?response.data:response;
+		   		this.notificationService.showSuccess('Operación realizada',response.message)
+		      	this.router.navigate(['/users']);
+		   	},
+		   	error => {
+				this.loading=false;
+		   		this.notificationService.showError('Error',error.error)
+		    });     
+	    }		
 	}
 }
