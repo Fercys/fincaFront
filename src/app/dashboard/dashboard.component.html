@@ -1,4 +1,4 @@
 
 
 <app-admin-dashboard *ngIf="username=='admin' || username=='admin@cdtec.cl'" ></app-admin-dashboard>
-<app-farm-map *ngIf="username!='admin'"></app-farm-map>
+<app-farm-map *ngIf="username!='admin' && username!='admin@cdtec.cl'"></app-farm-map>

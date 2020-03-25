@@ -16,6 +16,8 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     if(localStorage.getItem("username")){
       this.username=localStorage.getItem("username").toLowerCase();
+      console.log(this.username);
+      
     }    
   }
 }
