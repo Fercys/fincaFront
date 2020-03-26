@@ -21,9 +21,9 @@
                 </div>
             </form> -->
             <ul class="navbar-nav">
-                <li class="nav-item">
+                <li *ngIf="user" class="nav-item">
                     <a class="nav-link link-navbar-user" href="javascript:void(0)">
-                        ¡Bienvenido , <b> {{username}}</b>!
+                        ¡Bienvenido , <b> {{user.name}}</b>!
                     </a>
                 </li> 
                 <li class="nav-item dropdown">

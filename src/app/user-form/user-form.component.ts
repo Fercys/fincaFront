@@ -56,18 +56,19 @@ export class UserFormComponent implements OnInit {
 			this.textBtn="Actualizar";
 			this.user = response.data?response.data:response;
 			this.getRoleSelected(this.user);
-			this.getFarmsSelected(this.user.id);
+			this.getFarmsByUser(this.user.id);
 		},
 	   	error => {
+	   		console.log("error:",error)
 			this.loading=false;
 	    });
 	}
 	getRoleSelected(user:any){
 		this.selectedRoles=this.roles.find(element => element.id == user.role.id);
 	}
-	getFarmsSelected(id:number){
+	getFarmsByUser(id:number){
 		this.loading=true;
-		this.userService.getFarmsSelected(id).subscribe((response: any) => {
+		this.userService.getFarmsByUser(id).subscribe((response: any) => {
 			this.loading=false;
 			let selectedFarms = response.data?response.data:response;
         	for (var i = 0; i < selectedFarms.length; i++) {
@@ -75,6 +76,7 @@ export class UserFormComponent implements OnInit {
 	 		}
 		},
 	   	error => {
+	   		console.log("error:",error)
 			this.loading=false;
 	    });
 	}
@@ -93,6 +95,7 @@ export class UserFormComponent implements OnInit {
 	        this.roles=options;
 		},
 	   	error => {
+	   		console.log("error:",error)
 			this.loading=false;
 	    });
 	}
@@ -111,6 +114,7 @@ export class UserFormComponent implements OnInit {
 	        this.farms=options;
 	   	},
 	   	error => {
+	   		console.log("error:",error)
 			this.loading=false;
 	    });
 	}
@@ -134,6 +138,7 @@ export class UserFormComponent implements OnInit {
 			this.notificationService.showSuccess('Operación realizada',response.message)
 			this.router.navigate(['/users']);
 		},error => {
+	   		console.log("error:",error)
 			this.loading=false;
 			this.notificationService.showError('Error',error.error)
 		});
@@ -147,6 +152,7 @@ export class UserFormComponent implements OnInit {
 		   		this.registerFarms(data);		   		
 		   	},
 		   	error => {
+	   			console.log("error:",error)
 				this.loading=false;
 		   		this.notificationService.showError('Error',error.error)
 		    });    
@@ -158,6 +164,7 @@ export class UserFormComponent implements OnInit {
 		   		this.registerFarms(data);
 		   	},
 		   	error => {
+	   			console.log("error:",error)
 				this.loading=false;
 		   		this.notificationService.showError('Error',error.error)
 		    });     

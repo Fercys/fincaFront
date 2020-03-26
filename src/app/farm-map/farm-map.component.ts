@@ -1,15 +1,14 @@
 import { Component, OnInit,ViewChild,ElementRef ,Inject  } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { WiseconnService } from 'app/services/wiseconn.service';
-import { element } from 'protractor';
-import { NgbModal, NgbDate, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
-
-import Swal from 'sweetalert2'
-
-import { WeatherService } from 'app/services/weather.service';
-
-
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { NgbModal, NgbDate, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
+import { element } from 'protractor';
+import Swal from 'sweetalert2';
+import * as bcrypt from 'bcryptjs';
+//services
+import { WiseconnService } from 'app/services/wiseconn.service';
+import { WeatherService } from 'app/services/weather.service';
+import { UserService } from 'app/services/user.service';
 
 @Component({
   selector: 'app-farm-map',
@@ -39,23 +38,37 @@ export class FarmMapComponent implements OnInit {
   public climaMax = [];
   public climaMin = [];
 
+  public userLS:any=null;
+  public user:any=null;
+
   constructor(
     private _route: ActivatedRoute,
     private wiseconnService: WiseconnService,
+    public weatherService: WeatherService,
+    private userService:UserService,
     public modalService: NgbModal,
     private router: Router,
-    public weatherService: WeatherService,
     private calendar: NgbCalendar,
     private dialogs: MatDialog) {
   }
 
   ngOnInit() {
-    this.getFarms();
+    if(localStorage.getItem("user")){
+      this.userLS=JSON.parse(localStorage.getItem("user"));
+      if(bcrypt.compareSync(this.userLS.plain, this.userLS.hash)){
+        this.user=JSON.parse(this.userLS.plain);
+        this.getFarmsByUser();
+      }else{
+        this.router.navigate(['/login']);
+      }
+    }else{
+      this.router.navigate(['/login']);
+    }
   }
-  getFarms() {
-    this.wiseconnService.getFarms().subscribe((response: any) => {
-      this.farms = response.data?response.data:response;
-      this.filterFarmsByUser();
+  getFarmsByUser(){      
+    this.loading = true;
+    this.userService.getFarmsByUser(this.user.id).subscribe((response: any) => {
+      this.farms = response.data?response.data:response; 
       if(this._route.snapshot.paramMap.get('id')){
         this.farm=this.getFarm(this._route.snapshot.paramMap.get('id'));
       }else if(this.farms.length>0){
@@ -108,44 +121,9 @@ export class FarmMapComponent implements OnInit {
         this.getWeather();
       }else{
         Swal.fire({icon: 'error',title: 'Oops...',text: 'Farm no existente'});
-      }    
+      }        
+      this.loading = false;
     });
-  }
-
-  filterFarmsByUser(){
-    if(localStorage.getItem("username")){      
-      switch (localStorage.getItem("username").toLowerCase()) {
-        case "agrifrut":
-          this.farms = this.farms.filter((element) => {
-            let id= element.id_wiseconn?element.id_wiseconn:element.id;
-            return id == 185 || id == 2110 || id == 1378 || id == 520
-          })
-          break;
-          case "agrifrut@cdtec.cl":
-          this.farms = this.farms.filter((element) => {
-            let id= element.id_wiseconn?element.id_wiseconn:element.id;
-            return id == 185 || id == 2110 || id == 1378 || id == 520
-          })
-          break;
-        case "santajuana":
-          this.farms = this.farms.filter((element) => {
-            let id= element.id_wiseconn?element.id_wiseconn:element.id;
-            return id == 719
-          })
-          break;
-          case "santajuana@cdtec.cl":
-            this.farms = this.farms.filter((element) => {
-              let id= element.id_wiseconn?element.id_wiseconn:element.id;
-              return id == 719
-            })
-            break;
-        default:
-          // code...
-          break;
-      }
-    }else{
-      this.router.navigate(['/login']);
-    }
   }
   getFarm(id){
     let farm = this.farms.find(element =>{

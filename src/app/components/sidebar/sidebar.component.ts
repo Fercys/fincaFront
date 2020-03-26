@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import * as bcrypt from 'bcryptjs';
 
 declare const $: any;
 declare interface RouteInfo {
@@ -33,33 +34,25 @@ export const ROUTESADMIN: RouteInfo[] = [
   styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent implements OnInit {
-  menuItems: any[];
-  username="";
+  public menuItems: any[];
+  public userLS:any=null;
+  public user:any=null;
   constructor( public router: Router) {  }
   ngOnInit() {
-    if(localStorage.getItem("username")){
-      switch (localStorage.getItem("username").toLowerCase()) {
-        case "agrifrut":
-            this.username="Agrifrut";
-          break;
-          case "agrifrut@cdtec.cl":
-            this.username="Agrifrut";
-          break;
-        case "santajuana":
-            this.username="SantaJuana";
-          break;  
-          case "santajuana@cdtec.cl":
-            this.username="SantaJuana";
-            break;      
-        default:
-            this.username="Admin";
-          break;
-      }
-      if(this.username == "Admin"){
-        this.menuItems = ROUTESADMIN.filter(menuItem => menuItem);
+    if(localStorage.getItem("user")){
+      this.userLS=JSON.parse(localStorage.getItem("user"));
+      if(bcrypt.compareSync(this.userLS.plain, this.userLS.hash)){
+        this.user=JSON.parse(this.userLS.plain);
+        if(this.user.role.id==1){//admin
+          this.menuItems = ROUTESADMIN.filter(menuItem => menuItem);
+        }else{
+          this.menuItems = ROUTESCLIENTES.filter(menuItem => menuItem);
+        }
       }else{
-        this.menuItems = ROUTESCLIENTES.filter(menuItem => menuItem);
+        this.router.navigate(['/login']);
       }
+    }else{
+      this.router.navigate(['/login']);
     }
   }
   isMobileMenu() {

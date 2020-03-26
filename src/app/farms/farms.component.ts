@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import * as bcrypt from 'bcryptjs';
+//services
 import { WiseconnService } from '../services/wiseconn.service';
+import { UserService } from 'app/services/user.service';
 
 @Component({
   selector: 'app-farms',
@@ -10,53 +13,47 @@ import { WiseconnService } from '../services/wiseconn.service';
 export class FarmsComponent implements OnInit {
   public farms;
   public loading = false;
-  searchTable:any;
-  constructor(private wiseconnService: WiseconnService,
-    private router: Router,) { }
+  public searchTable:any;
+  public userLS:any=null;
+  public user:any=null;
+  constructor(
+    private wiseconnService: WiseconnService,
+    private userService:UserService,
+    private router: Router,
+  ) { }
 
   ngOnInit() { 
-    this.loading = true;
     if(this.wiseconnService.farmId){
       this.wiseconnService.farmId=null;
     }
-    this.getFarms();
-  }
-  getFarms(){
-    this.wiseconnService.getFarms().subscribe((response: any) => {
-      this.farms = response.data?response.data:response;
-      if(localStorage.getItem("username")){  
-        switch (localStorage.getItem("username").toLowerCase()) {
-          case "agrifrut":
-            this.farms = this.farms.filter((element) => {
-              let id= element.id_wiseconn?element.id_wiseconn:element.id;
-              return id == 185 || id == 2110 || id == 1378 || id == 520
-            })
-            break;
-            case "agrifrut@cdtec.cl":
-            this.farms = this.farms.filter((element) => {
-              let id= element.id_wiseconn?element.id_wiseconn:element.id;
-              return id == 185 || id == 2110 || id == 1378 || id == 520
-            })
-            break;
-          case "santajuana":
-            this.farms = this.farms.filter((element) => {
-              let id= element.id_wiseconn?element.id_wiseconn:element.id;
-              return id == 719
-            })
-            break;
-            case "santajuana@cdtec.cl":
-              this.farms = this.farms.filter((element) => {
-                let id= element.id_wiseconn?element.id_wiseconn:element.id;
-                return id == 719
-              })
-              break;
-          default:
-            // code...
-            break;
+    if(localStorage.getItem("user")){
+        this.userLS=JSON.parse(localStorage.getItem("user"));
+        if(bcrypt.compareSync(this.userLS.plain, this.userLS.hash)){
+          this.user=JSON.parse(this.userLS.plain);
+          if(this.user.role.id==1){//admin
+            this.getFarms();
+          }else{
+            this.getFarmsByUser();
+          }
+        }else{
+          this.router.navigate(['/login']);
         }
-      }else{        
+      }else{
         this.router.navigate(['/login']);
       }
+  }
+  getFarms(){      
+    this.loading = true;
+    this.wiseconnService.getFarms().subscribe((response: any) => {
+      this.farms = response.data?response.data:response;      
+      this.loading = false;
+    });
+  }
+  getFarmsByUser(){      
+    this.loading = true;
+    this.userService.getFarmsByUser(this.user.id).subscribe((response: any) => {
+      console.log("response:",response)
+      this.farms = response.data?response.data:response;      
       this.loading = false;
     });
   }

@@ -1,4 +1,5 @@
 <div class="login-background" fxLayoutAlign="center center">
+<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>
 <form [formGroup]="myForm"  (submit)= LoginUser($event)  fxLayout="column" fxFlex.xs="80%" fxFlex.sm="60%" fxFlex.sm="60%" fxFlex.lg="30%">
 	<mat-card class="login">
 		<mat-card-header fxLayoutAlign="center center">
@@ -13,7 +14,7 @@
 					<mat-icon>person</mat-icon>
 				
 					<mat-form-field  fxFlex="80%" >
-						<input matInput placeholder="Usuario" formControlName="user" id='usuario'>
+						<input matInput type="email" placeholder="email" formControlName="email" >
 					</mat-form-field>  
 				</div>
 				<div fxLayout="row" fxLayoutAlign="center center" fxLayoutWrap fxLayoutGap="5px">
@@ -21,7 +22,7 @@
 					<img src="assets/icons/Pass.png" style="width: 17px;height: 20px;margin-right:6px">
 				
 					<mat-form-field  fxFlex="80%" >
-						<input matInput type="password" placeholder="Password" formControlName="password" id='password'>
+						<input matInput type="password" placeholder="Password" formControlName="password" >
 					</mat-form-field>  
 				</div>
 				<div>

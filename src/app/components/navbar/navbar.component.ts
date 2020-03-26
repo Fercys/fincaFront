@@ -1,8 +1,7 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
 import {Location, LocationStrategy, PathLocationStrategy} from '@angular/common';
 import { Router } from '@angular/router';
-
-
+import * as bcrypt from 'bcryptjs';
 
 declare interface RouteInfo {
     path: string;
@@ -23,12 +22,13 @@ export const SidebarRoute: RouteInfo[] = [
 })
 export class NavbarComponent implements OnInit {
     private listTitles: any[];
-    location: Location;
-      mobile_menu_visible: any = 0;
+    public location: Location;
+    public mobile_menu_visible: any = 0;
     private toggleButton: any;
     private sidebarVisible: boolean;
-    public username:string=null;
-    activeHover = false;
+    public activeHover = false;
+    public userLS:any=null;
+    public user:any=null;
 
     constructor(location: Location,  private element: ElementRef, private router: Router) {
       this.location = location;
@@ -36,39 +36,28 @@ export class NavbarComponent implements OnInit {
     }
 
     ngOnInit(){
-      //this.username=localStorage.getItem("username");
-      if(localStorage.getItem("username")){
-        switch (localStorage.getItem("username").toLowerCase()) {
-          case "agrifrut":
-              this.username="Agrifrut";
-            break;
-            case "agrifrut@cdtec.cl":
-              this.username="Agrifrut";
-            break;
-          case "santajuana":
-              this.username="SantaJuana";
-            break;  
-            case "santajuana@cdtec.cl":
-              this.username="SantaJuana";
-              break;      
-          default:
-              this.username="Admin";
-            break;
+      if(localStorage.getItem("user")){
+        this.userLS=JSON.parse(localStorage.getItem("user"));
+        if(bcrypt.compareSync(this.userLS.plain, this.userLS.hash)){
+          this.user=JSON.parse(this.userLS.plain);
+          this.listTitles = SidebarRoute.filter(listTitle => listTitle);
+          const navbar: HTMLElement = this.element.nativeElement;
+          this.toggleButton = navbar.getElementsByClassName('navbar-toggler')[0];
+          this.router.events.subscribe((event) => {
+            this.sidebarClose();
+            var $layer = document.getElementsByClassName('close-layer')[0];
+            if ($layer) {
+              $layer.remove();
+              this.mobile_menu_visible = 0;
+            }
+          });
+        }else{
+          this.router.navigate(['/login']);
         }
       }else{
         this.router.navigate(['/login']);
       }
-      this.listTitles = SidebarRoute.filter(listTitle => listTitle);
-      const navbar: HTMLElement = this.element.nativeElement;
-      this.toggleButton = navbar.getElementsByClassName('navbar-toggler')[0];
-      this.router.events.subscribe((event) => {
-        this.sidebarClose();
-         var $layer = document.getElementsByClassName('close-layer')[0];
-         if ($layer) {
-           $layer.remove();
-           this.mobile_menu_visible = 0;
-         }
-     });
+      
     }
 
     sidebarOpen() {      

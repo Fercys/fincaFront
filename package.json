@@ -11,11 +11,6 @@
     "e2e": "ng e2e",
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && ng serve -o"
   },
-  "engines": {
-    "node": "6.11.1",
-    "npm": "3.10.9",
-    "yarn": "^0.14.0"
-  },
   "private": true,
   "dependencies": {
     "@agm/core": "1.0.0-beta.6",
@@ -35,6 +30,7 @@
     "@ng-bootstrap/ng-bootstrap": "^5.1.5",
     "ajv": "6.10.0",
     "arrive": "2.4.1",
+    "bcryptjs": "^2.4.3",
     "bootstrap": "4.3.1",
     "bootstrap-material-design": "4.1.2",
     "bootstrap-notify": "3.1.3",

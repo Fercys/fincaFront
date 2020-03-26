@@ -3,10 +3,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal,ModalDismissReasons , NgbDate, NgbCalendar, NgbDateParserFormatter} from '@ng-bootstrap/ng-bootstrap';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import Swal from 'sweetalert2';
-
+import * as bcrypt from 'bcryptjs';
 import * as moment from "moment";
 
 import { WiseconnService } from 'app/services/wiseconn.service';
+import { UserService } from 'app/services/user.service';
 
 //graficas
 // tslint:disable-next-line:no-var-requires
@@ -23,6 +24,8 @@ require('highcharts/highcharts-more')(Highcharts);
 	styleUrls: ['./free-plotter.component.scss']
 })
 export class FreePlotterComponent implements OnInit {
+  	public userLS:any=null;
+  	public user:any=null;
 	public loading:boolean=false;
 	public farms:any[]=[];
 	public weatherZones:any[]=[];
@@ -163,56 +166,42 @@ export class FreePlotterComponent implements OnInit {
 	]
 	constructor(
 		public wiseconnService: WiseconnService,
+    	public userService:UserService,
 		public router: Router,
 		public calendar: NgbCalendar, 
 		public formatter: NgbDateParserFormatter) { }
 
 	ngOnInit() {//rango de fechas para graficas
 		this.dateRangeByDefault();
-		this.getFarms();
+		if(localStorage.getItem("user")){
+	        this.userLS=JSON.parse(localStorage.getItem("user"));
+	        if(bcrypt.compareSync(this.userLS.plain, this.userLS.hash)){
+	          this.user=JSON.parse(this.userLS.plain);
+	          if(this.user.role.id==1){//admin
+	            this.getFarms();
+	          }else{
+	            this.getFarmsByUser();
+	          }
+	        }else{
+	          this.router.navigate(['/login']);
+	        }
+	      }else{
+	        this.router.navigate(['/login']);
+	      }
   		this.highchartsShow();
 	}
-	filterFarmsByUser(){
-	    if(localStorage.getItem("username")){      
-	      switch (localStorage.getItem("username").toLowerCase()) {
-	        case "agrifrut":
-	          this.farms = this.farms.filter((element) => {
-	            let id= element.id_wiseconn?element.id_wiseconn:element.id;
-	            return id == 185 || id == 2110 || id == 1378 || id == 520
-	          })
-	          break;
-	          case "agrifrut@cdtec.cl":
-	          this.farms = this.farms.filter((element) => {
-	            let id= element.id_wiseconn?element.id_wiseconn:element.id;
-	            return id == 185 || id == 2110 || id == 1378 || id == 520
-	          })
-	          break;
-	        case "santajuana":
-	          this.farms = this.farms.filter((element) => {
-	            let id= element.id_wiseconn?element.id_wiseconn:element.id;
-	            return id == 719
-	          })
-	          break;
-	          case "santajuana@cdtec.cl":
-	            this.farms = this.farms.filter((element) => {
-	              let id= element.id_wiseconn?element.id_wiseconn:element.id;
-	              return id == 719
-	            })
-	            break;
-	        default:
-	          // code...
-	          break;
-	      }
-	    }else{
-	      this.router.navigate(['/login']);
-	    }
-	  }
+	getFarmsByUser(){      
+	  	this.loading = true;
+	  	this.userService.getFarmsByUser(this.user.id).subscribe((response: any) => {
+	  	  	this.farms = response.data?response.data:response;      
+	  	  	this.loading = false;
+	  	});
+	}
 	getFarms() {
 		this.loading=true;
 		this.wiseconnService.getFarms().subscribe((response: any) => {			
 			this.loading=false;
 			this.farms = response.data?response.data:response;
-			this.filterFarmsByUser();
 		})
 	}
 	getZones(id:number=0) {
@@ -240,6 +229,7 @@ export class FreePlotterComponent implements OnInit {
 			this.farmSelected=this.farms.filter((element)=>{
 				return element.id == id
 			})[0];
+      		this.wiseconnService.farmId=id;
 			this.getZones(id);
 			break;
 			case "zone":
@@ -343,6 +333,7 @@ export class FreePlotterComponent implements OnInit {
 		if(this.zoneSelected){
 			this.loading = true;
 			this.wiseconnService.getMeasuresOfZones(this.zoneSelected.id).subscribe((response) => {
+				this.loading = false;
 				let data=response.data?response.data:response;
 				let barFlag=false;
                 let lineFlag=false;
@@ -357,6 +348,7 @@ export class FreePlotterComponent implements OnInit {
                     }
                    	if(this.temperatureId&&this.humidityId){
                           lineFlag=true;
+                          this.loading = true;
                           this.wiseconnService.getDataByMeasure(this.temperatureId,this.dateRange).subscribe((response) => {
                             let temperatureData=response.data?response.data:response;
                             this.wiseconnService.getDataByMeasure(this.humidityId,this.dateRange).subscribe((response) => {
@@ -422,6 +414,7 @@ export class FreePlotterComponent implements OnInit {
                   }
                   if(this.rainId&&this.et0Id){
                     barFlag=true;
+                    this.loading = true;
                     this.wiseconnService.getDataByMeasure(this.rainId,this.dateRange).subscribe((response) => {
                       let rainData=response.data?response.data:response;
                       this.wiseconnService.getDataByMeasure(this.et0Id,this.dateRange).subscribe((response) => {

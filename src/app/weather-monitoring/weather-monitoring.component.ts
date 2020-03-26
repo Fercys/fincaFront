@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef , Inject, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { element } from 'protractor';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { NgbModal,ModalDismissReasons , NgbDate, NgbCalendar, NgbDateParserFormatter} from '@ng-bootstrap/ng-bootstrap';
 
 //notificaciones
@@ -8,9 +9,10 @@ import Swal from 'sweetalert2'
 //servicios
 import { WiseconnService } from 'app/services/wiseconn.service';
 import { WeatherService } from 'app/services/weather.service';
+import { UserService } from 'app/services/user.service';
 
+import * as bcrypt from 'bcryptjs';
 import * as moment from "moment";
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 
 //graficas
 // tslint:disable-next-line:no-var-requires
@@ -27,6 +29,8 @@ require('highcharts/highcharts-more')(Highcharts);
   styleUrls: ['./weather-monitoring.component.scss']
 })
 export class WeatherMonitoringComponent implements OnInit,OnDestroy {
+  public userLS:any=null;
+  public user:any=null;
   @ViewChild('mapRef', { static: true }) mapElement: ElementRef;
   private google_api_key = 'AIzaSyDx_dMfo0VnR_2CsF_wNw9Ayjd_HO6sMB0';
   public loading = false;
@@ -184,22 +188,36 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
   constructor(
     private _route: ActivatedRoute,
     private wiseconnService: WiseconnService,
+    public weatherService: WeatherService,
+    public userService: UserService,
     public modalService: NgbModal,
     private router: Router,
-    public weatherService: WeatherService,
     private calendar: NgbCalendar,
     private formatter: NgbDateParserFormatter,
     private dialogs: MatDialog) {
   }
 
   ngOnInit() {
-    this.getFarms();
+    if(localStorage.getItem("user")){
+          this.userLS=JSON.parse(localStorage.getItem("user"));
+          if(bcrypt.compareSync(this.userLS.plain, this.userLS.hash)){
+            this.user=JSON.parse(this.userLS.plain);
+            if(this.user.role.id==1){//admin
+              this.getFarms();
+            }else{
+              this.getFarmsByUser();
+            }
+          }else{
+            this.router.navigate(['/login']);
+          }
+        }else{
+          this.router.navigate(['/login']);
+        }
     this.highchartsShow();
   }
   getFarms() {
     this.wiseconnService.getFarms().subscribe((response: any) => {
       this.farms = response.data?response.data:response;
-      this.filterFarmsByUser();
       if(this.farms.length>0){
         this.farm=this.farms[0];        
         if(localStorage.getItem("lastFarmId")!=undefined && (parseInt(localStorage.getItem("lastFarmId"))==parseInt(this.farm.id))){
@@ -219,40 +237,12 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
       }      
     })
   }
-  filterFarmsByUser(){
-    if(localStorage.getItem("username")){      
-      switch (localStorage.getItem("username").toLowerCase()) {
-        case "agrifrut":
-          this.farms = this.farms.filter((element) => {
-            let id= element.id_wiseconn?element.id_wiseconn:element.id;
-            return id == 185 || id == 2110 || id == 1378 || id == 520
-          })
-          break;
-          case "agrifrut@cdtec.cl":
-          this.farms = this.farms.filter((element) => {
-            let id= element.id_wiseconn?element.id_wiseconn:element.id;
-            return id == 185 || id == 2110 || id == 1378 || id == 520
-          })
-          break;
-        case "santajuana":
-          this.farms = this.farms.filter((element) => {
-            let id= element.id_wiseconn?element.id_wiseconn:element.id;
-            return id == 719
-          })
-          break;
-          case "santajuana@cdtec.cl":
-            this.farms = this.farms.filter((element) => {
-              let id= element.id_wiseconn?element.id_wiseconn:element.id;
-              return id == 719
-            })
-            break;
-        default:
-          // code...
-          break;
-      }
-    }else{
-      this.router.navigate(['/login']);
-    }
+  getFarmsByUser(){      
+      this.loading = true;
+      this.userService.getFarmsByUser(this.user.id).subscribe((response: any) => {
+          this.farms = response.data?response.data:response;      
+          this.loading = false;
+      });
   }
   getFarm(id){
     return this.farms.find(element =>{

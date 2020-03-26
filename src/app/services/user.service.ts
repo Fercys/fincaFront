@@ -23,6 +23,12 @@ export class UserService {
       })
     }
   }  
+  login(credentials): Observable<any> { 
+    return this.http.post<any>(this.baseurl + '/auth/login',credentials, this.httpOptions)
+    .pipe(
+      retry(1),
+    )
+  }
   getUsers(): Observable<any> { 
     return this.http.get<any>(this.baseurl + '/users', this.httpOptions)
     .pipe(
@@ -35,7 +41,7 @@ export class UserService {
       retry(1),
     )
   }
-  getFarmsSelected(id:number): Observable<any> { 
+  getFarmsByUser(id:number): Observable<any> { 
     return this.http.get<any>(this.baseurl + '/users/'+id+'/getfarms', this.httpOptions)
     .pipe(
       retry(1),

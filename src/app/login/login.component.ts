@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy,AfterViewInit} from '@angular/core';
 import { FormBuilder,FormGroup, FormArray,  Validators,FormControl } from '@angular/forms';
+import { UserService } from 'app/services/user.service';
 import { Router } from '@angular/router';
-import Swal from 'sweetalert2'
-
-
+import Swal from 'sweetalert2';
+import * as bcrypt from 'bcryptjs';
 @Component({
 	selector: 'app-login',
 	templateUrl: './login.component.html',
@@ -14,6 +14,7 @@ import Swal from 'sweetalert2'
 })
 
 export class LoginComponent implements OnInit,OnDestroy,AfterViewInit {
+	loading:boolean=false;
 	myForm: FormGroup;
 	name = new FormControl('');
 	Validator: Validators;
@@ -21,6 +22,7 @@ export class LoginComponent implements OnInit,OnDestroy,AfterViewInit {
     screenHeight: number;
     screenWidth: number;
 	login = document.getElementsByClassName('login-background') as HTMLCollectionOf<HTMLElement>;
+	user:any=null;
 	onResize(event) {
 		this.screenHeight = window.innerHeight;
 		this.screenWidth = window.innerWidth;
@@ -31,7 +33,8 @@ export class LoginComponent implements OnInit,OnDestroy,AfterViewInit {
 	constructor(
 		private _router: Router, 
 		private fb: FormBuilder,
-		private elementRef: ElementRef
+		private elementRef: ElementRef,
+  		public userService: UserService,
     	) { }
 
 	ngOnInit() {
@@ -43,7 +46,7 @@ export class LoginComponent implements OnInit,OnDestroy,AfterViewInit {
 		document.body.className = "selector";
 
 		this.myForm = this.fb.group({
-			user:['',[Validators.required,Validators.email]],
+			email:['',[Validators.required,Validators.email]],
 			password:['',Validators.required],
 		})
 		this.myForm.valueChanges.subscribe(console.log)
@@ -58,26 +61,27 @@ export class LoginComponent implements OnInit,OnDestroy,AfterViewInit {
 	ngAfterViewInit(){
 		this.elementRef.nativeElement.ownerDocument.body.style.backgroundImage = './assets/img/backgrounds/2.jpg';
 	}
-
 	LoginUser(event){
 		event.preventDefault();
-		const target = event.target;
-		const usuario= target.querySelector('#usuario').value;
-		const password= target.querySelector('#password').value;
-		if ((usuario == 'Admin@cdtec.cl' || 
-			usuario == 'Admin' || 
-			usuario == 'Agrifrut@cdtec.cl' || 
-			usuario == 'Agrifrut' || 
-			usuario == 'SantaJuana@cdtec.cl' || 
-			usuario == 'SantaJuana') && password == '12345678') {
-    		localStorage.setItem("username", usuario);
+		this.loading=true;
+	 	this.userService.login(this.myForm.value).subscribe((response: any) => {
+			this.loading=false;
+			this.user={
+				plain:JSON.stringify(response.user),
+				hash:bcrypt.hashSync(JSON.stringify(response.user), 10)
+			}
+    		this.setLocalStorageItem("user",JSON.stringify(this.user))
 			this._router.navigate(['/dashboard']);
-		}else{
-			Swal.fire({
-				icon: 'error',
-				title: 'Oops...',
-				text: 'Usuario o Contraseña Equivocada!'
-			})
-		}
-	  }
+		},
+	   	error => {
+	   		console.log("error:",error)
+	   		if(error.error!=undefined){
+        		Swal.fire({icon: 'error',title: 'Oops...',text: error.error.error});
+	   		}
+			this.loading=false;
+	    });
+	}
+	setLocalStorageItem(key:string,value:any){
+	    localStorage.setItem(key,value);
+	} 
 }
