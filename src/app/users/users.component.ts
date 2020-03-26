@@ -21,6 +21,8 @@ export class UsersComponent implements OnInit {
   getUsers(){
     this.loading = true;
   	this.userService.getUsers().subscribe((response: any) => {
+      console.log(response);
+      
       this.users = response.data?response.data:response;     
       this.loading = false;
     });
@@ -29,7 +31,7 @@ export class UsersComponent implements OnInit {
     this.loading = true;
     this.userService.delete(id).subscribe((response: any) => {
       this.loading = false;
-      this.notificationService.showSuccess('Operación realizada',response.message)
+      this.notificationService.showSuccess('Operación realizada',"Se ha eliminado con exito!!")
       this.getUsers();
     });
   }

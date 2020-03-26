@@ -133,7 +133,7 @@ export class UserFormComponent implements OnInit {
 			this.userService.update(this.user, this.selectedFarms).subscribe((response: any) => {
 				this.loading=false;
 		   		let data = response.data?response.data:response;
-		   		this.notificationService.showSuccess('Operación realizada',response.message)
+		   		this.notificationService.showSuccess('Operación realizada',"Se ha actualizado con exito!!")
 		      	this.router.navigate(['/users']);
 		   	},
 		   	error => {
@@ -145,7 +145,7 @@ export class UserFormComponent implements OnInit {
 	      	this.userService.create(this.user, this.selectedFarms).subscribe((response: any) => {
 				this.loading=false;
 		   		let data = response.data?response.data:response;
-		   		this.notificationService.showSuccess('Operación realizada',response.message)
+		   		this.notificationService.showSuccess('Operación realizada',"Se ha creado con exito!!")
 		      	this.router.navigate(['/users']);
 		   	},
 		   	error => {
