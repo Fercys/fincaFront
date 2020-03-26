@@ -64,9 +64,7 @@ export class AdminDashboardComponent implements OnInit {
       center: this.coordinates,
       zoom:8,
       mapTypeId: window['google'].maps.MapTypeId.HYBRID
-    }); 
-    console.log(this.farms);
-         
+    });          
       this.farms.forEach(element => {
         let marker = new window['google'].maps.Marker({
           position: {lat: parseFloat(element.latitude), lng:parseFloat(element.longitude)},          

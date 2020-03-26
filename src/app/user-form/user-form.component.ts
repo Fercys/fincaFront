@@ -127,14 +127,24 @@ export class UserFormComponent implements OnInit {
 				break;
 		}
 	}
+	registerFarms(user){
+		this.loading=true;
+		this.userService.registerFarms(user.id,this.selectedFarms).subscribe((response: any) => {
+			this.loading=false;
+			this.notificationService.showSuccess('Operación realizada',response.message)
+			this.router.navigate(['/users']);
+		},error => {
+			this.loading=false;
+			this.notificationService.showError('Error',error.error)
+		});
+	}
 	save(){
 		this.loading=true;
 		if(this.user.id){
-			this.userService.update(this.user, this.selectedFarms).subscribe((response: any) => {
+			this.userService.update(this.user).subscribe((response: any) => {
 				this.loading=false;
 		   		let data = response.data?response.data:response;
-		   		this.notificationService.showSuccess('Operación realizada',response.message)
-		      	this.router.navigate(['/users']);
+		   		this.registerFarms(data);		   		
 		   	},
 		   	error => {
 				this.loading=false;
@@ -142,11 +152,10 @@ export class UserFormComponent implements OnInit {
 		    });    
 	    } 
 	    else{
-	      	this.userService.create(this.user, this.selectedFarms).subscribe((response: any) => {
+	      	this.userService.create(this.user).subscribe((response: any) => {
 				this.loading=false;
 		   		let data = response.data?response.data:response;
-		   		this.notificationService.showSuccess('Operación realizada',response.message)
-		      	this.router.navigate(['/users']);
+		   		this.registerFarms(data);
 		   	},
 		   	error => {
 				this.loading=false;
