@@ -40,11 +40,13 @@
     }
   }
 }
-
+.mat-input-element.mat-form-field-autofill-control {
+  color: #000000 !important;
+}
 ::ng-deep {
   .user-from .mat-select-custom {
     .mat-form-field-flex {
-      background-color: white;
+      background-color: rgb(10, 10, 10);
       border: 1px solid silver;
       border-radius: 5px;
     }
@@ -71,7 +73,7 @@
 
   .user-from .mat-select-custom mat-label {
     font-weight: 500;
-    color: #bfbfbf;
+    color: #000000;
     text-transform: uppercase;
   }
 
@@ -85,6 +87,7 @@
       display: none;
     }
   }
+  
 }
 
 .btn-green {
