@@ -21,7 +21,7 @@ export class UsersComponent implements OnInit {
   getUsers(){
     this.loading = true;
   	this.userService.getUsers().subscribe((response: any) => {
-      this.users = response.data?response.data:response;     
+      this.users = response.data?response.data:response;
       this.loading = false;
     });
   }

@@ -28,6 +28,9 @@
                                       Apellido
                                   </th>
                                   <th>
+                                      Rol
+                                  </th>
+                                  <th>
                                       Opciones
                                   </th>
                               </thead>
@@ -38,6 +41,9 @@
                                       </td>
                                       <td>
                                           {{data.last_name}}
+                                      </td>
+                                      <td>
+                                          {{data.role.description}}
                                       </td>
                                       <td  style="cursor: pointer;">
                                           <i class="material-icons" [routerLink]="['/user-form',data.id]">edit</i>

@@ -72,7 +72,7 @@ export class UserFormComponent implements OnInit {
 			this.loading=false;
 			let selectedFarms = response.data?response.data:response;
         	for (var i = 0; i < selectedFarms.length; i++) {
-	 		  this.selectedFarms=[...this.selectedFarms,this.farms.find(element => element.id == selectedFarms[i].id_farm)];
+	 		  this.selectedFarms=[...this.selectedFarms,this.farms.find(element => element.id == selectedFarms[i].id)];
 	 		}
 		},
 	   	error => {
