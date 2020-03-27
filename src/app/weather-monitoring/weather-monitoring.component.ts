@@ -226,7 +226,9 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
           this.loadMap();
           this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -5);
           this.toDate = this.calendar.getToday();
-          this.getChartInformation();
+          if(this.fromDate && this.toDate){
+            this.getChartInformation();
+          }
           this.processMapData();
         }else{
           this.getZones();
@@ -359,171 +361,168 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
     this.barChartOptions.chart['renderTo'] = this.barChartElement.nativeElement;
     this.barChart = Highcharts.chart(this.barChartOptions);
   }
-                                getChartInformation(){
-                                  this.resetChartsValues("line");
-                                  this.resetChartsValues("bar");                               
-                                  
-                                  this.dateRange = {
-                                    initTime: moment(this.fromDate.year + "-" + this.fromDate.month + "-" + this.fromDate.day).format("YYYY-MM-DD"),
-                                    endTime: moment(this.toDate.year + "-" + this.toDate.month + "-" + this.toDate.day).format("YYYY-MM-DD")
-                                  };
-                                  let weatherStationFlag=false;
-                                  let i=0;
-                                  while (!weatherStationFlag && i < this.zones.length) {
-                                      this.loading=true;
-                                    if (this.zones[i].name == "Estación Meteorológica" || this.zones[i].name == "Estación Metereológica") {
-                                      weatherStationFlag=true;
-                                      this.weatherStation = this.zones[i];
-                                      this.wiseconnService.getMeasuresOfZones(this.weatherStation.id).subscribe((response) => {
-        
-        let data=response.data?response.data:response;
-                                      
-        let barFlag=false;
-        let lineFlag=false;
-        let j=0;
-        while (!lineFlag && j < data.length) {
-                    //line chart
-                    if (data[j].sensorType === "Temperature") {
-                      this.temperatureId = data[j].id;
-                    }
-                    if (data[j].sensorType === "Humidity") {
-                      this.humidityId = data[j].id;
-                    }
-                     if(this.temperatureId&&this.humidityId){
-                          lineFlag=true;
-                          this.wiseconnService.getDataByMeasure(this.temperatureId,this.dateRange).subscribe((response) => {
-                            let temperatureData=response.data?response.data:response;
-                            this.wiseconnService.getDataByMeasure(this.humidityId,this.dateRange).subscribe((response) => {
-                              let humidityData=response.data?response.data:response;
-                              // this.loading = false;
-                              temperatureData=temperatureData.map((element)=>{
-                                element.chart="temperature";
-                                return element
-                              })
-                              humidityData=humidityData.map((element)=>{
-                                element.chart="humidity";
-                                return element
-                              })
-                              let chartData=temperatureData.concat(humidityData);
-                              chartData.sort(function (a, b) {
-                                if (moment(a.time).isAfter(b.time)) {
-                                  return 1;
-                                }
-                                if (!moment(a.time).isAfter(b.time)) {
-                                  return -1;
-                                }
-                                // a must be equal to b
-                                return 0;
-                              });
-                              chartData = chartData.filter((element) => {
-                                let hour=moment(element.time).hours();
-                                if(hour==0 || hour==2 || hour==4 || hour==6 ||hour==8 || hour==10 || hour==12 || hour==16 || hour==18 || hour==20 || hour==22)
-                                  return element;
-                              });
-                              for (var i = 0; i < chartData.length ; i++) {                                
-                                if(chartData[i+1]){
-                                  if((chartData[i].chart==="temperature")&&(chartData[i+1].chart==="humidity")){
-                                    this.lineChartLabels.push(this.momentFormat(chartData[i].time,"line"));
-                                    this.lineChartData[0].push(chartData[i].value);
-                                    this.lineChartData[1].push(chartData[i+1].value);
-                                  }                                                  
-                                } 
-                              }
-                              this.renderCharts("line");
-                            });
-                          });
-                        }else if(j+1==data.length){
-                          Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: 'No tiene configurado los sensores de humedad y temperatura'
-                          })
+  getChartInformation(){
+    this.resetChartsValues("line");
+    this.resetChartsValues("bar");                               
+    if(this.fromDate!=undefined&&this.toDate!=undefined){
+      this.dateRange = {
+        initTime: moment(this.fromDate.year + "-" + this.fromDate.month + "-" + this.fromDate.day).format("YYYY-MM-DD"),
+        endTime: moment(this.toDate.year + "-" + this.toDate.month + "-" + this.toDate.day).format("YYYY-MM-DD")
+      };
+      let weatherStationFlag=false;
+      let i=0;
+      while (!weatherStationFlag && i < this.zones.length) {
+        this.loading=true;
+        if (this.zones[i].name == "Estación Meteorológica" || this.zones[i].name == "Estación Metereológica") {
+          weatherStationFlag=true;
+          this.weatherStation = this.zones[i];
+          this.wiseconnService.getMeasuresOfZones(this.weatherStation.id).subscribe((response) => {        
+            let data=response.data?response.data:response;                                      
+            let barFlag=false;
+            let lineFlag=false;
+            let j=0;
+            while (!lineFlag && j < data.length) {
+              //line chart
+              if (data[j].sensorType === "Temperature") {
+                this.temperatureId = data[j].id;
+              }
+              if (data[j].sensorType === "Humidity") {
+                this.humidityId = data[j].id;
+              }
+               if(this.temperatureId&&this.humidityId){
+                    lineFlag=true;
+                    this.wiseconnService.getDataByMeasure(this.temperatureId,this.dateRange).subscribe((response) => {
+                      let temperatureData=response.data?response.data:response;
+                      this.wiseconnService.getDataByMeasure(this.humidityId,this.dateRange).subscribe((response) => {
+                        let humidityData=response.data?response.data:response;
+                        // this.loading = false;
+                        temperatureData=temperatureData.map((element)=>{
+                          element.chart="temperature";
+                          return element
+                        })
+                        humidityData=humidityData.map((element)=>{
+                          element.chart="humidity";
+                          return element
+                        })
+                        let chartData=temperatureData.concat(humidityData);
+                        chartData.sort(function (a, b) {
+                          if (moment(a.time).isAfter(b.time)) {
+                            return 1;
+                          }
+                          if (!moment(a.time).isAfter(b.time)) {
+                            return -1;
+                          }
+                          // a must be equal to b
+                          return 0;
+                        });
+                        chartData = chartData.filter((element) => {
+                          let hour=moment(element.time).hours();
+                          if(hour==0 || hour==2 || hour==4 || hour==6 ||hour==8 || hour==10 || hour==12 || hour==16 || hour==18 || hour==20 || hour==22)
+                            return element;
+                        });
+                        for (var i = 0; i < chartData.length ; i++) {                                
+                          if(chartData[i+1]){
+                            if((chartData[i].chart==="temperature")&&(chartData[i+1].chart==="humidity")){
+                              this.lineChartLabels.push(this.momentFormat(chartData[i].time,"line"));
+                              this.lineChartData[0].push(chartData[i].value);
+                              this.lineChartData[1].push(chartData[i+1].value);
+                            }                                                  
+                          } 
                         }
-                    j++;
-        }
-        j=0;
-        while (!barFlag && j < data.length) {
-          //bar chart
-          if (data[j].sensorType != undefined && data[j].name != undefined){
-            if ((data[j].sensorType).toLowerCase() === "rain" && (data[j].name).toLowerCase() === "pluviometro") {
-              this.rainId = data[j].id;
+                        this.renderCharts("line");
+                      });
+                    });
+                  }else if(j+1==data.length){
+                    Swal.fire({
+                      icon: 'error',
+                      title: 'Oops...',
+                      text: 'No tiene configurado los sensores de humedad y temperatura'
+                    })
+                  }
+              j++;
             }
-          }
-          if ((data[j].name) != undefined){
-            if ((data[j].name).toLowerCase() === "et0") {
-              this.et0Id = data[j].id;
-            }
-          }
-          if(this.rainId&&this.et0Id){
-            barFlag=true;
-            this.wiseconnService.getDataByMeasure(this.rainId,this.dateRange).subscribe((response) => {
-              let rainData=response.data?response.data:response;
-              this.wiseconnService.getDataByMeasure(this.et0Id,this.dateRange).subscribe((response) => {
-                let et0Data=response.data?response.data:response;
-                this.loading = false;
-                rainData=rainData.map((element)=>{
-                  element.chart="rain";
-                  return element
-                })
-                et0Data=et0Data.map((element)=>{
-                  element.chart="et0";
-                  return element;
-                })                          
-                let chartData=rainData.concat(et0Data);
-                chartData.sort(function (a, b) {
-                  if (moment(a.time).isAfter(b.time)) {
-                    return 1;
-                  }
-                  if (!moment(a.time).isAfter(b.time)) {
-                    return -1;
-                  }
-                  return 0;
-                });
-                chartData=chartData.filter((element)=>{
-                  if(moment.utc(element.time).format("HH:mm:ss")=="00:00:00"){                            
-                    return element;
-                  }
-                })
-                let maxLabelValue=0;
-                for (var i = 0; i < chartData.length; i++) {
-                  if(chartData[i+1]){
-                    if(chartData[i].time===chartData[i+1].time){
-                      if(this.barChartLabels.find((element) => {
-                            return element === this.momentFormat(chartData[i].time,"bar");
-                        }) === undefined) {
-                            this.barChartLabels.push(this.momentFormat(chartData[i].time,"bar"));
-                          if(chartData[i].chart=="rain") {
-                        this.barChartData[0].push(chartData[i].value);
-                    }
-                    if(chartData[i].chart=="et0") {
-                      this.barChartData[1].push(chartData[i].value);
-                    }
-                        }
-                    }
-                  }  
-                  if(i+1==chartData.length){
-                    this.renderCharts("bar");
-                  }
+            j=0;
+            while (!barFlag && j < data.length) {
+              //bar chart
+              if (data[j].sensorType != undefined && data[j].name != undefined){
+                if ((data[j].sensorType).toLowerCase() === "rain" && (data[j].name).toLowerCase() === "pluviometro") {
+                  this.rainId = data[j].id;
                 }
-              });
-            });
-          }else if(j+1==data.length){
-            Swal.fire({
-              icon: 'error',
-              title: 'Oops...',
-              text: 'No tiene configurado los sensores de rain y et0'
-            })
-          }
-          j++;
+              }
+              if ((data[j].name) != undefined){
+                if ((data[j].name).toLowerCase() === "et0") {
+                  this.et0Id = data[j].id;
+                }
+              }
+              if(this.rainId&&this.et0Id){
+                barFlag=true;
+                this.wiseconnService.getDataByMeasure(this.rainId,this.dateRange).subscribe((response) => {
+                  let rainData=response.data?response.data:response;
+                  this.wiseconnService.getDataByMeasure(this.et0Id,this.dateRange).subscribe((response) => {
+                    let et0Data=response.data?response.data:response;
+                    this.loading = false;
+                    rainData=rainData.map((element)=>{
+                      element.chart="rain";
+                      return element
+                    })
+                    et0Data=et0Data.map((element)=>{
+                      element.chart="et0";
+                      return element;
+                    })                          
+                    let chartData=rainData.concat(et0Data);
+                    chartData.sort(function (a, b) {
+                      if (moment(a.time).isAfter(b.time)) {
+                        return 1;
+                      }
+                      if (!moment(a.time).isAfter(b.time)) {
+                        return -1;
+                      }
+                      return 0;
+                    });
+                    chartData=chartData.filter((element)=>{
+                      if(moment.utc(element.time).format("HH:mm:ss")=="00:00:00"){                            
+                        return element;
+                      }
+                    })
+                    let maxLabelValue=0;
+                    for (var i = 0; i < chartData.length; i++) {
+                      if(chartData[i+1]){
+                        if(chartData[i].time===chartData[i+1].time){
+                          if(this.barChartLabels.find((element) => {
+                                return element === this.momentFormat(chartData[i].time,"bar");
+                            }) === undefined) {
+                                this.barChartLabels.push(this.momentFormat(chartData[i].time,"bar"));
+                              if(chartData[i].chart=="rain") {
+                            this.barChartData[0].push(chartData[i].value);
+                        }
+                        if(chartData[i].chart=="et0") {
+                          this.barChartData[1].push(chartData[i].value);
+                        }
+                            }
+                        }
+                      }  
+                      if(i+1==chartData.length){
+                        this.renderCharts("bar");
+                      }
+                    }
+                  });
+                });
+              }else if(j+1==data.length){
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: 'No tiene configurado los sensores de rain y et0'
+                })
+              }
+              j++;
+            }
+          });
         }
-      });
-}
-i++;
-}
-
-        this.loading=false;
-
-}
+        i++;
+      }
+      this.loading=false;
+    }
+  }
 processMapData(){
   if (this.zones.length == 0) {
   this.loadMap();

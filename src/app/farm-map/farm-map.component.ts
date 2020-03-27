@@ -57,7 +57,11 @@ export class FarmMapComponent implements OnInit {
       this.userLS=JSON.parse(localStorage.getItem("user"));
       if(bcrypt.compareSync(this.userLS.plain, this.userLS.hash)){
         this.user=JSON.parse(this.userLS.plain);
-        this.getFarmsByUser();
+        if(this.user.role.id==1){//admin
+          this.getFarms();
+        }else{
+          this.getFarmsByUser();
+        }
       }else{
         this.router.navigate(['/login']);
       }
@@ -65,9 +69,71 @@ export class FarmMapComponent implements OnInit {
       this.router.navigate(['/login']);
     }
   }
+  getFarms(){      
+    this.loading = true;
+    this.wiseconnService.getFarms().subscribe((response: any) => {
+      this.loading = false;
+      this.farms = response.data?response.data:response;
+      if(this._route.snapshot.paramMap.get('id')){
+        this.farm=this.getFarm(this._route.snapshot.paramMap.get('id'));
+      }else if(this.farms.length>0){
+        this.farm=this.farms[0];
+      }
+      if(this.farm){
+        this.wiseconnService.farmId=this.farm.id;
+        if(localStorage.getItem("lastFarmId")!=undefined){
+          if(parseInt(localStorage.getItem("lastFarmId"))==parseInt(this.farm.id)){
+            this.zones = JSON.parse(localStorage.getItem('lastZones'));
+            this.loadMap();
+            let polygonDatas=JSON.parse(localStorage.getItem('lastPolygonData'));
+            let map=new window['google'].maps.Map(this.mapElement.nativeElement, JSON.parse(localStorage.getItem('lastMapData')));
+            if(polygonDatas){
+              for (var i = 0; i < polygonDatas.length; i++) {
+                var Triangle = new window['google'].maps.Polygon(polygonDatas[i].data);
+                Triangle.setMap(map);
+                this.addListenersOnPolygon(Triangle,polygonDatas[i].element.id);
+                let id= polygonDatas[i].element.id_wiseconn?polygonDatas[i].element.id_wiseconn:polygonDatas[i].element.id;
+                if (parseInt(id) == 727 || parseInt(id) == 6054 || parseInt(id) == 13872){
+                  if (polygonDatas[i].element.name == "Estación Meteorológica" || polygonDatas[i].element.name == "Estación Metereológica") {
+                    this.loading = true;
+                    this.wiseconnService.getMeterogoAgrifut(polygonDatas[i].element.id).subscribe((response: any) => { 
+                      this.loading = false;
+                       this.measurements =response.data?response.data:response;
+                      this.processMeasurements();
+                    });
+                   }
+                  // Marker Image
+                  this.addMarkerImage(map, polygonDatas[i].element, "https://i.imgur.com/C7gyw7N.png");
+                }else if (polygonDatas[i].element.status!=undefined){
+                  if((polygonDatas[i].element.status).toLowerCase() == "executed ok") {            
+                      // Marker Image          
+                      // this.addMarkerImage(map, polygonDatas[i].element, "../../assets/icons/map/Ok-01.svg");
+                  }else if((polygonDatas[i].element.status).toLowerCase() == "running"){
+                    // Marker Image          
+                    this.addMarkerImage(map, polygonDatas[i].element,  "../../assets/icons/map/Regando-01.svg"); 
+                  }
+                } 
+              }
+            }else{
+                Swal.fire({icon: 'error',title: 'Oops...',text: 'Valores de poligonos no encontrados'});
+            }             
+          }else{
+            this.getZones();
+          }
+        }else{
+          this.getZones();
+        }
+        this.getWeather();
+      }else{
+        Swal.fire({icon: 'error',title: 'Oops...',text: 'Farm no existente'});
+      }        
+      this.loading = false;
+    });
+  }
   getFarmsByUser(){      
     this.loading = true;
     this.userService.getFarmsByUser(this.user.id).subscribe((response: any) => {
+      this.loading = false;
       this.farms = response.data?response.data:response; 
       if(this._route.snapshot.paramMap.get('id')){
         this.farm=this.getFarm(this._route.snapshot.paramMap.get('id'));

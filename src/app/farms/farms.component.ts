@@ -52,7 +52,6 @@ export class FarmsComponent implements OnInit {
   getFarmsByUser(){      
     this.loading = true;
     this.userService.getFarmsByUser(this.user.id).subscribe((response: any) => {
-      console.log("response:",response)
       this.farms = response.data?response.data:response;      
       this.loading = false;
     });
