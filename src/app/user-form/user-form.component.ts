@@ -149,13 +149,13 @@ export class UserFormComponent implements OnInit {
 			this.userService.update(this.user).subscribe((response: any) => {
 				this.loading=false;
 		   		let data = response.data?response.data:response;
-		   		this.registerFarms(data);		   		
+		   		this.registerFarms(data);
 		   	},
 		   	error => {
 	   			console.log("error:",error)
 				this.loading=false;
 		   		this.notificationService.showError('Error',error.error)
-		    });    
+		    });
 	    } 
 	    else{
 	      	this.userService.create(this.user).subscribe((response: any) => {
@@ -167,7 +167,7 @@ export class UserFormComponent implements OnInit {
 	   			console.log("error:",error)
 				this.loading=false;
 		   		this.notificationService.showError('Error',error.error)
-		    });     
+		    });
 	    }		
 	}
 }

@@ -72,5 +72,11 @@ export class UserService {
       retry(1),
     );
   }
+  profile(user_data: User): Observable<any> {
+    return this.http.post<any>(this.baseurl + '/profile/'+user_data.id+'/update', user_data , this.httpOptions)
+    .pipe(
+      retry(1),
+    );
+  }
 }
 

@@ -53,7 +53,7 @@ export class LoginComponent implements OnInit,OnDestroy,AfterViewInit {
 	}
 	onSubmit() {
 		// Adding data values
-		console.log(this.myForm.value)
+		// console.log(this.myForm.value)
 	}
 	ngOnDestroy(){
 		document.body.className="";

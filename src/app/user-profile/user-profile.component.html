@@ -1,132 +1,124 @@
 <div class="main-content user-profile">
   <div class="container-fluid">
+    <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>
     <div class="row">
       <h4 class="row-title">Perfil</h4>
     </div>
     <div class="row">
       <div class="col-md-12">
         <div class="card">
-          <div class="card-header">
-            <span> <img src="assets/icons/Info-General.svg" class="icon-title"></span>
-            <h4 class="card-title row-sub">Información General</h4>
-          </div>
-          <hr class="separated">
-          <div class="card-body">
-            <form>
-              <div class="row">
-                <div class="col-md-6 justify-text-general">
-                  <mat-label class="col-md-3">Nombre</mat-label>
-                  <mat-form-field class="col-md-9 mat-input-custom">
-                    <input matInput>
-                  </mat-form-field>
+          <form #userForm="ngForm">
+            <div class="card-header">
+              <span> <img src="assets/icons/Info-General.svg" class="icon-title"></span>
+              <h4 class="card-title row-sub">Información General</h4>
+            </div>
+            <hr class="separated">
+            <div class="card-body">
+                <div class="row">
+                  <div class="col-md-6 justify-text-general">
+                    <mat-label class="col-md-3">Nombre</mat-label>
+                    <mat-form-field class="col-md-9 mat-input-custom">
+                      <input [(ngModel)]="user.name" name="name" matInput>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md-6 justify-text-general">
+                    <mat-label class="col-md-3">Apellido</mat-label>
+                    <mat-form-field class="col-md-9 mat-input-custom">
+                      <input [(ngModel)]="user.last_name" name="last_name" matInput>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md-6 justify-text-general">
+                    <mat-label class="col-md-3">Empresa</mat-label>
+                    <mat-form-field class="col-md-9 mat-input-custom">
+                      <input [(ngModel)]="user.business" name="business" matInput>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md-6 justify-text-general">
+                    <mat-label class="col-md-3">Oficina</mat-label>
+                    <mat-form-field class="col-md-9 mat-select-custom" floatLabel="never">                      
+                      <input [(ngModel)]="user.office" name="office" matInput>
+                    </mat-form-field>
+                  </div>
+                </div>            
+            </div>
+            <div class="card-header">
+              <span> <img src="assets/icons/Contrasena.svg" class="icon-title"></span>
+              <h4 class="card-title row-sub">Cambiar Contraseña</h4>
+            </div>
+            <hr class="separated">
+            <div class="card-body">
+                <div class="row">
+                  <div class="col-md-6 justify-text-password">
+                    <mat-label class="col-md-4">Nueva Contraseña</mat-label>
+                    <mat-form-field class="col-md-8 mat-input-custom">
+                      <input matInput>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md-6 justify-text-password">
+                    <mat-label class="col-md-5">Confirmar Contraseña</mat-label>
+                    <mat-form-field class="col-md-7 mat-input-custom">
+                      <input matInput>
+                    </mat-form-field>
+                  </div>
                 </div>
-                <div class="col-md-6 justify-text-general">
-                  <mat-label class="col-md-3">Apellido</mat-label>
-                  <mat-form-field class="col-md-9 mat-input-custom">
-                    <input matInput>
-                  </mat-form-field>
+            </div>
+            <div class="card-header">
+              <span> <img src="assets/icons/Contacto.svg" class="icon-title"></span>
+              <h4 class="card-title row-sub">Información de Contacto</h4>
+            </div>
+            <hr class="separated">
+            <div class="card-body">
+                <div class="row">
+                  <div class="col-md-6 justify-text-password">
+                    <mat-label class="col-md-4">Email</mat-label>
+                    <mat-form-field class="col-md-8 mat-input-custom">
+                      <input [(ngModel)]="user.email" name="email" matInput type="email">
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md-6 justify-text-password">
+                    <mat-label class="col-md-4">Región</mat-label>
+                    <mat-form-field class="col-md-8 mat-input-custom">
+                      <input [(ngModel)]="user.region" name="region" matInput>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md-6 justify-text-password">
+                    <mat-label class="col-md-4">Teléfono</mat-label>
+                    <mat-form-field class="col-md-8 mat-input-custom">
+                      <input [(ngModel)]="user.phone" name="phone" matInput>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-md-6 justify-text-password">
+                    <mat-label class="col-md-4">Ciudad</mat-label>
+                    <mat-form-field class="col-md-8 mat-input-custom">
+                      <input [(ngModel)]="user.city" name="city" matInput>
+                    </mat-form-field>
+                  </div>
                 </div>
-                <div class="col-md-6 justify-text-general">
-                  <mat-label class="col-md-3">Empresa</mat-label>
-                  <mat-form-field class="col-md-9 mat-input-custom">
-                    <input matInput>
-                  </mat-form-field>
+            </div>
+            <div class="card-header">
+              <span> <img src="assets/icons/Notifications.svg" class="icon-title"></span>
+              <h4 class="card-title row-sub">Enviar Notificaciones</h4>
+            </div>
+            <hr class="separated">
+            <div class="card-body">
+                <div class="row">
+                  <div class="col-md-12">
+                    <mat-label class="col-md-5">Nuevo mensaje</mat-label>
+                    <mat-slide-toggle [checked]="user.new_msj_notification==1?true:false" (change)="changeToggle($event,'msj')" class="icons-notifications" color="primary"></mat-slide-toggle>
+                  </div>
+                  <div class="col-md-12">
+                    <mat-label class="col-md-5">Nueva alerta</mat-label>
+                    <mat-slide-toggle [checked]="user.new_alert_notification==1?true:false" (change)="changeToggle($event,'alert')" class="icons-notifications" color="primary"></mat-slide-toggle>
+                  </div>
+                  <div class="col-md-12">
+                    <mat-label class="col-md-5">Nueva zona creada</mat-label>
+                    <mat-slide-toggle [checked]="user.new_zone_notification==1?true:false" (change)="changeToggle($event,'zone')" class="icons-notifications" color="primary"></mat-slide-toggle>
+                  </div>
                 </div>
-                <div class="col-md-6 justify-text-general">
-                  <mat-label class="col-md-3">Oficina</mat-label>
-                  <mat-form-field class="col-md-9 mat-select-custom" floatLabel="never">
-                    <mat-label>Seleccionar</mat-label>
-                    <mat-select>
-                      <mat-option>Oficina 1</mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                </div>
-              </div>
-            </form>
-          </div>
-          <div class="card-header">
-            <span> <img src="assets/icons/Contrasena.svg" class="icon-title"></span>
-            <h4 class="card-title row-sub">Cambiar Contraseña</h4>
-          </div>
-          <hr class="separated">
-          <div class="card-body">
-            <form>
-              <div class="row">
-                <div class="col-md-6 justify-text-password">
-                  <mat-label class="col-md-4">Nueva Contraseña</mat-label>
-                  <mat-form-field class="col-md-8 mat-input-custom">
-                    <input matInput>
-                  </mat-form-field>
-                </div>
-                <div class="col-md-6 justify-text-password">
-                  <mat-label class="col-md-5">Confirmar Contraseña</mat-label>
-                  <mat-form-field class="col-md-7 mat-input-custom">
-                    <input matInput>
-                  </mat-form-field>
-                </div>
-              </div>
-            </form>
-          </div>
-          <div class="card-header">
-            <span> <img src="assets/icons/Contacto.svg" class="icon-title"></span>
-            <h4 class="card-title row-sub">Información de Contacto</h4>
-          </div>
-          <hr class="separated">
-          <div class="card-body">
-            <form>
-              <div class="row">
-                <div class="col-md-6 justify-text-password">
-                  <mat-label class="col-md-4">Email</mat-label>
-                  <mat-form-field class="col-md-8 mat-input-custom">
-                    <input matInput>
-                  </mat-form-field>
-                </div>
-                <div class="col-md-6 justify-text-password">
-                  <mat-label class="col-md-4">Región</mat-label>
-                  <mat-form-field class="col-md-8 mat-input-custom">
-                    <input matInput>
-                  </mat-form-field>
-                </div>
-                <div class="col-md-6 justify-text-password">
-                  <mat-label class="col-md-4">Teléfono</mat-label>
-                  <mat-form-field class="col-md-8 mat-input-custom">
-                    <input matInput>
-                  </mat-form-field>
-                </div>
-                <div class="col-md-6 justify-text-password">
-                  <mat-label class="col-md-4">Ciudad</mat-label>
-                  <mat-form-field class="col-md-8 mat-input-custom">
-                    <input matInput>
-                  </mat-form-field>
-                </div>
-              </div>
-            </form>
-          </div>
-          <div class="card-header">
-            <span> <img src="assets/icons/Notifications.svg" class="icon-title"></span>
-            <h4 class="card-title row-sub">Enviar Notificaciones</h4>
-          </div>
-          <hr class="separated">
-          <div class="card-body">
-            <form>
-              <div class="row">
-                <div class="col-md-12">
-                  <mat-label class="col-md-5">Nuevo mensaje</mat-label>
-                  <mat-slide-toggle class="icons-notifications" color="primary"></mat-slide-toggle>
-                </div>
-                <div class="col-md-12">
-                  <mat-label class="col-md-5">Nueva alerta</mat-label>
-                  <mat-slide-toggle class="icons-notifications" color="primary"></mat-slide-toggle>
-                </div>
-                <div class="col-md-12">
-                  <mat-label class="col-md-5">Nueva zona creada</mat-label>
-                  <mat-slide-toggle class="icons-notifications" color="primary"></mat-slide-toggle>
-                </div>
-              </div>
-            </form>
-            <button mat-raised-button type="submit" class=" btn-green pull-right">Actualizar</button>
+              <button mat-raised-button type="submit" class=" btn-green pull-right" (click)="update()">Actualizar</button>
             <div class="clearfix"></div>
-          </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>
