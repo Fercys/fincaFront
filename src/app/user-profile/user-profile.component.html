@@ -115,8 +115,10 @@
                     <mat-slide-toggle [checked]="user.new_zone_notification==1?true:false" (change)="changeToggle($event,'zone')" class="icons-notifications" color="primary"></mat-slide-toggle>
                   </div>
                 </div>
-              <button mat-raised-button type="submit" class=" btn-green pull-right" (click)="update()">Actualizar</button>
             <div class="clearfix"></div>
+            </div>
+            <div class="card-footer">
+              <button mat-raised-button type="submit" class=" btn-green pull-right" (click)="update()">Actualizar</button>  
             </div>
           </form>
         </div>

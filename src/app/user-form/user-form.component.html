@@ -137,8 +137,26 @@
 						</div>
 					</div> 
 	            </div>
-	            <button mat-raised-button type="submit" class="btn-green pull-right" (click)="save()">{{textBtn}}</button>
 	            <div class="clearfix"></div>
+	        </div>
+	        <div class="card-header" *ngIf="user.id && myUserData.id!=user.id">
+              <span> <img src="assets/icons/Notifications.svg" class="icon-title"></span>
+              <h4 class="card-title row-sub">Estado del usuario</h4>
+            </div>
+            <hr class="separated" *ngIf="user.id && myUserData.id!=user.id">
+            <div class="card-body" *ngIf="user.id && myUserData.id!=user.id">
+                <div class="row">
+                  <div class="col-md-12">
+                    <mat-label class="col-md-5">Activo</mat-label>
+                    <mat-slide-toggle [checked]="user.active==1?true:false" (change)="changeToggle($event,'status')" class="icons-notifications" color="primary"></mat-slide-toggle>
+                  </div>
+                </div>
+            <div class="clearfix"></div>
+            </div>
+
+	        <div class="card-footer">
+	            <button mat-raised-button type="submit" class="btn-green ml-auto" (click)="save()">{{textBtn}}</button>
+
 	        </div>
 	    </form>
         </div>

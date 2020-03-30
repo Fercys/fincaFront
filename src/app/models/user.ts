@@ -11,6 +11,7 @@ export class User {
     phone:string;
     password: string;
     password_confirmation: string;
+    active:number;
     new_msj_notification:number;
     new_alert_notification:number;
     new_zone_notification:number;

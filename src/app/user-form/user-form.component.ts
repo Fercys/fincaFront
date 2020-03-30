@@ -14,6 +14,7 @@ import {
   farmsConfigObj
 } from "./selectsconfigs/configs";
 
+import * as bcrypt from 'bcryptjs';
 
 @Component({
   selector: 'app-user-form',
@@ -21,17 +22,19 @@ import {
   styleUrls: ['./user-form.component.scss']
 })
 export class UserFormComponent implements OnInit {
-	loading:boolean=false;
-	textBtn:string="Registrar";
-	user = new User();
+	public loading:boolean=false;
+	public textBtn:string="Registrar";
+	public user = new User();
+  	public userLS:any=null;
+  	public myUserData:any=null;
 	//roles
-	roleConfig = rolesConfigObj;
-	roles: Array<any> = [];
-	selectedRoles: any = null;
+	public roleConfig = rolesConfigObj;
+	public roles: Array<any> = [];
+	public selectedRoles: any = null;
 	//farms
-	farmsConfig = farmsConfigObj;
-	farms: Array<any> = [];
-	selectedFarms: Array<any> = [];
+	public farmsConfig = farmsConfigObj;
+	public farms: Array<any> = [];
+	public selectedFarms: Array<any> = [];
 
   	constructor(
   		public roleService: RoleService,
@@ -48,6 +51,16 @@ export class UserFormComponent implements OnInit {
 		if(this.route.snapshot.paramMap.get("id")){
 			this.getUser(parseInt(this.route.snapshot.paramMap.get("id")));
 		}
+		if(localStorage.getItem("user")){
+        	this.userLS=JSON.parse(localStorage.getItem("user"));
+        		if(bcrypt.compareSync(this.userLS.plain, this.userLS.hash)){
+	          		this.myUserData=JSON.parse(this.userLS.plain);
+	        	}else{
+	          		this.router.navigate(['/login']);
+	        	}
+	    }else{
+	        this.router.navigate(['/login']);
+	    }
 	}
 	getUser(id:number){
 		this.loading=true;
@@ -142,6 +155,16 @@ export class UserFormComponent implements OnInit {
 			this.loading=false;
 			this.notificationService.showError('Error',error.error)
 		});
+	}
+	changeToggle(event,toggle){
+	    switch (toggle) {
+	      	case "status":
+	        	this.user.active=event.checked?1:0;
+	        	break;   
+	      	default:
+	        	// code...
+	        	break;
+	    }
 	}
 	save(){
 		this.loading=true;
