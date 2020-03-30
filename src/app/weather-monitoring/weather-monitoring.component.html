@@ -238,93 +238,61 @@
         <div class="container-fluid">
           <div class="row">
             <div class="col-md-12">
-            <div class="select-time">
-              <h4>Selector de tiempo</h4>
-              <form class="form-inline form-date-range line">
-                <div class="w-20">
-                 
-                <div class="form-group ">
-                  <h6>*Fecha de Inicio</h6>
-                  <div class="input-group">
-                    <input #dpFromDate
-                    class="input-calendar" 
-                    name="dpFromDate"
-                    [value]="formatter.format(fromDate)"
-                    (input)="fromDate = validateInput(fromDate, dpFromDate.value)">
-                    <div class="input-group-append">
-                      <button class="icon-calendar" (click)="datepickerFrom.toggle()" type="button">
-                        <img src="assets/icons/Calendar.svg" style="height: 25px">
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                 
-                </div>
-                <div class="w-20">
-                  
-                  <div class="form-group">
-                    <h6>*Fecha Final</h6> 
+              <div class="select-time">
+                <h4>Selector de tiempo</h4>
+                <form class="form-inline form-date-range line">
+                  <div class="w-20">                 
+                  <div class="form-group ">
+                    <h6>*Fecha de Inicio</h6>
                     <div class="input-group">
-                      <input #dpToDate
-                      class="input-calendar"  
-                      name="dpToDate"
-                      [value]="formatter.format(toDate)"
-                      (input)="toDate = validateInput(toDate, dpToDate.value)">
+                      <input #dpFromDate
+                      class="input-calendar" 
+                      name="dpFromDate"
+                      [value]="formatter.format(fromDate)"
+                      (input)="fromDate = validateInput(fromDate, dpFromDate.value)">
                       <div class="input-group-append">
-                        <button class="icon-calendar"  (click)="datepickerTo.toggle()" type="button">
+                        <button class="icon-calendar" (click)="datepickerFrom.toggle()" type="button">
                           <img src="assets/icons/Calendar.svg" style="height: 25px">
                         </button>
                       </div>
                     </div>
+                  </div>                 
                   </div>
-                  
-                </div>
-                <div class="w-10">
-                  <div class="form-inline">
-                    <button class="btn-greem" [disabled]="requestChartBtn" (click)="getChartInformation()">Ver</button>
+                  <div class="w-20">                  
+                    <div class="form-group">
+                      <h6>*Fecha Final</h6> 
+                      <div class="input-group">
+                        <input #dpToDate
+                        class="input-calendar"  
+                        name="dpToDate"
+                        [value]="formatter.format(toDate)"
+                        (input)="toDate = validateInput(toDate, dpToDate.value)">
+                        <div class="input-group-append">
+                          <button class="icon-calendar"  (click)="datepickerTo.toggle()" type="button">
+                            <img src="assets/icons/Calendar.svg" style="height: 25px">
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    
                   </div>
-                </div>
-                <div class="w-50">
-                  <div class="form-group hidden">
-                  <div class="input-group">
-                    <input name="datepickerFrom"
-                    style="
-                    background-color: transparent;
-                    border: none;
-                    visibility: hidden;"
-                    ngbDatepicker
-                    #datepickerFrom="ngbDatepicker"
-                    [autoClose]="'outside'"
-                    (dateSelect)="onDateSelection($event,'from')"
-                    [displayMonths]="1"
-                    [dayTemplate]="t"
-                    outsideDays="hidden"
-                    [startDate]="fromDate">
-                    <ng-template #t let-date let-focused="focused">
-                        <span class="custom-day"
-                        [class.focused]="focused"
-                        [class.range]="isRange(date)"
-                        [class.faded]="isHovered(date) || isInside(date)"
-                        (mouseenter)="hoveredDate = date"
-                        (mouseleave)="hoveredDate = null">
-                        {{ date.day }}
-                      </span>
-                    </ng-template>
+                  <div class="w-10">
+                    <div class="form-inline">
+                      <button class="btn-greem" [disabled]="requestChartBtn" (click)="getChartInformation()">Ver</button>
+                    </div>
                   </div>
-                </div>
-                </div>
-                <div class="w-50">
-                  <div class="form-group hidden">
+                  <div class="w-50">
+                    <div class="form-group hidden">
                     <div class="input-group">
-                      <input name="datepickerTo"
+                      <input name="datepickerFrom"
                       style="
                       background-color: transparent;
                       border: none;
                       visibility: hidden;"
                       ngbDatepicker
-                      #datepickerTo="ngbDatepicker"
+                      #datepickerFrom="ngbDatepicker"
                       [autoClose]="'outside'"
-                      (dateSelect)="onDateSelection($event,'to')"
+                      (dateSelect)="onDateSelection($event,'from')"
                       [displayMonths]="1"
                       [dayTemplate]="t"
                       outsideDays="hidden"
@@ -341,10 +309,39 @@
                       </ng-template>
                     </div>
                   </div>
-                </div>
-              </form>
+                  </div>
+                  <div class="w-50">
+                    <div class="form-group hidden">
+                      <div class="input-group">
+                        <input name="datepickerTo"
+                        style="
+                        background-color: transparent;
+                        border: none;
+                        visibility: hidden;"
+                        ngbDatepicker
+                        #datepickerTo="ngbDatepicker"
+                        [autoClose]="'outside'"
+                        (dateSelect)="onDateSelection($event,'to')"
+                        [displayMonths]="1"
+                        [dayTemplate]="t"
+                        outsideDays="hidden"
+                        [startDate]="fromDate">
+                        <ng-template #t let-date let-focused="focused">
+                            <span class="custom-day"
+                            [class.focused]="focused"
+                            [class.range]="isRange(date)"
+                            [class.faded]="isHovered(date) || isInside(date)"
+                            (mouseenter)="hoveredDate = date"
+                            (mouseleave)="hoveredDate = null">
+                            {{ date.day }}
+                          </span>
+                        </ng-template>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
             </div>
-          </div>
             <div class="col-md-12">
               <div #lineChart></div>
             </div>

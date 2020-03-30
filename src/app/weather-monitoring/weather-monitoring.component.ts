@@ -182,9 +182,7 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
   public climaIcon = [];
   public climaMax = [];
   public climaMin = [];
-
-                                
-
+  
   constructor(
     private _route: ActivatedRoute,
     private wiseconnService: WiseconnService,
@@ -389,7 +387,7 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
               if (data[j].sensorType === "Humidity") {
                 this.humidityId = data[j].id;
               }
-               if(this.temperatureId&&this.humidityId){
+              if(this.temperatureId&&this.humidityId){
                     lineFlag=true;
                     this.wiseconnService.getDataByMeasure(this.temperatureId,this.dateRange).subscribe((response) => {
                       let temperatureData=response.data?response.data:response;

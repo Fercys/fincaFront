@@ -291,6 +291,7 @@ export class FreePlotterComponent implements OnInit {
 		}
 		this.toDate = this.calendar.getToday();
 		this.requestChartBtn=(this.fromDate && this.toDate && this.toDate.after(this.fromDate))?false:true;
+		this.requestDataChart(false);
 	}
 	goBack(){
 		let lastElement=this.dateRangeHistory.pop();
@@ -513,9 +514,11 @@ export class FreePlotterComponent implements OnInit {
 		    
 		    this.temperatureId=null;
 		    this.humidityId=null;
-		    this.lineChart.series[0].setData([]);
-		    this.lineChart.series[1].setData([]);
-		    this.lineChart.xAxis[0].setCategories([]);
+		    if(this.lineChart!=undefined){
+		    	this.lineChart.series[0].setData([]);
+		    	this.lineChart.series[1].setData([]);
+		    	this.lineChart.xAxis[0].setCategories([]);
+		    }
 
 		    this.lineChartLabels=[];
 		    for (var i = 0; i < 2; i++) {
@@ -527,10 +530,11 @@ export class FreePlotterComponent implements OnInit {
 		    this.rainId=null;
 		    this.et0Id=null;
 		    
-		    this.barChart.series[0].setData([]);
-		    this.barChart.series[1].setData([]);  
-		    this.barChart.xAxis[0].setCategories([]);
-
+		    if(this.barChart!=undefined){
+		    	this.barChart.series[0].setData([]);
+		    	this.barChart.series[1].setData([]); 
+		    	this.barChart.xAxis[0].setCategories([]);
+		    }
 		    this.barChartLabels=[];
 		    for (var i = 0; i < 2; i++) {
 		      this.barChartData[i]=[];
