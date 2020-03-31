@@ -253,8 +253,6 @@ export class FarmMapComponent implements OnInit {
           if(parseInt(localStorage.getItem("lastFarmId"))==parseInt(this.farm.id)){
             this.zones = JSON.parse(localStorage.getItem('lastZones'));
             this.loadMap();
-            // this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -5);
-            // this.toDate = this.calendar.getToday();
             if(this.fromDate && this.toDate){
               this.getChartInformation();
             }
@@ -267,7 +265,6 @@ export class FarmMapComponent implements OnInit {
                 this.addListenersOnPolygon(Triangle,polygonDatas[i].element.id);
                 let id= polygonDatas[i].element.id_wiseconn?polygonDatas[i].element.id_wiseconn:polygonDatas[i].element.id;
                 if (parseInt(id) == 727 || parseInt(id) == 6054 || parseInt(id) == 13872){
-                  console.log("element.name:",polygonDatas[i].element.name);
                   if (polygonDatas[i].element.name == "Estación Meteorológica" || polygonDatas[i].element.name == "Estación Metereológica") {
                     this.loading = true;
                     this.wiseconnService.getMeterogoAgrifut(polygonDatas[i].element.id).subscribe((response: any) => { 
@@ -276,7 +273,6 @@ export class FarmMapComponent implements OnInit {
                       if(data.length>0){                        
                        this.measurements = data;
                       }
-                       console.log("measurements:",this.measurements)
                       this.processMeasurements();
                     });
                    }
@@ -338,7 +334,6 @@ export class FarmMapComponent implements OnInit {
                 this.addListenersOnPolygon(Triangle,polygonDatas[i].element.id);
                 let id= polygonDatas[i].element.id_wiseconn?polygonDatas[i].element.id_wiseconn:polygonDatas[i].element.id;
                 if (parseInt(id) == 727 || parseInt(id) == 6054 || parseInt(id) == 13872){
-                  console.log("element.name:",polygonDatas[i].element.name)
                   if (polygonDatas[i].element.name == "Estación Meteorológica" || polygonDatas[i].element.name == "Estación Metereológica") {
                     this.loading = true;
                     this.wiseconnService.getMeterogoAgrifut(polygonDatas[i].element.id).subscribe((response: any) => { 
@@ -347,7 +342,6 @@ export class FarmMapComponent implements OnInit {
                       if(data.length>0){                        
                        this.measurements = data;
                       }
-                       console.log("measurements:",this.measurements)
                       this.processMeasurements();
                     });
                    }
@@ -506,7 +500,6 @@ export class FarmMapComponent implements OnInit {
           weatherStationFlag=true;
           this.weatherStation = this.zones[i];
           this.wiseconnService.getMeasuresOfZones(this.weatherStation.id).subscribe((response) => {
-            console.log("getMeasuresOfZones()")
             let data=response.data?response.data:response;                                      
             let barFlag=false;
             let lineFlag=false;
@@ -550,7 +543,6 @@ export class FarmMapComponent implements OnInit {
                           if(hour==0 || hour==2 || hour==4 || hour==6 ||hour==8 || hour==10 || hour==12 || hour==16 || hour==18 || hour==20 || hour==22)
                             return element;
                         });
-                        console.log("chartData:",chartData)
                         for (var i = 0; i < chartData.length ; i++) {                                
                           if(chartData[i+1]){
                             if((chartData[i].chart==="temperature")&&(chartData[i+1].chart==="humidity")){
@@ -615,7 +607,6 @@ export class FarmMapComponent implements OnInit {
                         return element;
                       }
                     })
-                    console.log("chartData:",chartData)
                     let maxLabelValue=0;
                     for (var i = 0; i < chartData.length; i++) {
                       if(chartData[i+1]){

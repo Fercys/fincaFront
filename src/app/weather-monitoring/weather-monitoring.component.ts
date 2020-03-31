@@ -51,13 +51,13 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
   public closeResult: string;
   public clima: any;
 
-  //rango de fechas para graficas
+  //rango de fechas para graficas  
   public fromDate: NgbDate;
   public toDate: NgbDate;
   public dateRange: any = null;
-  public hoveredDate: NgbDate;
+  public dateRangeHistory:any[]=[]
+  public selectedValue: any = '1S';
   public requestChartBtn: boolean =true;
-
   //graficas
   //linechart
   @ViewChild('lineChart', { static: true }) public lineChartElement: ElementRef;
@@ -174,7 +174,15 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
   public rainId: number = null;
   public et0Id: number = null;
   public renderBarChartFlag: boolean = false;
-
+  //times
+  public times =[
+    { value: '1D' , active: false},
+    { value: '1S' , active: true},
+    { value: '2S' , active: false},
+    { value: '1M' , active: false},
+    { value: '3M' , active: false},
+    { value: '6M' , active: false},
+  ]
   //Pronostico values
   public climaLoading = false;
   public climaToday: any;
@@ -195,13 +203,13 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
     private dialogs: MatDialog) {
   }
 
-  ngOnInit() {
+  ngOnInit() {    
+    this.dateRangeByDefault();
     if(localStorage.getItem("user")){
           this.userLS=JSON.parse(localStorage.getItem("user"));
           if(bcrypt.compareSync(this.userLS.plain, this.userLS.hash)){
             this.user=JSON.parse(this.userLS.plain);
             if(this.wiseconnService.farmId){
-              console.log("getFarm()")
               this.getFarm(this.wiseconnService.farmId);
             }else{
               Swal.fire({
@@ -210,11 +218,6 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
                    text: 'Debe estar seleccionado un campo.'
               });
             }
-            // if(this.user.role.id==1){//admin
-            //   this.getFarms();
-            // }else{
-            //   this.getFarmsByUser();
-            // }
           }else{
             this.router.navigate(['/login']);
           }
@@ -228,14 +231,10 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
     this.wiseconnService.getFarm(id).subscribe((response) => {
       this.loading = false;
       this.farm = response.data?response.data:response;
-      console.log("response:",response)
-      console.log("farm:",this.farm)
       if(localStorage.getItem("lastFarmId")!=undefined && (parseInt(localStorage.getItem("lastFarmId"))==parseInt(this.farm.id))){
           this.zones = JSON.parse(localStorage.getItem('lastZones'));
           this.weatherZones=this.getWeatherZones();
           this.loadMap();
-          this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -5);
-          this.toDate = this.calendar.getToday();
           if(this.fromDate && this.toDate){
             this.getChartInformation();
           }
@@ -356,7 +355,7 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
     this.barChartOptions.chart['renderTo'] = this.barChartElement.nativeElement;
     this.barChart = Highcharts.chart(this.barChartOptions);
   }
-  getChartInformation(){
+  getChartInformation(goBackFlag:boolean=false){
     this.resetChartsValues("line");
     this.resetChartsValues("bar");                               
     if(this.fromDate!=undefined&&this.toDate!=undefined){
@@ -364,6 +363,13 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
         initTime: moment(this.fromDate.year + "-" + this.fromDate.month + "-" + this.fromDate.day).format("YYYY-MM-DD"),
         endTime: moment(this.toDate.year + "-" + this.toDate.month + "-" + this.toDate.day).format("YYYY-MM-DD")
       };
+      if(!goBackFlag){          
+        this.dateRangeHistory.push({
+          fromDate:this.fromDate,
+          toDate:this.toDate,
+          selectedValue:this.selectedValue
+        });
+      }
       let weatherStationFlag=false;
       let i=0;
       while (!weatherStationFlag && i < this.zones.length) {
@@ -599,7 +605,43 @@ getPathData(element:string){
     }
   }
   return pathData;
-}  
+}
+selectTime(event){
+    this.selectedValue = event.value;
+    this.dateRangeByDefault();
+  }
+  dateRangeByDefault(){
+    this.times.map((element)=>{
+      element.active=(element.value===this.selectedValue)?true:false;
+      return element;
+    });
+    switch (this.selectedValue) {
+      case "1D":
+      this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -1);
+      break;
+      case "1S":
+      this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -7);
+      break;
+      case "2S":
+      this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -14);
+      break;
+      case "1M":
+      this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -30);
+      break;
+      case "3M":
+      this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -90);
+      break;
+      case "6M":
+      this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -180);
+      break;
+      default:
+      // code...
+      break;
+    }
+    this.toDate = this.calendar.getToday();
+    this.requestChartBtn=(this.fromDate && this.toDate && this.toDate.after(this.fromDate))?false:true;
+    this.getChartInformation(false);
+  }
 processMeasurements(){
   for (const item of this.measurements) {
     if(item.name == "Velocidad Viento"){
@@ -865,9 +907,11 @@ resetChartsValues(chart: string){
     
     this.temperatureId=null;
     this.humidityId=null;
-    this.lineChart.series[0].setData([]);
-    this.lineChart.series[1].setData([]);
-    this.lineChart.xAxis[0].setCategories([]);
+    if(this.lineChart!=undefined){
+      this.lineChart.series[0].setData([]);
+      this.lineChart.series[1].setData([]);
+      this.lineChart.xAxis[0].setCategories([]);
+    }
 
     this.lineChartLabels=[];
     for (var i = 0; i < 2; i++) {
@@ -879,10 +923,11 @@ resetChartsValues(chart: string){
     this.rainId=null;
     this.et0Id=null;
     
-    this.barChart.series[0].setData([]);
-    this.barChart.series[1].setData([]);  
-    this.barChart.xAxis[0].setCategories([]);
-
+    if(this.barChart!=undefined){
+      this.barChart.series[0].setData([]);
+      this.barChart.series[1].setData([]);  
+      this.barChart.xAxis[0].setCategories([]);
+    }
     this.barChartLabels=[];
     for (var i = 0; i < 2; i++) {
       this.barChartData[i]=[];
