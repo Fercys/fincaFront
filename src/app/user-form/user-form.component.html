@@ -102,7 +102,7 @@
           	<hr class="separated">
 	        <div class="card-body">
 	            <div class="row">
-	                <div class="col-md-6"> 
+	                <div class="col-md-4"> 
 						<div class="form-group">
 							<label style="font-weight: bold">Rol</label>
 							<div class="input-group">
@@ -118,8 +118,23 @@
 							</div>
 						</div>
 					</div> 
-
-					<div class="col-md-6"> 
+					<div class="col-md-4"> 
+						<div class="form-group">
+							<label style="font-weight: bold">Cuentas</label>
+							<div class="input-group">
+							<ngx-select-dropdown
+								[(ngModel)]="selectedAccounts"
+								[ngModelOptions]="{standalone: true}"
+								(change)="selectionChanged($event,'account')"
+								[config]="accountsConfig"
+								[options]="accounts"
+								ngDefaultControl
+								class="w-100 h-100"
+								></ngx-select-dropdown>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4"> 
 						<div class="form-group">
 							<label style="font-weight: bold">Campos</label>
 							<div class="input-group">

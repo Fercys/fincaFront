@@ -11,6 +11,7 @@ import { NotificationService } from 'app/services/notification.service';
 // elements
 import {
   rolesConfigObj,
+  accountsConfigObj,
   farmsConfigObj
 } from "./selectsconfigs/configs";
 
@@ -31,6 +32,10 @@ export class UserFormComponent implements OnInit {
 	public roleConfig = rolesConfigObj;
 	public roles: Array<any> = [];
 	public selectedRoles: any = null;
+	//accounts
+	public accountsConfig = accountsConfigObj;
+	public accounts: Array<any> = [];
+	public selectedAccounts: Array<any> = [];
 	//farms
 	public farmsConfig = farmsConfigObj;
 	public farms: Array<any> = [];
@@ -47,7 +52,7 @@ export class UserFormComponent implements OnInit {
 
 	ngOnInit() {
 		this.getRoles();
-		this.getFarms();
+		this.getAccounts();
 		if(this.route.snapshot.paramMap.get("id")){
 			this.getUser(parseInt(this.route.snapshot.paramMap.get("id")));
 		}
@@ -83,10 +88,20 @@ export class UserFormComponent implements OnInit {
 		this.loading=true;
 		this.userService.getFarmsByUser(id).subscribe((response: any) => {
 			this.loading=false;
-			let selectedFarms = response.data?response.data:response;
-        	for (var i = 0; i < selectedFarms.length; i++) {
-	 		  this.selectedFarms=[...this.selectedFarms,this.farms.find(element => element.id == selectedFarms[i].id)];
-	 		}
+			let selectedFarms=response.data?response.data:response;
+			if(selectedFarms.length>0){
+				let farm_aux =JSON.parse(localStorage.getItem("datafarms")); 
+				let accountId=selectedFarms[0].id_account;
+				this.selectedAccounts=this.accounts.find(element=>element.id==accountId);
+				this.farms=farm_aux.filter(function(element){
+					if(element['account']['id'] == accountId){
+						return {id:element.id,name:element.name};
+					}
+				}); 	
+			}
+			for (var i = 0; i < selectedFarms.length; i++) {
+				this.selectedFarms=[...this.selectedFarms,this.farms.find(element => element.id == selectedFarms[i].id)];
+			}
 		},
 	   	error => {
 	   		console.log("error:",error)
@@ -112,19 +127,19 @@ export class UserFormComponent implements OnInit {
 			this.loading=false;
 	    });
 	}
-	getFarms(){
+	getAccounts(){
 		this.loading=true;
-	   	this.wiseconnService.getFarms().subscribe((response: any) => {
+	   	this.wiseconnService.getAccounts().subscribe((response: any) => {
 			this.loading=false;
-	   		let farms = response.data?response.data:response;
+	   		let accounts = response.data?response.data:response;
         	let options = [];
-	        for (let i = 0; i < farms.length; i++) {
+	        for (let i = 0; i < accounts.length; i++) {
 	          options.push({
-	            id: farms[i].id,
-	            name: farms[i].name
+	            id: accounts[i].id,
+	            name: accounts[i].name
 	          });
 	        }
-	        this.farms=options;
+	        this.accounts=options;
 	   	},
 	   	error => {
 	   		console.log("error:",error)
@@ -139,6 +154,18 @@ export class UserFormComponent implements OnInit {
 			case "farm":
 	  			this.selectedFarms=event.value;
 				break;
+			case "account":
+	  			this.selectedAccounts=event.value;
+	 			if(JSON.parse(localStorage.getItem("datafarms"))){
+					let farm_aux =JSON.parse(localStorage.getItem("datafarms")); 
+					let accountId=this.selectedAccounts.id;
+					this.farms=farm_aux.filter(function(element){
+						if(element['account']['id'] == accountId){
+							return {id:element.id,name:element.name};
+						}
+					}); 
+					this.selectedFarms=[];
+				}
 			default:
 				// code...
 				break;
