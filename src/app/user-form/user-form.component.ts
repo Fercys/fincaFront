@@ -35,7 +35,7 @@ export class UserFormComponent implements OnInit {
 	//accounts
 	public accountsConfig = accountsConfigObj;
 	public accounts: Array<any> = [];
-	public selectedAccounts: Array<any> = [];
+	public selectedAccounts: any = [];
 	//farms
 	public farmsConfig = farmsConfigObj;
 	public farms: Array<any> = [];
