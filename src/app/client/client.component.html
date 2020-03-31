@@ -28,15 +28,15 @@
                               </th>
                           </thead>
                           <tbody>
-                              <tr *ngFor="let data of client | filter:searchTable" [routerLink]="['/client-farm',data.account.id]" style="cursor: pointer;">
+                              <tr *ngFor="let data of accounts | filter:searchTable" [routerLink]="['/client-farm',data.id]" style="cursor: pointer;">
                                   <td>
-                                      {{data.account.id}}
+                                      {{data.id}}
                                   </td>
                                   <td>
-                                      {{data.account.name}}
+                                      {{data.name}}
                                   </td>
                                   <td style="cursor: pointer;">
-                                    <i class="material-icons" [routerLink]="['/client-farm',data.account.id]">find_in_page</i>
+                                    <i class="material-icons" [routerLink]="['/client-farm',data.id]">find_in_page</i>
                                 </td>
                               </tr> 
                           </tbody>

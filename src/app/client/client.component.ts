@@ -7,24 +7,17 @@ import { WiseconnService } from 'app/services/wiseconn.service';
   styleUrls: ['./client.component.scss']
 })
 export class ClientComponent implements OnInit {
-  farms: any = [];
-  client: any = [];
+  public accounts:any[]=[];
   public loading = false;
+  public searchTable:any;
   constructor(private wiseconnService: WiseconnService) { }
-  searchTable:any;
   
   ngOnInit() {
     this.loading=true;
-    this.wiseconnService.getFarms().subscribe((response: any) => {
-      this.farms = response.data?response.data:response;
-      this.client=this.farms.filter(function(item,index,array){ 
-        if(index == 0){
-          return true;
-        }else{ 
-          return item['account']['id'] == array[--index]['account']['id']? false: true;
-        }
-      });
+    this.wiseconnService.getAccounts().subscribe((response: any) => {
       this.loading=false;
+      this.accounts = response.data?response.data:response;
+      console.log("accounts:",this.accounts)
     })
   }
 
