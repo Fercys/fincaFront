@@ -1,4 +1,4 @@
 
 
-<app-admin-dashboard *ngIf="user.role.id==1" ></app-admin-dashboard>
-<app-farm-map *ngIf="user.role.id!=1"></app-farm-map>
+<app-admin-dashboard *ngIf="user.role.id==1||user.role.id==2" ></app-admin-dashboard>
+<app-farm-map *ngIf="user.role.id!=1 && user.role.id!=2"></app-farm-map>
