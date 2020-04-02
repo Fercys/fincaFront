@@ -24,6 +24,8 @@ export class AdminDashboardComponent implements OnInit {
   public loading = false;
   public cant_farms=0;
   public users = 0;
+  public user;
+  public userLS;
   lat = -32.9034219818308;
   lng = -70.9091198444366;
   constructor(
