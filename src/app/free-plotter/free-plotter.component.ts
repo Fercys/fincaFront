@@ -344,14 +344,12 @@ export class FreePlotterComponent implements OnInit {
       }      
     }
     requestRandomDataChart(){
-    	console.log("requestRandomDataChart()")
-    	this.resetRandomChartsValues();
-    	let i=0;
-    	for (const element of this.selectGroups) {
-    		console.log("i:",i)
-    		console.log("element:",element)
-    		this.lineChartOptions.colors.push(element.chartColor);
-    		this.lineChartOptions.series.push({
+    	if(this.selectGroups[this.selectGroups.length-1].typeSelected){
+    		this.resetRandomChartsValues();
+    		let i=0;
+    		for (const element of this.selectGroups) {
+    			this.lineChartOptions.colors.push(element.chartColor);
+    			let serie=((element.typeSelected.name).toLowerCase() == "linea")?{
     			data: [
 					Math.floor(Math.random() * 10),
 					Math.floor(Math.random() * 10),
@@ -376,23 +374,49 @@ export class FreePlotterComponent implements OnInit {
 					Math.floor(Math.random() * 10),
 					Math.floor(Math.random() * 10),
 					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10)
     			],
     			name: 'Grupo #'+(i+1),
     			type: 'line'
-    		});
-    		i++;
-    	}
-    	this.highchartsShow();
+    			}:{
+    			data: [
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+    			],
+    			name: 'Grupo #'+(i+1),
+    			type: 'column'
+    			};
+    			this.lineChartOptions.series.push(serie);
+    			i++;
+    		}
+    		this.highchartsShow();
+		}else{
+	    	Swal.fire({
+	            icon: 'error',
+	            title: 'Oops...',
+	            text: 'Debe seleccionar el tipo de gráfica'
+	        })
+	    }    	
     }
     resetRandomChartsValues(){
     	this.lineChartOptions.colors=[];
@@ -667,9 +691,8 @@ export class FreePlotterComponent implements OnInit {
 		}],
 		variablesSelected:null,
 		types:[
-			{id:1,name:"Temperatura Suelo"},
-			{id:2,name:"Humedad Suelo"},
-			{id:3,name:"Suma humedades"},
+			{id:1,name:"Linea"},
+			{id:2,name:"Columna"},
 		],
 		typeSelected:null,
 		resolutions:[
@@ -699,6 +722,18 @@ export class FreePlotterComponent implements OnInit {
 		}
 	}
 	addSelectGroups(){
-		this.selectGroups.push(this.getDefaultSelectGroups())
+		if(this.selectGroups.length>0){
+			if(this.selectGroups[this.selectGroups.length-1].typeSelected){
+			this.selectGroups.push(this.getDefaultSelectGroups())
+			}else{
+	    		Swal.fire({
+	                icon: 'error',
+	                title: 'Oops...',
+	                text: 'Debe seleccionar el tipo de gráfica'
+	            })
+	    	}
+		}else{
+			this.selectGroups.push(this.getDefaultSelectGroups())
+		}
 	}
 }
