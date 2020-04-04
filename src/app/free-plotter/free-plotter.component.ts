@@ -48,12 +48,12 @@ export class FreePlotterComponent implements OnInit {
 	        type: 'spline',
 
 	    },
-	    colors: ['#D12B34','#00B9EE'],
+	    colors: [],//dinamic '#D12B34','#00B9EE'
 	    title: {
-	        text: 'TEMPERATURA/HUMEDAD'
+	        text: 'Title'
 	    },
 	    subtitle: {
-	        text: 'TEMPERATURA/HUMEDAD'
+	        text: 'Subtitle'
 	    },
 	    xAxis: [{
 	        categories: [],
@@ -85,17 +85,7 @@ export class FreePlotterComponent implements OnInit {
 	            enableMouseTracking: true,
 	        }
 	    },
-	    series: [{ 
-        	data: [], 
-        	name: 'Temperatura',
-	    	type: 'line',
-	    	//yAxis: 0 
-        },{ 
-        	data: [], 
-        	name: 'Humedad',
-	    	type: 'line', 
-        	yAxis: 1 
-        }],
+	    series: [],//dinamic {data: [],name: 'Humedad',type: 'line',yAxis: 1 }
 	    tooltip: {
 	        shared: true,
 	        crosshairs: true
@@ -164,7 +154,7 @@ export class FreePlotterComponent implements OnInit {
 	]
 	//selects
 	public selectGroups:any[]=[];
-	public chartColors:string[]=['#FF0000','#FF8000','#FFFF00','#31B404','#084B8A','#DF0174'];
+	public chartColors:string[]=['#D12B34','#00B9EE','#FFFF00','#31B404','#084B8A','#DF0174'];
 	constructor(
 		public wiseconnService: WiseconnService,
     	public userService:UserService,
@@ -352,6 +342,12 @@ export class FreePlotterComponent implements OnInit {
           	return value;
           	break;
       }      
+    }
+    requestRandomDataChart(){
+    	console.log("requestRandomDataChart()")
+    	for (var element of this.selectGroups) {
+    		console.log("element:",element)
+    	}
     }
 	requestDataChart(goBackFlag:boolean=false){
         this.resetChartsValues("line");
