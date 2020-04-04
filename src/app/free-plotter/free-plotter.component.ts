@@ -28,9 +28,6 @@ export class FreePlotterComponent implements OnInit {
   	public user:any=null;
 	public loading:boolean=false;
 	public farms:any[]=[];
-	public weatherZones:any[]=[];
-	public farmSelected:any=null;
-	public zoneSelected:any=null;
 	//rango de fechas para graficas
 	public fromDate: NgbDate;
 	public toDate: NgbDate;
@@ -164,6 +161,71 @@ export class FreePlotterComponent implements OnInit {
 		{ value: '3M' , active: false},
 		{ value: '6M' , active: false},
 	]
+	//selects
+	//variables
+	public variableGroups: any[] = [
+	    {
+	      name: 'Clima',
+	      variable: [
+	        {id:1,name:"Temperatura"},
+			{id:2,name:"Humedad Relativa"},
+			{id:3,name:"Pluviometría"},
+			{id:4,name:"Velocidad Viento"},
+			{id:5,name:"Radiacion Solar"},
+			{id:6,name:"Direccion de viento"},
+			{id:7,name:"Pluviometría"},
+			{id:8,name:"Velocidad Viento"},
+			{id:9,name:"Grados dias"},
+			{id:10,name:"Puntos rocio"},
+			{id:11,name:"Grados dias acumulado Año"},
+			{id:12,name:"Etp diaria"},
+			{id:11,name:"Et0 diaria"},
+	      ]
+	    },
+	    {
+	      name: 'Suelo',
+	      variable: [
+	        {id:1,name:"Temperatura Suelo"},
+			{id:2,name:"Humedad Suelo"},
+			{id:3,name:"Suma humedades"},
+	      ]
+	    },
+	  ];
+	public variablesSelected:any=null;
+	//types
+	public types:any[]=[
+		{id:1,name:"Temperatura Suelo"},
+		{id:2,name:"Humedad Suelo"},
+		{id:3,name:"Suma humedades"},
+	];
+	public typeSelected:any=null;
+	//resolutions
+	public resolutions:any[]=[
+		{id:1,name:"Minuto"},
+		{id:2,name:"1/4 horas"},
+		{id:3,name:"Suma humedades"},
+		{id:4,name:"Hora"},
+		{id:5,name:"2 horas"},
+		{id:6,name:"6 horas"},
+		{id:7,name:"Medio dia"},
+		{id:8,name:"Dia"},
+		{id:9,name:"Semana"},
+		{id:10,name:"Mes"},
+		{id:11,name:"Año"},
+	];
+	public resolutionSelected:any=null;
+	// sector o zonas	
+	public zones:any[]=[];
+	public zonesAux:any[]=[];
+	public zoneSelected:any=null;
+	// sensor	
+	public sensors:any[]=[
+		{id:1,name:"#1 15 cm (%)"},
+		{id:2,name:"#2 35 cm (%)"},
+		{id:3,name:"#3 55 cm (%)"},
+		{id:4,name:"#4 75 cm (%)"},
+	];
+	public sensorSelected:any=null;
 	constructor(
 		public wiseconnService: WiseconnService,
     	public userService:UserService,
@@ -177,10 +239,14 @@ export class FreePlotterComponent implements OnInit {
 	        this.userLS=JSON.parse(localStorage.getItem("user"));
 	        if(bcrypt.compareSync(this.userLS.plain, this.userLS.hash)){
 	          this.user=JSON.parse(this.userLS.plain);
-	          if(this.user.role.id==1){//admin
-	            this.getFarms();
+	          if(this.wiseconnService.farmId){
+	          	this.getZones(this.wiseconnService.farmId);
 	          }else{
-	            this.getFarmsByUser();
+	          	Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'No tiene campo seleccionado'
+                })
 	          }
 	        }else{
 	          this.router.navigate(['/login']);
@@ -207,8 +273,10 @@ export class FreePlotterComponent implements OnInit {
 	getZones(id:number=0) {
 		this.loading = true;
 		this.wiseconnService.getZones(id).subscribe((response: any) => {
-			let data=response.data?response.data:response;
-			this.weatherZones = data.filter((element)=>{
+			this.loading = false;
+			this.zonesAux=response.data?response.data:response;
+			this.zones=this.zonesAux;
+			/*this.weatherZones = data.filter((element)=>{
 				if(element.type){
 					if(element.type.length>0){
 						if(element.type.find((element) => {
@@ -218,24 +286,58 @@ export class FreePlotterComponent implements OnInit {
 						}
 					}
 				}
-			});
-			this.loading = false;
+			});*/
 		});
 	}
-	
-	onSelect(select: string, id: number) {
-		switch (select) {
-			case "farm":
-			this.farmSelected=this.farms.filter((element)=>{
-				return element.id == id
-			})[0];
-      		this.wiseconnService.farmId=id;
-			this.getZones(id);
+	filterZonesByVariable(group:any,variablesSelected:any){
+		let sensor;
+		if ((group.name).toLowerCase()=="clima") {
+			this.zones=this.zonesAux.filter(element=>{
+				if(element.type){
+					if(element.type.length>0){
+						if(element.type.find((element) => {
+							return element === 'Weather' || (element.description!=undefined&&element.description === 'Weather');
+						}) != undefined){
+							return element
+						}
+					}
+				}
+			})
+		}
+	}
+	onSelect(select: string, id: number, group:any=null) {
+		switch (select) {			
+			case "variable":
+				if(group){
+					this.variablesSelected=group.variable.find((element)=>{
+						return element.id == id
+					});
+					this.filterZonesByVariable(group,this.variablesSelected)
+				}
+			break;
+			case "type":
+				this.typeSelected=this.types.find((element)=>{
+					return element.id == id
+				});
+				console.log("typeSelected:",this.typeSelected)
+			break;
+			case "resolution":
+				this.resolutionSelected = this.resolutions.find((element)=>{
+					return element.id == id
+				});
+				console.log("resolutionSelected:",this.resolutionSelected)
 			break;
 			case "zone":
-			this.zoneSelected = this.weatherZones.filter((element)=>{
-				return element.id == id
-			})[0];
+				this.zoneSelected = this.zones.find((element)=>{
+					return element.id == id
+				});
+				console.log("zoneSelected:",this.zoneSelected)
+			break;
+			case "sensor":
+				this.sensorSelected = this.sensors.find((element)=>{
+					return element.id == id
+				});
+				console.log("sensorSelected:",this.sensorSelected)
 			break;
 			default:
 			// code...
@@ -291,6 +393,7 @@ export class FreePlotterComponent implements OnInit {
 		}
 		this.toDate = this.calendar.getToday();
 		this.requestChartBtn=(this.fromDate && this.toDate && this.toDate.after(this.fromDate))?false:true;
+		this.requestDataChart(false);
 	}
 	goBack(){
 		let lastElement=this.dateRangeHistory.pop();
@@ -513,9 +616,11 @@ export class FreePlotterComponent implements OnInit {
 		    
 		    this.temperatureId=null;
 		    this.humidityId=null;
-		    this.lineChart.series[0].setData([]);
-		    this.lineChart.series[1].setData([]);
-		    this.lineChart.xAxis[0].setCategories([]);
+		    if(this.lineChart!=undefined){
+		    	this.lineChart.series[0].setData([]);
+		    	this.lineChart.series[1].setData([]);
+		    	this.lineChart.xAxis[0].setCategories([]);
+		    }
 
 		    this.lineChartLabels=[];
 		    for (var i = 0; i < 2; i++) {
@@ -527,10 +632,11 @@ export class FreePlotterComponent implements OnInit {
 		    this.rainId=null;
 		    this.et0Id=null;
 		    
-		    this.barChart.series[0].setData([]);
-		    this.barChart.series[1].setData([]);  
-		    this.barChart.xAxis[0].setCategories([]);
-
+		    if(this.barChart!=undefined){
+		    	this.barChart.series[0].setData([]);
+		    	this.barChart.series[1].setData([]); 
+		    	this.barChart.xAxis[0].setCategories([]);
+		    }
 		    this.barChartLabels=[];
 		    for (var i = 0; i < 2; i++) {
 		      this.barChartData[i]=[];

@@ -20,12 +20,14 @@ export class AdminDashboardComponent implements OnInit {
   //@italo
   @ViewChild('mapRef', {static: true }) mapElement: ElementRef;
 
-  farms: any = [];
+  public farms: any = [];
   public loading = false;
   public cant_farms=0;
   public users = 0;
-  lat = -32.9034219818308;
-  lng = -70.9091198444366;
+  public lat = -32.9034219818308;
+  public lng = -70.9091198444366;
+  public userLS:any=null;
+  public user:any=null;
   constructor(
     private _route: ActivatedRoute, 
     private wiseconnService: WiseconnService,

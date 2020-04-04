@@ -6,24 +6,66 @@
 			<h4 class="row-title">Graficador Libre</h4>
 		</div>
 		<div class="row">
-			<div class="col-md-2" style="display: table; height: 45px;">
-				<span style="display: table-cell; vertical-align: middle;">Campo</span>
-			</div>
-			<mat-form-field class="col-md-4 mat-select-custom" floatLabel="never">
-				<mat-label>{{farmSelected?farmSelected.name:'Seleccionar campo'}}</mat-label>
-				<mat-select>
-					<mat-option *ngFor="let farm of farms" (click)="onSelect('farm',farm.id)">{{farm.name}}</mat-option>
-				</mat-select>
-			</mat-form-field>
-			<div class="col-md-2" style="display: table; height: 45px;">
-				<span style="display: table-cell; vertical-align: middle;">Sector</span>
-			</div>
-			<mat-form-field class="col-md-4 mat-select-custom" floatLabel="never">
-				<mat-label>{{zoneSelected?zoneSelected.name:'Seleccionar Sector'}}</mat-label>
-				<mat-select>
-					<mat-option  *ngFor="let zone of weatherZones" (click)="onSelect('zone',zone.id)">{{zone.name}}</mat-option>
-				</mat-select>
-			</mat-form-field>
+			<div class="col-md-3">
+				<div class="form-group row">
+		          	<label for="zone" class="" style="">Variables</label>
+		          	<mat-form-field class="mat-select-custom w-100" floatLabel="never">
+						<mat-label>{{variablesSelected?variablesSelected.name:'Seleccionar variable'}}</mat-label>
+						<mat-select>
+				          	<mat-optgroup *ngFor="let group of variableGroups" [label]="group.name"
+						                  [disabled]="group.disabled">
+						      <mat-option *ngFor="let variable of group.variable" (click)="onSelect('variable',variable.id,group)">
+						        {{variable.name}}
+						      </mat-option>
+						    </mat-optgroup>
+						</mat-select>
+					</mat-form-field>
+		        </div>
+	        </div>
+      		<div class="col-md-3">
+				<div class="form-group row">
+		          <label for="zone" class="" style="">Tipo</label>
+		            <mat-form-field class="mat-select-custom w-100" floatLabel="never">
+						<mat-label>{{typeSelected?typeSelected.name:'Seleccionar tipo'}}</mat-label>
+						<mat-select>
+							<mat-option *ngFor="let type of types" (click)="onSelect('type',type.id)">{{type.name}}</mat-option>
+						</mat-select>
+					</mat-form-field>
+		        </div>
+	        </div>
+      		<div class="col-md-2">
+      			<div class="form-group row">
+		          <label for="zone" class="" style="">Resolución</label>
+		            <mat-form-field class="mat-select-custom w-100" floatLabel="never">
+						<mat-label>{{resolutionSelected?resolutionSelected.name:'Seleccionar Resolución'}}</mat-label>
+						<mat-select>
+							<mat-option  *ngFor="let resolution of resolutions" (click)="onSelect('resolution',resolution.id)">{{resolution.name}}</mat-option>
+						</mat-select>
+					</mat-form-field>
+		        </div>
+      		</div>
+      		<div class="col-md-2">
+      			<div class="form-group row">
+		          <label for="zone" class="" style="">Sector / Equipo</label>
+		            <mat-form-field class="mat-select-custom w-100" floatLabel="never">
+						<mat-label>{{zoneSelected?zoneSelected.name:'Seleccionar Sector'}}</mat-label>
+						<mat-select>
+							<mat-option  *ngFor="let zone of zones" (click)="onSelect('zone',zone.id)">{{zone.name}}</mat-option>
+						</mat-select>
+					</mat-form-field>
+		        </div>
+      		</div>
+      		<div class="col-md-2">
+      			<div class="form-group row">
+		          <label for="zone" class="" style="">Sensor</label>
+		            <mat-form-field class="mat-select-custom w-100" floatLabel="never">
+						<mat-label>{{sensorSelected?sensorSelected.name:'Seleccionar Sensor'}}</mat-label>
+						<mat-select>
+							<mat-option  *ngFor="let sensor of sensors" (click)="onSelect('sensor',sensor.id)">{{sensor.name}}</mat-option>
+						</mat-select>
+					</mat-form-field>
+		        </div>
+      		</div>
 		</div>
 			<div class="row">
 				<div class="col-md-4">
