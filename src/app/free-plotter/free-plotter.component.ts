@@ -184,7 +184,7 @@ export class FreePlotterComponent implements OnInit {
 	      }else{
 	        this.router.navigate(['/login']);
 	      }
-  		this.highchartsShow();
+		//this.highchartsShow();
 	}
 	getFarmsByUser(){      
 	  	this.loading = true;
@@ -345,9 +345,58 @@ export class FreePlotterComponent implements OnInit {
     }
     requestRandomDataChart(){
     	console.log("requestRandomDataChart()")
-    	for (var element of this.selectGroups) {
+    	this.resetRandomChartsValues();
+    	let i=0;
+    	for (const element of this.selectGroups) {
+    		console.log("i:",i)
     		console.log("element:",element)
+    		this.lineChartOptions.colors.push(element.chartColor);
+    		this.lineChartOptions.series.push({
+    			data: [
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10),
+					Math.floor(Math.random() * 10)
+    			],
+    			name: 'Grupo #'+(i+1),
+    			type: 'line'
+    		});
+    		i++;
     	}
+    	this.highchartsShow();
+    }
+    resetRandomChartsValues(){
+    	this.lineChartOptions.colors=[];
+    	this.lineChartOptions.series=[];
     }
 	requestDataChart(goBackFlag:boolean=false){
         this.resetChartsValues("line");
@@ -518,8 +567,8 @@ export class FreePlotterComponent implements OnInit {
 	highchartsShow(){
 		this.lineChartOptions.chart['renderTo'] = this.lineChartElement.nativeElement;
     	this.lineChart = Highcharts.chart(this.lineChartOptions);
-    	this.barChartOptions.chart['renderTo'] = this.barChartElement.nativeElement;
-    	this.barChart = Highcharts.chart(this.barChartOptions);
+    	/*this.barChartOptions.chart['renderTo'] = this.barChartElement.nativeElement;
+    	this.barChart = Highcharts.chart(this.barChartOptions);*/
 	}
 	renderCharts(chart:string) {
 		switch (chart) {
