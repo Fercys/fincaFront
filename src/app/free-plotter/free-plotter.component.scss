@@ -8,6 +8,10 @@ iframe {
 .title-farm {
   font-weight: 600;
 }
+.add-group-btn-container{
+  display:flex;
+  align-items:center;
+}
 .card-weather {
   margin-top: 10px;
   div:nth-child(2){
@@ -100,13 +104,6 @@ iframe {
   padding: 0;
 }
 .select-time {
-  @media screen and (max-width: 995px) {
-    margin-top: 20px;
-  }
-  @media screen and (min-width: 996px) {
-    margin-top: 60px;
-  }
-  margin-top: 60px;
   h4 {
     font-weight: 700;
   }
