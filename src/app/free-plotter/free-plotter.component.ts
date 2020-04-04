@@ -172,12 +172,12 @@ export class FreePlotterComponent implements OnInit {
 		public formatter: NgbDateParserFormatter) { }
 
 	ngOnInit() {//rango de fechas para graficas
-		this.dateRangeByDefault();
 		if(localStorage.getItem("user")){
 	        this.userLS=JSON.parse(localStorage.getItem("user"));
 	        if(bcrypt.compareSync(this.userLS.plain, this.userLS.hash)){
 	          	this.user=JSON.parse(this.userLS.plain);
-				this.selectGroups.push(this.getDefaultSelectGroups());
+				this.addSelectGroups();
+				this.dateRangeByDefault();
 	          	if(this.wiseconnService.farmId){
 	          		this.getZones(this.wiseconnService.farmId);
 	          	}else{
@@ -366,7 +366,7 @@ export class FreePlotterComponent implements OnInit {
 				selectedValue:this.selectedValue
 			});
 		}
-		if(this.selectGroups[this.selectGroups.length-1].zoneSelected){
+		if(this.selectGroups[this.selectGroups.length-1].zoneSelected!=undefined){
 			this.loading = true;
 			this.wiseconnService.getMeasuresOfZones(this.selectGroups[this.selectGroups.length-1].zoneSelected.id).subscribe((response) => {
 				this.loading = false;
