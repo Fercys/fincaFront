@@ -200,6 +200,18 @@ iframe {
     background-color: rgba(2, 117, 216, 0.5);
   }
 }
+.circle-color{
+  border-radius: 0.8em;
+  -moz-border-radius: 0.8em;
+  -webkit-border-radius: 0.8em;
+  color: #fff;
+  display: inline-block;
+  font-weight: bold;
+  line-height: 1.6em;
+  margin-right: 15px;
+  text-align: center;
+  width: 1.6em;
+}
 @media screen and (min-width: 996px){
   .date-title{
     float: right;

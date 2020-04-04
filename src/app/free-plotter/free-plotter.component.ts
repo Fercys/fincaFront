@@ -164,6 +164,7 @@ export class FreePlotterComponent implements OnInit {
 	]
 	//selects
 	public selectGroups:any[]=[];
+	public chartColors:string[]=['#FF0000','#FF8000','#FFFF00','#31B404','#084B8A','#DF0174'];
 	constructor(
 		public wiseconnService: WiseconnService,
     	public userService:UserService,
@@ -648,7 +649,8 @@ export class FreePlotterComponent implements OnInit {
 			{id:3,name:"#3 55 cm (%)"},
 			{id:4,name:"#4 75 cm (%)"},
 		],
-		sensorSelected:null
+		sensorSelected:null,
+		chartColor:this.chartColors[this.selectGroups.length]
 		}
 	}
 	addSelectGroups(){
