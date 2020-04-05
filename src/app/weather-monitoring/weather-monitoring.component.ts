@@ -54,6 +54,7 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
   //rango de fechas para graficas  
   public fromDate: NgbDate;
   public toDate: NgbDate;
+  public hoveredDate: NgbDate;
   public dateRange: any = null;
   public dateRangeHistory:any[]=[]
   public selectedValue: any = '1S';
@@ -702,6 +703,24 @@ addMarkerImage(map,element,urlImage){
     }
     
   }
+  getTranslateType(type:string){
+    let typeResult;
+    switch (type) {
+      case "Irrigation":
+        typeResult="Sector riego";
+        break;
+      case "Soil":
+        typeResult="Humedad de suelo";
+        break;
+      case "Weather":
+        typeResult="Clima";
+        break;
+      default:
+        // code...
+        break;
+    }
+    return typeResult;
+  }
 addListenersOnPolygon(polygon, id){
   let tooltip = document.createElement("span");
   let mapContainer = document.getElementById("map-container")?document.getElementById("map-container").firstChild:null;
@@ -713,17 +732,17 @@ addListenersOnPolygon(polygon, id){
       tooltip.style.color = '#FFFFFF';
       if(zone.status!=undefined){
         switch ((zone.type.length)) {
-          case 1:
-          tooltip.innerHTML = zone.name + " - "+zone.type[0].description;
-          break;
-          case 2:
-          tooltip.innerHTML = zone.name + " - "+ zone.type[0].description+" , "+ zone.type[1].description;
-          break;
-          case 3:
-          tooltip.innerHTML = zone.name + " - "+ zone.type[0].description+" , "+ zone.type[1].description+" , "+ zone.type[2].description;
-          default:
-          break;
-        }
+            case 1:
+            tooltip.innerHTML = zone.name + " - "+this.getTranslateType(zone.type[0].description);
+            break;
+            case 2:
+            tooltip.innerHTML = zone.name + " - "+ this.getTranslateType(zone.type[0].description)+", "+ this.getTranslateType(zone.type[1].description);
+            break;
+            case 3:
+            tooltip.innerHTML = zone.name + " - "+ this.getTranslateType(zone.type[0].description)+", "+ this.getTranslateType(zone.type[1].description)+", "+ this.getTranslateType(zone.type[2].description);
+            default:
+            break;
+          }
       }else{
         tooltip.innerHTML = zone.name;
       }

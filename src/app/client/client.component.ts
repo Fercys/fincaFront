@@ -17,7 +17,6 @@ export class ClientComponent implements OnInit {
     this.wiseconnService.getAccounts().subscribe((response: any) => {
       this.loading=false;
       this.accounts = response.data?response.data:response;
-      console.log("accounts:",this.accounts)
     })
   }
 

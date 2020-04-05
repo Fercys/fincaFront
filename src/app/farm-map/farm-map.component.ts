@@ -737,6 +737,24 @@ export class FarmMapComponent implements OnInit {
     }
     
   }
+  getTranslateType(type:string){
+    let typeResult;
+    switch (type) {
+      case "Irrigation":
+        typeResult="Sector riego";
+        break;
+      case "Soil":
+        typeResult="Humedad de suelo";
+        break;
+      case "Weather":
+        typeResult="Clima";
+        break;
+      default:
+        // code...
+        break;
+    }
+    return typeResult;
+  }
   addListenersOnPolygon(polygon, id){
     let tooltip = document.createElement("span");
     let mapContainer = document.getElementById("map-container")?document.getElementById("map-container").firstChild:null;
@@ -749,13 +767,13 @@ export class FarmMapComponent implements OnInit {
         if(zone.status!=undefined){
           switch ((zone.type.length)) {
             case 1:
-            tooltip.innerHTML = zone.name + " - "+zone.type[0].description;
+            tooltip.innerHTML = zone.name + " - "+this.getTranslateType(zone.type[0].description);
             break;
             case 2:
-            tooltip.innerHTML = zone.name + " - "+ zone.type[0].description+" , "+ zone.type[1].description;
+            tooltip.innerHTML = zone.name + " - "+ this.getTranslateType(zone.type[0].description)+", "+ this.getTranslateType(zone.type[1].description);
             break;
             case 3:
-            tooltip.innerHTML = zone.name + " - "+ zone.type[0].description+" , "+ zone.type[1].description+" , "+ zone.type[2].description;
+            tooltip.innerHTML = zone.name + " - "+ this.getTranslateType(zone.type[0].description)+", "+ this.getTranslateType(zone.type[1].description)+", "+ this.getTranslateType(zone.type[2].description);
             default:
             break;
           }
