@@ -723,15 +723,23 @@ export class FreePlotterComponent implements OnInit {
 	}
 	addSelectGroups(){
 		if(this.selectGroups.length>0){
-			if(this.selectGroups[this.selectGroups.length-1].typeSelected){
-			this.selectGroups.push(this.getDefaultSelectGroups())
-			}else{
-	    		Swal.fire({
-	                icon: 'error',
-	                title: 'Oops...',
-	                text: 'Debe seleccionar el tipo de gráfica'
-	            })
-	    	}
+			if(this.selectGroups.length<6){
+				if(this.selectGroups[this.selectGroups.length-1].typeSelected){
+				this.selectGroups.push(this.getDefaultSelectGroups())
+				}else{
+		    		Swal.fire({
+		                icon: 'error',
+		                title: 'Oops...',
+		                text: 'Debe seleccionar el tipo de gráfica'
+		            })
+		    	}
+		    }else{
+		    	Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Ya no se puede añadir más selectores'
+                })
+		    }
 		}else{
 			this.selectGroups.push(this.getDefaultSelectGroups())
 		}
