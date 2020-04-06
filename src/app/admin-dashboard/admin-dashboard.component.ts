@@ -1,9 +1,14 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import * as Chartist from 'chartist';
+import * as bcrypt from 'bcryptjs';
 
-import { WiseconnService } from '../services/wiseconn.service';
 import { HttpClient, HttpHeaders, HttpHandler,HttpClientModule  } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
+
+
+//services
+import { WiseconnService } from 'app/services/wiseconn.service';
+import { UserService } from 'app/services/user.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -15,13 +20,19 @@ export class AdminDashboardComponent implements OnInit {
   //@italo
   @ViewChild('mapRef', {static: true }) mapElement: ElementRef;
 
-  farms: any = [];
+  public farms: any = [];
   public loading = false;
   public cant_farms=0;
   public users = 0;
-  lat = -32.9034219818308;
-  lng = -70.9091198444366;
-  constructor(private _route: ActivatedRoute, private wiseconnService: WiseconnService,private router: Router) { }  
+  public lat = -32.9034219818308;
+  public lng = -70.9091198444366;
+  public userLS:any=null;
+  public user:any=null;
+  constructor(
+    private _route: ActivatedRoute, 
+    private wiseconnService: WiseconnService,
+    private userService:UserService,
+    private router: Router) { }  
 
   startAnimationForLineChart(chart){
       let seq: any, delays: any, durations: any;
@@ -124,22 +135,23 @@ export class AdminDashboardComponent implements OnInit {
     if(this.wiseconnService.farmId){
       this.wiseconnService.farmId=null;
     }
-    this.loading = true;
-    this.wiseconnService.getFarms().subscribe((response: any) => {
-      this.farms = response.data?response.data:response;
-      localStorage.setItem("datafarms", JSON.stringify(this.farms));
-      this.cant_farms=this.farms.length;
-      var farm_client = this.farms.filter(function(item,index,array){ 
-        if(index == 0){
-          return true;
+    if(localStorage.getItem("user")){
+      this.userLS=JSON.parse(localStorage.getItem("user"));
+      if(bcrypt.compareSync(this.userLS.plain, this.userLS.hash)){
+        this.user=JSON.parse(this.userLS.plain);
+        if(this.user.role.id==1){//admin
+          this.getFarms();
         }else{
-          return (item['account']['id'] == array[--index]['account']['id'])? false: true;
+          this.getFarmsByUser();
         }
-      });
-      this.users = farm_client.length;
-      this.loading = false;
-      this.mapInitializer();  
-    })
+      }else{
+        this.router.navigate(['/login']);
+      }
+    }else{
+      this.router.navigate(['/login']);
+    }
+
+    
       /* ----------==========     Daily Sales Chart initialization For Documentation    ==========---------- */
 
      //  const dataDailySalesChart: any = {
@@ -221,4 +233,40 @@ export class AdminDashboardComponent implements OnInit {
       // this.startAnimationForBarChart(websiteViewsChart);
   }
 
+    getFarmsByUser(){      
+        this.loading = true;
+        this.userService.getFarmsByUser(this.user.id).subscribe((response: any) => {
+          this.loading = false;
+          this.farms = response.data?response.data:response;
+          localStorage.setItem("datafarms", JSON.stringify(this.farms));
+          this.cant_farms=this.farms.length;
+          var farm_client = this.farms.filter(function(item,index,array){ 
+            if(index == 0){
+              return true;
+            }else{
+              return (item['account']['id'] == array[--index]['account']['id'])? false: true;
+            }
+          });
+          this.users = farm_client.length;
+          this.mapInitializer(); 
+        });
+    }
+    getFarms(){
+      this.loading = true;
+      this.wiseconnService.getFarms().subscribe((response: any) => {
+        this.loading = false;
+        this.farms = response.data?response.data:response;
+        localStorage.setItem("datafarms", JSON.stringify(this.farms));
+        this.cant_farms=this.farms.length;
+        var farm_client = this.farms.filter(function(item,index,array){ 
+          if(index == 0){
+            return true;
+          }else{
+            return (item['account']['id'] == array[--index]['account']['id'])? false: true;
+          }
+        });
+        this.users = farm_client.length;
+        this.mapInitializer();  
+      })
+    }
 }

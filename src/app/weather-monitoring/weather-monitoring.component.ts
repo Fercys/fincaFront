@@ -227,23 +227,42 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
         }
     this.highchartsShow();
   }
-  getFarm(id:number){
-    this.loading = true;
-    this.wiseconnService.getFarm(id).subscribe((response) => {
-      this.loading = false;
-      this.farm = response.data?response.data:response;
-      if(localStorage.getItem("lastFarmId")!=undefined && (parseInt(localStorage.getItem("lastFarmId"))==parseInt(this.farm.id))){
-          this.zones = JSON.parse(localStorage.getItem('lastZones'));
-          this.weatherZones=this.getWeatherZones();
-          this.loadMap();
-          if(this.fromDate && this.toDate){
-            this.getChartInformation();
-          }
-          this.processMapData();
-        }else{
-          this.getZones();
-        }
-        this.getWeather();
+  getFarms() {
+    this.wiseconnService.getFarms().subscribe((response: any) => {
+      this.farms = response.data?response.data:response;
+      if(this.farms.length>0){
+          this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -5);
+          this.toDate = this.calendar.getToday();
+          this.farm=this.getFarm(this.wiseconnService.farmId);
+          if(this.farm){
+            if(localStorage.getItem("lastFarmId")!=undefined && (parseInt(localStorage.getItem("lastFarmId"))==parseInt(this.farm.id))){
+              this.zones = JSON.parse(localStorage.getItem('lastZones'));
+              this.weatherZones=this.getWeatherZones();
+              this.loadMap();
+              if(this.fromDate && this.toDate){
+                this.getChartInformation();
+              }
+              this.processMapData();
+            }else{
+              this.getZones();
+            }
+            this.getWeather()
+          }        
+      }else{
+        Swal.fire({icon: 'error',title: 'Oops...',text: 'No existe ningún campo registrado'});
+      }      
+    })
+  }
+  getFarmsByUser(){      
+      this.loading = true;
+      this.userService.getFarmsByUser(this.user.id).subscribe((response: any) => {
+          this.farms = response.data?response.data:response;      
+          this.loading = false;
+      });
+  }
+  getFarm(id){
+    return this.farms.find(element =>{
+      return element.id==id || element.id_wiseconn==id
     });
   }
   getZones() {

@@ -8,6 +8,10 @@ iframe {
 .title-farm {
   font-weight: 600;
 }
+.add-group-btn-container{
+  display:flex;
+  align-items:center;
+}
 .card-weather {
   margin-top: 10px;
   div:nth-child(2){
@@ -100,13 +104,6 @@ iframe {
   padding: 0;
 }
 .select-time {
-  @media screen and (max-width: 995px) {
-    margin-top: 20px;
-  }
-  @media screen and (min-width: 996px) {
-    margin-top: 60px;
-  }
-  margin-top: 60px;
   h4 {
     font-weight: 700;
   }
@@ -202,6 +199,18 @@ iframe {
   .faded {
     background-color: rgba(2, 117, 216, 0.5);
   }
+}
+.circle-color{
+  border-radius: 0.8em;
+  -moz-border-radius: 0.8em;
+  -webkit-border-radius: 0.8em;
+  color: #fff;
+  display: inline-block;
+  font-weight: bold;
+  line-height: 1.6em;
+  margin-right: 15px;
+  text-align: center;
+  width: 1.6em;
 }
 @media screen and (min-width: 996px){
   .date-title{
