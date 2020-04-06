@@ -219,21 +219,23 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
     this.wiseconnService.getFarms().subscribe((response: any) => {
       this.farms = response.data?response.data:response;
       if(this.farms.length>0){
-        this.farm=this.farms[0];        
-        if(localStorage.getItem("lastFarmId")!=undefined && (parseInt(localStorage.getItem("lastFarmId"))==parseInt(this.farm.id))){
-          this.zones = JSON.parse(localStorage.getItem('lastZones'));
-          this.weatherZones=this.getWeatherZones();
-          this.loadMap();
           this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -5);
           this.toDate = this.calendar.getToday();
-          if(this.fromDate && this.toDate){
-            this.getChartInformation();
-          }
-          this.processMapData();
-        }else{
-          this.getZones();
-        }
-        this.getWeather()
+          this.farm=this.getFarm(this.wiseconnService.farmId);
+          if(this.farm){
+            if(localStorage.getItem("lastFarmId")!=undefined && (parseInt(localStorage.getItem("lastFarmId"))==parseInt(this.farm.id))){
+              this.zones = JSON.parse(localStorage.getItem('lastZones'));
+              this.weatherZones=this.getWeatherZones();
+              this.loadMap();
+              if(this.fromDate && this.toDate){
+                this.getChartInformation();
+              }
+              this.processMapData();
+            }else{
+              this.getZones();
+            }
+            this.getWeather()
+          }        
       }else{
         Swal.fire({icon: 'error',title: 'Oops...',text: 'No existe ningún campo registrado'});
       }      
