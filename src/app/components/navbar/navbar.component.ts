@@ -1,4 +1,4 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import {Location, LocationStrategy, PathLocationStrategy} from '@angular/common';
 import { Router } from '@angular/router';
 import * as bcrypt from 'bcryptjs';
@@ -21,14 +21,16 @@ export const SidebarRoute: RouteInfo[] = [
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent implements OnInit {
+  @ViewChild('toggleButton', {static: true }) toggleButton: ElementRef;
+    public toggled:boolean=null;
     private listTitles: any[];
     public location: Location;
     public mobile_menu_visible: any = 0;
-    private toggleButton: any;
     private sidebarVisible: boolean;
     public activeHover = false;
     public userLS:any=null;
     public user:any=null;
+
 
     constructor(location: Location,  private element: ElementRef, private router: Router) {
       this.location = location;
@@ -42,7 +44,8 @@ export class NavbarComponent implements OnInit {
           this.user=JSON.parse(this.userLS.plain);
           this.listTitles = SidebarRoute.filter(listTitle => listTitle);
           const navbar: HTMLElement = this.element.nativeElement;
-          this.toggleButton = navbar.getElementsByClassName('navbar-toggler')[0];
+          console.log("toggleButton:",this.toggleButton)
+          this.toggled=this.isMobileMenu()?false:true;
           this.router.events.subscribe((event) => {
             this.sidebarClose();
             var $layer = document.getElementsByClassName('close-layer')[0];
@@ -60,16 +63,11 @@ export class NavbarComponent implements OnInit {
       
     }
 
-    sidebarOpen() {      
-        const toggleButton = this.toggleButton;
+    sidebarOpen() {
+        const toggleButton=this.toggleButton;
         const body = document.getElementsByTagName('body')[0];
         const sidebar = document.getElementsByClassName('sidebar')[0];
         const mainPanel = document.getElementsByClassName('main-panel')[0];
-
-        setTimeout(function(){
-            toggleButton.classList.add('toggled');
-        }, 500);
-
         body.classList.add('nav-open');
 
         sidebar.classList.add('sidebar-close');
@@ -78,8 +76,6 @@ export class NavbarComponent implements OnInit {
     };
     sidebarClose() {
         const body = document.getElementsByTagName('body')[0];
-        this.toggleButton.classList.remove('toggled');
-
         body.classList.remove('nav-open');
 
         const sidebar: any = document.getElementsByClassName('sidebar sidebar-close')[0];
@@ -93,6 +89,7 @@ export class NavbarComponent implements OnInit {
         }
     };
     sidebarToggle() {
+        this.toggled=!this.toggled;
         // const toggleButton = this.toggleButton;
         // const body = document.getElementsByTagName('body')[0];
         var $toggle = document.getElementsByClassName('navbar-toggler')[0];
@@ -113,15 +110,15 @@ export class NavbarComponent implements OnInit {
             if ($layer) {
                 $layer.remove();
             }
-            setTimeout(function() {
+            /*setTimeout(function() {
                 $toggle.classList.remove('toggled');
-            }, 400);
+            }, 400);*/
 
             this.mobile_menu_visible = 0;
         } else {
-            setTimeout(function() {
+            /*setTimeout(function() {
                 $toggle.classList.add('toggled');
-            }, 430);
+            }, 430);*/
 
             var $layer: any = document.createElement('div');
             $layer.setAttribute('class', 'close-layer');
@@ -141,9 +138,9 @@ export class NavbarComponent implements OnInit {
               body.classList.remove('nav-open');
               this.mobile_menu_visible = 0;
               $layer.classList.remove('visible');
+              this.toggled=!this.toggled;
               setTimeout(function() {
                   $layer.remove();
-                  $toggle.classList.remove('toggled');
               }, 400);
             }.bind(this);
 
@@ -152,7 +149,12 @@ export class NavbarComponent implements OnInit {
 
         }
     };
-
+    isMobileMenu() {
+        if ($(window).width() > 991) {
+            return false;
+        }
+        return true;
+    };
     getTitle(){
       var titlee = this.location.prepareExternalUrl(this.location.path());
       if(titlee.charAt(0) === '#'){

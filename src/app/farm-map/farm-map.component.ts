@@ -296,7 +296,7 @@ export class FarmMapComponent implements OnInit {
           this.getZones();
         }
         this.getWeather();
-      }else{
+      }else if(localStorage.getItem("lastFarmId")!=undefined&&this._route.snapshot.paramMap.get('id')){
         Swal.fire({icon: 'error',title: 'Oops...',text: 'Farm no existente'});
       }        
       this.loading = false;
@@ -309,7 +309,7 @@ export class FarmMapComponent implements OnInit {
       this.farms = response.data?response.data:response; 
       if(this._route.snapshot.paramMap.get('id')){
         this.farm=this.getFarm(this._route.snapshot.paramMap.get('id'));
-      }else if(localStorage.getItem("lastFarmId")){
+      }else if(localStorage.getItem("lastFarmId")!=undefined&&localStorage.getItem("lastFarmId")){
         this.farm=this.getFarm(parseInt(localStorage.getItem("lastFarmId")));
       }
       if(this.farm){
@@ -364,9 +364,9 @@ export class FarmMapComponent implements OnInit {
           this.getZones();
         }
         this.getWeather();
-      }else{
+      }else if(localStorage.getItem("lastFarmId")!=undefined&&this._route.snapshot.paramMap.get('id')){
         Swal.fire({icon: 'error',title: 'Oops...',text: 'Farm no existente'});
-      }        
+      }          
       this.loading = false;
     });
   }
@@ -887,7 +887,6 @@ export class FarmMapComponent implements OnInit {
               let data=response.data?response.data:response;
               this.measurements = this.processMeasurements(data);
               this.setLocalStorageItem("lastMeasurements",this.getJSONStringify(this.measurements));
-              
             }) 
           }
           let polygonData={
@@ -1001,7 +1000,9 @@ export class FarmMapComponent implements OnInit {
         item.name == "Radiacion Solar"||item.name == "Rad. Solar"||
         item.name == "Station Relative Humidity"||item.name == "Sta. Rel. Humidity"
         ){
-        measurementsResult.push(item);
+        if(measurementsResult.find(element=>element.name==item.name)==undefined){
+          measurementsResult.push(item);
+        }
       }  
     }
     return measurementsResult;
