@@ -246,7 +246,7 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
                 this.getZones();
               }
               this.getWeather()
-            }
+            }  
           }
       }else{
         Swal.fire({icon: 'error',title: 'Oops...',text: 'No existe ningún campo registrado'});
@@ -348,9 +348,11 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
       this.setLocalStorageItem("lastBarChartLabels",this.getJSONStringify(this.barChartLabels));
       this.setLocalStorageItem("lastBarChartData",this.getJSONStringify(this.barChartData));
       this.farm=this.getFarm(id);
-      this.setLocalStorageItem("lastFarmId",this.farm.id);
-      this.getZones();
-      this.getWeather();
+      if(this.farm){
+        this.setLocalStorageItem("lastFarmId",this.farm.id);
+        this.getZones();
+        this.getWeather();
+      }
       break;
       case "zone":
       this.setLocalStorageItem("lastLineChartLabels",this.getJSONStringify(this.lineChartLabels));
@@ -391,7 +393,6 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
       }
     });
   }
-
   highchartsShow(){
     this.lineChartOptions.chart['renderTo'] = this.lineChartElement.nativeElement;
     this.lineChart = Highcharts.chart(this.lineChartOptions);

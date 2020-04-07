@@ -251,8 +251,7 @@ export class FarmMapComponent implements OnInit {
       if(this.farm){
         if(localStorage.getItem("lastFarmId")!=undefined){
           if(parseInt(localStorage.getItem("lastFarmId"))==parseInt(this.farm.id)){
-            this.zones = JSON.parse(localStorage.getItem('lastZones'));
-            this.loadMap();
+            this.getZones();
             if(this.fromDate && this.toDate){
               this.getChartInformation();
             }
@@ -315,6 +314,7 @@ export class FarmMapComponent implements OnInit {
         this.farm=this.getFarm(parseInt(localStorage.getItem("lastFarmId")));
       }
       if(this.farm){
+        this.setLocalStorageItem("lastFarmId",this.farm.id);
         if(localStorage.getItem("lastFarmId")!=undefined){
           if(parseInt(localStorage.getItem("lastFarmId"))==parseInt(this.farm.id)){
             this.zones = JSON.parse(localStorage.getItem('lastZones'));
@@ -956,9 +956,11 @@ export class FarmMapComponent implements OnInit {
     switch (select) {
       case "farm":
         this.farm=this.getFarm(id);
-        this.setLocalStorageItem("lastFarmId",this.farm.id);
-        this.getZones();
-        this.getWeather();
+        if(this.farm){
+          this.setLocalStorageItem("lastFarmId",this.farm.id);
+          this.getZones();
+          this.getWeather();
+        }
         break;
       default:
         break;
