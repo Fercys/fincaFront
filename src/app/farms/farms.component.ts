@@ -22,10 +22,7 @@ export class FarmsComponent implements OnInit {
     private router: Router,
   ) { }
 
-  ngOnInit() { 
-    if(this.wiseconnService.farmId){
-      this.wiseconnService.farmId=null;
-    }
+  ngOnInit() {
     if(localStorage.getItem("user")){
         this.userLS=JSON.parse(localStorage.getItem("user"));
         if(bcrypt.compareSync(this.userLS.plain, this.userLS.hash)){

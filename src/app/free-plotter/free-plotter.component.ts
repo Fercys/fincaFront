@@ -169,9 +169,9 @@ export class FreePlotterComponent implements OnInit {
 	          	this.user=JSON.parse(this.userLS.plain);
 				this.addSelectGroups();
 				this.dateRangeByDefault();
-	          	if(this.wiseconnService.farmId){
-	          		this.getZones(this.wiseconnService.farmId);
-	          	}else{
+				if(localStorage.getItem("lastFarmId")){			        
+	          		this.getZones(parseInt(localStorage.getItem("lastFarmId")));
+			    }else{
 	          		Swal.fire({
                     	icon: 'error',
                     	title: 'Oops...',

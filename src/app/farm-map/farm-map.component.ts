@@ -76,11 +76,11 @@ export class FarmMapComponent implements OnInit {
       this.farms = response.data?response.data:response;
       if(this._route.snapshot.paramMap.get('id')){
         this.farm=this.getFarm(this._route.snapshot.paramMap.get('id'));
-      }else if(this.farms.length>0){
-        this.farm=this.farms[0];
+      }else if(localStorage.getItem("lastFarmId")){
+        this.farm=this.getFarm(parseInt(localStorage.getItem("lastFarmId")));
       }
       if(this.farm){
-        this.wiseconnService.farmId=this.farm.id;
+        this.setLocalStorageItem("lastFarmId",this.farm.id);
         if(localStorage.getItem("lastFarmId")!=undefined){
           if(parseInt(localStorage.getItem("lastFarmId"))==parseInt(this.farm.id)){
             this.zones = JSON.parse(localStorage.getItem('lastZones'));
@@ -137,11 +137,11 @@ export class FarmMapComponent implements OnInit {
       this.farms = response.data?response.data:response; 
       if(this._route.snapshot.paramMap.get('id')){
         this.farm=this.getFarm(this._route.snapshot.paramMap.get('id'));
-      }else if(this.farms.length>0){
-        this.farm=this.farms[0];
+      }else if(localStorage.getItem("lastFarmId")){
+        this.farm=this.getFarm(parseInt(localStorage.getItem("lastFarmId")));
       }
       if(this.farm){
-        this.wiseconnService.farmId=this.farm.id;
+        this.setLocalStorageItem("lastFarmId",this.farm.id);
         if(localStorage.getItem("lastFarmId")!=undefined){
           if(parseInt(localStorage.getItem("lastFarmId"))==parseInt(this.farm.id)){
             this.zones = JSON.parse(localStorage.getItem('lastZones'));
@@ -547,9 +547,11 @@ export class FarmMapComponent implements OnInit {
     switch (select) {
       case "farm":
         this.farm=this.getFarm(id);
-        this.wiseconnService.farmId=this.farm.id;
-        this.getZones();
-        this.getWeather();
+        if(this.farm){
+          this.setLocalStorageItem("lastFarmId",this.farm.id);
+          this.getZones();
+          this.getWeather();
+        }
         break;
       default:
         break;

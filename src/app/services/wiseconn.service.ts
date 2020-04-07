@@ -13,7 +13,6 @@ export class WiseconnService {
 
   baseurl = environment.base_url;
   prodEnv = environment.production;
-  farmId:number=null;
 
   httpOptions:any=null;
 
@@ -42,7 +41,7 @@ export class WiseconnService {
     )
   }
   getFarm(id): Observable<any> {
-    this.farmId=parseInt(id);
+    localStorage.setItem("lastFarmId",id);
     return this.http.get<any>(this.baseurl + '/farms/'+id, this.httpOptions)
     .pipe(
       retry(1),

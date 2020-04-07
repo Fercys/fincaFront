@@ -15,11 +15,9 @@ export class SoilAnalysisComponent implements OnInit {
   constructor(public router: Router,public wiseconnService: WiseconnService) { }
 
   ngOnInit() {
-    this.loading = true;
-  	if(this.wiseconnService.farmId){
-  		this.getFarm(this.wiseconnService.farmId);
-  	}else{
-      this.loading = false;
+    if(localStorage.getItem("lastFarmId")){
+  		this.getFarm(parseInt(localStorage.getItem("lastFarmId")));
+    }else{
   		Swal.fire({
 	         icon: 'error',
 	         title: 'Oops...',
@@ -28,6 +26,7 @@ export class SoilAnalysisComponent implements OnInit {
   	}
   }
   getFarm(id:number){
+    this.loading = true;
   	this.wiseconnService.getFarm(id).subscribe((response) => {
     this.loading = false;
       this.farm = response.data?response.data:response;

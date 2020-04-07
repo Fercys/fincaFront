@@ -132,9 +132,6 @@ export class AdminDashboardComponent implements OnInit {
       seq2 = 0;
   };
   ngOnInit() {
-    if(this.wiseconnService.farmId){
-      this.wiseconnService.farmId=null;
-    }
     if(localStorage.getItem("user")){
       this.userLS=JSON.parse(localStorage.getItem("user"));
       if(bcrypt.compareSync(this.userLS.plain, this.userLS.hash)){
