@@ -4,7 +4,7 @@
             <a class="navbar-brand" href="javascript:history.back()"><img src="/assets/icons/back.png"></a>
              <a class="navbar-brand" [routerLink]="['/farms']" style="margin-left: 47%;"> <img  style="width: 70px;" src="/assets/img/CERES.png"/> </a>
         </div>
-        <button mat-raised-button class="navbar-toggler" type="button" (click)="sidebarToggle()">
+        <button mat-raised-button #toggleButton [class]="toggled?'navbar-toggler toggled':'navbar-toggler'" type="button" (click)="sidebarToggle()">
             <span class="sr-only">Toggle navigation</span>
             <span class="navbar-toggler-icon icon-bar"></span>
             <span class="navbar-toggler-icon icon-bar"></span>
