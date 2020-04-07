@@ -79,7 +79,7 @@
         <div *ngIf="measurements.length>0" class="container-fluid card-weather">
           <div class="card card-bg-none">
             <div class="card-header py-0">
-              <h4 class="row-subtitle-card">Pronóstico</h4>
+              <h4 class="row-subtitle-card">Clima</h4>
             </div>
             <div class="card-body ">
               <div class="table-responsive">
@@ -87,7 +87,7 @@
                   <tbody>
                     <tr *ngFor="let data of measurements">
                       <td class="name-weather">
-                        {{data.name}}
+                        {{translateMeasurement(data.name)}}
                       </td>
                       <td class="icon-weather">
                         <img *ngIf="data.name =='Station Temperature' || data.name=='Temperatura'"
