@@ -39,7 +39,9 @@ export class FarmMapPolygonComponent implements OnInit {
   public today = Date.now();
   public hoveredDate: NgbDate;
   public selectedValue: any = '1S';
-  public getZone: any;
+  public zones: any[]=[];
+  public weatherZones: any[]=[];
+  public zone:any=null;
   public fromDate: NgbDate;
   public toDate: NgbDate;
   public requestChartBtn: boolean =true;
@@ -187,16 +189,35 @@ export class FarmMapPolygonComponent implements OnInit {
     public formatter: NgbDateParserFormatter) {
   }
   ngOnInit() {
+    this.getMeterogoAgrifut(this._route.snapshot.paramMap.get('idfarm'),this._route.snapshot.paramMap.get('idzone'));
+  }
+  getMeterogoAgrifut(idfarm:string,idzone:string){
     this.loading = true;
-    this.weatherStationId=this._route.snapshot.paramMap.get('farm');
-    this.wiseconnService.getMeterogoAgrifut(this._route.snapshot.paramMap.get('farm'))
+    this.weatherStationId=idzone;
+    this.wiseconnService.getMeterogoAgrifut(idzone)
     .subscribe((response: any) => { 
+    this.loading = false;
       this.farmData = response.data?response.data:response;
-      this.wiseconnService.getZones(this._route.snapshot.paramMap.get('id')).subscribe((response: any) => {
-        this.getZone = response.data?response.data:response; 
-        this.getZone.forEach(element =>{
+      this.loading = true;
+      this.wiseconnService.getZones(idfarm).subscribe((response: any) => {
+        this.loading = false;
+        this.zones = response.data?response.data:response; 
+        this.weatherZones = this.zones.filter((element)=>{
+          if(element.type){
+            if(element.type.length>0){
+              if(element.type.find((element) => {
+                return element === 'Weather' || (element.description!=undefined&&element.description === 'Weather');
+              }) != undefined){
+                return element
+              }
+            }
+          }
+        });
+        this.zone=this.getZone(parseInt(idzone));
+        this.zones.forEach(element =>{
           let id= element.id_wiseconn?element.id_wiseconn:element.id;
           if(parseInt(id) == 727 || parseInt(id) == 6054 || parseInt(id) == 13872){
+            this.loading = true;
             this.wiseconnService.getMeterogoAgrifut(element.id).subscribe((response: any) => { 
               this.loading = false;
                this.measurements =response.data?response.data:response;
@@ -204,8 +225,8 @@ export class FarmMapPolygonComponent implements OnInit {
             });
           }
         });
-          this.loadMap2(this.getZone); 
-          this.wiseconnService.getFarm(this._route.snapshot.paramMap.get('id')).subscribe((response: any) => {
+          this.loadMap2(this.zones,idzone); 
+          this.wiseconnService.getFarm(idfarm).subscribe((response: any) => {
             let accountId=response.data?response.data:response;
             switch (accountId) { 
               case 63:
@@ -218,10 +239,12 @@ export class FarmMapPolygonComponent implements OnInit {
               this.url="";
             }
             this.highchartsShow();
-            this.loading = false; 
           });
         });
     });    
+  }
+  getZone(idzone:number){
+    return this.weatherZones.find(element=>{return element.id==idzone});
   }
   highchartsShow(){
     this.lineChartOptions.chart['renderTo'] = this.lineChartElement.nativeElement;
@@ -230,11 +253,10 @@ export class FarmMapPolygonComponent implements OnInit {
     this.barChart = Highcharts.chart(this.barChartOptions);    
     this.dateRangeByDefault();
   }
-  loadMap2(data){
+  loadMap2(data,idzone){
     this.weatherService;
-    let idFarm = this._route.snapshot.paramMap.get('farm');
     let farmPolygon = data.find(function(element){
-      return element['id'] == idFarm;
+      return element['id'] == idzone;
     });
     if(farmPolygon.latitude && farmPolygon.longitude){
       const q = [farmPolygon.latitude, farmPolygon.longitude];
@@ -367,7 +389,7 @@ export class FarmMapPolygonComponent implements OnInit {
       });
         data.forEach(element => {
           // Construct the polygon.
-          let idFarm = this._route.snapshot.paramMap.get('id');
+          let idFarm = this._route.snapshot.paramMap.get('idfarm');
           let paths=element.polygon?element.polygon.path:element.path;
           wisservice.getIrrigarionsRealOfZones(idFarm).subscribe((dataIrrigations: any) => {
             let id= element.id_wiseconn?element.id_wiseconn:element.id;
@@ -569,6 +591,15 @@ export class FarmMapPolygonComponent implements OnInit {
         });
         this.requestDataChart(true);
       }
+      onSelect(select: string, id: number) {
+        switch (select) {
+          case "zone":
+          this.getMeterogoAgrifut(this._route.snapshot.paramMap.get('idfarm'),id);
+            break;
+          default:
+            break;
+        }
+      } 
       requestDataChart(goBackFlag:boolean=false){
         this.resetChartsValues("line");
         this.resetChartsValues("bar");

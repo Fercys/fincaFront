@@ -225,9 +225,7 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
             this.farm=this.getFarm(parseInt(localStorage.getItem("lastFarmId")));
             if(this.farm){
               if(localStorage.getItem("lastFarmId")!=undefined && (parseInt(localStorage.getItem("lastFarmId"))==parseInt(this.farm.id))){
-                this.zones = JSON.parse(localStorage.getItem('lastZones'));
-                this.weatherZones=this.getWeatherZones();
-                this.loadMap();
+                this.getZones();
                 if(this.fromDate && this.toDate){
                   this.getChartInformation();
                 }
