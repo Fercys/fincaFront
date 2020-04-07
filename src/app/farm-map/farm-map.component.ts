@@ -76,15 +76,14 @@ export class FarmMapComponent implements OnInit {
       this.farms = response.data?response.data:response;
       if(this._route.snapshot.paramMap.get('id')){
         this.farm=this.getFarm(this._route.snapshot.paramMap.get('id'));
+        this.setLocalStorageItem("lastFarmId",this.farm.id);
       }else if(localStorage.getItem("lastFarmId")){
         this.farm=this.getFarm(parseInt(localStorage.getItem("lastFarmId")));
       }
       if(this.farm){
-        this.setLocalStorageItem("lastFarmId",this.farm.id);
         if(localStorage.getItem("lastFarmId")!=undefined){
           if(parseInt(localStorage.getItem("lastFarmId"))==parseInt(this.farm.id)){
-            this.zones = JSON.parse(localStorage.getItem('lastZones'));
-            this.loadMap();
+            this.getZones();
             let polygonDatas=JSON.parse(localStorage.getItem('lastPolygonData'));
             let map=new window['google'].maps.Map(this.mapElement.nativeElement, JSON.parse(localStorage.getItem('lastMapData')));
             if(polygonDatas){
