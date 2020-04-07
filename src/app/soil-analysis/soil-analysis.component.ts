@@ -16,8 +16,8 @@ export class SoilAnalysisComponent implements OnInit {
 
   ngOnInit() {
     this.loading = true;
-  	if(this.wiseconnService.farmId){
-  		this.getFarm(this.wiseconnService.farmId);
+  	if(localStorage.getItem("lastFarmId")){
+  		this.getFarm(parseInt(localStorage.getItem("lastFarmId")));
   	}else{
       this.loading = false;
   		Swal.fire({

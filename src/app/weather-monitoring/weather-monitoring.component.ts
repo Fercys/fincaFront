@@ -210,15 +210,11 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
           this.userLS=JSON.parse(localStorage.getItem("user"));
           if(bcrypt.compareSync(this.userLS.plain, this.userLS.hash)){
             this.user=JSON.parse(this.userLS.plain);
-            if(this.wiseconnService.farmId){
-              this.getFarm(this.wiseconnService.farmId);
+            if(this.user.id_role==1){
+              this.getFarms();
             }else{
-              Swal.fire({
-                   icon: 'error',
-                   title: 'Oops...',
-                   text: 'Debe estar seleccionado un campo.'
-              });
-            }
+              this.getFarmsByUser();
+            }            
           }else{
             this.router.navigate(['/login']);
           }
@@ -228,26 +224,30 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
     this.highchartsShow();
   }
   getFarms() {
+    this.loading = true;
     this.wiseconnService.getFarms().subscribe((response: any) => {
+      this.loading = false;
       this.farms = response.data?response.data:response;
       if(this.farms.length>0){
           this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -5);
           this.toDate = this.calendar.getToday();
-          this.farm=this.getFarm(this.wiseconnService.farmId);
-          if(this.farm){
-            if(localStorage.getItem("lastFarmId")!=undefined && (parseInt(localStorage.getItem("lastFarmId"))==parseInt(this.farm.id))){
-              this.zones = JSON.parse(localStorage.getItem('lastZones'));
-              this.weatherZones=this.getWeatherZones();
-              this.loadMap();
-              if(this.fromDate && this.toDate){
-                this.getChartInformation();
+          if(localStorage.getItem("lastFarmId")){
+            this.farm=this.getFarm(parseInt(localStorage.getItem("lastFarmId")));
+            if(this.farm){
+              if(localStorage.getItem("lastFarmId")!=undefined && (parseInt(localStorage.getItem("lastFarmId"))==parseInt(this.farm.id))){
+                this.zones = JSON.parse(localStorage.getItem('lastZones'));
+                this.weatherZones=this.getWeatherZones();
+                this.loadMap();
+                if(this.fromDate && this.toDate){
+                  this.getChartInformation();
+                }
+                this.processMapData();
+              }else{
+                this.getZones();
               }
-              this.processMapData();
-            }else{
-              this.getZones();
+              this.getWeather()
             }
-            this.getWeather()
-          }        
+          }
       }else{
         Swal.fire({icon: 'error',title: 'Oops...',text: 'No existe ningún campo registrado'});
       }      
@@ -256,8 +256,31 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
   getFarmsByUser(){      
       this.loading = true;
       this.userService.getFarmsByUser(this.user.id).subscribe((response: any) => {
-          this.farms = response.data?response.data:response;      
           this.loading = false;
+          this.farms = response.data?response.data:response;
+            if(this.farms.length>0){
+              this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -5);
+              this.toDate = this.calendar.getToday();
+              if(localStorage.getItem("lastFarmId")){
+                this.farm=this.getFarm(parseInt(localStorage.getItem("lastFarmId")));
+                if(this.farm){
+                  if(localStorage.getItem("lastFarmId")!=undefined && (parseInt(localStorage.getItem("lastFarmId"))==parseInt(this.farm.id))){
+                    this.zones = JSON.parse(localStorage.getItem('lastZones'));
+                    this.weatherZones=this.getWeatherZones();
+                    this.loadMap();
+                    if(this.fromDate && this.toDate){
+                      this.getChartInformation();
+                    }
+                    this.processMapData();
+                  }else{
+                    this.getZones();
+                  }
+                  this.getWeather()
+                }
+              }
+          }else{
+            Swal.fire({icon: 'error',title: 'Oops...',text: 'No existe ningún campo registrado'});
+          } 
       });
   }
   getFarm(id){
@@ -324,8 +347,8 @@ export class WeatherMonitoringComponent implements OnInit,OnDestroy {
       this.setLocalStorageItem("lastLineChartData",this.getJSONStringify(this.lineChartData));
       this.setLocalStorageItem("lastBarChartLabels",this.getJSONStringify(this.barChartLabels));
       this.setLocalStorageItem("lastBarChartData",this.getJSONStringify(this.barChartData));
-      this.wiseconnService.farmId=id;
       this.farm=this.getFarm(id);
+      this.setLocalStorageItem("lastFarmId",this.farm.id);
       this.getZones();
       this.getWeather();
       break;
