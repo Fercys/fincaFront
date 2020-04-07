@@ -109,7 +109,7 @@
                         <img *ngIf="data.name =='Pluviometro'" src="assets/icons/Lluvia.svg">
                       </td>
                       <td>
-                        {{data.lastData}} {{data.unit}}
+                        {{decimalProcessor(data.lastData,2)}} {{data.unit}}
                       </td>
 
                     </tr>
