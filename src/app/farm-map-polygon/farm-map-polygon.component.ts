@@ -785,6 +785,30 @@ renderCharts(chart:string) {
         break;
       }
   } 
+  translateMeasurement(measurement:string){
+    let newMeasurement;
+    switch ((measurement).toLowerCase()) {
+          case "station temperature":
+            newMeasurement="Temperatura";
+            break;
+          case "wind direction":
+            newMeasurement="Dir. Viento";
+            break;
+          case "wind speed (period)":
+            newMeasurement="Vel. Viento";
+            break;
+          case "solar radiation":
+            newMeasurement="Rad. Solar";
+            break;
+          case "sta. rel. humidity":
+            newMeasurement="Humedad";
+            break;
+          default:
+            newMeasurement=measurement;
+            break;
+        }    
+    return newMeasurement;
+  }
 isHovered(date: NgbDate) {
   return this.fromDate && !this.toDate && this.hoveredDate && date.after(this.fromDate) && date.before(this.hoveredDate);
 }
