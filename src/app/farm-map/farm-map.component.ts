@@ -97,8 +97,8 @@ export class FarmMapComponent implements OnInit {
                     this.loading = true;
                     this.wiseconnService.getMeterogoAgrifut(polygonDatas[i].element.id).subscribe((response: any) => { 
                       this.loading = false;
-                       this.measurements =response.data?response.data:response;
-                      this.processMeasurements();
+                      let data=response.data?response.data:response;
+                      this.measurements =this.processMeasurements(data);
                     });
                    }
                   // Marker Image
@@ -158,8 +158,8 @@ export class FarmMapComponent implements OnInit {
                     this.loading = true;
                     this.wiseconnService.getMeterogoAgrifut(polygonDatas[i].element.id).subscribe((response: any) => { 
                       this.loading = false;
-                       this.measurements =response.data?response.data:response;
-                      this.processMeasurements();
+                      let data=response.data?response.data:response;
+                      this.measurements =this.processMeasurements(data);
                     });
                    }
                   // Marker Image
@@ -472,9 +472,9 @@ export class FarmMapComponent implements OnInit {
             this.loading = true;
             wisservice.getMeterogoAgrifut(element.id).subscribe((response: any) => {
               this.loading = false;
-              this.measurements = response.data?response.data:response;
+              let data = response.data?response.data:response;
+              this.measurements =this.processMeasurements(data);
               this.setLocalStorageItem("lastMeasurements",this.getJSONStringify(this.measurements));
-              this.processMeasurements();
             }) 
           }
           let polygonData={
@@ -580,32 +580,23 @@ export class FarmMapComponent implements OnInit {
         break;
     }
   } 
-  processMeasurements(){
-    for (const item of this.measurements) {
-      if(item.name == "Velocidad Viento"){
-        item.name = "Vel. Viento"
-      }
-      if(item.name == "Direccion de viento") {
-        item.name = "Dir. Viento"
-      }
-      if(item.name == "Radiacion Solar"){
-        item.name = "Rad. Solar"
-      }   
-      if(item.name == "Station Relative Humidity"){
-        item.name = " Sta. Rel. Humidity "
-      }  
-      if(item.name == "Wind Direction" || item.name ==  "ATM pressure" || item.name ==  "Wind Speed (period)" || item.name ==  "Porciones de Frío" || item.name ==  "Horas Frío"){
-        this.deleteValueJson(item.name);
-      }    
-      if(item.name == "Porciones de Frío")  {
-        this.deleteValueJson(item.name);
-      }
-      if(item.name == "Horas Frío")  {
-        this.deleteValueJson(item.name);
-      }    
-    }
-    this.deleteValueJson("Et0");
-    this.deleteValueJson("Etp");
+  processMeasurements(data){
+    let measurementsResult=[]
+    for (const item of data) {
+      if(item.name == "Velocidad Viento"||item.name == "Vel. Viento"||
+        item.name == "Direccion de viento"||item.name == "Dir. Viento"||
+        item.name == "Radiacion Solar"||item.name == "Rad. Solar"||
+        item.name == "Station Relative Humidity"||item.name == "Sta. Rel. Humidity"
+        ){
+        if(measurementsResult.find(element=>element.name==item.name)==undefined){
+          measurementsResult.push(item);
+        }
+    }  
+  }
+  return measurementsResult;
+  }
+  decimalProcessor(value,decimals){
+    return value.toFixed(decimals);
   }
   deleteValueJson(value){
     var index:number = this.measurements.indexOf(this.measurements.find(x => x.name == value));

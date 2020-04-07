@@ -213,15 +213,15 @@ export class FarmMapPolygonComponent implements OnInit {
             }
           }
         });
-        this.zone=this.getZone(parseInt(idzone));
+        this.zone=this.getZone(idzone);
         this.zones.forEach(element =>{
           let id= element.id_wiseconn?element.id_wiseconn:element.id;
           if(parseInt(id) == 727 || parseInt(id) == 6054 || parseInt(id) == 13872){
             this.loading = true;
             this.wiseconnService.getMeterogoAgrifut(element.id).subscribe((response: any) => { 
               this.loading = false;
-               this.measurements =response.data?response.data:response;
-              this.processMeasurements();
+              let data=response.data?response.data:response;
+              this.measurements = this.processMeasurements(data);
             });
           }
         });
@@ -408,9 +408,9 @@ export class FarmMapPolygonComponent implements OnInit {
                 this.loading = true;
                 wisservice.getMeterogoAgrifut(element.id).subscribe((response: any) => {
                   this.loading = false;
-                  this.measurements = response.data?response.data:response;
+                  let data=response.data?response.data:response;
+                  this.measurements = this.processMeasurements(data);
                   this.setLocalStorageItem("lastMeasurements",this.getJSONStringify(this.measurements));
-                  this.processMeasurements();
                 }) 
               }
             }else{
@@ -461,32 +461,23 @@ export class FarmMapPolygonComponent implements OnInit {
 
         });
       }
-      processMeasurements(){
-        for (const item of this.measurements) {
-          if(item.name == "Velocidad Viento"){
-            item.name = "Vel. Viento"
-          }
-          if(item.name == "Direccion de viento") {
-            item.name = "Dir. Viento"
-          }
-          if(item.name == "Radiacion Solar"){
-            item.name = "Rad. Solar"
-          }   
-          if(item.name == "Station Relative Humidity"){
-            item.name = " Sta. Rel. Humidity "
-          }  
-          if(item.name == "Wind Direction" || item.name ==  "ATM pressure" || item.name ==  "Wind Speed (period)" || item.name ==  "Porciones de Frío" || item.name ==  "Horas Frío"){
-            this.deleteValueJson(item.name);
-          }    
-          if(item.name == "Porciones de Frío")  {
-            this.deleteValueJson(item.name);
-          }
-          if(item.name == "Horas Frío")  {
-            this.deleteValueJson(item.name);
-          }    
-        }
-        this.deleteValueJson("Et0");
-        this.deleteValueJson("Etp");
+      processMeasurements(data){
+        let measurementsResult=[]
+        for (const item of data) {
+          if(item.name == "Velocidad Viento"||item.name == "Vel. Viento"||
+            item.name == "Direccion de viento"||item.name == "Dir. Viento"||
+            item.name == "Radiacion Solar"||item.name == "Rad. Solar"||
+            item.name == "Station Relative Humidity"||item.name == "Sta. Rel. Humidity"
+            ){
+            if(measurementsResult.find(element=>element.name==item.name)==undefined){
+              measurementsResult.push(item);
+            }
+        }  
+      }
+      return measurementsResult;
+      }
+      decimalProcessor(value,decimals){
+        return value.toFixed(decimals);
       }
       obtenerMedidas(id){
         this.wiseconnService.getMeasuresOfZones(this.id).subscribe((data: {}) => {      
