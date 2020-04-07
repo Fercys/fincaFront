@@ -45,7 +45,7 @@ export class FarmMapPolygonComponent implements OnInit {
   public fromDate: NgbDate;
   public toDate: NgbDate;
   public requestChartBtn: boolean =true;
-  public weatherStationId: string = null;
+  public weatherStationId: number = null;
   public dateRange: any = null;
   public dateRangeHistory:any[]=[]; 
   public times =[
@@ -189,9 +189,9 @@ export class FarmMapPolygonComponent implements OnInit {
     public formatter: NgbDateParserFormatter) {
   }
   ngOnInit() {
-    this.getMeterogoAgrifut(this._route.snapshot.paramMap.get('idfarm'),this._route.snapshot.paramMap.get('idzone'));
+    this.getMeterogoAgrifut(parseInt(this._route.snapshot.paramMap.get('idfarm')),parseInt(this._route.snapshot.paramMap.get('idzone')));
   }
-  getMeterogoAgrifut(idfarm:string,idzone:string){
+  getMeterogoAgrifut(idfarm:number,idzone:number){
     this.loading = true;
     this.weatherStationId=idzone;
     this.wiseconnService.getMeterogoAgrifut(idzone)
@@ -594,7 +594,7 @@ export class FarmMapPolygonComponent implements OnInit {
       onSelect(select: string, id: number) {
         switch (select) {
           case "zone":
-          this.getMeterogoAgrifut(this._route.snapshot.paramMap.get('idfarm'),id);
+          this.getMeterogoAgrifut(parseInt(this._route.snapshot.paramMap.get('idfarm')),id);
             break;
           default:
             break;
