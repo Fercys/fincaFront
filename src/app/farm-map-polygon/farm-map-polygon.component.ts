@@ -461,25 +461,6 @@ export class FarmMapPolygonComponent implements OnInit {
 
         });
       }
-      processMeasurements(data){
-        let measurementsResult=[]
-        for (const item of data) {
-          if(item.name == "Velocidad Viento"||item.name == "Vel. Viento"||
-            item.name == "Direccion de viento"||item.name == "Dir. Viento"||
-            item.name == "Radiacion Solar"||item.name == "Rad. Solar"||
-            item.name == "Station Relative Humidity"||item.name == "Sta. Rel. Humidity"||
-            item.name == "Pluviometro" || item.name == "Temperatura" || item.name == "Humedad"
-            ){
-            if(measurementsResult.find(element=>element.name==item.name)==undefined){
-              measurementsResult.push(item);
-            }
-        }  
-      }
-      return measurementsResult;
-      }
-      decimalProcessor(value,decimals){
-        return value.toFixed(decimals);
-      }
       obtenerMedidas(id){
         this.wiseconnService.getMeasuresOfZones(this.id).subscribe((data: {}) => {      
         })
@@ -808,7 +789,23 @@ renderCharts(chart:string) {
         break;
       }
   } 
-  translateMeasurement(measurement:string){
+isHovered(date: NgbDate) {
+  return this.fromDate && !this.toDate && this.hoveredDate && date.after(this.fromDate) && date.before(this.hoveredDate);
+}
+
+isInside(date: NgbDate) {
+  return date.after(this.fromDate) && date.before(this.toDate);
+}
+
+isRange(date: NgbDate) {
+  return date.equals(this.fromDate) || date.equals(this.toDate) || this.isInside(date) || this.isHovered(date);
+}
+
+validateInput(currentValue: NgbDate, input: string): NgbDate {
+  const parsed = this.formatter.parse(input);
+  return parsed && this.calendar.isValid(NgbDate.from(parsed)) ? NgbDate.from(parsed) : currentValue;
+}
+translateMeasurement(measurement:string){
     let newMeasurement;
     switch ((measurement).toLowerCase()) {
           case "station temperature":
@@ -832,7 +829,13 @@ renderCharts(chart:string) {
           case "sta. rel. humidity":
             newMeasurement="Humedad";
             break;
+          case "station relative humidity":
+            newMeasurement="Humedad";
+            break;
           case "radiacion solar":
+            newMeasurement="Rad. Solar";
+            break;
+          case "solar radiation ":
             newMeasurement="Rad. Solar";
             break;
           default:
@@ -841,20 +844,34 @@ renderCharts(chart:string) {
         }    
     return newMeasurement;
   }
-isHovered(date: NgbDate) {
-  return this.fromDate && !this.toDate && this.hoveredDate && date.after(this.fromDate) && date.before(this.hoveredDate);
-}
-
-isInside(date: NgbDate) {
-  return date.after(this.fromDate) && date.before(this.toDate);
-}
-
-isRange(date: NgbDate) {
-  return date.equals(this.fromDate) || date.equals(this.toDate) || this.isInside(date) || this.isHovered(date);
-}
-
-validateInput(currentValue: NgbDate, input: string): NgbDate {
-  const parsed = this.formatter.parse(input);
-  return parsed && this.calendar.isValid(NgbDate.from(parsed)) ? NgbDate.from(parsed) : currentValue;
-}
+  processMeasurements(data){
+      let measurementsResult=[]
+      let measurementNames=[
+          "Velocidad Viento",
+          "Vel. Viento",
+          "Wind Speed (period)",
+          "Direccion de viento",
+          "Dir. Viento",
+          "Wind Direction",
+          "Radiacion Solar",
+          "Rad. Solar",
+          "Solar radiation ",
+          "Station Relative Humidity",
+          "Sta. Rel. Humidity",
+          "Pluviometro",
+          "Temperatura", 
+          "Humedad",
+          "Station Temperature"]
+      for (const item of data) {
+        if(measurementNames.find(element=>element==item.name)!=undefined){
+          if(measurementsResult.find(element=>element.name==item.name)==undefined){
+            measurementsResult.push(item);
+          }
+      }  
+    }
+    return measurementsResult;
+  }
+  decimalProcessor(value,decimals){
+    return value.toFixed(decimals);
+  }
 }

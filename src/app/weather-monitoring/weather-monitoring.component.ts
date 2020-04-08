@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef , Inject, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef , Inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { element } from 'protractor';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
@@ -28,7 +28,7 @@ require('highcharts/highcharts-more')(Highcharts);
   templateUrl: './weather-monitoring.component.html',
   styleUrls: ['./weather-monitoring.component.scss']
 })
-export class WeatherMonitoringComponent implements OnInit,OnDestroy {
+export class WeatherMonitoringComponent implements OnInit {
   public userLS:any=null;
   public user:any=null;
   @ViewChild('mapRef', { static: true }) mapElement: ElementRef;
@@ -565,39 +565,6 @@ getJSONStringify(data) {
   cache = null;
   return result;
 }
-translateMeasurement(measurement:string){
-    let newMeasurement;
-    switch ((measurement).toLowerCase()) {
-          case "station temperature":
-            newMeasurement="Temperatura";
-            break;
-          case "wind direction":
-            newMeasurement="Dir. Viento";
-            break;
-          case "direccion de viento":
-            newMeasurement="Dir. Viento";
-            break;
-          case "velocidad viento":
-            newMeasurement="Vel. Viento";
-            break;
-          case "wind speed (period)":
-            newMeasurement="Vel. Viento";
-            break;
-          case "solar radiation":
-            newMeasurement="Rad. Solar";
-            break;
-          case "sta. rel. humidity":
-            newMeasurement="Humedad";
-            break;
-          case "radiacion solar":
-            newMeasurement="Rad. Solar";
-            break;
-          default:
-            newMeasurement=measurement;
-            break;
-        }    
-    return newMeasurement;
-  }
 renderCharts(chart:string) {
   switch (chart) {
     case "line":
@@ -640,25 +607,6 @@ getPathData(element:string){
     }
   }
   return pathData;
-}  
-processMeasurements(data){
-    let measurementsResult=[]
-    for (const item of data) {
-      if(item.name == "Velocidad Viento"||item.name == "Vel. Viento"||
-        item.name == "Direccion de viento"||item.name == "Dir. Viento"||
-        item.name == "Radiacion Solar"||item.name == "Rad. Solar"||
-        item.name == "Station Relative Humidity"||item.name == "Sta. Rel. Humidity"||
-        item.name == "Pluviometro" || item.name == "Temperatura" || item.name == "Humedad"
-        ){
-        if(measurementsResult.find(element=>element.name==item.name)==undefined){
-          measurementsResult.push(item);
-        }
-    }  
-  }
-  return measurementsResult;
-}
-decimalProcessor(value,decimals){
-  return value.toFixed(decimals);
 }
 addMarkerImage(map,element,urlImage){
   let lat;
@@ -981,6 +929,75 @@ validateInput(currentValue: NgbDate, input: string): NgbDate {
   const parsed = this.formatter.parse(input);
   return parsed && this.calendar.isValid(NgbDate.from(parsed)) ? NgbDate.from(parsed) : currentValue;
 }
+translateMeasurement(measurement:string){
+    let newMeasurement;
+    switch ((measurement).toLowerCase()) {
+          case "station temperature":
+            newMeasurement="Temperatura";
+            break;
+          case "wind direction":
+            newMeasurement="Dir. Viento";
+            break;
+          case "direccion de viento":
+            newMeasurement="Dir. Viento";
+            break;
+          case "velocidad viento":
+            newMeasurement="Vel. Viento";
+            break;
+          case "wind speed (period)":
+            newMeasurement="Vel. Viento";
+            break;
+          case "solar radiation":
+            newMeasurement="Rad. Solar";
+            break;
+          case "sta. rel. humidity":
+            newMeasurement="Humedad";
+            break;
+          case "station relative humidity":
+            newMeasurement="Humedad";
+            break;
+          case "radiacion solar":
+            newMeasurement="Rad. Solar";
+            break;
+          case "solar radiation ":
+            newMeasurement="Rad. Solar";
+            break;
+          default:
+            newMeasurement=measurement;
+            break;
+        }    
+    return newMeasurement;
+  }
+  processMeasurements(data){
+      let measurementsResult=[]
+      let measurementNames=[
+          "Velocidad Viento",
+          "Vel. Viento",
+          "Wind Speed (period)",
+          "Direccion de viento",
+          "Dir. Viento",
+          "Wind Direction",
+          "Radiacion Solar",
+          "Rad. Solar",
+          "Solar radiation ",
+          "Station Relative Humidity",
+          "Sta. Rel. Humidity",
+          "Pluviometro",
+          "Temperatura", 
+          "Humedad",
+          "Station Temperature"]
+      for (const item of data) {
+        if(measurementNames.find(element=>element==item.name)!=undefined){
+          if(measurementsResult.find(element=>element.name==item.name)==undefined){
+            measurementsResult.push(item);
+          }
+      }  
+    }
+    return measurementsResult;
+  }
+  decimalProcessor(value,decimals){
+    return value.toFixed(decimals);
+  }
 //por factorizar  
 renderMap() {
   window['initMap'] = () => {
@@ -992,11 +1009,4 @@ renderMap() {
   }
 }
 
-ngOnDestroy() {
-  // this.wiseconnService.getFarms().unsubscribe();
-  // this.wiseconnService.getZones().unsubscribe();
-  // this.weatherService.getWeather().unsubscribe();
-  // this.weatherService.getMeasuresOfZones().unsubscribe();
-  // this.weatherService.getDataByMeasure().unsubscribe();
-}
 }

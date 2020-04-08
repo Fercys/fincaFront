@@ -253,39 +253,6 @@ export class FarmMapComponent implements OnInit {
       this.loadMap();
     });
   }
-  translateMeasurement(measurement:string){
-    let newMeasurement;
-    switch ((measurement).toLowerCase()) {
-          case "station temperature":
-            newMeasurement="Temperatura";
-            break;
-          case "wind direction":
-            newMeasurement="Dir. Viento";
-            break;
-          case "direccion de viento":
-            newMeasurement="Dir. Viento";
-            break;
-          case "velocidad viento":
-            newMeasurement="Vel. Viento";
-            break;
-          case "wind speed (period)":
-            newMeasurement="Vel. Viento";
-            break;
-          case "solar radiation":
-            newMeasurement="Rad. Solar";
-            break;
-          case "sta. rel. humidity":
-            newMeasurement="Humedad";
-            break;
-          case "radiacion solar":
-            newMeasurement="Rad. Solar";
-            break;
-          default:
-            newMeasurement=measurement;
-            break;
-        }    
-    return newMeasurement;
-  }
   translateDate(date:string){
     let newDate;
     let days=[
@@ -588,29 +555,81 @@ export class FarmMapComponent implements OnInit {
       default:
         break;
     }
-  } 
-  processMeasurements(data){
-    let measurementsResult=[]
-    for (const item of data) {
-      if(item.name == "Velocidad Viento"||item.name == "Vel. Viento"||
-        item.name == "Direccion de viento"||item.name == "Dir. Viento"||
-        item.name == "Radiacion Solar"||item.name == "Rad. Solar"||
-        item.name == "Station Relative Humidity"||item.name == "Sta. Rel. Humidity"||
-        item.name == "Pluviometro" || item.name == "Temperatura" || item.name == "Humedad"
-        ){
-        if(measurementsResult.find(element=>element.name==item.name)==undefined){
-          measurementsResult.push(item);
-        }
-    }  
   }
-  return measurementsResult;
-  }
-  decimalProcessor(value,decimals){
-    return value.toFixed(decimals);
-  }
+
   deleteValueJson(value){
     var index:number = this.measurements.indexOf(this.measurements.find(x => x.name == value));
     if(index != -1) this.measurements.splice(index, 1);
+  }
+
+  translateMeasurement(measurement:string){
+    let newMeasurement;
+    switch ((measurement).toLowerCase()) {
+          case "station temperature":
+            newMeasurement="Temperatura";
+            break;
+          case "wind direction":
+            newMeasurement="Dir. Viento";
+            break;
+          case "direccion de viento":
+            newMeasurement="Dir. Viento";
+            break;
+          case "velocidad viento":
+            newMeasurement="Vel. Viento";
+            break;
+          case "wind speed (period)":
+            newMeasurement="Vel. Viento";
+            break;
+          case "solar radiation":
+            newMeasurement="Rad. Solar";
+            break;
+          case "sta. rel. humidity":
+            newMeasurement="Humedad";
+            break;
+          case "station relative humidity":
+            newMeasurement="Humedad";
+            break;
+          case "radiacion solar":
+            newMeasurement="Rad. Solar";
+            break;
+          case "solar radiation ":
+            newMeasurement="Rad. Solar";
+            break;
+          default:
+            newMeasurement=measurement;
+            break;
+        }    
+    return newMeasurement;
+  }
+  processMeasurements(data){
+      let measurementsResult=[]
+      let measurementNames=[
+          "Velocidad Viento",
+          "Vel. Viento",
+          "Wind Speed (period)",
+          "Direccion de viento",
+          "Dir. Viento",
+          "Wind Direction",
+          "Radiacion Solar",
+          "Rad. Solar",
+          "Solar radiation ",
+          "Station Relative Humidity",
+          "Sta. Rel. Humidity",
+          "Pluviometro",
+          "Temperatura", 
+          "Humedad",
+          "Station Temperature"]
+      for (const item of data) {
+        if(measurementNames.find(element=>element==item.name)!=undefined){
+          if(measurementsResult.find(element=>element.name==item.name)==undefined){
+            measurementsResult.push(item);
+          }
+      }  
+    }
+    return measurementsResult;
+  }
+  decimalProcessor(value,decimals){
+    return value.toFixed(decimals);
   }
   //por refactorizar
   renderMap() {
