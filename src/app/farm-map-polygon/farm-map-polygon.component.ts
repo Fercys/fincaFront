@@ -464,35 +464,45 @@ export class FarmMapPolygonComponent implements OnInit {
   translateMeasurement(measurement:string){
     let newMeasurement;
     switch ((measurement).toLowerCase()) {
-      case "station temperature":
-      newMeasurement="Temperatura";
-      break;
-      case "wind direction":
-      newMeasurement="Dir. Viento";
-      break;
-      case "wind speed (period)":
-      newMeasurement="Vel. Viento";
-      break;
-      case "solar radiation":
-      newMeasurement="Rad. Solar";
-      break;
-      case "sta. rel. humidity":
-      newMeasurement="Humedad";
-      break;
-      default:
-      newMeasurement=measurement;
-      break;
-    }    
+          case "station temperature":
+            newMeasurement="Temperatura";
+            break;
+          case "wind direction":
+            newMeasurement="Dir. Viento";
+            break;
+          case "direccion de viento":
+            newMeasurement="Dir. Viento";
+            break;
+          case "velocidad viento":
+            newMeasurement="Vel. Viento";
+            break;
+          case "wind speed (period)":
+            newMeasurement="Vel. Viento";
+            break;
+          case "solar radiation":
+            newMeasurement="Rad. Solar";
+            break;
+          case "sta. rel. humidity":
+            newMeasurement="Humedad";
+            break;
+          case "radiacion solar":
+            newMeasurement="Rad. Solar";
+            break;
+          default:
+            newMeasurement=measurement;
+            break;
+        }    
     return newMeasurement;
   }
   processMeasurements(data){
     let measurementsResult=[]
     for (const item of data) {
       if(item.name == "Velocidad Viento"||item.name == "Vel. Viento"||
-        item.name == "Direccion de viento"||item.name == "Dir. Viento"||
-        item.name == "Radiacion Solar"||item.name == "Rad. Solar"||
-        item.name == "Station Relative Humidity"||item.name == "Sta. Rel. Humidity"
-        ){
+            item.name == "Direccion de viento"||item.name == "Dir. Viento"||
+            item.name == "Radiacion Solar"||item.name == "Rad. Solar"||
+            item.name == "Station Relative Humidity"||item.name == "Sta. Rel. Humidity"||
+            item.name == "Pluviometro" || item.name == "Temperatura" || item.name == "Humedad"
+            ){
         if(measurementsResult.find(element=>element.name==item.name)==undefined){
           measurementsResult.push(item);
         }

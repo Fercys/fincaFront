@@ -611,29 +611,38 @@ getJSONStringify(data) {
 }
 
 translateMeasurement(measurement:string){
-  let newMeasurement;
-  switch ((measurement).toLowerCase()) {
-    case "station temperature":
-    newMeasurement="Temperatura";
-    break;
-    case "wind direction":
-    newMeasurement="Dir. Viento";
-    break;
-    case "wind speed (period)":
-    newMeasurement="Vel. Viento";
-    break;
-    case "solar radiation":
-    newMeasurement="Rad. Solar";
-    break;
-    case "sta. rel. humidity":
-    newMeasurement="Humedad";
-    break;
-    default:
-    newMeasurement=measurement;
-    break;
-  }    
-  return newMeasurement;
-}
+    let newMeasurement;
+    switch ((measurement).toLowerCase()) {
+          case "station temperature":
+            newMeasurement="Temperatura";
+            break;
+          case "wind direction":
+            newMeasurement="Dir. Viento";
+            break;
+          case "direccion de viento":
+            newMeasurement="Dir. Viento";
+            break;
+          case "velocidad viento":
+            newMeasurement="Vel. Viento";
+            break;
+          case "wind speed (period)":
+            newMeasurement="Vel. Viento";
+            break;
+          case "solar radiation":
+            newMeasurement="Rad. Solar";
+            break;
+          case "sta. rel. humidity":
+            newMeasurement="Humedad";
+            break;
+          case "radiacion solar":
+            newMeasurement="Rad. Solar";
+            break;
+          default:
+            newMeasurement=measurement;
+            break;
+        }    
+    return newMeasurement;
+  }
 renderCharts(chart:string) {
   switch (chart) {
     case "line":
@@ -672,12 +681,14 @@ getPathData(element:string){
       }
       break;
       default:
-      // code...
       break;
     }
   }
   return pathData;
-}
+}  
+decimalProcessor(value,decimals){
+        return value.toFixed(decimals);
+      }
 selectTime(event){
     this.selectedValue = event.value;
     this.dateRangeByDefault();
@@ -714,24 +725,24 @@ selectTime(event){
     this.requestChartBtn=(this.fromDate && this.toDate && this.toDate.after(this.fromDate))?false:true;
     this.getChartInformation(false);
   }
-      processMeasurements(data){
-        let measurementsResult=[]
-        for (const item of data) {
-          if(item.name == "Velocidad Viento"||item.name == "Vel. Viento"||
-            item.name == "Direccion de viento"||item.name == "Dir. Viento"||
-            item.name == "Radiacion Solar"||item.name == "Rad. Solar"||
-            item.name == "Station Relative Humidity"||item.name == "Sta. Rel. Humidity"
-            ){
-            if(measurementsResult.find(element=>element.name==item.name)==undefined){
-              measurementsResult.push(item);
-            }
-          }  
+      
+processMeasurements(data){
+    let measurementsResult=[]
+    for (const item of data) {
+      if(item.name == "Velocidad Viento"||item.name == "Vel. Viento"||
+        item.name == "Direccion de viento"||item.name == "Dir. Viento"||
+        item.name == "Radiacion Solar"||item.name == "Rad. Solar"||
+        item.name == "Station Relative Humidity"||item.name == "Sta. Rel. Humidity"||
+        item.name == "Pluviometro" || item.name == "Temperatura" || item.name == "Humedad"
+        ){
+        if(measurementsResult.find(element=>element.name==item.name)==undefined){
+          measurementsResult.push(item);
         }
-        return measurementsResult;
-      }
-      decimalProcessor(value,decimals){
-        return value.toFixed(decimals);
-      }
+    }  
+  }
+  return measurementsResult;
+}
+      
 addMarkerImage(map,element,urlImage){
   let lat;
   let lng;
@@ -765,7 +776,6 @@ addMarkerImage(map,element,urlImage){
         typeResult="Clima";
         break;
       default:
-        // code...
         break;
     }
     return typeResult;
