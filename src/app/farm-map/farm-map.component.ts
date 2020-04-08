@@ -237,7 +237,7 @@ export class FarmMapComponent implements OnInit {
         break;
     }
   }
-  getFarms(){      
+  getFarms(){
     this.loading = true;
     this.wiseconnService.getFarms().subscribe((response: any) => {
       this.loading = false;
@@ -437,33 +437,33 @@ export class FarmMapComponent implements OnInit {
     switch (chart) {
       case "line":
       
-      this.temperatureId=null;
-      this.humidityId=null;
-      if(this.lineChart!=undefined){
-        this.lineChart.series[0].setData([]);
-        this.lineChart.series[1].setData([]);
-        this.lineChart.xAxis[0].setCategories([]);        
-      }
+        this.temperatureId=null;
+        this.humidityId=null;
+        if(this.lineChart!=undefined){
+          this.lineChart.series[0].setData([]);
+          this.lineChart.series[1].setData([]);
+          this.lineChart.xAxis[0].setCategories([]);        
+        }
 
-      this.lineChartLabels=[];
-      for (var i = 0; i < 2; i++) {
-        this.lineChartData[i]=[];
-      }
+        this.lineChartLabels=[];
+        for (var i = 0; i < 2; i++) {
+          this.lineChartData[i]=[];
+        }
       break;  
       case "bar":
 
-      this.rainId=null;
-      this.et0Id=null;
-      
-      if(this.barChart!=undefined){
-        this.barChart.series[0].setData([]);
-        this.barChart.series[1].setData([]);  
-        this.barChart.xAxis[0].setCategories([]);
-      }
-      this.barChartLabels=[];
-      for (var i = 0; i < 2; i++) {
-        this.barChartData[i]=[];
-      }
+        this.rainId=null;
+        this.et0Id=null;
+        
+        if(this.barChart!=undefined){
+          this.barChart.series[0].setData([]);
+          this.barChart.series[1].setData([]);  
+          this.barChart.xAxis[0].setCategories([]);
+        }
+        this.barChartLabels=[];
+        for (var i = 0; i < 2; i++) {
+          this.barChartData[i]=[];
+        }
       break;
       default:
       // code...
@@ -643,39 +643,6 @@ export class FarmMapComponent implements OnInit {
       this.loading=false;
     }
   }
-  translateMeasurement(measurement:string){
-    let newMeasurement;
-    switch ((measurement).toLowerCase()) {
-          case "station temperature":
-            newMeasurement="Temperatura";
-            break;
-          case "wind direction":
-            newMeasurement="Dir. Viento";
-            break;
-          case "direccion de viento":
-            newMeasurement="Dir. Viento";
-            break;
-          case "velocidad viento":
-            newMeasurement="Vel. Viento";
-            break;
-          case "wind speed (period)":
-            newMeasurement="Vel. Viento";
-            break;
-          case "solar radiation":
-            newMeasurement="Rad. Solar";
-            break;
-          case "sta. rel. humidity":
-            newMeasurement="Humedad";
-            break;
-          case "radiacion solar":
-            newMeasurement="Rad. Solar";
-            break;
-          default:
-            newMeasurement=measurement;
-            break;
-        }    
-    return newMeasurement;
-  }
   translateDate(date:string){
     let newDate;
     let days=[
@@ -728,7 +695,6 @@ export class FarmMapComponent implements OnInit {
           }
           break;
         default:
-          // code...
           break;
       }
     }
@@ -1001,25 +967,6 @@ export class FarmMapComponent implements OnInit {
         break;
     }
   }
-  processMeasurements(data){
-    let measurementsResult=[]
-    for (const item of data) {
-      if(item.name == "Velocidad Viento"||item.name == "Vel. Viento"||
-        item.name == "Direccion de viento"||item.name == "Dir. Viento"||
-        item.name == "Radiacion Solar"||item.name == "Rad. Solar"||
-        item.name == "Station Relative Humidity"||item.name == "Sta. Rel. Humidity"||
-        item.name == "Pluviometro" || item.name == "Temperatura" || item.name == "Humedad"
-        ){
-        if(measurementsResult.find(element=>element.name==item.name)==undefined){
-          measurementsResult.push(item);
-        }
-      }  
-    }
-    return measurementsResult;
-  }
-  decimalProcessor(value,decimals){
-    return value.toFixed(decimals);
-  }
   momentFormat(value:string,chart:string){
     switch (chart) {
       case "line":
@@ -1079,6 +1026,76 @@ export class FarmMapComponent implements OnInit {
   deleteValueJson(value){
     var index:number = this.measurements.indexOf(this.measurements.find(x => x.name == value));
     if(index != -1) this.measurements.splice(index, 1);
+  }
+
+  translateMeasurement(measurement:string){
+    let newMeasurement;
+    switch ((measurement).toLowerCase()) {
+          case "station temperature":
+            newMeasurement="Temperatura";
+            break;
+          case "wind direction":
+            newMeasurement="Dir. Viento";
+            break;
+          case "direccion de viento":
+            newMeasurement="Dir. Viento";
+            break;
+          case "velocidad viento":
+            newMeasurement="Vel. Viento";
+            break;
+          case "wind speed (period)":
+            newMeasurement="Vel. Viento";
+            break;
+          case "solar radiation":
+            newMeasurement="Rad. Solar";
+            break;
+          case "sta. rel. humidity":
+            newMeasurement="Humedad";
+            break;
+          case "station relative humidity":
+            newMeasurement="Humedad";
+            break;
+          case "radiacion solar":
+            newMeasurement="Rad. Solar";
+            break;
+          case "solar radiation ":
+            newMeasurement="Rad. Solar";
+            break;
+          default:
+            newMeasurement=measurement;
+            break;
+        }    
+    return newMeasurement;
+  }
+  processMeasurements(data){
+      let measurementsResult=[]
+      let measurementNames=[
+          "Velocidad Viento",
+          "Vel. Viento",
+          "Wind Speed (period)",
+          "Direccion de viento",
+          "Dir. Viento",
+          "Wind Direction",
+          "Radiacion Solar",
+          "Rad. Solar",
+          "Solar radiation ",
+          "Station Relative Humidity",
+          "Sta. Rel. Humidity",
+          "Pluviometro",
+          "Temperatura", 
+          "Humedad",
+          "Station Temperature"]
+      for (const item of data) {
+        if(measurementNames.find(element=>element==item.name)!=undefined){
+          if(measurementsResult.find(element=>element.name==item.name)==undefined){
+            measurementsResult.push(item);
+          }
+      }  
+    }
+    return measurementsResult;
+  }
+  decimalProcessor(value,decimals){
+    return value.toFixed(decimals);
   }
   //por refactorizar
   renderMap() {
