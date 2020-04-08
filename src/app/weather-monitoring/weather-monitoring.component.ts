@@ -1084,6 +1084,35 @@ translateMeasurement(measurement:string){
   decimalProcessor(value,decimals){
     return value.toFixed(decimals);
   }
+  getCardinalPointOfTheValue(value:number){
+    let CardinalPoint;
+    switch (value) {
+      case 360:
+        CardinalPoint='N';
+        break;
+      case 90:
+        CardinalPoint='E';
+        break;
+      case 180:
+        CardinalPoint='S';
+        break;
+      case 270:
+        CardinalPoint='W';
+        break;
+      default:
+        if(value>=0&&value<=89.99){
+          CardinalPoint='NE';
+        }else if(value>=90.1&&value<=179.99){
+          CardinalPoint='SE';
+        }else if(value>=180.1&&value<=269.99){
+          CardinalPoint='SW';
+        }else if(value>=270.1&&value<=359.99){
+          CardinalPoint='NW';
+        }
+        break;
+    }
+    return CardinalPoint;
+  }
 //por factorizar  
 renderMap() {
   window['initMap'] = () => {

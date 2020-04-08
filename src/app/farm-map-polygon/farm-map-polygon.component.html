@@ -83,9 +83,10 @@
                                     src=" https://www.dropcontrol.com/img/widgets/ico_pluviometria.gif?uv=1">
                           <img *ngIf="translateMeasurement(data.name) =='Pluviometro'" src="assets/icons/Lluvia.svg">
                         </td>
-                          <td>
-                            {{decimalProcessor(data.lastData,2)}} {{data.unit}}
-                          </td> 
+                          <td style="display:inline-flex;">
+                          {{decimalProcessor(data.lastData)}} {{data.unit}} &nbsp;  
+                          <div *ngIf="translateMeasurement(data.name) =='Rafaga de viento' || translateMeasurement(data.name)=='Dir. Viento'"> {{getCardinalPointOfTheValue(data.lastData)}}</div>
+                        </td>
         
                         </tr>
                       </tbody>
