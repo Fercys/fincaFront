@@ -19,6 +19,7 @@ export class PolygonMapComponent implements OnChanges {
 
   	ngOnChanges(changes: SimpleChanges) {
   		const zonesCurrentValue: SimpleChange = changes.zones.currentValue;
+      console.log("zonesCurrentValue:",zonesCurrentValue)
   		this.zones=zonesCurrentValue;
   		this.loadMap();
   	}
@@ -172,30 +173,37 @@ export class PolygonMapComponent implements OnChanges {
   }
   getPathData(element:string){
     let pathData=[];
-    let i=10; 
+    let i=this.zones.length>=10?10:this.zones.length; 
     let pathFound=false;
     if(this.zones.length>=1){
       switch (element) {
         case "lat":
-          while(i>0 && !pathFound){
-            if(this.zones[i].polygon!=undefined && this.zones[i].polygon.path.length>0){
-              pathFound=true;
-              pathData=this.zones[i].polygon.path[0].lat;
-            }else if(this.zones[i].path!=undefined && this.zones[i].path.length>0){
-              pathFound=true;
-              pathData=this.zones[i].path[0].lat;
+          while(i>=0 && !pathFound){
+            console.log("i:",i)
+            console.log("this.zones[i]:",this.zones[i])
+            if(this.zones[i]){
+              if(this.zones[i].polygon!=undefined && this.zones[i].polygon.path.length>0){
+                pathFound=true;
+                pathData=this.zones[i].polygon.path[0].lat;
+              }else if(this.zones[i].path!=undefined && this.zones[i].path.length>0){
+                pathFound=true;
+                pathData=this.zones[i].path[0].lat;
+              }
             }
             i--;
           }          
           break;
         case "lng":
-          while(i>0 && !pathFound){
-            if(this.zones[i].polygon!=undefined && this.zones[i].polygon.path.length>0){
-              pathFound=true;
-              pathData=this.zones[i].polygon.path[0].lng;
-            }else if(this.zones[i].path!=undefined && this.zones[i].path.length>0){
-              pathFound=true;
-              pathData=this.zones[i].path[0].lng;
+          while(i>=0 && !pathFound){
+            if(this.zones[i]){
+              if(this.zones[i].polygon!=undefined && this.zones[i].polygon.path.length>0){
+                pathFound=true;
+                pathData=this.zones[i].polygon.path[0].lng;
+              }else if(this.zones[i].path!=undefined && this.zones[i].path.length>0){
+                pathFound=true;
+                pathData=this.zones[i].path[0].lng;
+              }
+
             }
             i--;
           }
