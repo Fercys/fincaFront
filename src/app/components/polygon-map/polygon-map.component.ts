@@ -11,7 +11,7 @@ import { WiseconnService } from 'app/services/wiseconn.service';
   styleUrls: ['./polygon-map.component.scss']
 })
 export class PolygonMapComponent implements OnChanges {
-	@Input() zones:any;
+	  @Input() zones:any;
   	@ViewChild('mapElement', { static: true }) mapElement: ElementRef;
   	public statusRegando:boolean=false;
   	constructor(
