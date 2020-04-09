@@ -172,20 +172,32 @@ export class PolygonMapComponent implements OnChanges {
   }
   getPathData(element:string){
     let pathData=[];
-    if(this.zones.length>=10){
+    let i=10; 
+    let pathFound=false;
+    if(this.zones.length>=1){
       switch (element) {
         case "lat":
-          if(this.zones[10].polygon!=undefined && this.zones[10].polygon.path.length>0){
-            pathData=this.zones[10].polygon.path[0].lat;
-          }else if(this.zones[10].path!=undefined && this.zones[10].path.length>0){
-            pathData=this.zones[10].path[0].lat;
-          }
+          while(i>0 && !pathFound){
+            if(this.zones[i].polygon!=undefined && this.zones[i].polygon.path.length>0){
+              pathFound=true;
+              pathData=this.zones[i].polygon.path[0].lat;
+            }else if(this.zones[i].path!=undefined && this.zones[i].path.length>0){
+              pathFound=true;
+              pathData=this.zones[i].path[0].lat;
+            }
+            i--;
+          }          
           break;
         case "lng":
-          if(this.zones[10].polygon!=undefined && this.zones[10].polygon.path.length>0){
-            pathData=this.zones[10].polygon.path[0].lng;
-          }else if(this.zones[10].path!=undefined && this.zones[10].path.length>0){
-            pathData=this.zones[10].path[0].lng;
+          while(i>0 && !pathFound){
+            if(this.zones[i].polygon!=undefined && this.zones[i].polygon.path.length>0){
+              pathFound=true;
+              pathData=this.zones[i].polygon.path[0].lng;
+            }else if(this.zones[i].path!=undefined && this.zones[i].path.length>0){
+              pathFound=true;
+              pathData=this.zones[i].path[0].lng;
+            }
+            i--;
           }
           break;
         default:
