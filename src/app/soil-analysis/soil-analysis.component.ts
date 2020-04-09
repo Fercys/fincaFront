@@ -23,7 +23,7 @@ export class SoilAnalysisComponent implements OnInit {
   		Swal.fire({
 	         icon: 'error',
 	         title: 'Oops...',
-	         text: 'Debe estar seleccionado un campo.'
+	         text: 'Debe estar seleccionado un campo. En la seccion de cuenta-> nombre de cuenta-> Seleccionar el campo'
 	    });
   	}
   }
