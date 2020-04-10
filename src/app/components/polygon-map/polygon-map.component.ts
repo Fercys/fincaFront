@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, ElementRef,OnChanges, SimpleChanges, SimpleChange} from '@angular/core';
+import { Component, Input, ViewChild, ElementRef, OnInit, OnChanges, SimpleChanges, SimpleChange} from '@angular/core';
 
 //notificaciones
 import Swal from 'sweetalert2';
@@ -10,16 +10,17 @@ import { WiseconnService } from 'app/services/wiseconn.service';
   templateUrl: './polygon-map.component.html',
   styleUrls: ['./polygon-map.component.scss']
 })
-export class PolygonMapComponent implements OnChanges {
+export class PolygonMapComponent implements OnInit,OnChanges {
 	  @Input() zones:any;
+    @Input() showCustomControl:boolean;
   	@ViewChild('mapElement', { static: true }) mapElement: ElementRef;
+    public trianglesRef:any[]=[];
   	public statusRegando:boolean=false;
   	constructor(
     private wiseconnService: WiseconnService,) { }
-
+    ngOnInit(){}
   	ngOnChanges(changes: SimpleChanges) {
   		const zonesCurrentValue: SimpleChange = changes.zones.currentValue;
-      console.log("zonesCurrentValue:",zonesCurrentValue)
   		this.zones=zonesCurrentValue;
   		this.loadMap();
   	}
@@ -51,7 +52,9 @@ export class PolygonMapComponent implements OnChanges {
 	        mapTypeId: window['google'].maps.MapTypeId.HYBRID
 	      }));
 	    }
-
+      if(this.showCustomControl){
+        this.addCustomControl(map,this.mapElement);
+      }
 	    var contentString = '<div id="content">' +
 	      '<div id="siteNotice">' +
 	      '</div>' +
@@ -97,9 +100,10 @@ export class PolygonMapComponent implements OnChanges {
           polygonDatas.push({element:element,data:polygonData});
           this.setLocalStorageItem("lastPolygonData",JSON.stringify(polygonDatas));
           // Marker Image          
-          this.addMarkerImage(map, element, "https://i.imgur.com/C7gyw7N.png");
+          let marker=this.addMarkerImage(map, element, "https://i.imgur.com/C7gyw7N.png");
           Triangle.setMap(map);
           this.addListenersOnPolygon(Triangle, element.id);   
+          this.trianglesRef.push({triangle:Triangle,element:element,marker:marker});
         } else {
           if (data != "") {
             let runningElement=data.find(element =>{return element.status == "Running"});
@@ -119,13 +123,14 @@ export class PolygonMapComponent implements OnChanges {
                 fillColor: '#49AA4F',
                 fillOpacity: 0.35,
               };
-              var Triangle = new window['google'].maps.Polygon(polygonData);              
-              polygonDatas.push({element:element,data:polygonData});
-              this.setLocalStorageItem("lastPolygonData",JSON.stringify(polygonDatas));
+              var Triangle = new window['google'].maps.Polygon(polygonData);
+              polygonDatas.push({element:element,data:polygonData});this.setLocalStorageItem("lastPolygonData",JSON.stringify(polygonDatas));
               // Marker Image          
-              // this.addMarkerImage(map, element, "../../assets/icons/map/Ok-01.svg");
+              // let marker=this.addMarkerImage(map, element, "../../assets/icons/map/Ok-01.svg");
+              let marker=null;
               Triangle.setMap(map);
               this.addListenersOnPolygon(Triangle, element.id);
+              this.trianglesRef.push({triangle:Triangle,element:element,marker:marker});
             } else {
               if(runningElement) { //status 'running'
                 this.zones.map((zone)=>{
@@ -143,13 +148,14 @@ export class PolygonMapComponent implements OnChanges {
                   fillColor: '#419FD5',
                   fillOpacity: 0.35,
                 };
-                var Triangle = new window['google'].maps.Polygon(polygonData);                
+                var Triangle = new window['google'].maps.Polygon(polygonData); 
                 polygonDatas.push({element:element,data:polygonData});
                 this.setLocalStorageItem("lastPolygonData",JSON.stringify(polygonDatas));
                  // Marker Image
-                this.addMarkerImage(map, element,  "../../assets/icons/map/Regando-01.svg");                  
+                let marker=this.addMarkerImage(map, element,  "../../assets/icons/map/Regando-01.svg");                  
                 Triangle.setMap(map);
                 this.addListenersOnPolygon(Triangle,element.id);
+                this.trianglesRef.push({triangle:Triangle,element:element,marker:marker});
               } else {
                 let polygonData={
                   paths: element.path?element.path:element.polygon.path,
@@ -161,9 +167,11 @@ export class PolygonMapComponent implements OnChanges {
                 };
                 var Triangle = new window['google'].maps.Polygon(polygonData);
                 Triangle.setMap(map);
-                this.addListenersOnPolygon(Triangle,element.id);                
-                polygonDatas.push({element:element,data:polygonData});              
+                this.addListenersOnPolygon(Triangle,element.id);
+                polygonDatas.push({element:element,data:polygonData});
                 this.setLocalStorageItem("lastPolygonData",JSON.stringify(polygonDatas));
+                let marker=null;
+                this.trianglesRef.push({triangle:Triangle,element:element,marker:marker});
               }
             }
           }
@@ -171,6 +179,7 @@ export class PolygonMapComponent implements OnChanges {
       });
     });
   }
+
   getPathData(element:string){
     let pathData=[];
     let i=this.zones.length>=10?10:this.zones.length; 
@@ -179,8 +188,6 @@ export class PolygonMapComponent implements OnChanges {
       switch (element) {
         case "lat":
           while(i>=0 && !pathFound){
-            console.log("i:",i)
-            console.log("this.zones[i]:",this.zones[i])
             if(this.zones[i]){
               if(this.zones[i].polygon!=undefined && this.zones[i].polygon.path.length>0){
                 pathFound=true;
@@ -203,7 +210,6 @@ export class PolygonMapComponent implements OnChanges {
                 pathFound=true;
                 pathData=this.zones[i].path[0].lng;
               }
-
             }
             i--;
           }
@@ -277,6 +283,7 @@ export class PolygonMapComponent implements OnChanges {
   addMarkerImage(map,element,urlImage){
     let lat;
     let lng;
+    let marker; 
     if(element.path!=undefined){
       if(element.path.length>0){
         lat=parseFloat(element.path[0].lat);
@@ -294,7 +301,7 @@ export class PolygonMapComponent implements OnChanges {
       }
     }
     if(lat && lng){
-      var marker = new window['google'].maps.Marker({
+      marker = new window['google'].maps.Marker({
           position: {lat: lat, lng: lng},
           map: map,
           icon: {
@@ -305,6 +312,7 @@ export class PolygonMapComponent implements OnChanges {
           }
       });
     }
+    return marker;
     
   }
   getTranslateType(type:string){
@@ -325,4 +333,119 @@ export class PolygonMapComponent implements OnChanges {
     }
     return typeResult;
   }
+  addCustomControl(map:any,mapElement:any){
+    // Create the DIV to hold the control and call the CenterControl()
+        // constructor passing in this DIV.
+      let trianglesRef=this.trianglesRef;
+      const controls=["General","Weather","Soil Measure", "Irrigation"];
+      for (var control of controls) {
+        var centerControlDiv = document.createElement('div');
+        var centerControl = new this.centerControl(centerControlDiv, map,control, mapElement,trianglesRef);
+        //centerControlDiv.index = 1;
+        map.controls[window['google'].maps.ControlPosition.LEFT_CENTER].push(centerControlDiv);
+      }
+  }
+  centerControl(controlDiv, map, control,mapElement,trianglesRef) {
+          // Set CSS for the control border.
+          var controlUI = document.createElement('div');
+          controlUI.style.backgroundColor = '#fff';
+          controlUI.style.border = '2px solid #fff';
+          controlUI.style.borderRadius = '3px';
+          controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+          controlUI.style.cursor = 'pointer';
+          controlUI.style.marginBottom = '10px';
+          controlUI.style.marginLeft = '10px';
+          controlUI.style.textAlign = 'center';
+          controlUI.title = control;
+          controlDiv.appendChild(controlUI);
+
+          // Set CSS for the control interior.
+          var controlText = document.createElement('div');
+          controlText.style.color = 'rgb(25,25,25)';
+          controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+          controlText.style.fontSize = '10px';
+          controlText.style.lineHeight = '15px';
+          controlText.style.paddingLeft = '5px';
+          controlText.style.paddingRight = '5px';
+          controlText.innerHTML = control;
+          controlUI.appendChild(controlText);
+
+          // Setup the click event listeners: simply set the map to Chicago.
+          controlText.addEventListener('click', function() {
+            let lastPolygonData=null;
+            let polygonData=null;
+            let mapData=null; 
+            if(localStorage.getItem("lastPolygonData")){
+              lastPolygonData=JSON.parse(localStorage.getItem("lastPolygonData"));
+            }
+            if(localStorage.getItem("lastMapData")){
+              mapData=JSON.parse(localStorage.getItem("lastMapData"));
+            }
+            if(lastPolygonData && mapData){
+              switch ((control).toLowerCase()) {
+                  case "general":
+                      if(lastPolygonData){
+                        for (var triangleRef of trianglesRef){
+                          triangleRef.triangle.setMap(map);
+                          if(triangleRef.marker){
+                            triangleRef.marker.setMap(map);
+                          }
+                        }
+                      }
+                    break;
+                  case "weather":
+                        for (var triangleRef of trianglesRef){
+                          if(triangleRef.element.type.find(element=>element.description=="Weather")!=undefined){
+                            triangleRef.triangle.setMap(map);
+                            if(triangleRef.marker){
+                              triangleRef.marker.setMap(map);
+                            }
+                          }else{
+                            triangleRef.triangle.setMap(null);
+                            if(triangleRef.marker){
+                              triangleRef.marker.setMap(null);
+                            }
+                          }
+                        }
+                    break;
+                  case "soil measure":
+                        for (var triangleRef of trianglesRef){
+                          if(triangleRef.element.type.find(element=>element.description=="Soil")!=undefined){
+                            triangleRef.triangle.setMap(map);
+                            if(triangleRef.marker){
+                              triangleRef.marker.setMap(map);
+                            }
+                          }else{
+                            triangleRef.triangle.setMap(null);
+                            if(triangleRef.marker){
+                              triangleRef.marker.setMap(null);
+                            }
+                          }
+                        }
+                    break;                
+                  case "irrigation":
+                    for (var triangleRef of trianglesRef){
+                      if(triangleRef.element.type.find(element=>element.description=="Irrigation")!=undefined){
+                        triangleRef.triangle.setMap(map);
+                        if(triangleRef.marker){
+                          triangleRef.marker.setMap(map);
+                        }
+                      }else{
+                        triangleRef.triangle.setMap(null);
+                        if(triangleRef.marker){
+                          triangleRef.marker.setMap(null);
+                        }
+                      }
+                    }
+                    break;
+                  default:
+                    // code...
+                    break;
+                }  
+            }
+            
+          });
+        
+
+      }
 }

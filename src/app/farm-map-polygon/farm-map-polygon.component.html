@@ -51,8 +51,7 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-8 col-md-8 col-sm-8">
-        <app-polygon-map [zones]="zones"></app-polygon-map>
-        <!--<div mapRef style="width:100%;height:400px"></div>-->
+        <app-polygon-map [zones]="zones" [showCustomControl]="false"></app-polygon-map>
       </div>
       <div class="col-lg-4 col-md-4 col-sm-4">
           <div *ngIf="measurements" class="container-fluid card-weather">

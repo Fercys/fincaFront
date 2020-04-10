@@ -281,7 +281,7 @@ export class FarmMapComponent implements OnInit {
       this.zones = JSON.parse(localStorage.getItem('lastZones'));
       this.getIrrigarionsRealOfZones();
       if(this.fromDate && this.toDate){
-        this.getChartInformation();
+        //this.getChartInformation();
       }
       this.getWeather();
     }else{          
@@ -296,7 +296,7 @@ export class FarmMapComponent implements OnInit {
       this.getIrrigarionsRealOfZones();
       this.setLocalStorageItem("lastFarmId",this.farm.id);
       this.setLocalStorageItem("lastZones",this.getJSONStringify(this.zones));
-      this.getChartInformation();
+      //this.getChartInformation();
       this.getWeather();
     });
   }  
