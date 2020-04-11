@@ -86,31 +86,32 @@
                 <table class="table">
                   <tbody>
                     <tr *ngFor="let data of measurements">
-                      <td class="name-weather">
-                        {{translateMeasurement(data.name)}}
-                      </td>
-                      <td class="icon-weather">
-                        <img *ngIf="data.name =='Station Temperature' || data.name=='Temperatura'"
-                                  src="assets/icons/Temperatura.svg">
-                        <img *ngIf="data.name =='Rafaga de viento' || data.name=='Dir. Viento'"
-                                  src="assets/icons/Direccion-del-Viento.svg">
-                        <img *ngIf="data.name =='Wind Direction' || data.name=='Vel. Viento'" src="assets/icons/Viento.svg">
-                        <img *ngIf="data.name =='Wind Speed (period)'"
-                                  src="https://www.dropcontrol.com/img/widgets/ico_velocidad.gif">
-                        <img *ngIf="data.name =='Station Relative Humidity' || data.name=='Humedad'"
-                                  src="assets/icons/Gota.svg">
-                        <img *ngIf="data.name =='Solar radiation ' || data.name=='Rad. Solar'" src="assets/icons/Sol.svg">
-                        <img *ngIf="data.name =='Horas Frío'"
-                                  src=" https://www.dropcontrol.com/img/widgets/ico_pluviometria.gif?uv=1">
-                        <img *ngIf="data.name =='Porciones de Frío'"
-                                  src=" https://www.dropcontrol.com/img/widgets/ico_pluviometria.gif?uv=1">
-                        <img *ngIf="data.name =='Pluviometro'" src="assets/icons/Lluvia.svg">
-                      </td>
-                      <td>
-                        {{decimalProcessor(data.lastData,2)}} {{data.unit}}
-                      </td> 
-            
-                    </tr>
+                    <td class="name-weather">
+                      {{translateMeasurement(data.name)}}
+                    </td>
+                    <td class="icon-weather">
+                      <img *ngIf="translateMeasurement(data.name) =='Station Temperature' || translateMeasurement(data.name)=='Temperatura'"
+                                src="assets/icons/Temperatura.svg">
+                      <img *ngIf="translateMeasurement(data.name) =='Rafaga de viento' || translateMeasurement(data.name)=='Dir. Viento'"
+                                src="assets/icons/Direccion-del-Viento.svg">
+                      <img *ngIf="translateMeasurement(data.name) =='Wind Direction' || translateMeasurement(data.name)=='Vel. Viento'" src="assets/icons/Viento.svg">
+                      <img *ngIf="translateMeasurement(data.name) =='Wind Speed (period)'"
+                                src="https://www.dropcontrol.com/img/widgets/ico_velocidad.gif">
+                      <img *ngIf="translateMeasurement(data.name) =='Station Relative Humidity' || translateMeasurement(data.name)=='Humedad'"
+                                src="assets/icons/Gota.svg">
+                      <img *ngIf="translateMeasurement(data.name) =='Solar radiation ' || translateMeasurement(data.name)=='Rad. Solar'" src="assets/icons/Sol.svg">
+                      <img *ngIf="translateMeasurement(data.name) =='Horas Frío'"
+                                src=" https://www.dropcontrol.com/img/widgets/ico_pluviometria.gif?uv=1">
+                      <img *ngIf="translateMeasurement(data.name) =='Porciones de Frío'"
+                                src=" https://www.dropcontrol.com/img/widgets/ico_pluviometria.gif?uv=1">
+                      <img *ngIf="translateMeasurement(data.name) =='Pluviometro'" src="assets/icons/Lluvia.svg">
+                    </td>
+                    <td style="display:inline-flex;">
+                      {{decimalProcessor(data.lastData)}} {{data.unit}} &nbsp;  
+                      <div *ngIf="translateMeasurement(data.name) =='Rafaga de viento' || translateMeasurement(data.name)=='Dir. Viento'"> {{getCardinalPointOfTheValue(data.lastData)}}</div>
+                    </td> 
+          
+                  </tr>
                   </tbody>
                 </table>
               </div>
@@ -181,7 +182,7 @@
         <div>
           <div class="row">
             <div class="col-md-12">
-              <div #mapRef id="map-container" class="map"></div>
+              <app-polygon-map [zones]="zones" [showCustomControl]="true"></app-polygon-map>
             </div>
             <div class="col-md-12">
               <div class="p-2">              

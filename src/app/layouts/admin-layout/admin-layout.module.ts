@@ -48,6 +48,9 @@ import { AdminLayoutRoutes } from './admin-layout.routing';
 import { FreePlotterComponent } from 'app/free-plotter/free-plotter.component';
 import { SoilAnalysisComponent } from 'app/soil-analysis/soil-analysis.component';
 
+//componentes de uso compartido
+import { PolygonMapComponent } from 'app/components/polygon-map/polygon-map.component';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -93,6 +96,7 @@ import { SoilAnalysisComponent } from 'app/soil-analysis/soil-analysis.component
     DialogMessage,
     ReportInstalationComponent,
     ConfigurationComponent,
+    PolygonMapComponent
   ],
   entryComponents:[
     DialogMessage

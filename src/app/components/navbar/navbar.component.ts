@@ -44,7 +44,6 @@ export class NavbarComponent implements OnInit {
           this.user=JSON.parse(this.userLS.plain);
           this.listTitles = SidebarRoute.filter(listTitle => listTitle);
           const navbar: HTMLElement = this.element.nativeElement;
-          console.log("toggleButton:",this.toggleButton)
           this.toggled=this.isMobileMenu()?false:true;
           this.router.events.subscribe((event) => {
             this.sidebarClose();
