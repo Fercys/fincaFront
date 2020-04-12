@@ -373,7 +373,7 @@ export class PolygonMapComponent implements OnInit,OnChanges {
 
           // Setup the click event listeners: simply set the map to Chicago.
           controlText.addEventListener('click', function() {
-            var controlsUI = document.getElementsByClassName("control-ui");
+            var controlsUI:any= document.getElementsByClassName("control-ui");
             for (var controlUI of controlsUI) {
               controlUI.style.backgroundColor='#fff';
               controlUI.children[0].style.color="#000";
