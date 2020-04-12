@@ -281,7 +281,7 @@ export class FarmMapComponent implements OnInit {
       this.zones = JSON.parse(localStorage.getItem('lastZones'));
       this.getIrrigarionsRealOfZones();
       if(this.fromDate && this.toDate){
-        //this.getChartInformation();
+        this.getChartInformation();
       }
       this.getWeather();
     }else{          
@@ -296,15 +296,15 @@ export class FarmMapComponent implements OnInit {
       this.getIrrigarionsRealOfZones();
       this.setLocalStorageItem("lastFarmId",this.farm.id);
       this.setLocalStorageItem("lastZones",this.getJSONStringify(this.zones));
-      //this.getChartInformation();
+      this.getChartInformation();
       this.getWeather();
     });
   }  
   getIrrigarionsRealOfZones(){
     this.zones.forEach(element => {
       // Construct the polygon.
-      this.wiseconnService.getIrrigarionsRealOfZones(element.id).subscribe((response: any) => {
-        let data=response.data?response.data:response;
+      /*this.wiseconnService.getIrrigarionsRealOfZones(element.id).subscribe((response: any) => {
+        let data=response.data?response.data:response;*/
         let id= element.id_wiseconn?element.id_wiseconn:element.id;
         if (parseInt(id) == 727 || parseInt(id) == 6054 || parseInt(id) == 13872){
           if (element.name == "Estación Meteorológica" || element.name == "Estación Metereológica") {
@@ -317,7 +317,7 @@ export class FarmMapComponent implements OnInit {
             }) 
           }
         }
-      });
+      /*});*/
     });
   }
   getWeather(){

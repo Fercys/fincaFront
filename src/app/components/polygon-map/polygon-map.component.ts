@@ -341,14 +341,14 @@ export class PolygonMapComponent implements OnInit,OnChanges {
       for (var control of controls) {
         var centerControlDiv = document.createElement('div');
         var centerControl = new this.centerControl(centerControlDiv, map,control, mapElement,trianglesRef);
-        //centerControlDiv.index = 1;
+        
         map.controls[window['google'].maps.ControlPosition.LEFT_CENTER].push(centerControlDiv);
       }
   }
   centerControl(controlDiv, map, control,mapElement,trianglesRef) {
           // Set CSS for the control border.
           var controlUI = document.createElement('div');
-          controlUI.style.backgroundColor = '#fff';
+          controlUI.style.backgroundColor = control=='General'?'#018fff':'#fff';
           controlUI.style.border = '2px solid #fff';
           controlUI.style.borderRadius = '3px';
           controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
@@ -356,12 +356,13 @@ export class PolygonMapComponent implements OnInit,OnChanges {
           controlUI.style.marginBottom = '10px';
           controlUI.style.marginLeft = '10px';
           controlUI.style.textAlign = 'center';
+          controlUI.classList.add('control-ui');
           controlUI.title = control;
           controlDiv.appendChild(controlUI);
 
           // Set CSS for the control interior.
           var controlText = document.createElement('div');
-          controlText.style.color = 'rgb(25,25,25)';
+          controlText.style.color = control=='General'?'#fff':'#000';
           controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
           controlText.style.fontSize = '10px';
           controlText.style.lineHeight = '15px';
@@ -372,6 +373,13 @@ export class PolygonMapComponent implements OnInit,OnChanges {
 
           // Setup the click event listeners: simply set the map to Chicago.
           controlText.addEventListener('click', function() {
+            var controlsUI = document.getElementsByClassName("control-ui");
+            for (var controlUI of controlsUI) {
+              controlUI.style.backgroundColor='#fff';
+              controlUI.children[0].style.color="#000";
+            }
+            this.style.color="#fff"
+            this.parentElement.style.backgroundColor="#018fff"
             let lastPolygonData=null;
             let polygonData=null;
             let mapData=null; 
