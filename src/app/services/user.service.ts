@@ -47,6 +47,12 @@ export class UserService {
       retry(1),
     )
   }
+  getAccountsByUser(id:number): Observable<any> { 
+    return this.http.get<any>(this.baseurl + '/users/'+id+'/getaccounts', this.httpOptions)
+    .pipe(
+      retry(1),
+    )
+  }
   create(user_data: User): Observable<any> {
     return this.http.post<any>(this.baseurl + '/users/store', user_data , this.httpOptions)
     .pipe(

@@ -237,6 +237,7 @@ export class AdminDashboardComponent implements OnInit {
           this.farms = response.data?response.data:response;
           localStorage.setItem("datafarms", JSON.stringify(this.farms));
           this.cant_farms=this.farms.length;
+        console.log("response:",response)
           var farm_client = this.farms.filter(function(item,index,array){ 
             if(index == 0){
               return true;
@@ -252,6 +253,7 @@ export class AdminDashboardComponent implements OnInit {
       this.loading = true;
       this.wiseconnService.getFarms().subscribe((response: any) => {
         this.loading = false;
+        console.log("response:",response)
         this.farms = response.data?response.data:response;
         localStorage.setItem("datafarms", JSON.stringify(this.farms));
         this.cant_farms=this.farms.length;
