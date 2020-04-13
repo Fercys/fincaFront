@@ -189,6 +189,12 @@ export class FarmMapPolygonComponent implements OnInit {
     public formatter: NgbDateParserFormatter) {
   }
   ngOnInit() {
+    if(localStorage.getItem("lastRoute")&&localStorage.getItem("lastRoute")!="farmpolygon"){
+      if(localStorage.getItem('lastPolygonData')){
+        localStorage.removeItem('lastPolygonData');
+      }
+    }
+    this.setLocalStorageItem("lastRoute","farmpolygon");
     this.getMeterogoAgrifut(parseInt(this._route.snapshot.paramMap.get('idfarm')),parseInt(this._route.snapshot.paramMap.get('idzone')));
   }
   getMeterogoAgrifut(idfarm:number,idzone:number){
@@ -201,7 +207,7 @@ export class FarmMapPolygonComponent implements OnInit {
       this.loading = true;
       this.wiseconnService.getZones(idfarm).subscribe((response: any) => {
         this.loading = false;
-        this.zones = response.data?response.data:response; 
+        this.zones = response.data?response.data:response;
         this.weatherZones = this.zones.filter((element)=>{
           if(element.type){
             if(element.type.length>0){
