@@ -49,7 +49,7 @@ export class LoginComponent implements OnInit,OnDestroy,AfterViewInit {
 			email:['',[Validators.required,Validators.email]],
 			password:['',Validators.required],
 		})
-		this.myForm.valueChanges.subscribe(console.log)
+		//this.myForm.valueChanges.subscribe(console.log)
 	}
 	onSubmit() {
 		// Adding data values

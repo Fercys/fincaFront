@@ -293,6 +293,7 @@ export class FarmMapComponent implements OnInit {
     this.wiseconnService.getZones(this.farm.id).subscribe((response: any) => {
       this.loading = false; 
       this.zones = response.data?response.data:response;
+      console.log("this.zones:",this.zones)
       this.getIrrigarionsRealOfZones();
       this.setLocalStorageItem("lastFarmId",this.farm.id);
       this.setLocalStorageItem("lastZones",this.getJSONStringify(this.zones));
