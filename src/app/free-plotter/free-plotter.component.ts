@@ -206,15 +206,19 @@ export class FreePlotterComponent implements OnInit {
 	          	this.user=JSON.parse(this.userLS.plain);
 				this.addSelectGroups();
 				this.dateRangeByDefault();
-				if(localStorage.getItem("lastFarmId")){
-	          		this.getSensorTypesOfFarm(parseInt(localStorage.getItem("lastFarmId")));
-			    }else{
-	          		Swal.fire({
-                    	icon: 'error',
-                    	title: 'Oops...',
-                    	text: 'No tiene campo seleccionado'
-                	})
-	          	}
+				if(this.user.role.id==1){//admin
+           			this.getSensorTypes();
+           		}else{
+					if(localStorage.getItem("lastFarmId")){
+		          		this.getSensorTypesOfFarm(parseInt(localStorage.getItem("lastFarmId")));
+				    }else{
+		          		Swal.fire({
+	                    	icon: 'error',
+	                    	title: 'Oops...',
+	                    	text: 'No tiene campo seleccionado'
+	                	})
+		          	}
+		        }
 	        }else{
 	          this.router.navigate(['/login']);
 	        }
@@ -237,13 +241,32 @@ export class FreePlotterComponent implements OnInit {
 			this.farms = response.data?response.data:response;
 		})
 	}
+	getSensorTypes(){
+		this.loading = true;
+		this.wiseconnService.getSensorTypes().subscribe((response: any) => {
+			this.loading = false;
+			this.sensorTypes=response.data?response.data:response;
+			for (let sensorType of this.sensorTypes) {
+				for (let variableGroup of this.selectGroups[this.selectGroups.length-1].variableGroups) {
+					if(variableGroup.name==sensorType.group){
+						variableGroup.variable.push({id:sensorType.id,name:sensorType.name})
+					}
+				}
+			}
+		});
+	}
 	getSensorTypesOfFarm(id:number=0) {
 		this.loading = true;
 		this.wiseconnService.getSensorTypesOfFarm(id).subscribe((response: any) => {
 			this.loading = false;
 			this.sensorTypes=response.data?response.data:response;
 			for (let sensorType of this.sensorTypes) {
-				this.selectGroups[this.selectGroups.length-1].variableGroups[0].variable.push({id:sensorType.id,name:sensorType.name})
+				for (let variableGroup of this.selectGroups[this.selectGroups.length-1].variableGroups) {
+					if(variableGroup.name==sensorType.group){
+						variableGroup.variable.push({id:sensorType.id,name:sensorType.name})
+					}
+				}
+				//this.selectGroups[this.selectGroups.length-1].variableGroups[0].variable.push({id:sensorType.id,name:sensorType.name})
 				//this.defaultSelectGroups.variableGroups[0].variable.push({id:sensorType.id,name:sensorType.name})
 			}
 			/*this.zonesAux=response.data?response.data:response;
@@ -698,7 +721,15 @@ export class FreePlotterComponent implements OnInit {
 	getDefaultSelectGroups(){
 		return {
 			variableGroups:[{
-				name: 'Variables',
+				name: 'Clima',
+				variable: []
+			},
+			{
+				name: 'Humedad',
+				variable: []
+			},
+			{
+				name: 'Riego',
 				variable: []
 			}],
 			variablesSelected:null,
@@ -737,10 +768,14 @@ export class FreePlotterComponent implements OnInit {
 		if(this.selectGroups.length>0){
 			if(this.selectGroups.length<6){
 				if(this.selectGroups[this.selectGroups.length-1].typeSelected){
-				this.selectGroups.push(this.getDefaultSelectGroups())
-				if(localStorage.getItem("lastFarmId")){
-	          		this.getSensorTypesOfFarm(parseInt(localStorage.getItem("lastFarmId")));
-			    }
+					this.selectGroups.push(this.getDefaultSelectGroups())
+					if(this.user.role.id==1){//admin
+           				this.getSensorTypes();
+	           		}else{
+						if(localStorage.getItem("lastFarmId")){
+			          		this.getSensorTypesOfFarm(parseInt(localStorage.getItem("lastFarmId")));
+					    }
+			        }
 				}else{
 		    		Swal.fire({
 		                icon: 'error',
