@@ -50,7 +50,7 @@
 		            <mat-form-field class="mat-select-custom w-100" floatLabel="never">
 						<mat-label>{{selectGroup.zoneSelected?selectGroup.zoneSelected.name:'Seleccionar Sector'}}</mat-label>
 						<mat-select [disabled]="selectGroups.length>i+1">
-							<mat-option  *ngFor="let zone of selectGroup.zones" (click)="onSelect('zone',zone.id)">{{zone.name}}</mat-option>
+							<mat-option  *ngFor="let element of selectGroup.zones" (click)="onSelect('zone',element.zone.id)">{{element.zone.name}}</mat-option>
 						</mat-select>
 					</mat-form-field>
 		        </div>

@@ -284,9 +284,7 @@ export class FarmMapComponent implements OnInit {
   }
   processZones(){
     if(localStorage.getItem('lastZones')){
-      console.log("localStorage.getItem('lastZones')")
       this.zones = JSON.parse(localStorage.getItem('lastZones'));
-      console.log(this.zones)
       this.getIrrigarionsRealOfZones();
       if(this.fromDate && this.toDate){
         this.getChartInformation();

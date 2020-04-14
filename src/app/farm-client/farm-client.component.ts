@@ -26,10 +26,8 @@ export class FarmClientComponent implements OnInit {
         this.url="";
     }   
     let farm_aux = JSON.parse(localStorage.getItem("datafarms")); 
-    console.log("farm_aux:",farm_aux)
     this.farms = farm_aux.filter(function(element){
       return element['account']['id'] == this.id;
     },this); 
-    console.log("this.farms:",this.farms)
   }
 }

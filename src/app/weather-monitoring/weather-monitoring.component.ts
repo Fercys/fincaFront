@@ -270,7 +270,6 @@ export class WeatherMonitoringComponent implements OnInit {
   }
   processZones(){
     if(localStorage.getItem('lastZones')){
-      console.log("localStorage.getItem('lastZones')")
       this.zones = JSON.parse(localStorage.getItem('lastZones'));
       this.weatherZones=this.getWeatherZones();
       this.getIrrigarionsRealOfZones();

@@ -55,6 +55,20 @@ export class WiseconnService {
       catchError(this.errorHandl)
     )
   }
+  getMeasuresOfFarm(id:number): Observable<any> { 
+    return this.http.get<any>(this.baseurl + '/farms/'+id+"/measures", this.httpOptions)
+    .pipe(
+      retry(1),
+      catchError(this.errorHandl)
+    )
+  }
+  getSensorTypesOfFarm(id:number): Observable<any> { 
+    return this.http.get<any>(this.baseurl + '/farms/'+id+"/sensortypes", this.httpOptions)
+    .pipe(
+      retry(1),
+      catchError(this.errorHandl)
+    )
+  }
   getIrrigarionsRealOfZones(id): Observable<any> {
     return this.http.get<any>(this.baseurl + "/zones/"+id+"/realIrrigations?initTime=2020-03-01&endTime=2020-03-31", this.httpOptions)
     .pipe(
@@ -69,6 +83,7 @@ export class WiseconnService {
       catchError(this.errorHandl)
     )
   }
+  
   getMeterogoAgrifut(id): Observable<any> {
     return this.http.get<any>(this.baseurl + "/zones/"+id+"/measures", this.httpOptions)
     .pipe(

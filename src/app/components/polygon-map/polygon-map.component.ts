@@ -82,7 +82,6 @@ export class PolygonMapComponent implements OnInit,OnChanges {
 	    });
 	    var wisservice = this.wiseconnService;
       if(localStorage.getItem('lastPolygonData')&&localStorage.getItem('lastMapData')){
-        console.log("localStorage")
         let lastMapData=null; let lastPolygonData=null;
         if(localStorage.getItem("lastMapData")){
           lastMapData=JSON.parse(localStorage.getItem("lastMapData"));
@@ -92,7 +91,6 @@ export class PolygonMapComponent implements OnInit,OnChanges {
         }
         var map = new window['google'].maps.Map(this.mapElement.nativeElement,lastMapData);
         for (let polygon of lastPolygonData) {
-          console.log("polygon:",polygon)
           let marker=null;
           var Triangle = new window['google'].maps.Polygon(polygon.data);
           if(polygon.markerImg){
@@ -108,7 +106,6 @@ export class PolygonMapComponent implements OnInit,OnChanges {
         if(this.showCustomControl){
           this.addCustomControl(map,this.mapElement);
         }
-        console.log("localStorage.getItem('lastPolygonData'):",JSON.parse(localStorage.getItem('lastPolygonData')));
       }else{
         let polygonDatas=[];
         this.zones.forEach(element => {
@@ -427,7 +424,6 @@ export class PolygonMapComponent implements OnInit,OnChanges {
               switch ((control).toLowerCase()) {
                   case "general":
                       if(lastPolygonData){
-                        console.log("trianglesRef:",trianglesRef)
                         for (var triangleRef of trianglesRef){
                           triangleRef.triangle.setMap(map);
                           if(triangleRef.marker){
