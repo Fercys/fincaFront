@@ -243,7 +243,8 @@ export class FreePlotterComponent implements OnInit {
 			this.loading = false;
 			this.sensorTypes=response.data?response.data:response;
 			for (let sensorType of this.sensorTypes) {
-				this.defaultSelectGroups.variableGroups[0].variable.push({id:sensorType.id,name:sensorType.name})
+				this.selectGroups[this.selectGroups.length-1].variableGroups[0].variable.push({id:sensorType.id,name:sensorType.name})
+				//this.defaultSelectGroups.variableGroups[0].variable.push({id:sensorType.id,name:sensorType.name})
 			}
 			/*this.zonesAux=response.data?response.data:response;
 			this.selectGroups[this.selectGroups.length-1].zones=this.zonesAux;
@@ -695,13 +696,52 @@ export class FreePlotterComponent implements OnInit {
 		return parsed && this.calendar.isValid(NgbDate.from(parsed)) ? NgbDate.from(parsed) : currentValue;
 	}
 	getDefaultSelectGroups(){
-		return this.defaultSelectGroups;
+		return {
+			variableGroups:[{
+				name: 'Variables',
+				variable: []
+			}],
+			variablesSelected:null,
+			types:[
+				{id:1,name:"Linea"},
+				{id:2,name:"Columna"},
+			],
+			typeSelected:null,
+			resolutions:[
+				{id:1,name:"Minuto"},
+				{id:2,name:"1/4 horas"},
+				{id:3,name:"Suma humedades"},
+				{id:4,name:"Hora"},
+				{id:5,name:"2 horas"},
+				{id:6,name:"6 horas"},
+				{id:7,name:"Medio dia"},
+				{id:8,name:"Dia"},
+				{id:9,name:"Semana"},
+				{id:10,name:"Mes"},
+				{id:11,name:"Año"},
+			],
+			resolutionSelected:null,
+			zones:[],
+			zoneSelected:null,
+			sensors:[
+				{id:1,name:"#1 15 cm (%)"},
+				{id:2,name:"#2 35 cm (%)"},
+				{id:3,name:"#3 55 cm (%)"},
+				{id:4,name:"#4 75 cm (%)"},
+			],
+			sensorSelected:null,
+			chartColor:this.chartColors[this.selectGroups.length]
+		};
 	}
 	addSelectGroups(){
 		if(this.selectGroups.length>0){
 			if(this.selectGroups.length<6){
 				if(this.selectGroups[this.selectGroups.length-1].typeSelected){
 				this.selectGroups.push(this.getDefaultSelectGroups())
+				console.log("selectGroups:",this.selectGroups)
+				if(localStorage.getItem("lastFarmId")){
+	          		this.getSensorTypesOfFarm(parseInt(localStorage.getItem("lastFarmId")));
+			    }
 				}else{
 		    		Swal.fire({
 		                icon: 'error',
@@ -718,6 +758,10 @@ export class FreePlotterComponent implements OnInit {
 		    }
 		}else{
 			this.selectGroups.push(this.getDefaultSelectGroups())
+			if(localStorage.getItem("lastFarmId")){
+	          		this.getSensorTypesOfFarm(parseInt(localStorage.getItem("lastFarmId")));
+			    }
+			console.log("selectGroups:",this.selectGroups)
 		}
 	}
 }
