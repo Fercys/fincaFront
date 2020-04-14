@@ -738,7 +738,6 @@ export class FreePlotterComponent implements OnInit {
 			if(this.selectGroups.length<6){
 				if(this.selectGroups[this.selectGroups.length-1].typeSelected){
 				this.selectGroups.push(this.getDefaultSelectGroups())
-				console.log("selectGroups:",this.selectGroups)
 				if(localStorage.getItem("lastFarmId")){
 	          		this.getSensorTypesOfFarm(parseInt(localStorage.getItem("lastFarmId")));
 			    }
@@ -761,7 +760,6 @@ export class FreePlotterComponent implements OnInit {
 			if(localStorage.getItem("lastFarmId")){
 	          		this.getSensorTypesOfFarm(parseInt(localStorage.getItem("lastFarmId")));
 			    }
-			console.log("selectGroups:",this.selectGroups)
 		}
 	}
 }
