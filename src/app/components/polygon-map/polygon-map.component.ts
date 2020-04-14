@@ -22,22 +22,24 @@ export class PolygonMapComponent implements OnInit,OnChanges {
   	ngOnChanges(changes: SimpleChanges) {
   		const zonesCurrentValue: SimpleChange = changes.zones.currentValue;
   		this.zones=zonesCurrentValue;
-  		this.loadMap();
+
+      if (this.zones.length == 0) {
+        var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
+          center: { lat: -32.89963602180464, lng: -70.90243510967417 },
+          zoom: 15,
+          mapTypeId: window['google'].maps.MapTypeId.HYBRID
+        });
+        this.setLocalStorageItem("lastMapData",this.getJSONStringify({
+          center: { lat: -32.89963602180464, lng: -70.90243510967417 },
+          zoom: 15,
+          mapTypeId: window['google'].maps.MapTypeId.HYBRID
+        }));
+      } else {
+  		  this.loadMap();
+      }
   	}
   	//carga de mapa
   	loadMap() {
-	    if (this.zones.length == 0) {
-	      var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
-	        center: { lat: -32.89963602180464, lng: -70.90243510967417 },
-	        zoom: 15,
-	        mapTypeId: window['google'].maps.MapTypeId.HYBRID
-	      });
-	      this.setLocalStorageItem("lastMapData",this.getJSONStringify({
-	        center: { lat: -32.89963602180464, lng: -70.90243510967417 },
-	        zoom: 15,
-	        mapTypeId: window['google'].maps.MapTypeId.HYBRID
-	      }));
-	    } else {
 	      if(this.getPathData('lat').length==0&&this.getPathData('lng').length==0){
 	        Swal.fire({icon: 'info',title: 'Información sobre el mapa',text: 'Datos de poligonos no registrados'});
 	      }
@@ -51,7 +53,6 @@ export class PolygonMapComponent implements OnInit,OnChanges {
 	        zoom: 15,
 	        mapTypeId: window['google'].maps.MapTypeId.HYBRID
 	      }));
-	    }
       if(this.showCustomControl){
         this.addCustomControl(map,this.mapElement);
       }
@@ -80,104 +81,132 @@ export class PolygonMapComponent implements OnInit,OnChanges {
 	      content: contentString
 	    });
 	    var wisservice = this.wiseconnService;
-
-    let polygonDatas=[];
-    this.zones.forEach(element => {
-      // Construct the polygon.
-      wisservice.getIrrigarionsRealOfZones(element.id).subscribe((response: any) => {
-        let data=response.data?response.data:response;
-        let id= element.id_wiseconn?element.id_wiseconn:element.id;
-        if (parseInt(id) == 727 || parseInt(id) == 6054 || parseInt(id) == 13872){
-          let polygonData={
-            paths: element.path?element.path:element.polygon.path,
-            strokeColor: '#E5C720',
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: '#E5C720',
-            fillOpacity: 0.35,
-          };
-          var Triangle = new window['google'].maps.Polygon(polygonData);
-          polygonDatas.push({element:element,data:polygonData});
-          this.setLocalStorageItem("lastPolygonData",JSON.stringify(polygonDatas));
-          // Marker Image          
-          let marker=this.addMarkerImage(map, element, "https://i.imgur.com/C7gyw7N.png");
+      if(localStorage.getItem('lastPolygonData')&&localStorage.getItem('lastMapData')){
+        let lastMapData=null; let lastPolygonData=null;
+        if(localStorage.getItem("lastMapData")){
+          lastMapData=JSON.parse(localStorage.getItem("lastMapData"));
+        }
+        if(localStorage.getItem("lastPolygonData")){
+          lastPolygonData=JSON.parse(localStorage.getItem("lastPolygonData"));
+        }
+        var map = new window['google'].maps.Map(this.mapElement.nativeElement,lastMapData);
+        for (let polygon of lastPolygonData) {
+          let marker=null;
+          var Triangle = new window['google'].maps.Polygon(polygon.data);
+          if(polygon.markerImg){
+            marker=this.addMarkerImage(map, polygon.element, polygon.markerImg);
+          }
           Triangle.setMap(map);
-          this.addListenersOnPolygon(Triangle, element.id);   
-          this.trianglesRef.push({triangle:Triangle,element:element,marker:marker});
-        } else {
-          if (data != "") {
-            let runningElement=data.find(element =>{return element.status == "Running"});
-            if (runningElement==undefined) { //status 'ok'
-              this.zones.map((zone)=>{
-                if(zone.id==element.id||zone.id_wiseconn==element.id){
-                  element.status=data[0].status
-                }
-                return element;
-              });
-              let path=element.polygon?element.polygon.path:element.path;
+          if(polygon.marker){
+            polygon.marker.setMap(map);
+          }
+          this.addListenersOnPolygon(Triangle, polygon.element.id);
+          this.trianglesRef.push({triangle:Triangle,element:polygon.element,marker:marker});
+        }
+        if(this.showCustomControl){
+          this.addCustomControl(map,this.mapElement);
+        }
+      }else{
+        let polygonDatas=[];
+        this.zones.forEach(element => {
+          // Construct the polygon.
+          wisservice.getIrrigarionsRealOfZones(element.id).subscribe((response: any) => {
+            let data=response.data?response.data:response;
+            let id= element.id_wiseconn?element.id_wiseconn:element.id;
+            if (parseInt(id) == 727 || parseInt(id) == 6054 || parseInt(id) == 13872){
               let polygonData={
-                paths: path,
-                strokeColor: '#49AA4F',
+                paths: element.path?element.path:element.polygon.path,
+                strokeColor: '#E5C720',
                 strokeOpacity: 0.8,
                 strokeWeight: 2,
-                fillColor: '#49AA4F',
+                fillColor: '#E5C720',
                 fillOpacity: 0.35,
               };
               var Triangle = new window['google'].maps.Polygon(polygonData);
-              polygonDatas.push({element:element,data:polygonData});this.setLocalStorageItem("lastPolygonData",JSON.stringify(polygonDatas));
+              this.setLocalStorageItem("lastPolygonData",JSON.stringify(polygonDatas));
               // Marker Image          
-              // let marker=this.addMarkerImage(map, element, "../../assets/icons/map/Ok-01.svg");
-              let marker=null;
+              let marker=this.addMarkerImage(map, element, "https://i.imgur.com/C7gyw7N.png");
               Triangle.setMap(map);
-              this.addListenersOnPolygon(Triangle, element.id);
+              this.addListenersOnPolygon(Triangle, element.id);   
+              polygonDatas.push({element:element,data:polygonData,markerImg:"https://i.imgur.com/C7gyw7N.png"});
               this.trianglesRef.push({triangle:Triangle,element:element,marker:marker});
             } else {
-              if(runningElement) { //status 'running'
-                this.zones.map((zone)=>{
-                  if(zone.id==element.id||zone.id_wiseconn==element.id){
-                    element.status=runningElement.status
-                  }                  
-                this.statusRegando=true;
-                  return element;
-                });
-                let polygonData={
-                  paths: element.path?element.path:element.polygon.path,
-                  strokeColor: '#419FD5',
-                  strokeOpacity: 0.8,
-                  strokeWeight: 2,
-                  fillColor: '#419FD5',
-                  fillOpacity: 0.35,
-                };
-                var Triangle = new window['google'].maps.Polygon(polygonData); 
-                polygonDatas.push({element:element,data:polygonData});
-                this.setLocalStorageItem("lastPolygonData",JSON.stringify(polygonDatas));
-                 // Marker Image
-                let marker=this.addMarkerImage(map, element,  "../../assets/icons/map/Regando-01.svg");                  
-                Triangle.setMap(map);
-                this.addListenersOnPolygon(Triangle,element.id);
-                this.trianglesRef.push({triangle:Triangle,element:element,marker:marker});
-              } else {
-                let polygonData={
-                  paths: element.path?element.path:element.polygon.path,
-                  strokeColor: '#FF0000',
-                  strokeOpacity: 0.8,
-                  strokeWeight: 2,
-                  fillColor: '#FF0000',
-                  fillOpacity: 0.35,
-                };
-                var Triangle = new window['google'].maps.Polygon(polygonData);
-                Triangle.setMap(map);
-                this.addListenersOnPolygon(Triangle,element.id);
-                polygonDatas.push({element:element,data:polygonData});
-                this.setLocalStorageItem("lastPolygonData",JSON.stringify(polygonDatas));
-                let marker=null;
-                this.trianglesRef.push({triangle:Triangle,element:element,marker:marker});
+              if (data != "") {
+                let runningElement=data.find(element =>{return element.status == "Running"});
+                if (runningElement==undefined) { //status 'ok'
+                  this.zones.map((zone)=>{
+                    if(zone.id==element.id||zone.id_wiseconn==element.id){
+                      element.status=data[0].status
+                    }
+                    return element;
+                  });
+                  let path=element.polygon?element.polygon.path:element.path;
+                  let polygonData={
+                    paths: path,
+                    strokeColor: '#49AA4F',
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    fillColor: '#49AA4F',
+                    fillOpacity: 0.35,
+                  };
+                  var Triangle = new window['google'].maps.Polygon(polygonData);
+                  // Marker Image          
+                  // let marker=this.addMarkerImage(map, element, "../../assets/icons/map/Ok-01.svg");
+                  let marker=null;
+                  polygonDatas.push({element:element,data:polygonData,markerImg:null});
+                  this.setLocalStorageItem("lastPolygonData",JSON.stringify(polygonDatas));
+                  Triangle.setMap(map);
+                  this.addListenersOnPolygon(Triangle, element.id);
+                  this.trianglesRef.push({triangle:Triangle,element:element,marker:marker});
+                } else {
+                  if(runningElement) { //status 'running'
+                    this.zones.map((zone)=>{
+                      if(zone.id==element.id||zone.id_wiseconn==element.id){
+                        element.status=runningElement.status
+                      }                  
+                    this.statusRegando=true;
+                      return element;
+                    });
+                    let polygonData={
+                      paths: element.path?element.path:element.polygon.path,
+                      strokeColor: '#419FD5',
+                      strokeOpacity: 0.8,
+                      strokeWeight: 2,
+                      fillColor: '#419FD5',
+                      fillOpacity: 0.35,
+                    };
+                    var Triangle = new window['google'].maps.Polygon(polygonData); 
+                    let marker=this.addMarkerImage(map, element,  "../../assets/icons/map/Regando-01.svg");                  
+                    polygonDatas.push({element:element,data:polygonData,markerImg:"../../assets/icons/map/Regando-01.svg"});
+                    this.setLocalStorageItem("lastPolygonData",JSON.stringify(polygonDatas));
+                     // Marker Image
+                    Triangle.setMap(map);
+                    this.addListenersOnPolygon(Triangle,element.id);
+                    this.trianglesRef.push({triangle:Triangle,element:element,marker:marker});
+                  } else {
+                    let polygonData={
+                      paths: element.path?element.path:element.polygon.path,
+                      strokeColor: '#FF0000',
+                      strokeOpacity: 0.8,
+                      strokeWeight: 2,
+                      fillColor: '#FF0000',
+                      fillOpacity: 0.35,
+                    };
+                    var Triangle = new window['google'].maps.Polygon(polygonData);
+                    Triangle.setMap(map);
+                    this.addListenersOnPolygon(Triangle,element.id);
+                    let marker=null;
+                    polygonDatas.push({element:element,data:polygonData,markerImg:null});
+                    this.setLocalStorageItem("lastPolygonData",JSON.stringify(polygonDatas));
+                    this.trianglesRef.push({triangle:Triangle,element:element,marker:marker});
+                  }
+                }
               }
             }
-          }
-        }
-      });
-    });
+          });
+        });
+      }
+    
   }
 
   getPathData(element:string){
@@ -265,7 +294,9 @@ export class PolygonMapComponent implements OnInit,OnChanges {
             break;
           }
         }else{
-          tooltip.innerHTML = zone.name;
+          if(zone && zone.name!=undefined){
+            tooltip.innerHTML = zone.name;
+          }
         }
 
         tooltip.style.position = 'absolute';

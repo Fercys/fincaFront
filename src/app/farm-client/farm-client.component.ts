@@ -10,7 +10,7 @@ export class FarmClientComponent implements OnInit {
   public farms;
   public id;
   public url;
-  searchTable: any;
+  public searchTable: any;
   constructor(private _route: ActivatedRoute) {  }
 
   ngOnInit() { 

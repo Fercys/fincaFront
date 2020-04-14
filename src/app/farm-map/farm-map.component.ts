@@ -198,6 +198,12 @@ export class FarmMapComponent implements OnInit {
       this.userLS=JSON.parse(localStorage.getItem("user"));
       if(bcrypt.compareSync(this.userLS.plain, this.userLS.hash)){
         this.user=JSON.parse(this.userLS.plain);
+        if(localStorage.getItem("lastRoute")&&localStorage.getItem("lastRoute")!="farmmap"){
+          if(localStorage.getItem('lastPolygonData')){
+            localStorage.removeItem('lastPolygonData');
+          }
+        }
+        this.setLocalStorageItem("lastRoute","farmmap");
         if(this.user.role.id==1){//admin
           this.getFarms();
         }else{
@@ -284,7 +290,7 @@ export class FarmMapComponent implements OnInit {
         this.getChartInformation();
       }
       this.getWeather();
-    }else{          
+    }else{
       this.getZones();
     }
   }
@@ -293,7 +299,6 @@ export class FarmMapComponent implements OnInit {
     this.wiseconnService.getZones(this.farm.id).subscribe((response: any) => {
       this.loading = false; 
       this.zones = response.data?response.data:response;
-      console.log("this.zones:",this.zones)
       this.getIrrigarionsRealOfZones();
       this.setLocalStorageItem("lastFarmId",this.farm.id);
       this.setLocalStorageItem("lastZones",this.getJSONStringify(this.zones));

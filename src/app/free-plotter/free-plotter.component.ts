@@ -29,6 +29,7 @@ export class FreePlotterComponent implements OnInit {
 	public loading:boolean=false;
 	public farms:any[]=[];	
 	public zonesAux:any[]=[];
+	public sensorTypes:any[]=[];
 	//rango de fechas para graficas
 	public fromDate: NgbDate;
 	public toDate: NgbDate;
@@ -155,6 +156,42 @@ export class FreePlotterComponent implements OnInit {
 	//selects
 	public selectGroups:any[]=[];
 	public chartColors:string[]=['#D12B34','#00B9EE','#FFFF00','#31B404','#084B8A','#DF0174'];
+	public defaultSelectGroups:any={
+		variableGroups:[{
+			name: 'Variables',
+			variable: []
+		}],
+		variablesSelected:null,
+		types:[
+			{id:1,name:"Linea"},
+			{id:2,name:"Columna"},
+		],
+		typeSelected:null,
+		resolutions:[
+			{id:1,name:"Minuto"},
+			{id:2,name:"1/4 horas"},
+			{id:3,name:"Suma humedades"},
+			{id:4,name:"Hora"},
+			{id:5,name:"2 horas"},
+			{id:6,name:"6 horas"},
+			{id:7,name:"Medio dia"},
+			{id:8,name:"Dia"},
+			{id:9,name:"Semana"},
+			{id:10,name:"Mes"},
+			{id:11,name:"Año"},
+		],
+		resolutionSelected:null,
+		zones:[],
+		zoneSelected:null,
+		sensors:[
+			{id:1,name:"#1 15 cm (%)"},
+			{id:2,name:"#2 35 cm (%)"},
+			{id:3,name:"#3 55 cm (%)"},
+			{id:4,name:"#4 75 cm (%)"},
+		],
+		sensorSelected:null,
+		chartColor:this.chartColors[this.selectGroups.length]
+	};
 	constructor(
 		public wiseconnService: WiseconnService,
     	public userService:UserService,
@@ -170,7 +207,7 @@ export class FreePlotterComponent implements OnInit {
 				this.addSelectGroups();
 				this.dateRangeByDefault();
 				if(localStorage.getItem("lastFarmId")){
-	          		this.getZones(parseInt(localStorage.getItem("lastFarmId")));
+	          		this.getSensorTypesOfFarm(parseInt(localStorage.getItem("lastFarmId")));
 			    }else{
 	          		Swal.fire({
                     	icon: 'error',
@@ -200,13 +237,17 @@ export class FreePlotterComponent implements OnInit {
 			this.farms = response.data?response.data:response;
 		})
 	}
-	getZones(id:number=0) {
+	getSensorTypesOfFarm(id:number=0) {
 		this.loading = true;
-		this.wiseconnService.getZones(id).subscribe((response: any) => {
+		this.wiseconnService.getSensorTypesOfFarm(id).subscribe((response: any) => {
 			this.loading = false;
-			this.zonesAux=response.data?response.data:response;
+			this.sensorTypes=response.data?response.data:response;
+			for (let sensorType of this.sensorTypes) {
+				this.defaultSelectGroups.variableGroups[0].variable.push({id:sensorType.id,name:sensorType.name})
+			}
+			/*this.zonesAux=response.data?response.data:response;
 			this.selectGroups[this.selectGroups.length-1].zones=this.zonesAux;
-			/*this.weatherZones = data.filter((element)=>{
+			this.weatherZones = data.filter((element)=>{
 				if(element.type){
 					if(element.type.length>0){
 						if(element.type.find((element) => {
@@ -220,20 +261,11 @@ export class FreePlotterComponent implements OnInit {
 		});
 	}
 	filterZonesByVariable(group:any,variablesSelected:any){
-		let sensor;
-		if ((group.name).toLowerCase()=="clima") {
-			this.selectGroups[this.selectGroups.length-1].zones=this.zonesAux.filter(element=>{
-				if(element.type){
-					if(element.type.length>0){
-						if(element.type.find((element) => {
-							return element === 'Weather' || (element.description!=undefined&&element.description === 'Weather');
-						}) != undefined){
-							return element
-						}
-					}
+			this.sensorTypes.filter(element=>{
+				if(element.id==variablesSelected.id){
+					this.selectGroups[this.selectGroups.length-1].zones=element.zones;
 				}
 			})
-		}
 	}
 	onSelect(select: string, id: number, group:any=null) {
 		switch (select) {			
@@ -663,63 +695,7 @@ export class FreePlotterComponent implements OnInit {
 		return parsed && this.calendar.isValid(NgbDate.from(parsed)) ? NgbDate.from(parsed) : currentValue;
 	}
 	getDefaultSelectGroups(){
-		return {
-		variableGroups:[{
-			name: 'Clima',
-			variable: [
-				{id:1,name:"Temperatura"},
-				{id:2,name:"Humedad Relativa"},
-				{id:3,name:"Pluviometría"},
-				{id:4,name:"Velocidad Viento"},
-				{id:5,name:"Radiacion Solar"},
-				{id:6,name:"Direccion de viento"},
-				{id:7,name:"Pluviometría"},
-				{id:8,name:"Velocidad Viento"},
-				{id:9,name:"Grados dias"},
-				{id:10,name:"Puntos rocio"},
-				{id:11,name:"Grados dias acumulado Año"},
-				{id:12,name:"Etp diaria"},
-				{id:11,name:"Et0 diaria"},
-			]
-		},{
-			name: 'Suelo',
-			variable: [
-				{id:1,name:"Temperatura Suelo"},
-				{id:2,name:"Humedad Suelo"},
-				{id:3,name:"Suma humedades"},
-			]
-		}],
-		variablesSelected:null,
-		types:[
-			{id:1,name:"Linea"},
-			{id:2,name:"Columna"},
-		],
-		typeSelected:null,
-		resolutions:[
-			{id:1,name:"Minuto"},
-			{id:2,name:"1/4 horas"},
-			{id:3,name:"Suma humedades"},
-			{id:4,name:"Hora"},
-			{id:5,name:"2 horas"},
-			{id:6,name:"6 horas"},
-			{id:7,name:"Medio dia"},
-			{id:8,name:"Dia"},
-			{id:9,name:"Semana"},
-			{id:10,name:"Mes"},
-			{id:11,name:"Año"},
-		],
-		resolutionSelected:null,
-		zones:[],
-		zoneSelected:null,
-		sensors:[
-			{id:1,name:"#1 15 cm (%)"},
-			{id:2,name:"#2 35 cm (%)"},
-			{id:3,name:"#3 55 cm (%)"},
-			{id:4,name:"#4 75 cm (%)"},
-		],
-		sensorSelected:null,
-		chartColor:this.chartColors[this.selectGroups.length]
-		}
+		return this.defaultSelectGroups;
 	}
 	addSelectGroups(){
 		if(this.selectGroups.length>0){

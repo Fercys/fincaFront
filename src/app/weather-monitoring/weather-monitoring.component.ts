@@ -208,6 +208,12 @@ export class WeatherMonitoringComponent implements OnInit {
       this.userLS=JSON.parse(localStorage.getItem("user"));
       if(bcrypt.compareSync(this.userLS.plain, this.userLS.hash)){
         this.user=JSON.parse(this.userLS.plain);
+        if(localStorage.getItem("lastRoute")&&localStorage.getItem("lastRoute")!="weather-monitoring"){
+          if(localStorage.getItem('lastPolygonData')){
+            localStorage.removeItem('lastPolygonData');
+          }
+        }
+        this.setLocalStorageItem("lastRoute","weather-monitoring");
         if(this.user.id_role==1){
           this.getFarms();
         }else{
@@ -227,7 +233,6 @@ export class WeatherMonitoringComponent implements OnInit {
       this.farms = response.data?response.data:response;
       if(localStorage.getItem("lastFarmId")){
         this.farm=this.getFarm(parseInt(localStorage.getItem("lastFarmId")));
-            localStorage.removeItem('lastZones');
       }
       if(this.farm){
         this.processZones();
@@ -242,8 +247,7 @@ export class WeatherMonitoringComponent implements OnInit {
     this.userService.getFarmsByUser(this.user.id).subscribe((response: any) => {
       this.farms = response.data?response.data:response;
       if(localStorage.getItem("lastFarmId")){
-        this.farm=this.getFarm(parseInt(localStorage.getItem("lastFarmId")));  
-            localStorage.removeItem('lastZones');        
+        this.farm=this.getFarm(parseInt(localStorage.getItem("lastFarmId")));
       }
       if(this.farm){
         this.processZones();
