@@ -206,9 +206,6 @@ export class FreePlotterComponent implements OnInit {
 	          	this.user=JSON.parse(this.userLS.plain);
 				this.addSelectGroups();
 				this.dateRangeByDefault();
-				if(this.user.role.id==1){//admin
-           			this.getSensorTypes();
-           		}else{
 					if(localStorage.getItem("lastFarmId")){
 		          		this.getSensorTypesOfFarm(parseInt(localStorage.getItem("lastFarmId")));
 				    }else{
@@ -218,7 +215,6 @@ export class FreePlotterComponent implements OnInit {
 	                    	text: 'No tiene campo seleccionado'
 	                	})
 		          	}
-		        }
 	        }else{
 	          this.router.navigate(['/login']);
 	        }
@@ -240,20 +236,6 @@ export class FreePlotterComponent implements OnInit {
 			this.loading=false;
 			this.farms = response.data?response.data:response;
 		})
-	}
-	getSensorTypes(){
-		this.loading = true;
-		this.wiseconnService.getSensorTypes().subscribe((response: any) => {
-			this.loading = false;
-			this.sensorTypes=response.data?response.data:response;
-			for (let sensorType of this.sensorTypes) {
-				for (let variableGroup of this.selectGroups[this.selectGroups.length-1].variableGroups) {
-					if(variableGroup.name==sensorType.group){
-						variableGroup.variable.push({id:sensorType.id,name:sensorType.name})
-					}
-				}
-			}
-		});
 	}
 	getSensorTypesOfFarm(id:number=0) {
 		this.loading = true;
@@ -284,10 +266,31 @@ export class FreePlotterComponent implements OnInit {
 			});*/
 		});
 	}
+	
+	sortData(data, type) {
+	    let ordered = [];
+	    let dataArr = [].slice.call(data);
+	    let dataSorted = dataArr.sort((a, b) => {
+	        if (type === "asc") {
+	            if (a.zone.name < b.zone.name) return -1
+	            else return 1
+	        } else {
+	            if (a.zone.name > b.zone.name) return -1
+	            else return 1
+	        }
+	    });
+	    dataSorted.forEach(e => ordered.push(e));
+	    return ordered;
+	}
 	filterZonesByVariable(group:any,variablesSelected:any){
 			this.sensorTypes.filter(element=>{
 				if(element.id==variablesSelected.id){
-					this.selectGroups[this.selectGroups.length-1].zones=element.zones;
+					element.zones=element.zones.filter(zone=>{
+						if(zone.zone.id_farm==element.id_farm){
+							return zone;
+						}
+					});
+					this.selectGroups[this.selectGroups.length-1].zones=this.sortData(element.zones,"asc");
 				}
 			})
 	}
@@ -313,7 +316,7 @@ export class FreePlotterComponent implements OnInit {
 			break;
 			case "zone":
 				this.selectGroups[this.selectGroups.length-1].zoneSelected = this.selectGroups[this.selectGroups.length-1].zones.find((element)=>{
-					return element.id == id
+					return element.zone.id == id
 				});
 			break;
 			case "sensor":
@@ -769,13 +772,9 @@ export class FreePlotterComponent implements OnInit {
 			if(this.selectGroups.length<6){
 				if(this.selectGroups[this.selectGroups.length-1].typeSelected){
 					this.selectGroups.push(this.getDefaultSelectGroups())
-					if(this.user.role.id==1){//admin
-           				this.getSensorTypes();
-	           		}else{
 						if(localStorage.getItem("lastFarmId")){
 			          		this.getSensorTypesOfFarm(parseInt(localStorage.getItem("lastFarmId")));
 					    }
-			        }
 				}else{
 		    		Swal.fire({
 		                icon: 'error',
