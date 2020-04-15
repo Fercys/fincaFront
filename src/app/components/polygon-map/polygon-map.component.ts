@@ -1,7 +1,10 @@
 import { Component, Input, ViewChild, ElementRef, OnInit, OnChanges, SimpleChanges, SimpleChange} from '@angular/core';
+import {  NgbDate, NgbCalendar, NgbDateParserFormatter} from '@ng-bootstrap/ng-bootstrap';
 
 //notificaciones
 import Swal from 'sweetalert2';
+//moment
+import * as moment from "moment";
 
 //services
 import { WiseconnService } from 'app/services/wiseconn.service';
@@ -14,11 +17,20 @@ export class PolygonMapComponent implements OnInit,OnChanges {
 	  @Input() zones:any;
     @Input() showCustomControl:boolean;
   	@ViewChild('mapElement', { static: true }) mapElement: ElementRef;
+
+    //rango de fechas para graficas
+    public fromDate: NgbDate;
+    public toDate: NgbDate;
+    public dateRange: any = null;
     public trianglesRef:any[]=[];
   	public statusRegando:boolean=false;
   	constructor(
-    private wiseconnService: WiseconnService,) { }
-    ngOnInit(){}
+      private calendar: NgbCalendar, 
+      private wiseconnService: WiseconnService,) { }
+    ngOnInit(){
+      this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -7);
+      this.toDate = this.calendar.getToday();
+    }
   	ngOnChanges(changes: SimpleChanges) {
   		const zonesCurrentValue: SimpleChange = changes.zones.currentValue;
   		this.zones=zonesCurrentValue;
@@ -40,6 +52,12 @@ export class PolygonMapComponent implements OnInit,OnChanges {
   	}
   	//carga de mapa
   	loadMap() {
+      if(this.fromDate&&this.toDate){
+        this.dateRange = {
+          initTime: moment(this.fromDate.year + "-" + this.fromDate.month + "-" + this.fromDate.day).format("YYYY-MM-DD"),
+          endTime: moment(this.toDate.year + "-" + this.toDate.month + "-" + this.toDate.day).format("YYYY-MM-DD")
+        };        
+      }
 	      if(this.getPathData('lat').length==0&&this.getPathData('lng').length==0){
 	        Swal.fire({icon: 'info',title: 'Información sobre el mapa',text: 'Datos de poligonos no registrados'});
 	      }
@@ -110,7 +128,7 @@ export class PolygonMapComponent implements OnInit,OnChanges {
         let polygonDatas=[];
         this.zones.forEach(element => {
           // Construct the polygon.
-          wisservice.getIrrigarionsRealOfZones(element.id).subscribe((response: any) => {
+          wisservice.getIrrigarionsRealOfZones(element.id,this.dateRange).subscribe((response: any) => {
             let data=response.data?response.data:response;
             let id= element.id_wiseconn?element.id_wiseconn:element.id;
             if (parseInt(id) == 727 || parseInt(id) == 6054 || parseInt(id) == 13872){
