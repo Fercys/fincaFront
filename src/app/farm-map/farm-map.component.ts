@@ -203,7 +203,7 @@ export class FarmMapComponent implements OnInit {
             localStorage.removeItem('lastPolygonData');
           }
         }
-        this.setLocalStorageItem("lastRoute","farmmap");
+        this.setLocalStorageItem("lastRoute","farmmap/"+this._route.snapshot.paramMap.get('id'));
         if(this.user.role.id==1){//admin
           this.getFarms();
         }else{

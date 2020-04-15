@@ -194,7 +194,7 @@ export class FarmMapPolygonComponent implements OnInit {
         localStorage.removeItem('lastPolygonData');
       }
     }
-    this.setLocalStorageItem("lastRoute","farmpolygon");
+    this.setLocalStorageItem("lastRoute","farmpolygon/"+this._route.snapshot.paramMap.get('idfarm')+"/"+this._route.snapshot.paramMap.get('idzone'));
     this.getMeterogoAgrifut(parseInt(this._route.snapshot.paramMap.get('idfarm')),parseInt(this._route.snapshot.paramMap.get('idzone')));
   }
   getMeterogoAgrifut(idfarm:number,idzone:number){

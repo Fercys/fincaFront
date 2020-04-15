@@ -283,7 +283,8 @@ export class WeatherMonitoringComponent implements OnInit {
   }
   getIrrigarionsRealOfZones(){
     this.weatherZones.forEach(element => {
-      this.wiseconnService.getIrrigarionsRealOfZones(element.id).subscribe((response: any) => {
+
+      this.wiseconnService.getIrrigarionsRealOfZones(element.id,this.dateRange).subscribe((response: any) => {
         let data=response.data?response.data:response;
         let id= element.id_wiseconn?element.id_wiseconn:element.id;
         if (parseInt(id) == 727 || parseInt(id) == 6054 || parseInt(id) == 13872){  
@@ -612,7 +613,6 @@ renderCharts(chart:string) {
     this.renderBarChartFlag=true;
     break;
     default:
-    // code...
     break;
   }
 }
