@@ -388,7 +388,7 @@ export class FarmMapComponent implements OnInit {
     this.climaIcon = [];
     this.climaMax = [];
     this.climaMin = [];
-    this.climaToday = response.data.current_condition[0];
+    this.climaToday = response.data&&response.data.current_condition!=undefined&&response.data.current_condition.length>0?response.data.current_condition[0]:null;
   }
   setLocalStorageItem(key,value){
     localStorage.setItem(key,value);
