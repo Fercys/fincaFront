@@ -39,13 +39,13 @@ export class FreePlotterComponent implements OnInit {
 	public hoveredDate: NgbDate;
 	public requestChartBtn: boolean =true;
 	//graficas
-	//linechart
-	@ViewChild('lineChart', { static: true }) public lineChartElement: ElementRef;
-	private lineChart;
-	public lineChartDataLength:number=0;
-	public lineChartData:any[]=[[],[]];
-	public lineChartLabels:any[]=[];
-	public lineChartOptions:any = {
+	//chart
+	@ViewChild('chartElement', { static: true }) public chartElement: ElementRef;
+	private chart;
+	public chartDataLength:number=null;
+	public chartData:any[]=[[],[]];
+	public chartLabels:any[]=[];
+	public chartOptions:any = {
 	    chart: {
 	        type: 'spline',
 
@@ -62,23 +62,7 @@ export class FreePlotterComponent implements OnInit {
 	        startOnTick: true,
     		endOnTick: true,
 	    }],
-	   	yAxis: [{ // left y axis
-	        title: {
-	            text: null
-	        },
-	        // tickInterval: 5,
-	        labels: {
-	            format: '{value:.,0f}'
-	        },
-	        showFirstLabel: false
-	    }, { // right y axis
-	    	opposite: true,
-	    	tickInterval: 5,
-	        labels: {
-	            format: '{value:.,0f}'
-	        },
-	        showFirstLabel: false
-	    }],
+	   	yAxis: [],
 	    plotOptions: {
 	        line: {
 	            dataLabels: {
@@ -93,58 +77,6 @@ export class FreePlotterComponent implements OnInit {
 	        crosshairs: true
 	    },
 	};
-	public temperatureId: number = null;
-	public humidityId: number = null;
-	public renderLineChartFlag: boolean = false;
-	//barchart
-	@ViewChild('barChart', { static: true }) public barChartElement: ElementRef;
-	private barChart;
-	public barChartData:any[]=[[],[]];
-	public barChartLabels:any[]=[];
-	public barChartOptions:any = {
-	    chart: {
-	        type: 'column'
-	    },
-	    colors: ['#D12B34','#00B9EE'],
-	    title: {
-	        text: 'PRECIPITACIÓN/ET0'
-	    },
-	    subtitle: {
-	        text: 'PRECIPITACIÓN/ET0'
-	    },
-	    xAxis: {
-	        categories: [
-	        ],
-	        crosshair: true
-	    },
-	    yAxis: {
-	        // min: 0,
-	        title: {
-	            text:'PRECIPITACIÓN/ET0'
-	        }
-	    },
-	    tooltip: {
-	        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-	        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-	            '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
-	        footerFormat: '</table>',
-	        shared: true,
-	        useHTML: true
-	    },
-	    plotOptions: {
-	        column: {
-	            pointPadding: 0.2,
-	            borderWidth: 0
-	        }
-	    },
-	    series: [
-	        { type: undefined,name: 'Precipitación (mm)', data: [] }, 
-	        { type: undefined,name: 'Et0 (mm)', data: [] },
-	    ]
-	};
-	public rainId: number = null;
-	public et0Id: number = null;
-	public renderBarChartFlag: boolean = false;
 	//times
 	public times =[
 		{ value: '1D' , active: false},
@@ -222,7 +154,6 @@ export class FreePlotterComponent implements OnInit {
 	      }else{
 	        this.router.navigate(['/login']);
 	      }
-		//this.highchartsShow();
 	}
 	getFarmsByUser(){      
 	  	this.loading = true;
@@ -248,23 +179,8 @@ export class FreePlotterComponent implements OnInit {
 					if(variableGroup.name==sensorType.group){
 						variableGroup.variable.push({id:sensorType.id,name:sensorType.name})
 					}
-				}
-				//this.selectGroups[this.selectGroups.length-1].variableGroups[0].variable.push({id:sensorType.id,name:sensorType.name})
-				//this.defaultSelectGroups.variableGroups[0].variable.push({id:sensorType.id,name:sensorType.name})
-			}
-			/*this.zonesAux=response.data?response.data:response;
-			this.selectGroups[this.selectGroups.length-1].zones=this.zonesAux;
-			this.weatherZones = data.filter((element)=>{
-				if(element.type){
-					if(element.type.length>0){
-						if(element.type.find((element) => {
-							return element === 'Weather' || (element.description!=undefined&&element.description === 'Weather');
-						}) != undefined){
-							return element
-						}
-					}
-				}
-			});*/
+				}				
+			}			
 		});
 	}
 	
@@ -403,89 +319,12 @@ export class FreePlotterComponent implements OnInit {
           	break;
       }      
     }
-    requestRandomDataChart(){
-
-    	if(this.selectGroups[this.selectGroups.length-1].typeSelected){
-    		//prueba
-    		//this.loading = true;
-			
-    		//prueba
-    		/*this.resetRandomChartsValues();
-    		let i=0;
-    		for (const element of this.selectGroups) {
-    			this.lineChartOptions.colors.push(element.chartColor);
-    			let serie=((element.typeSelected.name).toLowerCase() == "linea")?{
-    			data: [
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-    			],
-    			name: 'Grupo #'+(i+1),
-    			type: 'line'
-    			}:{
-    			data: [
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-					Math.floor(Math.random() * 10),
-    			],
-    			name: 'Grupo #'+(i+1),
-    			type: 'column'
-    			};
-    			this.lineChartOptions.series.push(serie);
-    			i++;
-    		}*/
-    		this.highchartsShow();
-		}else{
-	    	Swal.fire({
-	            icon: 'error',
-	            title: 'Oops...',
-	            text: 'Debe seleccionar el tipo de gráfica'
-	        })
-	    }    	
-    }
-    resetRandomChartsValues(){
-    	this.lineChartOptions.colors=[];
-    	this.lineChartOptions.series=[];
+    resetChartsValues(){
+    	this.chartOptions.colors=[];
+    	this.chartOptions.series=[];
+    	this.chartOptions.yAxis=[];
+    	this.chartOptions.xAxis[0].categories=[];
+	    this.highchartsShow();
     }
     getSensorName(sensorType:string){
         switch ((sensorType).toLowerCase()) {
@@ -571,8 +410,8 @@ export class FreePlotterComponent implements OnInit {
     }
 	requestDataChart(goBackFlag:boolean=false){
 		if(this.selectGroups[this.selectGroups.length-1].typeSelected){
-	        this.resetRandomChartsValues();
 	        //this.resetChartsValues("bar");
+	    	this.resetChartsValues();
 			this.dateRange = {
 				initTime: moment(this.fromDate.year + "-" + this.fromDate.month + "-" + this.fromDate.day).format("YYYY-MM-DD"),
 				endTime: moment(this.toDate.year + "-" + this.toDate.month + "-" + this.toDate.day).format("YYYY-MM-DD")
@@ -585,7 +424,6 @@ export class FreePlotterComponent implements OnInit {
 				});
 			}
 			let i=0;
-			console.log("this.selectGroups.length:",this.selectGroups.length)
 			for(let selectGroup of this.selectGroups){
 				let j=0;
 				let getDataByMeasure=false;
@@ -597,10 +435,8 @@ export class FreePlotterComponent implements OnInit {
 							//measure.id_wiseconn => para probar con wiseconn
 							this.loading=true;
 							this.wiseconnService.getDataByMeasure(measure.id,this.dateRange).subscribe((response) => {
-								this.loading=false;
 								getDataByMeasure=true;
 								let chartData=response.data?response.data:response;
-								console.log("chartData:",chartData)
 								chartData.sort(function (a, b) {
 	                                 if (moment(a.time).isAfter(b.time)) {
 	                                   return 1;
@@ -613,192 +449,58 @@ export class FreePlotterComponent implements OnInit {
 	                            });
 	                            chartData = chartData.filter((element) => {
 	                                let hour=moment(element.time).hours();
-	                                if(hour==0 || hour==2 || hour==4 || hour==6 ||hour==8 || hour==10 || hour==12 || hour==16 || hour==18 || hour==20 || hour==22)
+	                                if(hour==0 || hour==4 ||hour==8 || hour==12 || hour==16 || hour==20 )
 	                                  return element;
-	                            });
-	                            if(this.lineChartDataLength==0){
-	                            	for(let data of chartData){
-		                            	this.lineChartLabels.push(this.momentFormat(data.time,"line"));
-		                            }
-		                            console.log("lineChartLabels:",this.lineChartLabels)
-	                            }else{
-	                            	this.lineChartDataLength=chartData.length;
-	                            }
-
-	                            
+	                            });	                            
 	                            chartData=chartData.map(element=>{
 	                              	return element.value
 	                            });
-					    		this.lineChartOptions.colors.push(selectGroup.chartColor);
-					    			let serie=((selectGroup.typeSelected.name).toLowerCase() == "linea")?{
-					    				data: chartData.slice(0, this.lineChartDataLength-1),
-					    				name: selectGroup.variablesSelected.name +"/"+selectGroup.zoneSelected.zone.name,
-					    				type: 'line'
+	                            if(chartData.length>this.chartOptions.xAxis[0].categories.length){
+	                            	this.chartOptions.xAxis[0].categories=[];
+	                            	for(let data of chartData){
+		                            	this.chartOptions.xAxis[0].categories.push(this.momentFormat(data.time,"line"));
+	                            	}
+	                            }
+					    		this.chartOptions.yAxis.push({ // left y axis
+							        title: {
+							            text: null
+							        },
+							        tickInterval: 5,
+							        labels: {
+							            format: '{value:.,0f}'
+							        },
+							        showFirstLabel: false,//opposite: i% 2 == 0?true:false,
+							    });
+					    		this.chartOptions.colors.push(selectGroup.chartColor);
+					    		let serieLabelName=selectGroup.variablesSelected.name +"/"+selectGroup.zoneSelected.zone.name;
+					    		let serie=((selectGroup.typeSelected.name).toLowerCase() == "linea")?{
+					    				data: chartData.slice(0, this.chartDataLength-1),
+					    				name: serieLabelName,
+					    				type: 'line',
+					    				yAxis: 1
 					    			}:{
-					    				data: chartData.slice(0, this.lineChartDataLength-1),
-					    				name: selectGroup.variablesSelected.name +"/"+selectGroup.zoneSelected.zone.name,
-					    				type: 'column'
+					    				data: chartData.slice(0, this.chartDataLength-1),
+					    				name: serieLabelName,
+					    				type: 'column',
+					    				yAxis: 0
 					    			};
-					    		this.lineChartOptions.series.push(serie);
+					    		if(this.chartOptions.series.length==0){					    			
+					    			this.chartOptions.series.push(serie);
+					    		}else if(this.chartOptions.series.find(element=>{return element.name==serieLabelName})==undefined){
+					    			this.chartOptions.series.push(serie);
+					    		}
 	    						this.highchartsShow();
+					    			
+	    						this.loading=false;
 							},
 							error=>{
+	    						this.loading=false;
 								console.log("error:",error)
 							});
 						}
 					}
 					j++;
 				}
-				//console.log("selectGroup.zoneSelected.zone.measures:",selectGroup.zoneSelected.zone.measures)
-				/*this.wiseconnService.getDataByMeasure(selectGroup.variablesSelected.id,this.dateRange).subscribe((response) => {
-					console.log("response:",response)
-				});*/
-				/*this.loading = true;
-		    		this.wiseconnService.getMeasuresOfZones(selectGroup.zoneSelected.id).subscribe((response) => {
-					this.loading = false;
-					let data=response.data?response.data:response;
-					console.log("data:",data)
-					let barFlag=false;
-	                let lineFlag=false;
-	                console.log("selectGroup.variablesSelected:",selectGroup.variablesSelected);*/
-					/**/
-	                /*let j=0;
-	                while (!lineFlag && j < data.length) {
-	                    //line chart
-	                    if (data[j].sensorType === "Temperature") {
-	                      this.temperatureId = data[j].id;
-	                    }
-	                    if (data[j].sensorType === "Humidity") {
-	                      this.humidityId = data[j].id;
-	                    }
-	                   	if(this.temperatureId&&this.humidityId){
-	                          lineFlag=true;
-	                          this.loading = true;
-	                          this.wiseconnService.getDataByMeasure(this.temperatureId,this.dateRange).subscribe((response) => {
-	                            let temperatureData=response.data?response.data:response;
-	                            this.wiseconnService.getDataByMeasure(this.humidityId,this.dateRange).subscribe((response) => {
-	                              let humidityData=response.data?response.data:response;
-	                              this.loading = false;
-	                              temperatureData=temperatureData.map((element)=>{
-	                                element.chart="temperature";
-	                                return element
-	                              })
-	                              humidityData=humidityData.map((element)=>{
-	                                element.chart="humidity";
-	                                return element
-	                              })
-	                              let chartData=temperatureData.concat(humidityData);
-	                              chartData.sort(function (a, b) {
-	                                 if (moment(a.time).isAfter(b.time)) {
-	                                   return 1;
-	                                 }
-	                                 if (!moment(a.time).isAfter(b.time)) {
-	                                   return -1;
-	                                 }
-	                                 // a must be equal to b
-	                                 return 0;
-	                              });
-	                              chartData = chartData.filter((element) => {
-	                                let hour=moment(element.time).hours();
-	                                if(hour==0 || hour==2 || hour==4 || hour==6 ||hour==8 || hour==10 || hour==12 || hour==16 || hour==18 || hour==20 || hour==22)
-	                                  return element;
-	                              });
-	                              for (var i = 0; i < chartData.length ; i++) {
-	                              	if(chartData[i+1]){
-	                              		if((chartData[i].chart==="temperature")&&(chartData[i+1].chart==="humidity")){
-	                              		  this.lineChartLabels.push(this.momentFormat(chartData[i].time,"line"));
-	                              			this.lineChartData[0].push(chartData[i].value);
-		                          		  this.lineChartData[1].push(chartData[i+1].value);
-	                              		}
-	                              	}
-	                              }
-	                              this.renderCharts("line");
-	                            });
-	                          });
-	                        }else if(j+1==data.length){
-	                          Swal.fire({
-	                            icon: 'error',
-	                            title: 'Oops...',
-	                            text: 'No tiene configurado los sensores de humedad y temperatura'
-	                          })
-	                        }
-	                    j++;
-	                }
-	                j=0;
-	                while (!barFlag && j < data.length) {
-	                  //bar chart
-	                  if (data[j].sensorType != undefined && data[j].name != undefined){
-	                    if ((data[j].sensorType).toLowerCase() === "rain" && (data[j].name).toLowerCase() === "pluviometro") {
-	                      this.rainId = data[j].id;
-	                    }
-	                  }
-	                  if ((data[j].name) != undefined){
-	                    if ((data[j].name).toLowerCase() === "et0") {
-	                      this.et0Id = data[j].id;
-	                    }
-	                  }
-	                  if(this.rainId&&this.et0Id){
-	                    barFlag=true;
-	                    this.loading = true;
-	                    this.wiseconnService.getDataByMeasure(this.rainId,this.dateRange).subscribe((response) => {
-	                      let rainData=response.data?response.data:response;
-	                      this.wiseconnService.getDataByMeasure(this.et0Id,this.dateRange).subscribe((response) => {
-	                        let et0Data=response.data?response.data:response;
-	                        this.loading = false;
-	                        rainData=rainData.map((element)=>{
-	                          element.chart="rain";
-	                          return element
-	                        })
-	                        et0Data=et0Data.map((element)=>{
-	                          element.chart="et0";
-	                          return element;
-	                        })                          
-	                        let chartData=rainData.concat(et0Data);
-	                        chartData.sort(function (a, b) {
-	                          if (moment(a.time).isAfter(b.time)) {
-	                            return 1;
-	                          }
-	                          if (!moment(a.time).isAfter(b.time)) {
-	                            return -1;
-	                          }
-	                          return 0;
-	                        });
-	                        chartData=chartData.filter((element)=>{
-	                          if(moment.utc(element.time).format("HH:mm:ss")=="00:00:00"){
-	                            return element;
-	                          }
-	                        })
-	                        	let maxLabelValue=0;
-	                        	for (var i = 0; i < chartData.length; i++) {
-	                        	 	if(chartData[i+1]){
-	                        	    	if(chartData[i].time===chartData[i+1].time){
-	                        				if(this.barChartLabels.find((element) => {
-	                        					return element === this.momentFormat(chartData[i].time,"bar");
-	                        				}) === undefined) {
-	                        				this.barChartLabels.push(this.momentFormat(chartData[i].time,"bar"));
-	                        				if(chartData[i].chart=="rain") {
-				            					this.barChartData[0].push(chartData[i].value);
-				               				}
-					            			if(chartData[i].chart=="et0") {
-					            			this.barChartData[1].push(chartData[i].value);
-					                    	}
-	                        	        }
-	                        	    }
-	                        	  }
-	                        	}
-	                        	this.renderCharts("bar");
-	                      });
-	                    });
-	                  }else if(j+1==data.length){
-	                    Swal.fire({
-	                      icon: 'error',
-	                      title: 'Oops...',
-	                      text: 'No tiene configurado los sensores de rain y et0'
-	                    })
-	                  }
-	                  j++;
-	                }*/
-				//});
 				i++;
 			}
 		}else{
@@ -810,66 +512,10 @@ export class FreePlotterComponent implements OnInit {
 	    } 
 	}
 	highchartsShow(){
-		this.lineChartOptions.chart['renderTo'] = this.lineChartElement.nativeElement;
-    	this.lineChart = Highcharts.chart(this.lineChartOptions);
-    	/*this.barChartOptions.chart['renderTo'] = this.barChartElement.nativeElement;
-    	this.barChart = Highcharts.chart(this.barChartOptions);*/
+		this.chartOptions.chart['renderTo'] = this.chartElement.nativeElement;
+    	this.chart = Highcharts.chart(this.chartOptions);
 	}
-	renderCharts(chart:string) {
-		switch (chart) {
-			case "line":
-    			this.lineChart.series[0].setData(this.lineChartData[0]);
-    			this.lineChart.series[1].setData(this.lineChartData[1]);
-    			this.lineChart.xAxis[0].setCategories(this.lineChartLabels, true);
-				this.renderLineChartFlag=true;
-				break;
-			case "bar":
-				this.barChart.series[0].setData(this.barChartData[0]);
-    			this.barChart.series[1].setData(this.barChartData[1]);
-    			this.barChart.xAxis[0].setCategories(this.barChartLabels, true);
-				this.renderBarChartFlag=true;
-				break;
-			default:
-				// code...
-				break;
-		}
-	}
-	resetChartsValues(chart:string){
-		switch (chart) {
-		    case "line":
-		    
-		    this.temperatureId=null;
-		    this.humidityId=null;
-		    if(this.lineChart!=undefined){
-		    	this.lineChart.series[0].setData([]);
-		    	this.lineChart.series[1].setData([]);
-		    	this.lineChart.xAxis[0].setCategories([]);
-		    }
-
-		    this.lineChartLabels=[];
-		    for (var i = 0; i < 2; i++) {
-		      this.lineChartData[i]=[];
-		    }
-		    break;  
-		    case "bar":
-
-		    this.rainId=null;
-		    this.et0Id=null;
-		    
-		    if(this.barChart!=undefined){
-		    	this.barChart.series[0].setData([]);
-		    	this.barChart.series[1].setData([]); 
-		    	this.barChart.xAxis[0].setCategories([]);
-		    }
-		    this.barChartLabels=[];
-		    for (var i = 0; i < 2; i++) {
-		      this.barChartData[i]=[];
-		    }
-		    break;
-		    default:
-		    break;
-		  }
-	} 
+	
 	isHovered(date: NgbDate) {
 		return this.fromDate && !this.toDate && this.hoveredDate && date.after(this.fromDate) && date.before(this.hoveredDate);
 	}

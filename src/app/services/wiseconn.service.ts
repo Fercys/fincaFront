@@ -106,14 +106,7 @@ export class WiseconnService {
     )
   }
   getDataByMeasure(id,dateRange): Observable<any> {
-    console.log(this.baseurl + "/measures/"+id+"/data?initTime="+dateRange.initTime+"T00:00&endTime="+dateRange.endTime+"T00:00")
     return this.http.get<any>(this.baseurl + "/measures/"+id+"/data?initTime="+dateRange.initTime+"T00:00&endTime="+dateRange.endTime+"T00:00", this.httpOptions)
-    /*return this.http.get<any>("https://cors-anywhere.herokuapp.com/https://apiv2.wiseconn.com/measures/"+id+"/data?initTime="+dateRange.initTime+"T00:00&endTime="+dateRange.endTime+"T00:00", {
-        headers: new HttpHeaders({
-          'Accept': 'application/json',
-          'api_key':'9Ev6ftyEbHhylMoKFaok'
-        })
-      })*/
     .pipe(
       retry(1),
       catchError(this.errorHandl)
