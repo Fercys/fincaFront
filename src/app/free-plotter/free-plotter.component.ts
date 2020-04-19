@@ -101,17 +101,10 @@ export class FreePlotterComponent implements OnInit {
 		],
 		typeSelected:null,
 		resolutions:[
-			{id:1,name:"Minuto"},
-			{id:2,name:"1/4 horas"},
-			{id:3,name:"Suma humedades"},
-			{id:4,name:"Hora"},
-			{id:5,name:"2 horas"},
-			{id:6,name:"6 horas"},
-			{id:7,name:"Medio dia"},
-			{id:8,name:"Dia"},
-			{id:9,name:"Semana"},
-			{id:10,name:"Mes"},
-			{id:11,name:"Año"},
+			{id:1,name:"15 Minutos"},
+			{id:2,name:"30 Minutos"},
+			{id:3,name:"45 Minutos"},
+			{id:4,name:"60 Minutos"},
 		],
 		resolutionSelected:null,
 		zones:[],
@@ -182,8 +175,7 @@ export class FreePlotterComponent implements OnInit {
 				}				
 			}			
 		});
-	}
-	
+	}	
 	sortData(data, type) {
 	    let ordered = [];
 	    let dataArr = [].slice.call(data);
@@ -409,7 +401,9 @@ export class FreePlotterComponent implements OnInit {
         }
     }
 	requestDataChart(goBackFlag:boolean=false){
-		if(this.selectGroups[this.selectGroups.length-1].typeSelected){
+		if(this.selectGroups[this.selectGroups.length-1].typeSelected&&
+			this.selectGroups[this.selectGroups.length-1].resolutionSelected&&
+			this.selectGroups[this.selectGroups.length-1].zoneSelected){
 	        //this.resetChartsValues("bar");
 	    	this.resetChartsValues();
 			this.dateRange = {
@@ -437,21 +431,32 @@ export class FreePlotterComponent implements OnInit {
 							this.wiseconnService.getDataByMeasure(measure.id,this.dateRange).subscribe((response) => {
 								getDataByMeasure=true;
 								let chartData=response.data?response.data:response;
-								chartData.sort(function (a, b) {
-	                                 if (moment(a.time).isAfter(b.time)) {
-	                                   return 1;
-	                                 }
-	                                 if (!moment(a.time).isAfter(b.time)) {
-	                                   return -1;
-	                                 }
-	                                 // a must be equal to b
-	                                 return 0;
-	                            });
+	                            this.selectGroups[this.selectGroups.length-1].resolutionSelected
 	                            chartData = chartData.filter((element) => {
-	                                let hour=moment(element.time).hours();
-	                                if(hour==0 || hour==4 ||hour==8 || hour==12 || hour==16 || hour==20 )
-	                                  return element;
-	                            });	                            
+	                                let minutes=moment(element.time).minutes();
+	                                switch (this.selectGroups[this.selectGroups.length-1].resolutionSelected.name) {
+	                                	case "15 Minutos":
+	                                		if(minutes==15)
+	                                			return element;
+	                                		break;
+	                                	case "30 Minutos":
+	                                		if(minutes==30)
+	                                			return element;
+	                                		break;
+	                                	case "45 Minutos":
+	                                		if(minutes==45)
+	                                			return element;
+	                                		break;
+	                                	case "60 Minutos":
+	                                		if(minutes==0)
+	                                			return element;
+	                                		break;
+	                                	default:
+	                                		// code...
+	                                		break;
+	                                }
+	                                
+	                            });
 	                            chartData=chartData.map(element=>{
 	                              	return element.value
 	                            });
@@ -461,36 +466,59 @@ export class FreePlotterComponent implements OnInit {
 		                            	this.chartOptions.xAxis[0].categories.push(this.momentFormat(data.time,"line"));
 	                            	}
 	                            }
-					    		this.chartOptions.yAxis.push({ // left y axis
-							        title: {
-							            text: null
-							        },
-							        tickInterval: 5,
+	                            let yAxis=(this.chartOptions.yAxis.length % 2 == 0)?{ // Primary yAxis
 							        labels: {
-							            format: '{value:.,0f}'
+							            format: '{value}',
+							            style: {
+							                color: '#000'
+							            }
 							        },
-							        showFirstLabel: false,//opposite: i% 2 == 0?true:false,
-							    });
-					    		this.chartOptions.colors.push(selectGroup.chartColor);
+							        title: {
+							            text: selectGroup.variablesSelected.name +"/"+selectGroup.zoneSelected.zone.name,
+							            style: {
+							                color: '#000'
+							            }
+							        },
+							        opposite: true
+
+							    }:{ // Secondary yAxis
+							        gridLineWidth: 0,
+							        title: {
+							            text: selectGroup.variablesSelected.name +"/"+selectGroup.zoneSelected.zone.name,
+							            style: {
+							                color: '#000'
+							            }
+							        },
+							        labels: {
+							            format: '{value}',
+							            style: {
+							                color: '#000'
+							            }
+							        }
+
+							    };
 					    		let serieLabelName=selectGroup.variablesSelected.name +"/"+selectGroup.zoneSelected.zone.name;
 					    		let serie=((selectGroup.typeSelected.name).toLowerCase() == "linea")?{
 					    				data: chartData.slice(0, this.chartDataLength-1),
 					    				name: serieLabelName,
 					    				type: 'line',
-					    				yAxis: 1
+					    				yAxis: this.chartOptions.series.length
 					    			}:{
 					    				data: chartData.slice(0, this.chartDataLength-1),
 					    				name: serieLabelName,
 					    				type: 'column',
-					    				yAxis: 0
+					    				yAxis: this.chartOptions.series.length
 					    			};
 					    		if(this.chartOptions.series.length==0){					    			
 					    			this.chartOptions.series.push(serie);
+					    			this.chartOptions.yAxis.push(yAxis);
+					    			this.chartOptions.colors.push(selectGroup.chartColor);
 					    		}else if(this.chartOptions.series.find(element=>{return element.name==serieLabelName})==undefined){
 					    			this.chartOptions.series.push(serie);
-					    		}
+					    			this.chartOptions.yAxis.push(yAxis);
+					    			this.chartOptions.colors.push(selectGroup.chartColor);
+					    		}					    			
 	    						this.highchartsShow();
-					    			
 	    						this.loading=false;
 							},
 							error=>{
@@ -504,11 +532,21 @@ export class FreePlotterComponent implements OnInit {
 				i++;
 			}
 		}else{
-	    	Swal.fire({
-	            icon: 'error',
-	            title: 'Oops...',
-	            text: 'Debe seleccionar el tipo de gráfica'
-	        })
+			let message='';
+			if(!this.selectGroups[this.selectGroups.length-1].typeSelected){
+				message+='Debe seleccionar el tipo de gráfica <br>' 
+			}
+			if(!this.selectGroups[this.selectGroups.length-1].resolutionSelected){
+				message+='Debe seleccionar la resolución <br>' 
+			}
+			if(!this.selectGroups[this.selectGroups.length-1].zoneSelected){
+				message+='Debe seleccionar la zona <br>' 
+			}
+			Swal.fire({
+				icon: 'error',
+				title: 'Oops...',
+				html: message
+			})
 	    } 
 	}
 	highchartsShow(){
@@ -550,17 +588,10 @@ export class FreePlotterComponent implements OnInit {
 			],
 			typeSelected:null,
 			resolutions:[
-				{id:1,name:"Minuto"},
-				{id:2,name:"1/4 horas"},
-				{id:3,name:"Suma humedades"},
-				{id:4,name:"Hora"},
-				{id:5,name:"2 horas"},
-				{id:6,name:"6 horas"},
-				{id:7,name:"Medio dia"},
-				{id:8,name:"Dia"},
-				{id:9,name:"Semana"},
-				{id:10,name:"Mes"},
-				{id:11,name:"Año"},
+				{id:1,name:"15 Minutos"},
+				{id:2,name:"30 Minutos"},
+				{id:3,name:"45 Minutos"},
+				{id:4,name:"60 Minutos"},
 			],
 			resolutionSelected:null,
 			zones:[],
@@ -578,17 +609,29 @@ export class FreePlotterComponent implements OnInit {
 	addSelectGroups(){
 		if(this.selectGroups.length>0){
 			if(this.selectGroups.length<6){
-				if(this.selectGroups[this.selectGroups.length-1].typeSelected){
+				if(this.selectGroups[this.selectGroups.length-1].typeSelected&&
+					this.selectGroups[this.selectGroups.length-1].resolutionSelected&&
+					this.selectGroups[this.selectGroups.length-1].zoneSelected){
 					this.selectGroups.push(this.getDefaultSelectGroups())
 						if(localStorage.getItem("lastFarmId")){
 			          		this.getSensorTypesOfFarm(parseInt(localStorage.getItem("lastFarmId")));
 					    }
 				}else{
-		    		Swal.fire({
-		                icon: 'error',
-		                title: 'Oops...',
-		                text: 'Debe seleccionar el tipo de gráfica'
-		            })
+					let message='';
+					if(!this.selectGroups[this.selectGroups.length-1].typeSelected){
+						message+='Debe seleccionar el tipo de gráfica <br>' 
+					}
+					if(!this.selectGroups[this.selectGroups.length-1].resolutionSelected){
+						message+='Debe seleccionar la resolución <br>' 
+					}
+					if(!this.selectGroups[this.selectGroups.length-1].zoneSelected){
+						message+='Debe seleccionar la zona <br>' 
+					}
+					Swal.fire({
+				      icon: 'error',
+				      title: 'Oops...',
+				      html: message
+				    })
 		    	}
 		    }else{
 		    	Swal.fire({
