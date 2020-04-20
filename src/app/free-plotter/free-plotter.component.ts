@@ -471,8 +471,16 @@ export class FreePlotterComponent implements OnInit {
 	                                }
 	                                
 	                            });
-	                            console.log("chartData:",chartData)
-	                            
+	                            chartData.sort(function (a, b) {
+		                          if (moment(a.time).isAfter(b.time)) {
+		                            return 1;
+		                          }
+		                          if (!moment(a.time).isAfter(b.time)) {
+		                            return -1;
+		                          }
+		                          return 0;
+		                        });
+		                        
 	                            if(chartData.length>this.chartOptions.xAxis[0].categories.length){
 	                            	this.chartOptions.xAxis[0].categories=[];
 	                            	for(let data of chartData){
