@@ -471,15 +471,27 @@ export class FreePlotterComponent implements OnInit {
 	                                }
 	                                
 	                            });
-	                            chartData=chartData.map(element=>{
-	                              	return element.value
-	                            });
+	                            chartData.sort(function (a, b) {
+		                          if (moment(a.time).isAfter(b.time)) {
+		                            return 1;
+		                          }
+		                          if (!moment(a.time).isAfter(b.time)) {
+		                            return -1;
+		                          }
+		                          return 0;
+		                        });
+		                        
 	                            if(chartData.length>this.chartOptions.xAxis[0].categories.length){
 	                            	this.chartOptions.xAxis[0].categories=[];
 	                            	for(let data of chartData){
 		                            	this.chartOptions.xAxis[0].categories.push(this.momentFormat(data.time,"line"));
 	                            	}
 	                            }
+
+	                            chartData=chartData.map(element=>{
+	                              	return element.value
+	                            });
+
 	                            let yAxis=(this.chartOptions.yAxis.length % 2 == 0)?{ // Primary yAxis
 							        labels: {
 							            format: '{value}',
