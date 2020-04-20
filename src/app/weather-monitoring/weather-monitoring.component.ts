@@ -43,7 +43,6 @@ export class WeatherMonitoringComponent implements OnInit {
   public dataFarm: any;
   public zone: any = null;
   public zones: any[] = [];
-  public weatherZones: any[] = [];
   public farm: any=null;
   public farms: any[] = [];
   public weatherStation: any = null;
@@ -270,9 +269,7 @@ export class WeatherMonitoringComponent implements OnInit {
   }
   processZones(){
     if(localStorage.getItem('lastZones')){
-      this.zones = JSON.parse(localStorage.getItem('lastZones'));
-      this.weatherZones=this.getWeatherZones();
-      this.getIrrigarionsRealOfZones();
+      this.zones = JSON.parse(localStorage.getItem('lastZones'));      this.getIrrigarionsRealOfZones();
       if(this.fromDate && this.toDate){
         this.getChartInformation();
       }
@@ -282,7 +279,7 @@ export class WeatherMonitoringComponent implements OnInit {
     }
   }
   getIrrigarionsRealOfZones(){
-    this.weatherZones.forEach(element => {
+    this.zones.forEach(element => {
 
       this.wiseconnService.getIrrigarionsRealOfZones(element.id,this.dateRange).subscribe((response: any) => {
         let data=response.data?response.data:response;
@@ -486,7 +483,6 @@ export class WeatherMonitoringComponent implements OnInit {
     this.wiseconnService.getZones(this.farm.id).subscribe((response: any) => {
       this.loading = false; 
       this.zones = response.data?response.data:response;
-      this.weatherZones=this.getWeatherZones();
       this.getIrrigarionsRealOfZones();
       this.setLocalStorageItem("lastFarmId",this.farm.id);
       this.setLocalStorageItem("lastZones",this.getJSONStringify(this.zones));
@@ -548,13 +544,6 @@ export class WeatherMonitoringComponent implements OnInit {
         this.getWeather();
       }
       break;
-      case "zone":
-      this.setLocalStorageItem("lastLineChartLabels",this.getJSONStringify(this.lineChartLabels));
-      this.setLocalStorageItem("lastLineChartData",this.getJSONStringify(this.lineChartData));
-      this.setLocalStorageItem("lastBarChartLabels",this.getJSONStringify(this.barChartLabels));
-      this.setLocalStorageItem("lastBarChartData",this.getJSONStringify(this.barChartData));
-      this.router.navigate(['/farmpolygon',this.farm.id, id]);
-      break;
       default:
       break;
     }
@@ -574,18 +563,6 @@ export class WeatherMonitoringComponent implements OnInit {
       return value;
       break;
     }      
-  }
-  getWeatherZones(){
-    return this.zones.filter((element)=>{
-      if(element.type.find(element=>{
-        if(element.description){
-          return element.description.toLowerCase() == "weather"
-        }
-        return element.toLowerCase() == "weather" 
-      })!=undefined){
-        return element;
-      }
-    });
   }
   highchartsShow(){
     this.lineChartOptions.chart['renderTo'] = this.lineChartElement.nativeElement;

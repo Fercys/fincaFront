@@ -44,30 +44,12 @@
             <label for="" class="col-sm-2 col-form-label" *ngIf="user">{{farm?farm.name:'Campo Seleccionado'}}</label>
           </div>
         </div>
-      </div>
+      </div> 
       <div class="col-md-6">
-        <div class="form-group row">
-          <label for="zone" class="col-sm-2 col-form-label">Sector</label>
-          <div class="col-sm-10">
-            <mat-form-field class="mat-select-custom" floatLabel="never">
-              <mat-label>{{zone?zone.name:'Sector'}}</mat-label>
-              <mat-select>
-                <mat-option *ngFor="let zone of weatherZones" (click)="onSelect('zone',zone.id)">{{zone.name}}</mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-        </div>
-      </div>      
-    </div>
-    <div class="row labels-row">
-      <div class="col-md-4">
         <div>
           <span class="date-title">{{today | date:'MMMM dd/MM/yyyy'}} </span>
         </div>
-      </div>
-      <div class="col-md-8 ">
-        <span *ngIf="dataFarm" class="title-farm">{{dataFarm.name}}</span>
-      </div>
+      </div>   
     </div>
   </div>
   <div class="container-fluid">
@@ -120,53 +102,7 @@
           </div>
         </div>
         <!-- Fin de Cuadro de Clima -->
-      </div>
-      <div class="col-lg-8 col-md-8 col-sm-8">
-        <app-polygon-map [zones]="weatherZones" [showCustomControl]="true"></app-polygon-map>
-        <div class="row">
-          <div class="col-md-6">
-            <div class="row">
-              <div class="col-lg-6 col-md-6 col-sm-6">
-                <table class="table-legent">
-                  <thead>
-                    <th *ngIf="statusRegando">
-                      <div class="square-temp" style=" background-color: #419FD5;"></div>
-                      <span style="color: black; font-size: 10px; margin-left: 10px;">Regando</span>
-                    </th>
-                    <th>
-                      <div class="square-temp" style=" background-color: #49AA4F;"></div>
-                      <span style="color: black; font-size: 10px; margin-left: 10px;">Ok</span>
-                    </th>
-                    <th *ngIf="status">
-                      <div class="square-temp" style=" background-color: rgb(233, 58, 189);"></div>
-                      <span style="color: black; font-size: 10px; margin-left: 10px;">Estresado</span>
-                    </th>
-                    <th *ngIf="status">
-                      <div class="square-temp" style="background-color: red;"></div>
-                      <span style="color: black; font-size: 10px; margin-left: 10px;">Seco</span>
-                    </th>
-                  </thead>
-                </table>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6 irrimax-label">
-            <h6 style="margin-top: 5%;">Ver analisis de suelo en</h6>
-            <div (click)="open(content, 'xl')" class="btn btns-irrimax btn-radius">
-                <span>Irrimax<b>LIVE</b></span>
-                <span><img src="/assets/icons/IrrimaxLive.png"></span>
-            </div>
-          </div>
-          
-        </div>
-
-      </div>
-    </div>
-  </div>
-  <div class="container-fluid cards-farms">
-    <div class="row">
-      <div class="col-md-4">
-        <div *ngIf="climaLoading" class="container-fluid">
+                <div *ngIf="climaLoading" class="container-fluid">
           <div class="card card-bg-none">
             <div class="card-header py-0">
               <h4 class="row-subtitle-card">Pronóstico</h4>
@@ -226,7 +162,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-8">
+      <div class="col-lg-8 col-md-8">
         <div class="container-fluid">
           <div class="row">
             <div class="col-md-12">

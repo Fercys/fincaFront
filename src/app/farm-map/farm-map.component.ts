@@ -31,7 +31,9 @@ export class FarmMapComponent implements OnInit {
   public url;
   public dialog;
   public today = Date.now();
+  public zone: any = null;
   public zones: any[] = [];
+  public weatherZones: any[] = [];
   public farm: any=null;
   public farms: any[] = [];
   public weatherStation: any = null;
@@ -286,7 +288,8 @@ export class FarmMapComponent implements OnInit {
   }
   processZones(){
     if(localStorage.getItem('lastZones')){
-      this.zones = JSON.parse(localStorage.getItem('lastZones'));
+      this.zones = JSON.parse(localStorage.getItem('lastZones'));      
+      this.weatherZones=this.getWeatherZones();
       this.getIrrigarionsRealOfZones();
       if(this.fromDate && this.toDate){
         this.getChartInformation();
@@ -301,13 +304,26 @@ export class FarmMapComponent implements OnInit {
     this.wiseconnService.getZones(this.farm.id).subscribe((response: any) => {
       this.loading = false; 
       this.zones = response.data?response.data:response;
+      this.weatherZones=this.getWeatherZones();
       this.getIrrigarionsRealOfZones();
       this.setLocalStorageItem("lastFarmId",this.farm.id);
       this.setLocalStorageItem("lastZones",this.getJSONStringify(this.zones));
       this.getChartInformation();
       this.getWeather();
     });
-  }  
+  }
+  getWeatherZones(){
+    return this.zones.filter((element)=>{
+      if(element.type.find(element=>{
+        if(element.description){
+          return element.description.toLowerCase() == "weather"
+        }
+        return element.toLowerCase() == "weather" 
+      })!=undefined){
+        return element;
+      }
+    });
+  }
   getIrrigarionsRealOfZones(){
     this.zones.forEach(element => {
       // Construct the polygon.
@@ -651,6 +667,12 @@ export class FarmMapComponent implements OnInit {
           this.getWeather();
         }
         break;
+      case "zone":
+        this.setLocalStorageItem("lastLineChartLabels",this.getJSONStringify(this.lineChartLabels));
+        this.setLocalStorageItem("lastLineChartData",this.getJSONStringify(this.lineChartData));
+        this.setLocalStorageItem("lastBarChartLabels",this.getJSONStringify(this.barChartLabels));
+        this.setLocalStorageItem("lastBarChartData",this.getJSONStringify(this.barChartData));
+        this.router.navigate(['/farmpolygon',this.farm.id, id]);
       default:
         break;
     }
