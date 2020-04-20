@@ -17,20 +17,19 @@ export class WiseconnService {
   httpOptions:any=null;
 
   constructor(private http: HttpClient) { 
-    if(this.baseurl=="https://cors-anywhere.herokuapp.com/https://apiv2.wiseconn.com"){      
-      this.httpOptions={
-        headers: new HttpHeaders({
-          'Accept': 'application/json',
-          'api_key':'9Ev6ftyEbHhylMoKFaok'
-        })
-      }
+    let httpHeaders:any=null;
+    if(this.baseurl=="https://cors-anywhere.herokuapp.com/https://apiv2.wiseconn.com"){
+      httpHeaders={
+        'Accept': 'application/json',
+        'api_key':'9Ev6ftyEbHhylMoKFaok'
+      };
     }else{
-      this.httpOptions={
-        headers: new HttpHeaders({
-          'Access-Control-Allow-Origin': '*',
-          'Accept': 'application/json'
-        })
-      }
+      httpHeaders={
+        'Accept': 'application/json'
+      };
+    }
+    this.httpOptions={
+      headers: new HttpHeaders(httpHeaders)
     }
   }
   

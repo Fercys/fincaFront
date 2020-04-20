@@ -471,15 +471,19 @@ export class FreePlotterComponent implements OnInit {
 	                                }
 	                                
 	                            });
-	                            chartData=chartData.map(element=>{
-	                              	return element.value
-	                            });
+	                            console.log("chartData:",chartData)
+	                            
 	                            if(chartData.length>this.chartOptions.xAxis[0].categories.length){
 	                            	this.chartOptions.xAxis[0].categories=[];
 	                            	for(let data of chartData){
 		                            	this.chartOptions.xAxis[0].categories.push(this.momentFormat(data.time,"line"));
 	                            	}
 	                            }
+
+	                            chartData=chartData.map(element=>{
+	                              	return element.value
+	                            });
+
 	                            let yAxis=(this.chartOptions.yAxis.length % 2 == 0)?{ // Primary yAxis
 							        labels: {
 							            format: '{value}',

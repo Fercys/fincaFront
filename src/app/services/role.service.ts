@@ -16,11 +16,12 @@ export class RoleService {
   httpOptions:any=null;
 
   constructor(private http: HttpClient) { 
+    let httpHeaders:any=null;
+    httpHeaders={
+      'Accept': 'application/json'
+    };
     this.httpOptions={
-      headers: new HttpHeaders({
-        'Access-Control-Allow-Origin': '*',
-        'Accept': 'application/json'
-      })
+      headers: new HttpHeaders(httpHeaders)
     }
   }  
   getRoles(): Observable<any> { 
