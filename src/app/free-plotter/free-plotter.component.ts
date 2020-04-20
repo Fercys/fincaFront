@@ -88,7 +88,7 @@ export class FreePlotterComponent implements OnInit {
 	]
 	//selects
 	public selectGroups:any[]=[];
-	public chartColors:string[]=['#D12B34','#00B9EE','#FFFF00','#31B404','#084B8A','#DF0174'];
+	public chartColors:string[]=['#D12B34','#00B9EE','#DBAB3F','#31B404','#084B8A','#DF0174'];
 	public defaultSelectGroups:any={
 		variableGroups:[{
 			name: 'Variables',
@@ -470,13 +470,13 @@ export class FreePlotterComponent implements OnInit {
 							        labels: {
 							            format: '{value}',
 							            style: {
-							                color: '#000'
+							                color: selectGroup.chartColor
 							            }
 							        },
 							        title: {
 							            text: selectGroup.variablesSelected.name +"/"+selectGroup.zoneSelected.zone.name,
 							            style: {
-							                color: '#000'
+							                color: selectGroup.chartColor
 							            }
 							        },
 							        opposite: true
@@ -486,13 +486,13 @@ export class FreePlotterComponent implements OnInit {
 							        title: {
 							            text: selectGroup.variablesSelected.name +"/"+selectGroup.zoneSelected.zone.name,
 							            style: {
-							                color: '#000'
+							                color: selectGroup.chartColor
 							            }
 							        },
 							        labels: {
 							            format: '{value}',
 							            style: {
-							                color: '#000'
+							                color: selectGroup.chartColor
 							            }
 							        }
 
