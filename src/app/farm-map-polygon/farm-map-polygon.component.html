@@ -138,9 +138,9 @@
                          name="dpFromDate"
                          [value]="formatter.format(fromDate)"
                          (input)="fromDate = validateInput(fromDate, dpFromDate.value)"
-                         (click)="datepicker.toggle()">
+                         (click)="dpFromDate.toggle()">
                   <div class="input-group-append">
-                    <button class="icon-calendar" (click)="datepickerFrom.toggle()" type="button">
+                    <button class="icon-calendar" (click)="dpFromDate.toggle()" type="button">
                       <img src="assets/icons/Calendar.svg" style="height: 25px">
                     </button>
                   </div>
@@ -181,9 +181,9 @@
                          name="dpToDate"
                          [value]="formatter.format(toDate)"
                          (input)="toDate = validateInput(toDate, dpToDate.value)"
-                         (click)="datepicker.toggle()">
+                         (click)="dpToDate.toggle()">
                   <div class="input-group-append">
-                    <button class="icon-calendar"  (click)="datepickerTo.toggle()" type="button">
+                    <button class="icon-calendar"  (click)="dpToDate.toggle()" type="button">
                       <img src="assets/icons/Calendar.svg" style="height: 25px">
                     </button>
                   </div>

@@ -28,9 +28,11 @@ export class FreePlotterComponent implements OnInit {
   	public user:any=null;
 	public loading:boolean=false;
 	public farms:any[]=[];	
+	public farm:any=null;
 	public zonesAux:any[]=[];
 	public sensorTypes:any[]=[];
 	//rango de fechas para graficas
+  	public today = Date.now();
 	public fromDate: NgbDate;
 	public toDate: NgbDate;
 	public dateRange: any = null;
@@ -133,6 +135,7 @@ export class FreePlotterComponent implements OnInit {
 				this.addSelectGroups();
 				this.dateRangeByDefault();
 					if(localStorage.getItem("lastFarmId")){
+						this.farm=this.getFarm(parseInt(localStorage.getItem("lastFarmId")));
 		          		this.getSensorTypesOfFarm(parseInt(localStorage.getItem("lastFarmId")));
 				    }else{
 		          		Swal.fire({
@@ -161,6 +164,17 @@ export class FreePlotterComponent implements OnInit {
 			this.loading=false;
 			this.farms = response.data?response.data:response;
 		})
+	}
+	getFarm(id){
+	    let farm = this.farms.find(element =>{
+	      return element.id==id || element.id_wiseconn==id
+	    });
+	    if(!farm){
+	      if(this.farms[0]){
+	        farm=this.farms[0];
+	      }
+	    }
+	    return farm;
 	}
 	getSensorTypesOfFarm(id:number=0) {
 		this.loading = true;
