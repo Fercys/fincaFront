@@ -198,7 +198,7 @@ export class WeatherMonitoringComponent implements OnInit {
     public modalService: NgbModal,
     private router: Router,
     private calendar: NgbCalendar,
-    private formatter: NgbDateParserFormatter,
+    public formatter: NgbDateParserFormatter,
     private dialogs: MatDialog) {
   }
 
@@ -300,6 +300,17 @@ export class WeatherMonitoringComponent implements OnInit {
         }
       });
     });
+  }
+  goBack(){
+    let lastElement=this.dateRangeHistory.pop();
+    this.fromDate=lastElement.fromDate;
+    this.toDate=lastElement.toDate;
+    this.selectedValue=lastElement.selectedValue;
+    this.times.map((element)=>{
+      element.active=(element.value===this.selectedValue)?true:false;
+      return element;
+    });
+    this.getChartInformation(true);
   }
   getChartInformation(goBackFlag:boolean=false){
     this.resetChartsValues("line");

@@ -23,7 +23,7 @@ export const SidebarRoute: RouteInfo[] = [
 export class NavbarComponent implements OnInit {
   @ViewChild('toggleButton', {static: true }) toggleButton: ElementRef;
     public toggled:boolean=null;
-    private listTitles: any[];
+    public listTitles: any[];
     public location: Location;
     public mobile_menu_visible: any = 0;
     private sidebarVisible: boolean;

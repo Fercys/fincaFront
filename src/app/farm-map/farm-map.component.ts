@@ -38,6 +38,8 @@ export class FarmMapComponent implements OnInit {
   public closeResult: string;
   public clima: any; 
   public measurements:any[]=[];
+  public statusRegando:boolean=false;
+  public status:boolean=null;
   //graficas
    //rango de fechas para graficas
   public fromDate: NgbDate;
