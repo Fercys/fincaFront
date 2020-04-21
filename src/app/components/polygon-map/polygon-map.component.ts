@@ -386,13 +386,13 @@ export class PolygonMapComponent implements OnInit,OnChanges {
     // Create the DIV to hold the control and call the CenterControl()
         // constructor passing in this DIV.
       let trianglesRef=this.trianglesRef;
-      const controls=["General","Weather","Soil Measure", "Irrigation"];
-      for (var control of controls) {
-        var centerControlDiv = document.createElement('div');
-        var centerControl = new this.centerControl(centerControlDiv, map,control, mapElement,trianglesRef);
+       const controls=["General","Weather","Soil Measure", "Irrigation"];
+       for (var control of controls) {
+         var centerControlDiv = document.createElement('div');
+         var centerControl = new this.centerControl(centerControlDiv, map,control, mapElement,trianglesRef);
         
-        map.controls[window['google'].maps.ControlPosition.LEFT_CENTER].push(centerControlDiv);
-      }
+         map.controls[window['google'].maps.ControlPosition.LEFT_CENTER].push(centerControlDiv);
+       }
   }
   centerControl(controlDiv, map, control,mapElement,trianglesRef) {
           // Set CSS for the control border.

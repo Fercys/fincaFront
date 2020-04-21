@@ -55,10 +55,11 @@
       </div>
       <div class="col-lg-4 col-md-4 col-sm-4">
           <div *ngIf="measurements" class="container-fluid card-weather">
-                  <div class="row ">
-                    <h4 class="row-subtitle">Clima</h4>
-                  </div>
-                  <div class="card-body ">
+            <div class="card card-bg-none">
+                <div class="card-header py-0">
+                  <h4 class="row-subtitle-card">Clima</h4>
+                </div>
+                <div class="card-body ">
                     <div class="table-responsive">
                       <table class="table">
                       <tbody>
@@ -94,6 +95,7 @@
                   </div>
                 </div>
             </div>
+          </div>
         </div>
       </div>
     </div>
@@ -102,99 +104,97 @@
       <div class="col-lg-8">
         <div class="select-time">
           <h4>Selector de tiempo</h4>
-          <form class="form-inline form-date-range line">
-              <div class="form-group hidden">
-                <div class="input-group">
-                  <input name="datepickerFrom"
-                         style="
-                         background-color: transparent;
-                         border: none;
-                         visibility: hidden;"
-                         ngbDatepicker
-                         #datepickerFrom="ngbDatepicker"
-                         [autoClose]="'outside'"
-                         (dateSelect)="onDateSelection($event,'from')"
-                         [displayMonths]="1"
-                         [dayTemplate]="t"
-                         outsideDays="hidden"
-                         [startDate]="fromDate">
-                  <ng-template #t let-date let-focused="focused">
-                    <span class="custom-day"
-                          [class.focused]="focused"
-                          [class.range]="isRange(date)"
-                          [class.faded]="isHovered(date) || isInside(date)"
-                          (mouseenter)="hoveredDate = date"
-                          (mouseleave)="hoveredDate = null">
-                      {{ date.day }}
-                    </span>
-                  </ng-template>
-                </div>
-              </div>
-              <div class="form-group ">
-                <h6>*Fecha de Inicio</h6>
-                <div class="input-group input-center-flex">
-                  <input #dpFromDate
-                         class="input-calendar" 
-                         name="dpFromDate"
-                         [value]="formatter.format(fromDate)"
-                         (input)="fromDate = validateInput(fromDate, dpFromDate.value)"
-                         (click)="dpFromDate.toggle()">
-                  <div class="input-group-append">
-                    <button class="icon-calendar" (click)="dpFromDate.toggle()" type="button">
-                      <img src="assets/icons/Calendar.svg" style="height: 25px">
-                    </button>
+              <form class="form-inline form-date-range line">
+                <div class="form-group hidden">
+                  <div class="input-group">
+                    <input name="datepickerFrom"
+                    style="
+                    background-color: transparent;
+                    border: none;
+                    visibility: hidden;"
+                    ngbDatepicker
+                    #datepickerFrom="ngbDatepicker"
+                    [autoClose]="'outside'"
+                    (dateSelect)="onDateSelection($event,'from')"
+                    [displayMonths]="1"
+                    [dayTemplate]="t"
+                    outsideDays="hidden"
+                    [startDate]="fromDate">
+                    <ng-template #t let-date let-focused="focused">
+                        <span class="custom-day"
+                        [class.focused]="focused"
+                        [class.range]="isRange(date)"
+                        [class.faded]="isHovered(date) || isInside(date)"
+                        (mouseenter)="hoveredDate = date"
+                        (mouseleave)="hoveredDate = null">
+                        {{ date.day }}
+                      </span>
+                    </ng-template>
                   </div>
                 </div>
-              </div>
-              <div class="form-group hidden">
-                <div class="input-group">
-                  <input name="datepickerTo"
-                         style="
-                         background-color: transparent;
-                         border: none;
-                         visibility: hidden;"
-                         ngbDatepicker
-                         #datepickerTo="ngbDatepicker"
-                         [autoClose]="'outside'"
-                         (dateSelect)="onDateSelection($event,'to')"
-                         [displayMonths]="1"
-                         [dayTemplate]="t"
-                         outsideDays="hidden"
-                         [startDate]="fromDate">
-                  <ng-template #t let-date let-focused="focused">
-                    <span class="custom-day"
-                          [class.focused]="focused"
-                          [class.range]="isRange(date)"
-                          [class.faded]="isHovered(date) || isInside(date)"
-                          (mouseenter)="hoveredDate = date"
-                          (mouseleave)="hoveredDate = null">
-                      {{ date.day }}
-                    </span>
-                  </ng-template>
+                <div class="form-group ">
+                  <h6>*Fecha de Inicio</h6>
+                  <div class="input-group">
+                    <input #dpFromDate
+                    class="input-calendar" 
+                    name="dpFromDate"
+                    [value]="formatter.format(fromDate)"
+                    (input)="fromDate = validateInput(fromDate, dpFromDate.value)">
+                    <div class="input-group-append">
+                      <button class="icon-calendar" (click)="datepickerFrom.toggle()" type="button">
+                        <img src="assets/icons/Calendar.svg" style="height: 25px">
+                      </button>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div class="form-group">
+                <div class="form-group hidden">
+                  <div class="input-group">
+                    <input name="datepickerTo"
+                    style="
+                    background-color: transparent;
+                    border: none;
+                    visibility: hidden;"
+                    ngbDatepicker
+                    #datepickerTo="ngbDatepicker"
+                    [autoClose]="'outside'"
+                    (dateSelect)="onDateSelection($event,'to')"
+                    [displayMonths]="1"
+                    [dayTemplate]="t"
+                    outsideDays="hidden"
+                    [startDate]="fromDate">
+                    <ng-template #t let-date let-focused="focused">
+                        <span class="custom-day"
+                        [class.focused]="focused"
+                        [class.range]="isRange(date)"
+                        [class.faded]="isHovered(date) || isInside(date)"
+                        (mouseenter)="hoveredDate = date"
+                        (mouseleave)="hoveredDate = null">
+                        {{ date.day }}
+                      </span>
+                    </ng-template>
+                  </div>
+                </div>
+                <div class="form-group">
                   <h6>*Fecha Final</h6> 
-                <div class="input-group input-center-flex">
-                  <input #dpToDate
-                         class="input-calendar"  
-                         name="dpToDate"
-                         [value]="formatter.format(toDate)"
-                         (input)="toDate = validateInput(toDate, dpToDate.value)"
-                         (click)="dpToDate.toggle()">
-                  <div class="input-group-append">
-                    <button class="icon-calendar"  (click)="dpToDate.toggle()" type="button">
-                      <img src="assets/icons/Calendar.svg" style="height: 25px">
-                    </button>
+                  <div class="input-group">
+                    <input #dpToDate
+                    class="input-calendar"  
+                    name="dpToDate"
+                    [value]="formatter.format(toDate)"
+                    (input)="toDate = validateInput(toDate, dpToDate.value)">
+                    <div class="input-group-append">
+                      <button class="icon-calendar"  (click)="datepickerTo.toggle()" type="button">
+                        <img src="assets/icons/Calendar.svg" style="height: 25px">
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="form-inline">
-                <button class="btn-greem" [disabled]="requestChartBtn" (click)="requestDataChart()">Ver</button>
-              </div>
-          </form>
-        </div>
-        <div class="line">
+                <div class="form-inline">
+                  <button class="btn-greem" [disabled]="requestChartBtn" (click)="requestDataChart()">Ver</button>
+                </div>
+              </form>
+          </div>
+          <div class="line">
           <div class="buttons-time row">
             <div >
               <button class="volver" (click)="goBack()" [disabled]="dateRangeHistory.length==1">Volver</button>
@@ -213,9 +213,11 @@
       </div>
       <div class="col-lg-4 pronostic-table">
           <div *ngIf="climaLoading" class="container-fluid">
-              <div class="row ">
-                <h4 class="row-subtitle">Pronostico</h4>
+            <div class="card card-bg-none">
+              <div class="card-header py-0">
+                <h4 class="row-subtitle-card">Pronóstico</h4>
               </div>
+
               <div class="card-body card-pronostic">
                 <table class="table-title">
                   <thead>
@@ -255,6 +257,7 @@
                 </table>
               </div>
             </div>
+          </div>
       </div>
     </div>
   </div>

@@ -12,8 +12,8 @@ declare interface RouteInfo {
 }
 
 export const ROUTESADMIN: RouteInfo[] = [ //admin
-    { path: '/dashboard', title: 'Dashboard',  icon: 'Dashboard-Verde', class: '', active : true },
-    { path: '/client', title: 'Cuentas',  icon:'Campo-Verde', class: '' , active : false},
+    { path: '/dashboard', title: 'Incio',  icon: 'Dashboard-Verde', class: '', active : true },
+   // { path: '/client', title: 'Cuentas',  icon:'Campo-Verde', class: '' , active : false},
     { path: '/weather-monitoring', title: 'Monitoreo del clima',  icon:'Graficador-libre-verde', class: '', active : false },
     { path: '/free-plotter', title: 'Analizador Grafico',  icon:'Graficador-libre-verde', class: '', active : false },
     { path: '/soil-analysis', title: 'Humedad de Suelo',  icon:'Suelo', class: '', active : false },
