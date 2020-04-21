@@ -189,7 +189,7 @@ export class FarmMapPolygonComponent implements OnInit {
     public formatter: NgbDateParserFormatter) {
   }
   ngOnInit() {
-    if(localStorage.getItem("lastRoute")&&localStorage.getItem("lastRoute")!="farmpolygon"){
+    if(localStorage.getItem("lastRoute")&&localStorage.getItem("lastRoute")!="farmpolygon/"+this._route.snapshot.paramMap.get('idfarm')+"/"+this._route.snapshot.paramMap.get('idzone')){
       if(localStorage.getItem('lastPolygonData')){
         localStorage.removeItem('lastPolygonData');
       }
@@ -207,8 +207,8 @@ export class FarmMapPolygonComponent implements OnInit {
       this.loading = true;
       this.wiseconnService.getZones(idfarm).subscribe((response: any) => {
         this.loading = false;
-        this.zones = response.data?response.data:response;
-        this.weatherZones = this.zones.filter((element)=>{
+        let zones=response.data?response.data:response;
+        this.weatherZones = zones.filter((element)=>{
           if(element.type){
             if(element.type.length>0){
               if(element.type.find((element) => {
@@ -221,7 +221,7 @@ export class FarmMapPolygonComponent implements OnInit {
         });
         this.zone=this.getZone(idzone);
         this.getMeterogoAgrifutByZones();
-        this.zones = this.zones.filter(function(element){
+        this.zones = zones.filter(function(element){
           return element['id'] == idzone;
         });
         this.getWeather(); 
@@ -244,8 +244,7 @@ export class FarmMapPolygonComponent implements OnInit {
   }
   getMeterogoAgrifutByZones(){
     this.zones.forEach(element =>{
-      let id= element.id_wiseconn?element.id_wiseconn:element.id;
-      if(parseInt(id) == 727 || parseInt(id) == 6054 || parseInt(id) == 13872){
+      if(element.name=="Estación Meteorológica"){
         this.loading = true;
         this.wiseconnService.getMeterogoAgrifut(element.id).subscribe((response: any) => { 
           this.loading = false;
@@ -389,7 +388,13 @@ export class FarmMapPolygonComponent implements OnInit {
   onSelect(select: string, id: number) {
     switch (select) {
       case "zone":
-      this.getMeterogoAgrifut(parseInt(this._route.snapshot.paramMap.get('idfarm')),id);
+      if(localStorage.getItem("lastRoute")&&localStorage.getItem("lastRoute")!="farmpolygon/"+this._route.snapshot.paramMap.get('idfarm')+"/"+id){
+        if(localStorage.getItem('lastPolygonData')){
+          localStorage.removeItem('lastPolygonData');
+        }
+        this.setLocalStorageItem("lastRoute","farmpolygon/"+this._route.snapshot.paramMap.get('idfarm')+"/"+id);
+        this.getMeterogoAgrifut(parseInt(this._route.snapshot.paramMap.get('idfarm')),id);
+      }
       break;
       default:
       break;
