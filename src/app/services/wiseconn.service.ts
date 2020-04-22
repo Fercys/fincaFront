@@ -55,6 +55,13 @@ export class WiseconnService {
       catchError(this.errorHandl)
     )
   }
+  getWeatherStation(id): Observable<any> { 
+    return this.http.get<any>(this.baseurl + '/farms/'+id+'/weatherstation', this.httpOptions)
+    .pipe(
+      retry(1),
+      catchError(this.errorHandl)
+    )
+  }
   getMeasuresOfFarm(id:number): Observable<any> { 
     return this.http.get<any>(this.baseurl + '/farms/'+id+"/measures", this.httpOptions)
     .pipe(

@@ -234,7 +234,7 @@ export class WeatherMonitoringComponent implements OnInit {
         this.farm=this.getFarm(parseInt(localStorage.getItem("lastFarmId")));
       }
       if(this.farm){
-        this.processZones();
+        this.processWeatherStation();
       }else if(localStorage.getItem("lastFarmId")!=undefined&&this._route.snapshot.paramMap.get('id')){
         Swal.fire({icon: 'error',title: 'Oops...',text: 'Farm no existente'});
       }        
@@ -249,7 +249,7 @@ export class WeatherMonitoringComponent implements OnInit {
         this.farm=this.getFarm(parseInt(localStorage.getItem("lastFarmId")));
       }
       if(this.farm){
-        this.processZones();
+        this.processWeatherStation();
       }else if(localStorage.getItem("lastFarmId")!=undefined&&this._route.snapshot.paramMap.get('id')){
         Swal.fire({icon: 'error',title: 'Oops...',text: 'Farm no existente'});
       }        
@@ -267,35 +267,25 @@ export class WeatherMonitoringComponent implements OnInit {
     }
     return farm;
   }
-  processZones(){
-    if(localStorage.getItem('lastZones')){
-      this.zones = JSON.parse(localStorage.getItem('lastZones'));      this.getIrrigarionsRealOfZones();
+  processWeatherStation(){
+    if(localStorage.getItem('lastWeatherStation')){
+      this.weatherStation = JSON.parse(localStorage.getItem('lastWeatherStation'));
+      this.getIrrigarionsRealOfWeatherStation();
       if(this.fromDate && this.toDate){
         this.getChartInformation();
       }
       this.getWeather();
     }else{
-      this.getZones();
+      this.getWeatherStation();
     }
   }
-  getIrrigarionsRealOfZones(){
-    this.zones.forEach(element => {
-
-      this.wiseconnService.getIrrigarionsRealOfZones(element.id,this.dateRange).subscribe((response: any) => {
-        let data=response.data?response.data:response;
-        let id= element.id_wiseconn?element.id_wiseconn:element.id;
-        if (parseInt(id) == 727 || parseInt(id) == 6054 || parseInt(id) == 13872){  
-          if (element.name == "Estación Meteorológica" || element.name == "Estación Metereológica") {
-            this.loading = true;
-            this.wiseconnService.getMeterogoAgrifut(element.id).subscribe((response: any) => {
-              this.loading = false;
-              let data=response.data?response.data:response;
-              this.measurements = this.processMeasurements(data);
-              this.setLocalStorageItem("lastMeasurements",this.getJSONStringify(this.measurements));
-            });
-          }
-        }
-      });
+  getIrrigarionsRealOfWeatherStation(){
+    this.loading = true;
+    this.wiseconnService.getMeterogoAgrifut(this.weatherStation.id).subscribe((response: any) => {
+      this.loading = false;
+      let data=response.data?response.data:response;
+      this.measurements = this.processMeasurements(data);
+      this.setLocalStorageItem("lastMeasurements",this.getJSONStringify(this.measurements));
     });
   }
   goBack(){
@@ -325,12 +315,6 @@ export class WeatherMonitoringComponent implements OnInit {
         });
       }
       let weatherStationFlag=false;
-      let i=0;
-      while (!weatherStationFlag && i < this.zones.length) {
-        this.loading=true;
-        if (this.zones[i].name == "Estación Meteorológica" || this.zones[i].name == "Estación Metereológica") {
-          weatherStationFlag=true;
-          this.weatherStation = this.zones[i];
           this.wiseconnService.getMeasuresOfZones(this.weatherStation.id).subscribe((response) => {
             let data=response.data?response.data:response;                                      
             let barFlag=false;
@@ -472,22 +456,24 @@ export class WeatherMonitoringComponent implements OnInit {
               j++;
             }
           });
-        }
-        i++;
-      }
       this.loading=false;
     }
   }
-  getZones() {
+  getWeatherStation() {
     this.loading = true;
-    this.wiseconnService.getZones(this.farm.id).subscribe((response: any) => {
+    this.wiseconnService.getWeatherStation(this.farm.id).subscribe((response: any) => {
       this.loading = false; 
-      this.zones = response.data?response.data:response;
-      this.getIrrigarionsRealOfZones();
-      this.setLocalStorageItem("lastFarmId",this.farm.id);
-      this.setLocalStorageItem("lastZones",this.getJSONStringify(this.zones));
-      this.getChartInformation();
-      this.getWeather();
+      this.weatherStation = response.data?response.data:null;
+      if(this.weatherStation){
+        this.getIrrigarionsRealOfWeatherStation();
+        this.setLocalStorageItem("lastFarmId",this.farm.id);
+        this.setLocalStorageItem("lastWeatherStation",this.getJSONStringify(this.weatherStation));
+        this.getChartInformation();
+        this.getWeather();
+      }else{
+        Swal.fire({icon: 'error',title: 'Oops...',text: 'Campo sin "Estación Metereologica" registrada'});
+      }
+      
     });
   } 
   
@@ -540,7 +526,7 @@ export class WeatherMonitoringComponent implements OnInit {
       this.farm=this.getFarm(id);
       if(this.farm){
         this.setLocalStorageItem("lastFarmId",this.farm.id);
-        this.getZones();
+        this.getWeatherStation();
         this.getWeather();
       }
       break;
@@ -638,7 +624,7 @@ selectTime(event){
     }
     this.toDate = this.calendar.getToday();
     this.requestChartBtn=(this.fromDate && this.toDate && this.toDate.after(this.fromDate))?false:true;
-    this.getChartInformation(false);
+    //this.getChartInformation(false);
   }
 
 resetChartsValues(chart: string){
