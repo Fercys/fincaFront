@@ -232,13 +232,23 @@ export class FarmMapComponent implements OnInit {
           }else{
             this.farm=this.getFarm(parseInt(this._route.snapshot.paramMap.get('id')));
             this.setLocalStorageItem("lastFarmId",this.farm.id);
-            localStorage.removeItem('lastZones');
+            if(localStorage.getItem("lastZones")){
+              localStorage.removeItem('lastZones');
+            }
+            if(localStorage.getItem("lastWeatherStation")){
+              localStorage.removeItem('lastWeatherStation');
+            }
           }
         }
       }else if(this._route.snapshot.paramMap.get('id')){
         this.farm=this.getFarm(this._route.snapshot.paramMap.get('id'));
         this.setLocalStorageItem("lastFarmId",this.farm.id);
-        localStorage.removeItem('lastZones');
+            if(localStorage.getItem("lastZones")){
+              localStorage.removeItem('lastZones');
+            }
+            if(localStorage.getItem("lastWeatherStation")){
+              localStorage.removeItem('lastWeatherStation');
+            }
       }
       if(this.farm){
         this.processZones();
@@ -259,13 +269,23 @@ export class FarmMapComponent implements OnInit {
           }else{
             this.farm=this.getFarm(parseInt(this._route.snapshot.paramMap.get('id')));
             this.setLocalStorageItem("lastFarmId",this.farm.id);
-            localStorage.removeItem('lastZones');
+            if(localStorage.getItem("lastZones")){
+              localStorage.removeItem('lastZones');
+            }
+            if(localStorage.getItem("lastWeatherStation")){
+              localStorage.removeItem('lastWeatherStation');
+            }
           }
         }
       }else if(this._route.snapshot.paramMap.get('id')){
         this.farm=this.getFarm(this._route.snapshot.paramMap.get('id'));
         this.setLocalStorageItem("lastFarmId",this.farm.id);
-        localStorage.removeItem('lastZones');
+            if(localStorage.getItem("lastZones")){
+              localStorage.removeItem('lastZones');
+            }
+            if(localStorage.getItem("lastWeatherStation")){
+              localStorage.removeItem('lastWeatherStation');
+            }
       }
       if(this.farm){
         this.processZones();
@@ -663,6 +683,12 @@ export class FarmMapComponent implements OnInit {
         this.farm=this.getFarm(id);
         if(this.farm){
           this.setLocalStorageItem("lastFarmId",this.farm.id);
+            if(localStorage.getItem("lastZones")){
+              localStorage.removeItem('lastZones');
+            }
+            if(localStorage.getItem("lastWeatherStation")){
+              localStorage.removeItem('lastWeatherStation');
+            }
           this.getZones();
           this.getWeather();
         }
