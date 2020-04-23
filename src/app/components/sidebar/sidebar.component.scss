@@ -12,6 +12,9 @@
 .no-visible{
     display: none;
 }
-.sidebar .sidebar-wrapper{
+.sidebar-wrapper{
 	height: calc(100vh - 50px) !important;
+}
+.sidebar-wrapper.ps{
+	width: 230px !important;
 }
