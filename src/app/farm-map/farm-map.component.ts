@@ -249,6 +249,8 @@ export class FarmMapComponent implements OnInit {
             if(localStorage.getItem("lastWeatherStation")){
               localStorage.removeItem('lastWeatherStation');
             }
+      }else if(this.farms.length>0){
+        this.farm=this.farms[0];
       }
       if(this.farm){
         this.processZones();
@@ -286,6 +288,8 @@ export class FarmMapComponent implements OnInit {
             if(localStorage.getItem("lastWeatherStation")){
               localStorage.removeItem('lastWeatherStation');
             }
+      }else if(this.farms.length>0){
+        this.farm=this.farms[0];
       }
       if(this.farm){
         this.processZones();
