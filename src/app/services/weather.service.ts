@@ -23,7 +23,7 @@ export class WeatherService {
   constructor(private http: HttpClient) { }
   
 
-  getWeather(q, key): Observable<any> { 
+  getWeather(q, key): Observable<any> {
     return this.http.get(this.baseurl+"q="+key+"&"+"Key="+q+'&'+'format='+'json&num_of_days=5&tp=24'
     , this.httpOptions)
     .pipe(
