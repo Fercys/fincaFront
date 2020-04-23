@@ -175,12 +175,12 @@ export class FarmMapComponent implements OnInit {
     { value: '6M' , active: false},
   ]
   //Pronostico values
-  public climaLoading = false;
+  public climaLoading:boolean = false;
   public climaToday: any;
-  public climaDay = [];
-  public climaIcon = [];
-  public climaMax = [];
-  public climaMin = [];
+  public climaDay:any[] = [];
+  public climaIcon:any[] = [];
+  public climaMax:any[] = [];
+  public climaMin:any[] = [];
 
   public userLS:any=null;
   public user:any=null;
