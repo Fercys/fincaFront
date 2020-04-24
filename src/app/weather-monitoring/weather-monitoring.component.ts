@@ -123,6 +123,8 @@ export class WeatherMonitoringComponent implements OnInit {
   };
   public temperatureId: number = null;
   public humidityId: number = null;
+  //public coldPortionsId: number = null;
+  //public humidityId: number = null;
   public renderLineChartFlag: boolean = false;
   //barchart
   @ViewChild('barChart', { static: true }) public barChartElement: ElementRef;

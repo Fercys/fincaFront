@@ -226,6 +226,7 @@ export class FarmMapComponent implements OnInit {
   getFarms(){
     this.loading = true;
     this.wiseconnService.getFarms().subscribe((response: any) => {
+      this.loading = false;
       this.farms = response.data?response.data:response;
       if(localStorage.getItem("lastFarmId")){
         if(this._route.snapshot.paramMap.get('id')){
@@ -262,9 +263,10 @@ export class FarmMapComponent implements OnInit {
       this.loading = false;
     });
   }
-  getFarmsByUser(){      
+  getFarmsByUser(){
     this.loading = true;
     this.userService.getFarmsByUser(this.user.id).subscribe((response: any) => {
+      this.loading = false;
       this.farms = response.data?response.data:response;
       if(localStorage.getItem("lastFarmId")){
         if(this._route.snapshot.paramMap.get('id')){
@@ -497,11 +499,11 @@ export class FarmMapComponent implements OnInit {
       let i=0;
       while (!weatherStationFlag && i < this.zones.length) {
         this.loading=true;
-        if (this.zones[i].name == "Estación Meteorológica" || this.zones[i].name == "Estación Metereológica") {
+        if ((this.zones[i].name == "Estación Meteorológica" || this.zones[i].name == "Estación Metereológica")&& this.zones[i].id_wiseconn) {
           weatherStationFlag=true;
           this.weatherStation = this.zones[i];
           this.wiseconnService.getMeasuresOfZones(this.weatherStation.id).subscribe((response) => {
-            let data=response.data?response.data:response;                                      
+            let data=response.data?response.data:response;
             let barFlag=false;
             let lineFlag=false;
             let j=0;
