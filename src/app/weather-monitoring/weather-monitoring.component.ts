@@ -37,6 +37,7 @@ export class WeatherMonitoringComponent implements OnInit {
   public url;
   public status=false;
   public measurements; //mediciones
+  public now:any=null
   public statusRegando=false;
   public dialog;
   public today = Date.now();
@@ -48,7 +49,6 @@ export class WeatherMonitoringComponent implements OnInit {
   public weatherStation: any = null;
   public closeResult: string;
   public clima: any;
-
   //rango de fechas para graficas  
   public fromDate: NgbDate;
   public toDate: NgbDate;
@@ -196,12 +196,13 @@ export class WeatherMonitoringComponent implements OnInit {
     public userService: UserService,
     public modalService: NgbModal,
     private router: Router,
-    private calendar: NgbCalendar,
+    public calendar: NgbCalendar,
     public formatter: NgbDateParserFormatter,
     private dialogs: MatDialog) {
   }
 
-  ngOnInit() {    
+  ngOnInit() {   
+    this.now=moment().format('L') +" "+ moment().format('LTS');
     this.dateRangeByDefault();
     if(localStorage.getItem("user")){
       this.userLS=JSON.parse(localStorage.getItem("user"));
