@@ -40,6 +40,7 @@ export class FarmMapComponent implements OnInit {
   public closeResult: string;
   public clima: any; 
   public measurements:any[]=[];
+  public now:any=null
   public statusRegando:boolean=false;
   public status:boolean=null;
   //graficas
@@ -197,6 +198,7 @@ export class FarmMapComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.now=moment().format('L') +" "+ moment().format('LTS');
     this.dateRangeByDefault();
     if(localStorage.getItem("user")){
       this.userLS=JSON.parse(localStorage.getItem("user"));

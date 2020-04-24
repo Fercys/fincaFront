@@ -30,6 +30,7 @@ export class FarmMapPolygonComponent implements OnInit {
   public id = 0;
   public url;
   public measurements;
+  public now:any=null
   public clima;
   public climaRes: any = [];
   public farmData: any;
@@ -189,6 +190,7 @@ export class FarmMapPolygonComponent implements OnInit {
     public formatter: NgbDateParserFormatter) {
   }
   ngOnInit() {
+    this.now=moment().format('L') +" "+ moment().format('LTS');
     if(localStorage.getItem("lastRoute")&&localStorage.getItem("lastRoute")!="farmpolygon/"+this._route.snapshot.paramMap.get('idfarm')+"/"+this._route.snapshot.paramMap.get('idzone')){
       if(localStorage.getItem('lastPolygonData')){
         localStorage.removeItem('lastPolygonData');
