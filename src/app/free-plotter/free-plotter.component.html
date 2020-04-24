@@ -5,10 +5,36 @@
 		<div class="row">
 			<h4 class="row-title">Graficador Libre</h4>
 		</div>
+		<div class="row" >
+			<div class="col-md-2">
+				<div class="form-group row">
+		          	<label  >Variables</label>
+		        </div>
+	        </div>
+      		<div class="col-md-2">
+				<div class="form-group row">
+		          <label  >Tipo</label>
+		        </div>
+	        </div>
+      		<div class="col-md-2">
+      			<div class="form-group row">
+		          <label  >Resolución</label>
+		        </div>
+      		</div>
+      		<div class="col-md-2">
+      			<div class="form-group row">
+		          <label  >Sector / Equipo</label>
+		        </div>
+      		</div>
+      		<div class="col-md-2">
+      			<div class="form-group row">
+		          <label  >Sensor</label>		            
+		        </div>
+      		</div>
+		</div>
 		<div class="row" *ngFor="let selectGroup of selectGroups; let i = index">
 			<div class="col-md-2">
 				<div class="form-group row">
-		          	<label for="zone" class="" style="">Variables</label>
 		          	<mat-form-field class="mat-select-custom w-100" floatLabel="never" >
 						<mat-label>{{selectGroup.variablesSelected?selectGroup.variablesSelected.name:'Seleccionar variable'}}</mat-label>
 						<mat-select [disabled]="selectGroups.length>i+1">
@@ -24,7 +50,6 @@
 	        </div>
       		<div class="col-md-2">
 				<div class="form-group row">
-		          <label for="zone" class="" style="">Tipo</label>
 		            <mat-form-field class="mat-select-custom w-100" floatLabel="never">
 						<mat-label>{{selectGroup.typeSelected?selectGroup.typeSelected.name:'Seleccionar tipo'}}</mat-label>
 						<mat-select [disabled]="selectGroups.length>i+1">
@@ -35,7 +60,6 @@
 	        </div>
       		<div class="col-md-2">
       			<div class="form-group row">
-		          <label for="zone" class="" style="">Resolución</label>
 		            <mat-form-field class="mat-select-custom w-100" floatLabel="never">
 						<mat-label>{{selectGroup.resolutionSelected?selectGroup.resolutionSelected.name:'Seleccionar Resolución'}}</mat-label>
 						<mat-select [disabled]="selectGroups.length>i+1">
@@ -46,7 +70,6 @@
       		</div>
       		<div class="col-md-2">
       			<div class="form-group row">
-		          <label for="zone" class="" style="">Sector / Equipo</label>
 		            <mat-form-field class="mat-select-custom w-100" floatLabel="never">
 						<mat-label>{{selectGroup.zoneSelected?selectGroup.zoneSelected.zone.name:'Seleccionar Sector'}}</mat-label>
 						<mat-select [disabled]="selectGroups.length>i+1">
@@ -57,7 +80,6 @@
       		</div>
       		<div class="col-md-2">
       			<div class="form-group row">
-		          <label for="zone" class="" style="">Sensor</label>
 		            <mat-form-field class="mat-select-custom w-100" floatLabel="never">
 						<mat-label>{{selectGroup.sensorSelected?selectGroup.sensorSelected.name:'Seleccionar Sensor'}}</mat-label>
 						<mat-select [disabled]="selectGroups.length>i+1">
@@ -70,7 +92,7 @@
       			<span class="circle-color" [style.backgroundColor]="selectGroup.chartColor">{{i+1}}</span>
       		</div>
       		<div class="col-md-1 add-group-btn-container" *ngIf="selectGroups.length==i+1">
-      			<button class="btn-greem w-100" style="" (click)="addSelectGroups()"><i class="material-icons">add</i></button>
+      			<button class="btn-greem w-100"  (click)="addSelectGroups()"><i class="material-icons">add</i></button>
       		</div>
 		</div>
 			<div class="row">
