@@ -36,7 +36,6 @@ export class PolygonMapComponent implements OnInit,OnChanges {
   	ngOnChanges(changes: SimpleChanges) {
   		const zonesCurrentValue: SimpleChange = changes.zones.currentValue;
   		this.zones=zonesCurrentValue;
-      console.log("this.zones:",this.zones)
       if (this.zones.length == 0) {
         var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
           center: { lat: -32.89963602180464, lng: -70.90243510967417 },
@@ -133,10 +132,10 @@ export class PolygonMapComponent implements OnInit,OnChanges {
         for(let element of this.zones){
           // Construct the polygon.
           //prueba con wiseconn
-          wisservice.getIrrigarionsRealOfZones(element.id_wiseconn,this.dateRange).subscribe((response: any) => {
-          //wisservice.getIrrigarionsRealOfZones(element.id,this.dateRange).subscribe((response: any) => {
+          //wisservice.getIrrigarionsRealOfZones(element.id_wiseconn,this.dateRange).subscribe((response: any) => {
+          //prueba local
+          wisservice.getIrrigarionsRealOfZones(element.id,this.dateRange).subscribe((response: any) => {
             let data=response.data?response.data:response;
-
             let id= element.id_wiseconn?element.id_wiseconn:element.id;
             if (parseInt(id) == 727 || parseInt(id) == 6054 || parseInt(id) == 13872){
               let polygonData={
