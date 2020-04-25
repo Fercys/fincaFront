@@ -84,13 +84,14 @@ export class WiseconnService {
     )
   }
   getIrrigarionsRealOfZones(id:number,dateRange:any): Observable<any> {
-    /*this.baseurl="https://cors-anywhere.herokuapp.com/https://apiv2.wiseconn.com";
+    //prueba con wiseconn
+    this.baseurl="https://cors-anywhere.herokuapp.com/https://apiv2.wiseconn.com";
     this.httpOptions={
       headers: new HttpHeaders({
         'Accept': 'application/json',
         'api_key':'9Ev6ftyEbHhylMoKFaok'
       })
-    }*/
+    }
     return this.http.get<any>(this.baseurl + "/zones/"+id+"/realIrrigations?initTime="+dateRange.initTime+"&endTime="+dateRange.endTime, this.httpOptions)
     .pipe(
       retry(1),
