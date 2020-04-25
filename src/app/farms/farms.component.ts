@@ -53,4 +53,11 @@ export class FarmsComponent implements OnInit {
       this.loading = false;
     });
   }
+  navigateTo(route:any[]){
+    this.setLocalStorageItem("lastFarmId",route[1]);
+    this.router.navigate(route);
+  }
+  setLocalStorageItem(key,value){
+    localStorage.setItem(key,value);
+  }  
 }
