@@ -204,7 +204,7 @@ export class FarmMapComponent implements OnInit {
       this.userLS=JSON.parse(localStorage.getItem("user"));
       if(bcrypt.compareSync(this.userLS.plain, this.userLS.hash)){
         this.user=JSON.parse(this.userLS.plain);
-        if(localStorage.getItem("lastRoute")&&localStorage.getItem("lastRoute")!="farmmap"){
+        if(localStorage.getItem("lastRoute")&&localStorage.getItem("lastRoute")!="farmmap/"+this._route.snapshot.paramMap.get('id')){
           if(localStorage.getItem('lastPolygonData')){
             localStorage.removeItem('lastPolygonData');
           }
@@ -305,18 +305,18 @@ export class FarmMapComponent implements OnInit {
   }
   getFarm(id){
     let farm = this.farms.find(element =>{
-      return element.id==id || element.id_wiseconn==id
+      return element.id==id
     });
     if(!farm){
       if(this.farms[0]){
         farm=this.farms[0];
-      }
+      }    
     }
     return farm;
   }
   processZones(){
     if(localStorage.getItem('lastZones')){
-      this.zones = JSON.parse(localStorage.getItem('lastZones'));      
+      this.zones = JSON.parse(localStorage.getItem('lastZones'));
       this.weatherZones=this.getWeatherZones();
       this.getIrrigarionsRealOfZones();
       if(this.fromDate && this.toDate){
@@ -332,6 +332,7 @@ export class FarmMapComponent implements OnInit {
     this.wiseconnService.getZones(this.farm.id).subscribe((response: any) => {
       this.loading = false; 
       this.zones = response.data?response.data:response;
+      console.log("this.zones:",this.zones)
       this.weatherZones=this.getWeatherZones();
       this.getIrrigarionsRealOfZones();
       this.setLocalStorageItem("lastFarmId",this.farm.id);

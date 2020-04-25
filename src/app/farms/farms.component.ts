@@ -53,4 +53,21 @@ export class FarmsComponent implements OnInit {
       this.loading = false;
     });
   }
+  navigateTo(route:any[]){
+    if(localStorage.getItem("lastFarmId")){
+      if(parseInt(route[1])!=parseInt(localStorage.getItem("lastFarmId"))){
+        this.setLocalStorageItem("lastFarmId",route[1]);
+        if(localStorage.getItem("lastZones")){
+          localStorage.removeItem('lastZones');
+        }
+        if(localStorage.getItem("lastWeatherStation")){
+            localStorage.removeItem('lastWeatherStation');
+        }
+      }
+    }
+    this.router.navigate(route);
+  }
+  setLocalStorageItem(key,value){
+    localStorage.setItem(key,value);
+  }  
 }

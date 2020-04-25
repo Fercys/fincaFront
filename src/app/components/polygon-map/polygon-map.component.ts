@@ -24,6 +24,8 @@ export class PolygonMapComponent implements OnInit,OnChanges {
     public dateRange: any = null;
     public trianglesRef:any[]=[];
   	public statusRegando:boolean=false;
+    public loading:boolean=false;
+    public loadingTotalZones:string=null;
   	constructor(
       private calendar: NgbCalendar, 
       private wiseconnService: WiseconnService,) { }
@@ -34,7 +36,7 @@ export class PolygonMapComponent implements OnInit,OnChanges {
   	ngOnChanges(changes: SimpleChanges) {
   		const zonesCurrentValue: SimpleChange = changes.zones.currentValue;
   		this.zones=zonesCurrentValue;
-
+      console.log("this.zones:",this.zones)
       if (this.zones.length == 0) {
         var map = new window['google'].maps.Map(this.mapElement.nativeElement, {
           center: { lat: -32.89963602180464, lng: -70.90243510967417 },
@@ -126,10 +128,13 @@ export class PolygonMapComponent implements OnInit,OnChanges {
         }
       }else{
         let polygonDatas=[];
-        this.zones.forEach(element => {
+        this.loading=true;
+        let i=0;
+        for(let element of this.zones){
           // Construct the polygon.
           wisservice.getIrrigarionsRealOfZones(element.id,this.dateRange).subscribe((response: any) => {
             let data=response.data?response.data:response;
+
             let id= element.id_wiseconn?element.id_wiseconn:element.id;
             if (parseInt(id) == 727 || parseInt(id) == 6054 || parseInt(id) == 13872){
               let polygonData={
@@ -221,8 +226,13 @@ export class PolygonMapComponent implements OnInit,OnChanges {
                 }
               }
             }
+            i++;
+            this.loadingTotalZones=(i)+"/"+this.zones.length;
+            if(i==this.zones.length){
+              this.loading=false;
+            }
           });
-        });
+        }
       }
     
   }
