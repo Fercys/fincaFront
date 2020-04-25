@@ -93,7 +93,6 @@ export class WiseconnService {
       })
     }*/
     //prueba con wiseconn
-    console.log(this.baseurl + "/zones/"+id+"/realIrrigations?initTime="+dateRange.initTime+"&endTime="+dateRange.endTime)
     return this.http.get<any>(this.baseurl + "/zones/"+id+"/realIrrigations?initTime="+dateRange.initTime+"&endTime="+dateRange.endTime, this.httpOptions)
     .pipe(
       retry(1),
