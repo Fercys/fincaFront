@@ -85,13 +85,15 @@ export class WiseconnService {
   }
   getIrrigarionsRealOfZones(id:number,dateRange:any): Observable<any> {
     //prueba con wiseconn
-    this.baseurl="https://cors-anywhere.herokuapp.com/https://apiv2.wiseconn.com";
+    /*this.baseurl="https://cors-anywhere.herokuapp.com/https://apiv2.wiseconn.com";
     this.httpOptions={
       headers: new HttpHeaders({
         'Accept': 'application/json',
         'api_key':'9Ev6ftyEbHhylMoKFaok'
       })
-    }
+    }*/
+    //prueba con wiseconn
+    console.log(this.baseurl + "/zones/"+id+"/realIrrigations?initTime="+dateRange.initTime+"&endTime="+dateRange.endTime)
     return this.http.get<any>(this.baseurl + "/zones/"+id+"/realIrrigations?initTime="+dateRange.initTime+"&endTime="+dateRange.endTime, this.httpOptions)
     .pipe(
       retry(1),
@@ -105,7 +107,6 @@ export class WiseconnService {
       catchError(this.errorHandl)
     )
   }
-  
   getMeterogoAgrifut(id): Observable<any> {
     return this.http.get<any>(this.baseurl + "/zones/"+id+"/measures", this.httpOptions)
     .pipe(
@@ -143,6 +144,7 @@ export class WiseconnService {
       catchError(this.errorHandl)
     )
   }
+
   errorHandl(error) {
     let errorMessage = '';
     if(error.error instanceof ErrorEvent) {
