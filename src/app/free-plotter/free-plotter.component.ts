@@ -192,6 +192,7 @@ export class FreePlotterComponent implements OnInit {
 			}			
 		},
 		error=>{
+			this.loading = false;
             this.notificationService.showError(error.error);
 			console.log("error:",error)
 		});
