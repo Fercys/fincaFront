@@ -9,6 +9,7 @@ import * as moment from "moment";
 //services
 import { WiseconnService } from 'app/services/wiseconn.service';
 import { WeatherService } from 'app/services/weather.service';
+import { NotificationService } from 'app/services/notification.service';
 import { UserService } from 'app/services/user.service';
 //graficas
 // tslint:disable-next-line:no-var-requires
@@ -190,6 +191,7 @@ export class FarmMapComponent implements OnInit {
     private _route: ActivatedRoute,
     private wiseconnService: WiseconnService,
     public weatherService: WeatherService,
+    public notificationService:NotificationService,
     private userService:UserService,
     public modalService: NgbModal,
     private router: Router,
@@ -366,6 +368,10 @@ export class FarmMapComponent implements OnInit {
               let data=response.data?response.data:response;
               this.measurements = this.processMeasurements(data);
               this.setLocalStorageItem("lastMeasurements",this.getJSONStringify(this.measurements));
+            },
+            error=>{
+              this.notificationService.showError(error.error);
+              console.log("error:",error)
             }) 
           }
         }
