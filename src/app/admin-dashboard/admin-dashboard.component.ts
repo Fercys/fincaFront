@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 //services
 import { WiseconnService } from 'app/services/wiseconn.service';
+import { NotificationService } from 'app/services/notification.service';
 import { UserService } from 'app/services/user.service';
 
 @Component({
@@ -30,6 +31,7 @@ export class AdminDashboardComponent implements OnInit {
   public user:any=null;
   constructor(
     private _route: ActivatedRoute, 
+    private notificationService:NotificationService,
     private wiseconnService: WiseconnService,
     private userService:UserService,
     private router: Router) { }  
@@ -246,6 +248,13 @@ export class AdminDashboardComponent implements OnInit {
           });
           this.users = farm_client.length;
           this.mapInitializer(); 
+        },
+        error=>{
+          console.log("error:",error);
+          this.loading=false;
+          
+          if(error.error)
+          this.notificationService.showError('Error',error.error)
         });
     }
     getFarms(){
@@ -264,6 +273,13 @@ export class AdminDashboardComponent implements OnInit {
         });
         this.users = farm_client.length;
         this.mapInitializer();  
+      },
+      error=>{
+        console.log("error:",error);
+        this.loading=false;
+        
+        if(error.error)
+        this.notificationService.showError('Error',error.error)
       })
     }
 }

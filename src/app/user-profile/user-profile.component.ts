@@ -61,7 +61,9 @@ export class UserProfileComponent implements OnInit {
      error => {
       console.log("error:",error)
         this.loading=false;
-       this.notificationService.showError('Error',error.error)
+       
+        if(error.error)
+        this.notificationService.showError('Error',error.error)
     });
   }
   setLocalStorageItem(key:string,value:any){

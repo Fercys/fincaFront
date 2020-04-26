@@ -270,7 +270,7 @@ export class FarmMapPolygonComponent implements OnInit {
     if(this.zones[0].latitude && this.zones[0].longitude){
       //pronostico
       const q = [this.zones[0].latitude, this.zones[0].longitude];
-      const key = "7da96f2f52f54be7a1b123737202102";
+      const key = "e8078bb2fbfd43f1b9f175027202403";
       this.climaLoading = false;
       this.weatherService.getWeather(key,q).subscribe((weather) => {
         this.climaToday = weather.data.current_condition[0];

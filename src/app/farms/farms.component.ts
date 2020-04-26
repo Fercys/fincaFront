@@ -49,7 +49,9 @@ export class FarmsComponent implements OnInit {
     },
     error=>{            
       this.loading = false;
-      this.notificationService.showError(error.error);
+      
+      if(error.error)
+      this.notificationService.showError('Error',error.error)
       console.log("error:",error)
     });
   }
@@ -61,7 +63,9 @@ export class FarmsComponent implements OnInit {
     },
     error=>{
       this.loading = false;
-      this.notificationService.showError(error.error);
+      
+      if(error.error)
+        this.notificationService.showError('Error',error.error)
       console.log("error:",error)
     });
   }
