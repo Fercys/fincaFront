@@ -77,7 +77,7 @@ export class WiseconnService {
     )
   }
   getSensorTypesOfFarm(id:number): Observable<any> { 
-    return this.http.get<any>(this.baseurl + '/farms/'+id+"/sensortypes", this.httpOptions)
+    return this.http.get<any>(this.baseurl + '/farms/'+id+'/sensortypes', this.httpOptions)
     .pipe(
       retry(1),
       catchError(this.errorHandl)

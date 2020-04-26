@@ -7,6 +7,7 @@ import * as bcrypt from 'bcryptjs';
 import * as moment from "moment";
 
 import { WiseconnService } from 'app/services/wiseconn.service';
+import { NotificationService } from 'app/services/notification.service';
 import { UserService } from 'app/services/user.service';
 
 //graficas
@@ -122,6 +123,7 @@ export class FreePlotterComponent implements OnInit {
 	};
 	constructor(
 		public wiseconnService: WiseconnService,
+    	public notificationService:NotificationService,
     	public userService:UserService,
 		public router: Router,
 		public calendar: NgbCalendar, 
@@ -188,6 +190,10 @@ export class FreePlotterComponent implements OnInit {
 					}
 				}				
 			}			
+		},
+		error=>{
+            this.notificationService.showError(error.error);
+			console.log("error:",error)
 		});
 	}	
 	sortData(data, type) {
