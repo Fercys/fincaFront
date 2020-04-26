@@ -158,6 +158,13 @@ export class FreePlotterComponent implements OnInit {
 	  	this.userService.getFarmsByUser(this.user.id).subscribe((response: any) => {
 	  	  	this.farms = response.data?response.data:response;      
 	  	  	this.loading = false;
+	  	},
+	  	error=>{
+	  		this.loading = false;
+			
+			if(error.error)
+			this.notificationService.showError('Error',error.error)
+			console.log("error:",error)
 	  	});
 	}
 	getFarms() {
@@ -165,6 +172,13 @@ export class FreePlotterComponent implements OnInit {
 		this.wiseconnService.getFarms().subscribe((response: any) => {			
 			this.loading=false;
 			this.farms = response.data?response.data:response;
+		},
+		error=>{
+			this.loading = false;
+			
+			if(error.error)
+			this.notificationService.showError('Error',error.error)
+			console.log("error:",error)
 		})
 	}
 	getFarm(id){
