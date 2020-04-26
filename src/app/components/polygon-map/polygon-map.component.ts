@@ -232,6 +232,9 @@ export class PolygonMapComponent implements OnInit,OnChanges {
             if(i==this.zones.length){
               this.loading=false;
             }
+          },
+          error=>{
+            this.loading=false;
           });
         }
       }
