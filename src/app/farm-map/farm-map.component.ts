@@ -371,7 +371,9 @@ export class FarmMapComponent implements OnInit {
             },
             error=>{
               this.loading = false;
-              this.notificationService.showError(error.error);
+              
+              if(error.error)
+              this.notificationService.showError('Error',error.error)
               console.log("error:",error)
             }) 
           }
@@ -382,7 +384,7 @@ export class FarmMapComponent implements OnInit {
   getWeather(){
     if (this.farm.latitude && this.farm.longitude) {
       this.climaLoading = false;
-      this.weatherService.getWeather("7da96f2f52f54be7a1b123737202102", [this.farm.latitude, this.farm.longitude]).subscribe((response) => {
+      this.weatherService.getWeather("e8078bb2fbfd43f1b9f175027202403", [this.farm.latitude, this.farm.longitude]).subscribe((response) => {
         this.climaLoading = true;
         this.resetWeatherValues(response);
         for (const element of response.data.weather) {
