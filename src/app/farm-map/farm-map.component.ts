@@ -370,6 +370,7 @@ export class FarmMapComponent implements OnInit {
               this.setLocalStorageItem("lastMeasurements",this.getJSONStringify(this.measurements));
             },
             error=>{
+              this.loading = false;
               this.notificationService.showError(error.error);
               console.log("error:",error)
             }) 

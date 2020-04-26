@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import * as bcrypt from 'bcryptjs';
 //services
 import { WiseconnService } from '../services/wiseconn.service';
+import { NotificationService } from 'app/services/notification.service';
 import { UserService } from 'app/services/user.service';
 
 @Component({
@@ -18,6 +19,7 @@ export class FarmsComponent implements OnInit {
   public user:any=null;
   constructor(
     private wiseconnService: WiseconnService,
+    public notificationService:NotificationService,
     private userService:UserService,
     private router: Router,
   ) { }
@@ -42,8 +44,13 @@ export class FarmsComponent implements OnInit {
   getFarms(){      
     this.loading = true;
     this.wiseconnService.getFarms().subscribe((response: any) => {
-      this.farms = response.data?response.data:response;      
+      this.farms = response.data?response.data:response;
       this.loading = false;
+    },
+    error=>{            
+      this.loading = false;
+      this.notificationService.showError(error.error);
+      console.log("error:",error)
     });
   }
   getFarmsByUser(){      
@@ -51,6 +58,11 @@ export class FarmsComponent implements OnInit {
     this.userService.getFarmsByUser(this.user.id).subscribe((response: any) => {
       this.farms = response.data?response.data:response;      
       this.loading = false;
+    },
+    error=>{
+      this.loading = false;
+      this.notificationService.showError(error.error);
+      console.log("error:",error)
     });
   }
   navigateTo(route:any[]){
