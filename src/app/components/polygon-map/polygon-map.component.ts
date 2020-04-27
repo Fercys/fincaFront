@@ -155,7 +155,7 @@ export class PolygonMapComponent implements OnInit,OnChanges {
               polygonDatas.push({element:element,data:polygonData,markerImg:"https://i.imgur.com/C7gyw7N.png"});
               this.trianglesRef.push({triangle:Triangle,element:element,marker:marker});
             } else {
-              if (data != "") {
+              if (data.length>0) {
                 let runningElement=data.find(element =>{return element.status == "Running"});
                 if (runningElement==undefined) { //status 'ok'
                   this.zones.map((zone)=>{
