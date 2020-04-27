@@ -521,6 +521,7 @@ export class FarmMapComponent implements OnInit {
               }
               if(this.temperatureId&&this.humidityId){
                     lineFlag=true;
+                    this.loading = true;
                     this.wiseconnService.getDataByMeasure(this.temperatureId,this.dateRange).subscribe((response) => {
                       let temperatureData=response.data?response.data:response;
                       if(temperatureData.length==0){
@@ -532,6 +533,7 @@ export class FarmMapComponent implements OnInit {
                         Swal.fire({icon: 'error',title: 'Oops...',html: htmlErrors});
                       }
                       this.wiseconnService.getDataByMeasure(this.humidityId,this.dateRange).subscribe((response) => {
+                        this.loading = false;
                         let humidityData=response.data?response.data:response;
                         if(humidityData.length==0){
                           if(htmlErrors){
@@ -578,10 +580,12 @@ export class FarmMapComponent implements OnInit {
                         this.renderCharts("line");
                       },
                       error=>{
+                        this.loading = false;
                         console.log("error:",error)
                       });
                     },
                     error=>{
+                      this.loading = false;
                       console.log("error:",error)
                     });
                   }else if(j+1==data.length){
@@ -665,8 +669,16 @@ export class FarmMapComponent implements OnInit {
                         this.renderCharts("bar");
                       
                     }
-                  });
-                });
+                  },
+                      error=>{
+                        this.loading = false;
+                        console.log("error:",error)
+                      });
+                    },
+                    error=>{
+                      this.loading = false;
+                      console.log("error:",error)
+                    });
               }else if(j+1==data.length){
                 Swal.fire({
                   icon: 'error',
