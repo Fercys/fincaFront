@@ -356,11 +356,7 @@ export class FarmMapComponent implements OnInit {
   }
   getIrrigarionsRealOfZones(){
     this.zones.forEach(element => {
-      // Construct the polygon.
-      /*this.wiseconnService.getIrrigarionsRealOfZones(element.id).subscribe((response: any) => {
-        let data=response.data?response.data:response;*/
         let id= element.id_wiseconn?element.id_wiseconn:element.id;
-        if (parseInt(id) == 727 || parseInt(id) == 6054 || parseInt(id) == 13872){
           if (element.name == "Estación Meteorológica" || element.name == "Estación Metereológica") {
             this.loading = true;
             this.wiseconnService.getMeterogoAgrifut(element.id).subscribe((response: any) => {
@@ -377,8 +373,6 @@ export class FarmMapComponent implements OnInit {
               console.log("error:",error)
             }) 
           }
-        }
-      /*});*/
     });
   }
   getWeather(){
@@ -422,15 +416,15 @@ export class FarmMapComponent implements OnInit {
   renderCharts(chart:string) {
     switch (chart) {
       case "line":
-          this.lineChart.series[0].setData(this.lineChartData[0]);
-          this.lineChart.series[1].setData(this.lineChartData[1]);
-          this.lineChart.xAxis[0].setCategories(this.lineChartLabels, true);
+        this.lineChart.series[0].setData(this.lineChartData[0]);
+        this.lineChart.series[1].setData(this.lineChartData[1]);
+        this.lineChart.xAxis[0].setCategories(this.lineChartLabels, true);
         this.renderLineChartFlag=true;
         break;
       case "bar":
         this.barChart.series[0].setData(this.barChartData[0]);
-          this.barChart.series[1].setData(this.barChartData[1]);
-          this.barChart.xAxis[0].setCategories(this.barChartLabels, true);
+        this.barChart.series[1].setData(this.barChartData[1]);
+        this.barChart.xAxis[0].setCategories(this.barChartLabels, true);
         this.renderBarChartFlag=true;
         break;
       default:
@@ -516,6 +510,7 @@ export class FarmMapComponent implements OnInit {
             let barFlag=false;
             let lineFlag=false;
             let j=0;
+            let htmlErrors=null;
             while (!lineFlag && j < data.length) {
               //line chart
               if (data[j].sensorType === "Temperature") {
@@ -528,8 +523,24 @@ export class FarmMapComponent implements OnInit {
                     lineFlag=true;
                     this.wiseconnService.getDataByMeasure(this.temperatureId,this.dateRange).subscribe((response) => {
                       let temperatureData=response.data?response.data:response;
+                      if(temperatureData.length==0){
+                        if(htmlErrors){
+                          htmlErrors+='No existen valores de "temperatura" registrados para la grafica<br>'
+                        }else{
+                          htmlErrors='No existen valores de "temperatura" registrados para la grafica<br>'
+                        }
+                        Swal.fire({icon: 'error',title: 'Oops...',html: htmlErrors});
+                      }
                       this.wiseconnService.getDataByMeasure(this.humidityId,this.dateRange).subscribe((response) => {
                         let humidityData=response.data?response.data:response;
+                        if(humidityData.length==0){
+                          if(htmlErrors){
+                            htmlErrors+='No existen valores de "humedad" registrados para la grafica<br>'
+                          }else{
+                            htmlErrors='No existen valores de "humedad" registrados para la grafica<br>'
+                          }
+                          Swal.fire({icon: 'error',title: 'Oops...',html: htmlErrors});
+                        }
                         // this.loading = false;
                         temperatureData=temperatureData.map((element)=>{
                           element.chart="temperature";
@@ -555,14 +566,14 @@ export class FarmMapComponent implements OnInit {
                           if(hour==0 || hour==2 || hour==4 || hour==6 ||hour==8 || hour==10 || hour==12 || hour==16 || hour==18 || hour==20 || hour==22)
                             return element;
                         });
-                        for (var i = 0; i < chartData.length ; i++) {                                
-                          if(chartData[i+1]){
-                            if((chartData[i].chart==="temperature")&&(chartData[i+1].chart==="humidity")){
-                              this.lineChartLabels.push(this.momentFormat(chartData[i].time,"line"));
-                              this.lineChartData[0].push(chartData[i].value);
-                              this.lineChartData[1].push(chartData[i+1].value);
-                            }                                                  
-                          } 
+                        for (var i = 0; i < chartData.length ; i++) {
+                          if(this.lineChartLabels.find((element) => {return element === this.momentFormat(chartData[i].time,null);}) === undefined) {
+                            this.lineChartLabels.push(this.momentFormat(chartData[i].time,"line"));
+                          }
+                          if((chartData[i].chart==="temperature"))
+                            this.lineChartData[0].push(chartData[i].value);
+                          if(chartData[i].chart==="humidity")
+                            this.lineChartData[1].push(chartData[i].value);
                         }
                         this.renderCharts("line");
                       });
@@ -593,8 +604,24 @@ export class FarmMapComponent implements OnInit {
                 barFlag=true;
                 this.wiseconnService.getDataByMeasure(this.rainId,this.dateRange).subscribe((response) => {
                   let rainData=response.data?response.data:response;
+                  if(rainData.length==0){
+                    if(htmlErrors){
+                      htmlErrors+='No existen valores de "rain" registrados para la grafica<br>'
+                    }else{
+                      htmlErrors='No existen valores de "rain" registrados para la grafica<br>'
+                    }
+                    Swal.fire({icon: 'error',title: 'Oops...',html: htmlErrors});
+                  }
                   this.wiseconnService.getDataByMeasure(this.et0Id,this.dateRange).subscribe((response) => {
                     let et0Data=response.data?response.data:response;
+                    if(et0Data.length==0){
+                      if(htmlErrors){
+                        htmlErrors+='No existen valores de "et0" registrados para la grafica<br>'
+                      }else{
+                        htmlErrors='No existen valores de "et0" registrados para la grafica<br>'
+                      }
+                      Swal.fire({icon: 'error',title: 'Oops...',html: htmlErrors});
+                    }
                     this.loading = false;
                     rainData=rainData.map((element)=>{
                       element.chart="rain";
@@ -621,24 +648,16 @@ export class FarmMapComponent implements OnInit {
                     })
                     let maxLabelValue=0;
                     for (var i = 0; i < chartData.length; i++) {
-                      if(chartData[i+1]){
-                        if(chartData[i].time===chartData[i+1].time){
-                          if(this.barChartLabels.find((element) => {
-                                return element === this.momentFormat(chartData[i].time,"bar");
-                            }) === undefined) {
-                                this.barChartLabels.push(this.momentFormat(chartData[i].time,"bar"));
-                              if(chartData[i].chart=="rain") {
-                            this.barChartData[0].push(chartData[i].value);
-                        }
-                        if(chartData[i].chart=="et0") {
-                          this.barChartData[1].push(chartData[i].value);
-                        }
-                            }
-                        }
-                      }  
-                      if(i+1==chartData.length){
-                        this.renderCharts("bar");
+                      if(this.barChartLabels.find((element) => {return element === this.momentFormat(chartData[i].time,null);}) === undefined) {
+                        this.barChartLabels.push(this.momentFormat(chartData[i].time,"bar"));
                       }
+                      if(chartData[i].chart=="et0")
+                        this.barChartData[1].push(chartData[i].value);
+                      if(chartData[i].chart=="rain")
+                        this.barChartData[0].push(chartData[i].value);
+                      if(i+1==chartData.length)
+                        this.renderCharts("bar");
+                      
                     }
                   });
                 });

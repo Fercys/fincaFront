@@ -566,7 +566,7 @@ export class FreePlotterComponent implements OnInit {
 					    			this.chartOptions.series.push(serie);
 					    			this.chartOptions.yAxis.push(yAxis);
 					    			this.chartOptions.colors.push(selectGroup.chartColor);
-					    		}					    			
+					    		}
 	    						this.highchartsShow();
 	    						this.loading=false;
 							},
