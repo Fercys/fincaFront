@@ -576,7 +576,13 @@ export class FarmMapComponent implements OnInit {
                             this.lineChartData[1].push(chartData[i].value);
                         }
                         this.renderCharts("line");
+                      },
+                      error=>{
+                        console.log("error:",error)
                       });
+                    },
+                    error=>{
+                      console.log("error:",error)
                     });
                   }else if(j+1==data.length){
                     Swal.fire({
