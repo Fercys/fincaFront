@@ -229,10 +229,26 @@
                 </div>
               </div>
               <div class="container-fluid top">
-                <div #lineChart></div>
+                <app-chart 
+                  [zones]="zones" 
+                  [type]="'spline'" 
+                  [title]="'TEMPERATURA/HUMEDAD'" 
+                  [firstSensorType]="'Temperature'"
+                  [secondSensorType]="'Humidity'"
+                  [fromDate]="fromDate" 
+                  [toDate]="toDate">
+                </app-chart>
               </div>
               <div class="container-fluid top">
-                <div #barChart></div>
+                <app-chart 
+                  [zones]="zones" 
+                  [type]="'column'" 
+                  [title]="'PRECIPITACIÓN/ET0'" 
+                  [firstSensorType]="'Rain'"
+                  [secondSensorType]="'Et0'"
+                  [fromDate]="fromDate" 
+                  [toDate]="toDate">
+                </app-chart>
               </div>
             </div>
           </div>

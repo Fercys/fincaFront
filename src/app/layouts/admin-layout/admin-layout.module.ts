@@ -50,6 +50,7 @@ import { SoilAnalysisComponent } from 'app/soil-analysis/soil-analysis.component
 
 //componentes de uso compartido
 import { PolygonMapComponent } from 'app/components/polygon-map/polygon-map.component';
+import { ChartComponent } from 'app/components/chart/chart.component';
 
 @NgModule({
   imports: [
@@ -96,7 +97,8 @@ import { PolygonMapComponent } from 'app/components/polygon-map/polygon-map.comp
     DialogMessage,
     ReportInstalationComponent,
     ConfigurationComponent,
-    PolygonMapComponent
+    PolygonMapComponent,
+    ChartComponent
   ],
   entryComponents:[
     DialogMessage

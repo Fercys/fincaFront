@@ -209,7 +209,7 @@
                   </div>
                   <div class="w-10">
                     <div class="form-inline">
-                      <button class="btn-greem" [disabled]="requestChartBtn" (click)="getChartInformation()">Ver</button>
+                      <button class="btn-greem" [disabled]="requestChartBtn" (click)="changeDateRange()">Ver</button>
                     </div>
                   </div>
                   <div class="w-50">
@@ -285,10 +285,26 @@
                 </div>
               </div>
               <div class="container-fluid top">
-                <div #lineChart></div>
+                <app-chart 
+                  [zones]="zones" 
+                  [type]="'spline'" 
+                  [title]="'TEMPERATURA/HUMEDAD'" 
+                  [firstSensorType]="'Temperature'"
+                  [secondSensorType]="'Humidity'"
+                  [fromDate]="fromDate" 
+                  [toDate]="toDate">
+                </app-chart>
               </div>
               <div class="container-fluid top">
-                <div #barChart></div>
+                <app-chart 
+                  [zones]="zones" 
+                  [type]="'column'" 
+                  [title]="'PRECIPITACIÓN/ET0'" 
+                  [firstSensorType]="'Rain'"
+                  [secondSensorType]="'Et0'"
+                  [fromDate]="fromDate" 
+                  [toDate]="toDate">
+                </app-chart>
               </div>
             </div>
           </div>
