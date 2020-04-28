@@ -202,7 +202,7 @@ export class FreePlotterComponent implements OnInit {
 					if(variableGroup.name==sensorType.group){
 						variableGroup.variable.push({id:sensorType.id,name:sensorType.name})
 					}
-				}				
+				}
 			}			
 		},
 		error=>{
@@ -663,7 +663,13 @@ export class FreePlotterComponent implements OnInit {
 					this.selectGroups[this.selectGroups.length-1].zoneSelected){
 					this.selectGroups.push(this.getDefaultSelectGroups())
 						if(localStorage.getItem("lastFarmId")){
-			          		this.getSensorTypesOfFarm(parseInt(localStorage.getItem("lastFarmId")));
+			          		for (let sensorType of this.sensorTypes) {
+								for (let variableGroup of this.selectGroups[this.selectGroups.length-1].variableGroups) {
+									if(variableGroup.name==sensorType.group){
+										variableGroup.variable.push({id:sensorType.id,name:sensorType.name})
+									}
+								}
+							}
 					    }
 				}else{
 					let message='';

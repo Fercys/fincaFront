@@ -514,196 +514,200 @@ export class FarmMapComponent implements OnInit {
           this.weatherStation = this.zones[i];
           this.wiseconnService.getMeasuresOfZones(this.weatherStation.id).subscribe((response) => {
             let data=response.data?response.data:response;
-            let barFlag=false;
-            let lineFlag=false;
-            let j=0;
-            let htmlErrors=null;
-            while (!lineFlag && j < data.length) {
-              //line chart
-              if (data[j].sensorType === "Temperature") {
-                this.temperatureId = data[j].id;
-              }
-              if (data[j].sensorType === "Humidity") {
-                this.humidityId = data[j].id;
-              }
-              if(this.temperatureId&&this.humidityId){
-                    lineFlag=true;
-                    this.loading = true;
-                    this.wiseconnService.getDataByMeasure(this.temperatureId,this.dateRange).subscribe((response) => {
-                      let temperatureData=response.data?response.data:response;
-                      if(temperatureData.length==0){
-                        if(htmlErrors){
-                          htmlErrors+='No existen valores de "temperatura" registrados para la grafica<br>'
-                        }else{
-                          htmlErrors='No existen valores de "temperatura" registrados para la grafica<br>'
-                        }
-                        Swal.fire({icon: 'error',title: 'Oops...',html: htmlErrors});
-                      }
-                      this.wiseconnService.getDataByMeasure(this.humidityId,this.dateRange).subscribe((response) => {
-                        this.loading = false;
-                        let humidityData=response.data?response.data:response;
-                        if(humidityData.length==0){
+            if(data.length==0){
+              Swal.fire({icon: 'error',title: 'Oops...',text: 'Estación metereologica sin "Measures" registradas'});
+            }else{
+              let barFlag=false;
+              let lineFlag=false;
+              let j=0;
+              let htmlErrors=null;
+              while (!lineFlag && j < data.length) {
+                //line chart
+                if (data[j].sensorType === "Temperature") {
+                  this.temperatureId = data[j].id;
+                }
+                if (data[j].sensorType === "Humidity") {
+                  this.humidityId = data[j].id;
+                }
+                if(this.temperatureId&&this.humidityId){
+                      lineFlag=true;
+                      this.loading = true;
+                      this.wiseconnService.getDataByMeasure(this.temperatureId,this.dateRange).subscribe((response) => {
+                        let temperatureData=response.data?response.data:response;
+                        if(temperatureData.length==0){
                           if(htmlErrors){
-                            htmlErrors+='No existen valores de "humedad" registrados para la grafica<br>'
+                            htmlErrors+='No existen valores de "temperatura" registrados para la grafica<br>'
                           }else{
-                            htmlErrors='No existen valores de "humedad" registrados para la grafica<br>'
+                            htmlErrors='No existen valores de "temperatura" registrados para la grafica<br>'
                           }
                           Swal.fire({icon: 'error',title: 'Oops...',html: htmlErrors});
                         }
-                        // this.loading = false;
-                        temperatureData=temperatureData.map((element)=>{
-                          element.chart="temperature";
-                          return element
-                        })
-                        humidityData=humidityData.map((element)=>{
-                          element.chart="humidity";
-                          return element
-                        })
-                        let chartData=temperatureData.concat(humidityData);
-                        chartData.sort(function (a, b) {
-                          if (moment(a.time).isAfter(b.time)) {
-                            return 1;
+                        this.wiseconnService.getDataByMeasure(this.humidityId,this.dateRange).subscribe((response) => {
+                          this.loading = false;
+                          let humidityData=response.data?response.data:response;
+                          if(humidityData.length==0){
+                            if(htmlErrors){
+                              htmlErrors+='No existen valores de "humedad" registrados para la grafica<br>'
+                            }else{
+                              htmlErrors='No existen valores de "humedad" registrados para la grafica<br>'
+                            }
+                            Swal.fire({icon: 'error',title: 'Oops...',html: htmlErrors});
                           }
-                          if (!moment(a.time).isAfter(b.time)) {
-                            return -1;
+                          // this.loading = false;
+                          temperatureData=temperatureData.map((element)=>{
+                            element.chart="temperature";
+                            return element
+                          })
+                          humidityData=humidityData.map((element)=>{
+                            element.chart="humidity";
+                            return element
+                          })
+                          let chartData=temperatureData.concat(humidityData);
+                          chartData.sort(function (a, b) {
+                            if (moment(a.time).isAfter(b.time)) {
+                              return 1;
+                            }
+                            if (!moment(a.time).isAfter(b.time)) {
+                              return -1;
+                            }
+                            // a must be equal to b
+                            return 0;
+                          });
+                          chartData = chartData.filter((element) => {
+                            let hour=moment(element.time).hours();
+                            let minutes=moment(element.time).minutes();
+                            if(hour==4 || hour==8 || hour==12 || hour==16 || hour==20 || hour==0 && minutes==0)
+                              return element;
+                          });
+                          for (var i = 0; i < chartData.length ; i++) {
+                            if(this.lineChartLabels.values.find((element) => {return this.momentFormat(element,"label") === this.momentFormat(chartData[i].time,"label");}) === undefined) {
+                              this.lineChartLabels.values.push(this.momentFormat(chartData[i].time,"label"));
+                              this.lineChartLabels.labels.push(this.momentFormat(chartData[i].time,"line"));
+                            }
+                            if((chartData[i].chart==="temperature")&&this.lineChartLabels.values[this.lineChartLabels.values.length-1]==this.momentFormat(chartData[i].time,"label"))
+                              this.lineChartData[0].push(chartData[i].value);
+                            if((chartData[i].chart==="humidity")&&this.lineChartLabels.values[this.lineChartLabels.values.length-1]==this.momentFormat(chartData[i].time,"label"))
+                              this.lineChartData[1].push(chartData[i].value);
                           }
-                          // a must be equal to b
-                          return 0;
+                          if(this.lineChartData[0].length>this.lineChartData[1].length){
+                            this.lineChartData[0]= this.lineChartData[0].slice(0, this.lineChartData[1].length);
+                          }else{
+                            this.lineChartData[1]= this.lineChartData[1].slice(0, this.lineChartData[0].length);
+                          }
+                          this.renderCharts("line");
+                        },
+                        error=>{
+                          this.loading = false;
+                          console.log("error:",error)
                         });
-                        chartData = chartData.filter((element) => {
-                          let hour=moment(element.time).hours();
-                          let minutes=moment(element.time).minutes();
-                          if(hour==4 || hour==8 || hour==12 || hour==16 || hour==20 || hour==0 && minutes==0)
-                            return element;
-                        });
-                        for (var i = 0; i < chartData.length ; i++) {
-                          if(this.lineChartLabels.values.find((element) => {return this.momentFormat(element,"label") === this.momentFormat(chartData[i].time,"label");}) === undefined) {
-                            this.lineChartLabels.values.push(this.momentFormat(chartData[i].time,"label"));
-                            this.lineChartLabels.labels.push(this.momentFormat(chartData[i].time,"line"));
-                          }
-                          if((chartData[i].chart==="temperature")&&this.lineChartLabels.values[this.lineChartLabels.values.length-1]==this.momentFormat(chartData[i].time,"label"))
-                            this.lineChartData[0].push(chartData[i].value);
-                          if((chartData[i].chart==="humidity")&&this.lineChartLabels.values[this.lineChartLabels.values.length-1]==this.momentFormat(chartData[i].time,"label"))
-                            this.lineChartData[1].push(chartData[i].value);
-                        }
-                        if(this.lineChartData[0].length>this.lineChartData[1].length){
-                          this.lineChartData[0]= this.lineChartData[0].slice(0, this.lineChartData[1].length);
-                        }else{
-                          this.lineChartData[1]= this.lineChartData[1].slice(0, this.lineChartData[0].length);
-                        }
-                        this.renderCharts("line");
                       },
                       error=>{
                         this.loading = false;
                         console.log("error:",error)
                       });
-                    },
-                    error=>{
-                      this.loading = false;
-                      console.log("error:",error)
-                    });
-                  }else if(j+1==data.length){
-                    Swal.fire({
-                      icon: 'error',
-                      title: 'Oops...',
-                      text: 'No tiene configurado los sensores de humedad y temperatura'
-                    })
-                  }
-              j++;
-            }
-            j=0;
-            while (!barFlag && j < data.length) {
-              //bar chart
-              if (data[j].sensorType != undefined && data[j].name != undefined){
-                if ((data[j].sensorType).toLowerCase() === "rain" && (data[j].name).toLowerCase() === "pluviometro") {
-                  this.rainId = data[j].id;
-                }
-              }
-              if ((data[j].name) != undefined){
-                if ((data[j].name).toLowerCase() === "et0") {
-                  this.et0Id = data[j].id;
-                }
-              }
-              if(this.rainId&&this.et0Id){
-                barFlag=true;
-                this.wiseconnService.getDataByMeasure(this.rainId,this.dateRange).subscribe((response) => {
-                  let rainData=response.data?response.data:response;
-                  if(rainData.length==0){
-                    if(htmlErrors){
-                      htmlErrors+='No existen valores de "rain" registrados para la grafica<br>'
-                    }else{
-                      htmlErrors='No existen valores de "rain" registrados para la grafica<br>'
+                    }else if(j+1==data.length){
+                      Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'No tiene configurado los sensores de humedad y temperatura'
+                      })
                     }
-                    Swal.fire({icon: 'error',title: 'Oops...',html: htmlErrors});
+                j++;
+              }
+              j=0;
+              while (!barFlag && j < data.length) {
+                //bar chart
+                if (data[j].sensorType != undefined && data[j].name != undefined){
+                  if ((data[j].sensorType).toLowerCase() === "rain" && (data[j].name).toLowerCase() === "pluviometro") {
+                    this.rainId = data[j].id;
                   }
-                  this.wiseconnService.getDataByMeasure(this.et0Id,this.dateRange).subscribe((response) => {
-                    let et0Data=response.data?response.data:response;
-                    if(et0Data.length==0){
+                }
+                if ((data[j].name) != undefined){
+                  if ((data[j].name).toLowerCase() === "et0") {
+                    this.et0Id = data[j].id;
+                  }
+                }
+                if(this.rainId&&this.et0Id){
+                  barFlag=true;
+                  this.wiseconnService.getDataByMeasure(this.rainId,this.dateRange).subscribe((response) => {
+                    let rainData=response.data?response.data:response;
+                    if(rainData.length==0){
                       if(htmlErrors){
-                        htmlErrors+='No existen valores de "et0" registrados para la grafica<br>'
+                        htmlErrors+='No existen valores de "rain" registrados para la grafica<br>'
                       }else{
-                        htmlErrors='No existen valores de "et0" registrados para la grafica<br>'
+                        htmlErrors='No existen valores de "rain" registrados para la grafica<br>'
                       }
                       Swal.fire({icon: 'error',title: 'Oops...',html: htmlErrors});
                     }
-                    this.loading = false;
-                    rainData=rainData.map((element)=>{
-                      element.chart="rain";
-                      return element
-                    })
-                    et0Data=et0Data.map((element)=>{
-                      element.chart="et0";
-                      return element;
-                    })                          
-                    let chartData=rainData.concat(et0Data);
-                    chartData.sort(function (a, b) {
-                      if (moment(a.time).isAfter(b.time)) {
-                        return 1;
-                      }
-                      if (!moment(a.time).isAfter(b.time)) {
-                        return -1;
-                      }
-                      return 0;
-                    });
-                    chartData=chartData.filter((element)=>{
-                      if(moment.utc(element.time).format("HH:mm:ss")=="00:00:00"){                            
-                        return element;
-                      }
-                    })
-                    for (var i = 0; i < chartData.length ; i++) {
-                          if(this.barChartLabels.values.find((element) => {return this.momentFormat(element,"label") === this.momentFormat(chartData[i].time,"label");}) === undefined) {
-                            this.barChartLabels.values.push(this.momentFormat(chartData[i].time,"label"));
-                            this.barChartLabels.labels.push(this.momentFormat(chartData[i].time,"bar"));
-                          }
-                          if((chartData[i].chart==="rain")&&this.barChartLabels.values[this.barChartLabels.values.length-1]==this.momentFormat(chartData[i].time,"label"))
-                            this.barChartData[0].push(chartData[i].value);
-                          if((chartData[i].chart==="et0")&&this.barChartLabels.values[this.barChartLabels.values.length-1]==this.momentFormat(chartData[i].time,"label"))
-                            this.barChartData[1].push(chartData[i].value);
-                        }
-                        if(this.barChartData[0].length>this.barChartData[1].length){
-                          this.barChartData[0]= this.barChartData[0].slice(0, this.barChartData[1].length);
+                    this.wiseconnService.getDataByMeasure(this.et0Id,this.dateRange).subscribe((response) => {
+                      let et0Data=response.data?response.data:response;
+                      if(et0Data.length==0){
+                        if(htmlErrors){
+                          htmlErrors+='No existen valores de "et0" registrados para la grafica<br>'
                         }else{
-                          this.barChartData[1]= this.barChartData[1].slice(0, this.barChartData[0].length);
+                          htmlErrors='No existen valores de "et0" registrados para la grafica<br>'
                         }
-                        this.renderCharts("bar");
-                  },
+                        Swal.fire({icon: 'error',title: 'Oops...',html: htmlErrors});
+                      }
+                      this.loading = false;
+                      rainData=rainData.map((element)=>{
+                        element.chart="rain";
+                        return element
+                      })
+                      et0Data=et0Data.map((element)=>{
+                        element.chart="et0";
+                        return element;
+                      })                          
+                      let chartData=rainData.concat(et0Data);
+                      chartData.sort(function (a, b) {
+                        if (moment(a.time).isAfter(b.time)) {
+                          return 1;
+                        }
+                        if (!moment(a.time).isAfter(b.time)) {
+                          return -1;
+                        }
+                        return 0;
+                      });
+                      chartData=chartData.filter((element)=>{
+                        if(moment.utc(element.time).format("HH:mm:ss")=="00:00:00"){                            
+                          return element;
+                        }
+                      })
+                      for (var i = 0; i < chartData.length ; i++) {
+                            if(this.barChartLabels.values.find((element) => {return this.momentFormat(element,"label") === this.momentFormat(chartData[i].time,"label");}) === undefined) {
+                              this.barChartLabels.values.push(this.momentFormat(chartData[i].time,"label"));
+                              this.barChartLabels.labels.push(this.momentFormat(chartData[i].time,"bar"));
+                            }
+                            if((chartData[i].chart==="rain")&&this.barChartLabels.values[this.barChartLabels.values.length-1]==this.momentFormat(chartData[i].time,"label"))
+                              this.barChartData[0].push(chartData[i].value);
+                            if((chartData[i].chart==="et0")&&this.barChartLabels.values[this.barChartLabels.values.length-1]==this.momentFormat(chartData[i].time,"label"))
+                              this.barChartData[1].push(chartData[i].value);
+                          }
+                          if(this.barChartData[0].length>this.barChartData[1].length){
+                            this.barChartData[0]= this.barChartData[0].slice(0, this.barChartData[1].length);
+                          }else{
+                            this.barChartData[1]= this.barChartData[1].slice(0, this.barChartData[0].length);
+                          }
+                          this.renderCharts("bar");
+                    },
+                        error=>{
+                          this.loading = false;
+                          console.log("error:",error)
+                        });
+                      },
                       error=>{
                         this.loading = false;
                         console.log("error:",error)
                       });
-                    },
-                    error=>{
-                      this.loading = false;
-                      console.log("error:",error)
-                    });
-              }else if(j+1==data.length){
-                Swal.fire({
-                  icon: 'error',
-                  title: 'Oops...',
-                  text: 'No tiene configurado los sensores de rain y et0'
-                })
+                }else if(j+1==data.length){
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'No tiene configurado los sensores de rain y et0'
+                  })
+                }
+                j++;
               }
-              j++;
             }
           });
         }
