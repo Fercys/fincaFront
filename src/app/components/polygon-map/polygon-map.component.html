@@ -1,2 +1,6 @@
-<div *ngIf="loading" style="text-align: center;">Consultanado RealIrrigations de las Zonas {{loadingTotalZones}} <i class="fa fa-spinner fa-pulse"></i></div>
-<div [style.visibility]="loading?'hidden':'visible'" #mapElement id="map-container" class="map"></div>
+<div *ngIf="loading" class="meter-bg" style="">
+	<div class="meter" [style.width]="intPercentage">
+		<!--<span style="width: 50%;"></span>-->
+	</div>
+</div>
+<div #mapElement id="map-container" class="map"></div>

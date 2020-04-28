@@ -2,3 +2,14 @@
   width: 100%;
   height: 400px;
 }
+.meter-bg{
+	background: #DCE0E3;
+	height: 5px;
+	border-radius: 3px;
+	.meter {
+		border-radius: 3px;
+		height: 100%;
+		position: relative;
+		background: #6fb060;
+	}
+}

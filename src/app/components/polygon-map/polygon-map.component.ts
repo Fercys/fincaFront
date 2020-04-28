@@ -25,7 +25,8 @@ export class PolygonMapComponent implements OnInit,OnChanges {
     public trianglesRef:any[]=[];
   	public statusRegando:boolean=false;
     public loading:boolean=false;
-    public loadingTotalZones:string=null;
+    public percentage:number=null;
+    public intPercentage:string='0%';
   	constructor(
       private calendar: NgbCalendar, 
       private wiseconnService: WiseconnService,) { }
@@ -228,7 +229,8 @@ export class PolygonMapComponent implements OnInit,OnChanges {
               }
             }
             i++;
-            this.loadingTotalZones=(i)+"/"+this.zones.length;
+            this.percentage=(i/this.zones.length)*100;
+            this.intPercentage=Math.round(this.percentage)+"%";
             if(i==this.zones.length){
               this.loading=false;
             }
