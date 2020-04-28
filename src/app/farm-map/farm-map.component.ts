@@ -56,7 +56,10 @@ export class FarmMapComponent implements OnInit {
   @ViewChild('lineChart', { static: true }) public lineChartElement: ElementRef;
   private lineChart;
   public lineChartData:any[]=[[],[]];
-  public lineChartLabels:any[]=[];
+  public lineChartLabels:any={
+    values:[],
+    labels:[]
+  };
   public lineChartOptions:any = {
       chart: {
           type: 'spline',
@@ -122,7 +125,10 @@ export class FarmMapComponent implements OnInit {
   @ViewChild('barChart', { static: true }) public barChartElement: ElementRef;
   private barChart;
   public barChartData:any[]=[[],[]];
-  public barChartLabels:any[]=[];
+  public barChartLabels:any={
+    values:[],
+    labels:[]
+  };
   public barChartOptions:any = {
       chart: {
           type: 'column'
@@ -418,13 +424,13 @@ export class FarmMapComponent implements OnInit {
       case "line":
         this.lineChart.series[0].setData(this.lineChartData[0]);
         this.lineChart.series[1].setData(this.lineChartData[1]);
-        this.lineChart.xAxis[0].setCategories(this.lineChartLabels, true);
+        this.lineChart.xAxis[0].setCategories(this.lineChartLabels.labels, true);
         this.renderLineChartFlag=true;
         break;
       case "bar":
         this.barChart.series[0].setData(this.barChartData[0]);
         this.barChart.series[1].setData(this.barChartData[1]);
-        this.barChart.xAxis[0].setCategories(this.barChartLabels, true);
+        this.barChart.xAxis[0].setCategories(this.barChartLabels.labels, true);
         this.renderBarChartFlag=true;
         break;
       default:
@@ -453,8 +459,8 @@ export class FarmMapComponent implements OnInit {
           this.lineChart.series[1].setData([]);
           this.lineChart.xAxis[0].setCategories([]);        
         }
-
-        this.lineChartLabels=[];
+        this.lineChartLabels.values=[];
+        this.lineChartLabels.labels=[];
         for (var i = 0; i < 2; i++) {
           this.lineChartData[i]=[];
         }
@@ -469,7 +475,8 @@ export class FarmMapComponent implements OnInit {
           this.barChart.series[1].setData([]);  
           this.barChart.xAxis[0].setCategories([]);
         }
-        this.barChartLabels=[];
+        this.barChartLabels.values=[];
+        this.barChartLabels.labels=[];
         for (var i = 0; i < 2; i++) {
           this.barChartData[i]=[];
         }
@@ -565,17 +572,24 @@ export class FarmMapComponent implements OnInit {
                         });
                         chartData = chartData.filter((element) => {
                           let hour=moment(element.time).hours();
-                          if(hour==0 || hour==2 || hour==4 || hour==6 ||hour==8 || hour==10 || hour==12 || hour==16 || hour==18 || hour==20 || hour==22)
+                          let minutes=moment(element.time).minutes();
+                          if(hour==4 || hour==8 || hour==12 || hour==16 || hour==20 || hour==0 && minutes==0)
                             return element;
                         });
                         for (var i = 0; i < chartData.length ; i++) {
-                          if(this.lineChartLabels.find((element) => {return element === this.momentFormat(chartData[i].time,null);}) === undefined) {
-                            this.lineChartLabels.push(this.momentFormat(chartData[i].time,"line"));
+                          if(this.lineChartLabels.values.find((element) => {return this.momentFormat(element,"label") === this.momentFormat(chartData[i].time,"label");}) === undefined) {
+                            this.lineChartLabels.values.push(this.momentFormat(chartData[i].time,"label"));
+                            this.lineChartLabels.labels.push(this.momentFormat(chartData[i].time,"line"));
                           }
-                          if((chartData[i].chart==="temperature"))
+                          if((chartData[i].chart==="temperature")&&this.lineChartLabels.values[this.lineChartLabels.values.length-1]==this.momentFormat(chartData[i].time,"label"))
                             this.lineChartData[0].push(chartData[i].value);
-                          if(chartData[i].chart==="humidity")
+                          if((chartData[i].chart==="humidity")&&this.lineChartLabels.values[this.lineChartLabels.values.length-1]==this.momentFormat(chartData[i].time,"label"))
                             this.lineChartData[1].push(chartData[i].value);
+                        }
+                        if(this.lineChartData[0].length>this.lineChartData[1].length){
+                          this.lineChartData[0]= this.lineChartData[0].slice(0, this.lineChartData[1].length);
+                        }else{
+                          this.lineChartData[1]= this.lineChartData[1].slice(0, this.lineChartData[0].length);
                         }
                         this.renderCharts("line");
                       },
@@ -656,19 +670,22 @@ export class FarmMapComponent implements OnInit {
                         return element;
                       }
                     })
-                    let maxLabelValue=0;
-                    for (var i = 0; i < chartData.length; i++) {
-                      if(this.barChartLabels.find((element) => {return element === this.momentFormat(chartData[i].time,null);}) === undefined) {
-                        this.barChartLabels.push(this.momentFormat(chartData[i].time,"bar"));
-                      }
-                      if(chartData[i].chart=="et0")
-                        this.barChartData[1].push(chartData[i].value);
-                      if(chartData[i].chart=="rain")
-                        this.barChartData[0].push(chartData[i].value);
-                      if(i+1==chartData.length)
+                    for (var i = 0; i < chartData.length ; i++) {
+                          if(this.barChartLabels.values.find((element) => {return this.momentFormat(element,"label") === this.momentFormat(chartData[i].time,"label");}) === undefined) {
+                            this.barChartLabels.values.push(this.momentFormat(chartData[i].time,"label"));
+                            this.barChartLabels.labels.push(this.momentFormat(chartData[i].time,"bar"));
+                          }
+                          if((chartData[i].chart==="rain")&&this.barChartLabels.values[this.barChartLabels.values.length-1]==this.momentFormat(chartData[i].time,"label"))
+                            this.barChartData[0].push(chartData[i].value);
+                          if((chartData[i].chart==="et0")&&this.barChartLabels.values[this.barChartLabels.values.length-1]==this.momentFormat(chartData[i].time,"label"))
+                            this.barChartData[1].push(chartData[i].value);
+                        }
+                        if(this.barChartData[0].length>this.barChartData[1].length){
+                          this.barChartData[0]= this.barChartData[0].slice(0, this.barChartData[1].length);
+                        }else{
+                          this.barChartData[1]= this.barChartData[1].slice(0, this.barChartData[0].length);
+                        }
                         this.renderCharts("bar");
-                      
-                    }
                   },
                       error=>{
                         this.loading = false;
@@ -764,6 +781,9 @@ export class FarmMapComponent implements OnInit {
       break;
       case "bar":
       return moment.utc(value).format('DD') +" "+ moment.utc(value).format('MMM');
+      break;
+      case "label":
+      return moment.utc(value).format("YYYY-MM-DD HH:mm:ss");
       break;
       default:
       return value;

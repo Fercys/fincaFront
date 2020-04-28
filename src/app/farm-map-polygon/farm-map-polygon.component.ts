@@ -62,7 +62,10 @@ export class FarmMapPolygonComponent implements OnInit {
   @ViewChild('lineChart', { static: true }) public lineChartElement: ElementRef;
   private lineChart;
   public lineChartData:any[]=[[],[]];
-  public lineChartLabels:any[]=[];
+  public lineChartLabels:any={
+    values:[],
+    labels:[]
+  };
   public lineChartOptions:any = {
     chart: {
       type: 'spline',
@@ -127,7 +130,10 @@ export class FarmMapPolygonComponent implements OnInit {
   @ViewChild('barChart', { static: true }) public barChartElement: ElementRef;
   private barChart;
   public barChartData:any[]=[[],[]];
-  public barChartLabels:any[]=[];
+  public barChartLabels:any={
+    values:[],
+    labels:[]
+  };
   public barChartOptions:any = {
     chart: {
       type: 'column'
@@ -464,15 +470,21 @@ export class FarmMapPolygonComponent implements OnInit {
                     return element;
                 });
                 for (var i = 0; i < chartData.length ; i++) {
-                  if(chartData[i+1]){
-                    if((chartData[i].chart==="temperature")&&(chartData[i+1].chart==="humidity")){
-                      this.lineChartLabels.push(this.momentFormat(chartData[i].time,"line"));
-                      this.lineChartData[0].push(chartData[i].value);
-                      this.lineChartData[1].push(chartData[i+1].value);
-                    }
-                  }
-                }
-                this.renderCharts("line");
+                          if(this.lineChartLabels.values.find((element) => {return this.momentFormat(element,"label") === this.momentFormat(chartData[i].time,"label");}) === undefined) {
+                            this.lineChartLabels.values.push(this.momentFormat(chartData[i].time,"label"));
+                            this.lineChartLabels.labels.push(this.momentFormat(chartData[i].time,"line"));
+                          }
+                          if((chartData[i].chart==="temperature")&&this.lineChartLabels.values[this.lineChartLabels.values.length-1]==this.momentFormat(chartData[i].time,"label"))
+                            this.lineChartData[0].push(chartData[i].value);
+                          if((chartData[i].chart==="humidity")&&this.lineChartLabels.values[this.lineChartLabels.values.length-1]==this.momentFormat(chartData[i].time,"label"))
+                            this.lineChartData[1].push(chartData[i].value);
+                        }
+                        if(this.lineChartData[0].length>this.lineChartData[1].length){
+                          this.lineChartData[0]= this.lineChartData[0].slice(0, this.lineChartData[1].length);
+                        }else{
+                          this.lineChartData[1]= this.lineChartData[1].slice(0, this.lineChartData[0].length);
+                        }
+                        this.renderCharts("line");
                 this.loading = false;
               });
             });
@@ -530,25 +542,22 @@ export class FarmMapPolygonComponent implements OnInit {
                     return element;
                   }
                 })
-                let maxLabelValue=0;
-                for (var i = 0; i < chartData.length; i++) {
-                  if(chartData[i+1]){
-                    if(chartData[i].time===chartData[i+1].time){
-                      if(this.barChartLabels.find((element) => {
-                        return element === this.momentFormat(chartData[i].time,"bar");
-                      }) === undefined) {
-                        this.barChartLabels.push(this.momentFormat(chartData[i].time,"bar"));
-                        if(chartData[i].chart=="rain") {
-                          this.barChartData[0].push(chartData[i].value);
+                for (var i = 0; i < chartData.length ; i++) {
+                          if(this.barChartLabels.values.find((element) => {return this.momentFormat(element,"label") === this.momentFormat(chartData[i].time,"label");}) === undefined) {
+                            this.barChartLabels.values.push(this.momentFormat(chartData[i].time,"label"));
+                            this.barChartLabels.labels.push(this.momentFormat(chartData[i].time,"bar"));
+                          }
+                          if((chartData[i].chart==="rain")&&this.barChartLabels.values[this.barChartLabels.values.length-1]==this.momentFormat(chartData[i].time,"label"))
+                            this.barChartData[0].push(chartData[i].value);
+                          if((chartData[i].chart==="et0")&&this.barChartLabels.values[this.barChartLabels.values.length-1]==this.momentFormat(chartData[i].time,"label"))
+                            this.barChartData[1].push(chartData[i].value);
                         }
-                        if(chartData[i].chart=="et0") {
-                          this.barChartData[1].push(chartData[i].value);
+                        if(this.barChartData[0].length>this.barChartData[1].length){
+                          this.barChartData[0]= this.barChartData[0].slice(0, this.barChartData[1].length);
+                        }else{
+                          this.barChartData[1]= this.barChartData[1].slice(0, this.barChartData[0].length);
                         }
-                      }
-                    }
-                  }
-                }
-                this.renderCharts("bar");
+                        this.renderCharts("bar");
                 this.loading = false;
               });
             });
@@ -576,13 +585,13 @@ export class FarmMapPolygonComponent implements OnInit {
       case "line":
       this.lineChart.series[0].setData(this.lineChartData[0]);
       this.lineChart.series[1].setData(this.lineChartData[1]);
-      this.lineChart.xAxis[0].setCategories(this.lineChartLabels, true);
+      this.lineChart.xAxis[0].setCategories(this.lineChartLabels.labels, true);
       this.renderLineChartFlag=true;
       break;
       case "bar":
       this.barChart.series[0].setData(this.barChartData[0]);
       this.barChart.series[1].setData(this.barChartData[1]);
-      this.barChart.xAxis[0].setCategories(this.barChartLabels, true);
+      this.barChart.xAxis[0].setCategories(this.barChartLabels.labels, true);
       this.renderBarChartFlag=true;
       break;
       default:
@@ -599,8 +608,9 @@ export class FarmMapPolygonComponent implements OnInit {
       this.lineChart.series[0].setData([]);
       this.lineChart.series[1].setData([]);
       this.lineChart.xAxis[0].setCategories([]);
-
-      this.lineChartLabels=[];
+      
+      this.lineChartLabels.values=[];
+      this.lineChartLabels.labels=[];
       for (var i = 0; i < 2; i++) {
         this.lineChartData[i]=[];
       }
@@ -614,7 +624,8 @@ export class FarmMapPolygonComponent implements OnInit {
       this.barChart.series[1].setData([]);  
       this.barChart.xAxis[0].setCategories([]);
 
-      this.barChartLabels=[];
+      this.barChartLabels.values=[];
+      this.barChartLabels.labels=[];
       for (var i = 0; i < 2; i++) {
         this.barChartData[i]=[];
       }
