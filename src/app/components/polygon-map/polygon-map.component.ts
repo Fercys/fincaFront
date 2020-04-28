@@ -126,11 +126,17 @@ export class PolygonMapComponent implements OnInit,OnChanges {
         if(this.showCustomControl){
           this.addCustomControl(map,this.mapElement);
         }
+        this.intPercentage='100%';
       }else{
         let polygonDatas=[];
         this.loading=true;
         let i=0;
-        for(let element of this.zones){
+        let zonesWithPaths=this.zones.filter(element=>{
+          if(element.path.length>0){
+            return element;
+          }
+        });
+        for(let element of zonesWithPaths){
           // Construct the polygon.
           //prueba con wiseconn
           //wisservice.getIrrigarionsRealOfZones(element.id_wiseconn,this.dateRange).subscribe((response: any) => {
@@ -138,28 +144,10 @@ export class PolygonMapComponent implements OnInit,OnChanges {
           wisservice.getIrrigarionsRealOfZones(element.id,this.dateRange).subscribe((response: any) => {
             let data=response.data?response.data:response;
             let id= element.id_wiseconn?element.id_wiseconn:element.id;
-            if (parseInt(id) == 727 || parseInt(id) == 6054 || parseInt(id) == 13872){
-              let polygonData={
-                paths: element.path?element.path:element.polygon.path,
-                strokeColor: '#E5C720',
-                strokeOpacity: 0.8,
-                strokeWeight: 2,
-                fillColor: '#E5C720',
-                fillOpacity: 0.35,
-              };
-              var Triangle = new window['google'].maps.Polygon(polygonData);
-              this.setLocalStorageItem("lastPolygonData",JSON.stringify(polygonDatas));
-              // Marker Image          
-              let marker=this.addMarkerImage(map, element, "https://i.imgur.com/C7gyw7N.png");
-              Triangle.setMap(map);
-              this.addListenersOnPolygon(Triangle, element.id);   
-              polygonDatas.push({element:element,data:polygonData,markerImg:"https://i.imgur.com/C7gyw7N.png"});
-              this.trianglesRef.push({triangle:Triangle,element:element,marker:marker});
-            } else {
               if (data.length>0) {
                 let runningElement=data.find(element =>{return element.status == "Running"});
                 if (runningElement==undefined) { //status 'ok'
-                  this.zones.map((zone)=>{
+                  zonesWithPaths.map((zone)=>{
                     if(zone.id==element.id||zone.id_wiseconn==element.id){
                       element.status=data[0].status
                     }
@@ -185,7 +173,7 @@ export class PolygonMapComponent implements OnInit,OnChanges {
                   this.trianglesRef.push({triangle:Triangle,element:element,marker:marker});
                 } else {
                   if(runningElement) { //status 'running'
-                    this.zones.map((zone)=>{
+                    zonesWithPaths.map((zone)=>{
                       if(zone.id==element.id||zone.id_wiseconn==element.id){
                         element.status=runningElement.status
                       }                  
@@ -227,11 +215,10 @@ export class PolygonMapComponent implements OnInit,OnChanges {
                   }
                 }
               }
-            }
             i++;
-            this.percentage=(i/this.zones.length)*100;
+            this.percentage=(i/zonesWithPaths.length)*100;
             this.intPercentage=Math.round(this.percentage)+"%";
-            if(i==this.zones.length){
+            if(i==zonesWithPaths.length){
               this.loading=false;
             }
           },
