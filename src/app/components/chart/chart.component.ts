@@ -20,7 +20,7 @@ require('highcharts/highcharts-more')(Highcharts);
 	styleUrls: ['./chart.component.scss']
 })
 export class ChartComponent implements OnInit,OnChanges {
-	@Input() zones:any;
+	@Input() weatherStation:any;
 	@Input() title:string;
 	@Input() type:string;
 	@Input() firstSensorType:string='';
@@ -28,9 +28,6 @@ export class ChartComponent implements OnInit,OnChanges {
 	public firstId: number = null;
 	public secondId: number = null;
 	public loading:boolean=false;
-    public percentage:number=null;
-    public intPercentage:string='0%';
-  	public weatherStation: any = null;
 	//graficas
 	//rango de fechas para graficas
 	@Input() fromDate:any;
@@ -96,17 +93,17 @@ export class ChartComponent implements OnInit,OnChanges {
 	};
 	public renderchartFlag: boolean = false;
 	constructor(
-      	private calendar: NgbCalendar,
-    	private wiseconnService: WiseconnService, 
-    ) { }
+		private calendar: NgbCalendar,
+		private wiseconnService: WiseconnService, 
+		) { }
 
 	ngOnInit(){      
-      this.chartOptions.title.text=this.title;
-      this.chartOptions.subtitle.text=this.title;
-      this.chartOptions.chart.type=this.type;
-      switch (this.title) {
-      	case "TEMPERATURA/HUMEDAD":
-      		this.chartOptions.series=[{ 
+		this.chartOptions.title.text=this.title;
+		this.chartOptions.subtitle.text=this.title;
+		this.chartOptions.chart.type=this.type;
+		switch (this.title) {
+			case "TEMPERATURA/HUMEDAD":
+			this.chartOptions.series=[{ 
 				data: [], 
 				name: 'Temperatura',
 				type: 'line',
@@ -117,36 +114,37 @@ export class ChartComponent implements OnInit,OnChanges {
 				type: 'line', 
 				yAxis: 1 
 			}]
-      		break;
-      	case "PRECIPITACIÓN/ET0":
-      		this.chartOptions.series=[{
-      			type: undefined,
-      			name: 'Precipitación (mm)', 
-      			data: [] 
-      		},{
-      			type: undefined,
-      			name: 'Et0 (mm)', 
-      			data: [] 
-      		}]
-      		break;
-      	default:
-      		// code...
-      		break;
-      }
-      this.highchartsShow();
-    }
+			break;
+			case "PRECIPITACIÓN/ET0":
+			this.chartOptions.series=[{
+				type: undefined,
+				name: 'Precipitación (mm)', 
+				data: [] 
+			},{
+				type: undefined,
+				name: 'Et0 (mm)', 
+				data: [] 
+			}]
+			break;
+			default:
+			// code...
+			break;
+		}
+		this.highchartsShow();
+	}
 	ngOnChanges(changes: SimpleChanges) {
-		if(changes.zones!=undefined){
-			const zonesCurrentValue: SimpleChange = changes.zones.currentValue;
-			this.zones=zonesCurrentValue;
-			this.getChartInformation(false);
+		if(changes.weatherStation!=undefined){
+			const weatherStationCurrentValue: SimpleChange = changes.weatherStation.currentValue;
+			this.weatherStation=weatherStationCurrentValue;
 		}
 		if(changes.fromDate!=undefined&&changes.toDate!=undefined){
 			const fromDateCurrentValue: SimpleChange = changes.fromDate.currentValue;
 			const toDateCurrentValue: SimpleChange = changes.toDate.currentValue;
 			this.fromDate = fromDateCurrentValue;
-      		this.toDate = toDateCurrentValue;
-			this.getChartInformation(false);
+			this.toDate = toDateCurrentValue;
+		}
+		if(this.weatherStation&&this.fromDate&&this.toDate){
+			this.getChartInformation(false);			
 		}
 	}
 	highchartsShow(){
@@ -174,20 +172,20 @@ export class ChartComponent implements OnInit,OnChanges {
 		}
 	}
 	momentFormat(value:string,chart:string){
-	    switch (chart) {
-	      case "label":
-	      return moment.utc(value).format('DD') +" "+ moment.utc(value).format('MMM');
-	      break;
-	      case "value":
-	      return moment.utc(value).format("YYYY-MM-DD HH:mm:ss");
-	      break;
-	      default:
-	      return value;
-	      break;
-	    }      
-	  }
+		switch (chart) {
+			case "label":
+			return moment.utc(value).format('DD') +" "+ moment.utc(value).format('MMM');
+			break;
+			case "value":
+			return moment.utc(value).format("YYYY-MM-DD HH:mm:ss");
+			break;
+			default:
+			return value;
+			break;
+		}      
+	}
 	getChartInformation(goBackFlag:boolean=false){
-		this.resetChartsValues();                              
+		this.resetChartsValues();
 		if(this.fromDate!=undefined&&this.toDate!=undefined){
 			this.dateRange = {
 				initTime: moment(this.fromDate.year + "-" + this.fromDate.month + "-" + this.fromDate.day).format("YYYY-MM-DD"),
@@ -200,129 +198,114 @@ export class ChartComponent implements OnInit,OnChanges {
 					selectedValue:this.selectedValue
 				});
 			}
-			let weatherStationFlag=false;
-			let i=0;
-			while (!weatherStationFlag && i < this.zones.length) {
-				this.loading=true;				
-				this.percentage=(i/this.zones.length)*100;
-            	this.intPercentage=Math.round(this.percentage)+"%";
-				if ((this.zones[i].name == "Estación Meteorológica" || this.zones[i].name == "Estación Metereológica")&& this.zones[i].id_wiseconn) {
-					this.intPercentage="100%";
-					weatherStationFlag=true;
-					this.weatherStation = this.zones[i];
-					this.loading=true;
-					this.wiseconnService.getMeasuresOfZones(this.weatherStation.id).subscribe((response) => {
-						this.loading=false;
-						let data=response.data?response.data:response;
-						if(data.length==0){
-							Swal.fire({icon: 'error',title: 'Oops...',text: 'Estación metereologica sin "Measures" registradas'});
-						}else{
-							let chartFlag=false;
-							let j=0;
-							let htmlErrors=null;
-							while (!chartFlag && j < data.length) {
-								if (data[j].sensorType === this.firstSensorType||data[j].name==this.firstSensorType) {
-									this.firstId = data[j].id;
-								}
-								if (data[j].sensorType === this.secondSensorType||data[j].name==this.secondSensorType) {
-									this.secondId = data[j].id;
-								}
-								if(this.firstId&&this.secondId){
-									chartFlag=true;
-									this.loading = true;
-									this.wiseconnService.getDataByMeasure(this.firstId,this.dateRange).subscribe((response) => {
-										let firstChartData=response.data?response.data:response;
-										if(firstChartData.length==0){
-											if(htmlErrors){
-												htmlErrors+='No existen valores de "temperatura" registrados para la grafica<br>'
-											}else{
-												htmlErrors='No existen valores de "temperatura" registrados para la grafica<br>'
-											}
-											Swal.fire({icon: 'error',title: 'Oops...',html: htmlErrors});
-										}
-										this.wiseconnService.getDataByMeasure(this.secondId,this.dateRange).subscribe((response) => {
-											this.loading = false;
-											let secondChartData=response.data?response.data:response;
-											if(secondChartData.length==0){
-												if(htmlErrors){
-													htmlErrors+='No existen valores de "humedad" registrados para la grafica<br>'
-												}else{
-													htmlErrors='No existen valores de "humedad" registrados para la grafica<br>'
-												}
-												Swal.fire({icon: 'error',title: 'Oops...',html: htmlErrors});
-											}
-											// this.loading = false;
-											firstChartData=firstChartData.map((element)=>{
-												element.chart=this.firstSensorType.toLowerCase();
-												return element
-											})
-											secondChartData=secondChartData.map((element)=>{
-												element.chart=this.secondSensorType.toLowerCase();
-												return element
-											})
-											let chartData=firstChartData.concat(secondChartData);
-											chartData.sort(function (a, b) {
-												if (moment(a.time).isAfter(b.time)) {
-													return 1;
-												}
-												if (!moment(a.time).isAfter(b.time)) {
-													return -1;
-												}
-												// a must be equal to b
-												return 0;
-											});
-											chartData = chartData.filter((element) => {
-												let hour=moment(element.time).hours();
-												let minutes=moment(element.time).minutes();
-												if(hour==4 || hour==8 || hour==12 || hour==16 || hour==20 || hour==0 && minutes==0)
-													return element;
-											});
-											for (var i = 0; i < chartData.length ; i++) {
-												if(this.chartLabels.values.find((element) => {return this.momentFormat(element,"value") === this.momentFormat(chartData[i].time,"value");}) === undefined) {
-													this.chartLabels.values.push(this.momentFormat(chartData[i].time,"value"));
-													this.chartLabels.labels.push(this.momentFormat(chartData[i].time,"label"));
-												}
-												if((chartData[i].chart===this.firstSensorType.toLowerCase())&&this.chartLabels.values[this.chartLabels.values.length-1]==this.momentFormat(chartData[i].time,"value"))
-													this.chartData[0].push(chartData[i].value);
-												if((chartData[i].chart===this.secondSensorType.toLowerCase())&&this.chartLabels.values[this.chartLabels.values.length-1]==this.momentFormat(chartData[i].time,"value"))
-													this.chartData[1].push(chartData[i].value);
-											}
-											if(this.chartData[0].length>this.chartData[1].length){
-												this.chartData[0]= this.chartData[0].slice(0, this.chartData[1].length);
-											}else{
-												this.chartData[1]= this.chartData[1].slice(0, this.chartData[0].length);
-											}
-											this.renderCharts();
-										},
-										error=>{
-											this.loading = false;
-											console.log("error:",error)
-										});
-									},
-									error=>{
-										this.loading = false;
-										console.log("error:",error)
-									});
-								}else if(j+1==data.length){
-									Swal.fire({
-										icon: 'error',
-										title: 'Oops...',
-										text: 'No tiene configurado los sensores de '+this.firstSensorType+' y '+this.secondSensorType
-									})
-								}
-								j++;
-							}
+			this.loading=true;
+			this.wiseconnService.getMeasuresOfZones(this.weatherStation.id).subscribe((response) => {
+				this.loading=false;
+				let data=response.data?response.data:response;
+				if(data.length==0){
+					Swal.fire({icon: 'error',title: 'Oops...',text: 'Estación metereologica sin "Measures" registradas'});
+				}else{
+					let chartFlag=false;
+					let j=0;
+					let htmlErrors=null;
+					while (!chartFlag && j < data.length) {
+						if (data[j].sensorType === this.firstSensorType||data[j].name==this.firstSensorType) {
+							this.firstId = data[j].id;
 						}
-					},
-					error=>{
-						this.loading=false;
-						this.intPercentage="100%";
-						console.log("error:",error);
-					});
+						if (data[j].sensorType === this.secondSensorType||data[j].name==this.secondSensorType) {
+							this.secondId = data[j].id;
+						}
+						if(this.firstId&&this.secondId){
+							chartFlag=true;
+							this.loading = true;
+							this.wiseconnService.getDataByMeasure(this.firstId,this.dateRange).subscribe((response) => {
+								let firstChartData=response.data?response.data:response;
+								if(firstChartData.length==0){
+									if(htmlErrors){
+										htmlErrors+='No existen valores de "temperatura" registrados para la grafica<br>'
+									}else{
+										htmlErrors='No existen valores de "temperatura" registrados para la grafica<br>'
+									}
+									Swal.fire({icon: 'error',title: 'Oops...',html: htmlErrors});
+								}
+								this.wiseconnService.getDataByMeasure(this.secondId,this.dateRange).subscribe((response) => {
+									this.loading = false;
+									let secondChartData=response.data?response.data:response;
+									if(secondChartData.length==0){
+										if(htmlErrors){
+											htmlErrors+='No existen valores de "humedad" registrados para la grafica<br>'
+										}else{
+											htmlErrors='No existen valores de "humedad" registrados para la grafica<br>'
+										}
+										Swal.fire({icon: 'error',title: 'Oops...',html: htmlErrors});
+									}
+									// this.loading = false;
+									firstChartData=firstChartData.map((element)=>{
+										element.chart=this.firstSensorType.toLowerCase();
+										return element
+									})
+									secondChartData=secondChartData.map((element)=>{
+										element.chart=this.secondSensorType.toLowerCase();
+										return element
+									})
+									let chartData=firstChartData.concat(secondChartData);
+									chartData.sort(function (a, b) {
+										if (moment(a.time).isAfter(b.time)) {
+											return 1;
+										}
+										if (!moment(a.time).isAfter(b.time)) {
+											return -1;
+										}
+										// a must be equal to b
+										return 0;
+									});
+									chartData = chartData.filter((element) => {
+										let hour=moment(element.time).hours();
+										let minutes=moment(element.time).minutes();
+										if(hour==4 || hour==8 || hour==12 || hour==16 || hour==20 || hour==0 && minutes==0)
+											return element;
+									});
+									for (var i = 0; i < chartData.length ; i++) {
+										if(this.chartLabels.values.find((element) => {return this.momentFormat(element,"value") === this.momentFormat(chartData[i].time,"value");}) === undefined) {
+											this.chartLabels.values.push(this.momentFormat(chartData[i].time,"value"));
+											this.chartLabels.labels.push(this.momentFormat(chartData[i].time,"label"));
+										}
+										if((chartData[i].chart===this.firstSensorType.toLowerCase())&&this.chartLabels.values[this.chartLabels.values.length-1]==this.momentFormat(chartData[i].time,"value"))
+											this.chartData[0].push(chartData[i].value);
+										if((chartData[i].chart===this.secondSensorType.toLowerCase())&&this.chartLabels.values[this.chartLabels.values.length-1]==this.momentFormat(chartData[i].time,"value"))
+											this.chartData[1].push(chartData[i].value);
+									}
+									if(this.chartData[0].length>this.chartData[1].length){
+										this.chartData[0]= this.chartData[0].slice(0, this.chartData[1].length);
+									}else{
+										this.chartData[1]= this.chartData[1].slice(0, this.chartData[0].length);
+									}
+									this.renderCharts();
+								},
+								error=>{
+									this.loading = false;
+									console.log("error:",error)
+								});
+							},
+							error=>{
+								this.loading = false;
+								console.log("error:",error)
+							});
+						}else if(j+1==data.length){
+							Swal.fire({
+								icon: 'error',
+								title: 'Oops...',
+								text: 'No tiene configurado los sensores de '+this.firstSensorType+' y '+this.secondSensorType
+							})
+						}
+						j++;
+					}
 				}
-				i++;
-			}
-			this.loading=false;
+			},
+			error=>{
+				this.loading=false;
+				console.log("error:",error);
+			});
 		}
 	}
 

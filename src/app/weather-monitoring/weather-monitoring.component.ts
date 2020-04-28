@@ -35,7 +35,6 @@ export class WeatherMonitoringComponent implements OnInit {
   public today = Date.now();
   public dataFarm: any;
   public zone: any = null;
-  public zones: any[] = [];
   public farm: any=null;
   public farms: any[] = [];
   public weatherStation: any = null;
@@ -146,7 +145,6 @@ export class WeatherMonitoringComponent implements OnInit {
   processWeatherStation(){
     if(localStorage.getItem('lastWeatherStation')){
       this.weatherStation = JSON.parse(localStorage.getItem('lastWeatherStation'));
-      this.zones=[this.weatherStation];
       this.getIrrigarionsRealOfWeatherStation();
       this.getWeather();
     }else{
@@ -178,7 +176,6 @@ getWeatherStation() {
     this.loading = false; 
     this.weatherStation = response.data?response.data:null;
     if(this.weatherStation){
-      this.zones=[this.weatherStation];
       this.getIrrigarionsRealOfWeatherStation();
       this.setLocalStorageItem("lastFarmId",this.farm.id);
       this.setLocalStorageItem("lastWeatherStation",this.getJSONStringify(this.weatherStation));
@@ -270,7 +267,7 @@ getJSONStringify(data) {
 changeDateRange(){
   this.fromDate=this.fromDate;
   this.toDate=this.toDate;
-  this.zones=[this.weatherStation];
+  this.weatherStation=this.weatherStation;
 }
 selectTime(event){
   this.selectedValue = event.value;

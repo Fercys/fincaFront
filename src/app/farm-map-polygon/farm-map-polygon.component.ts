@@ -31,6 +31,7 @@ export class FarmMapPolygonComponent implements OnInit {
   public hoveredDate: NgbDate;
   public selectedValue: any = '1S';
   public zones: any[]=[];
+  public weatherStation: any = null;
   public weatherZones: any[]=[];
   public zone:any=null;
   public fromDate: NgbDate;
@@ -86,6 +87,7 @@ export class FarmMapPolygonComponent implements OnInit {
       this.wiseconnService.getZones(idfarm).subscribe((response: any) => {
         this.loading = false;
         let zones=response.data?response.data:response;
+        this.weatherStation=this.getWeatherStation(zones);
         this.weatherZones = zones.filter((element)=>{
           if(element.type){
             if(element.type.length>0){
@@ -131,6 +133,11 @@ export class FarmMapPolygonComponent implements OnInit {
         });
       }
     });
+  }
+  getWeatherStation(zones:any){
+    return zones.find((element)=>{
+      return element.name=="Estación Meteorológica"||element.name=="Estación Metereológica";
+    })
   }
   getZone(idzone:number){
     return this.weatherZones.find(element=>{return element.id==idzone});
