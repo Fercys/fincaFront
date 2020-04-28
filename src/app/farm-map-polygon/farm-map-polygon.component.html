@@ -209,25 +209,25 @@
     </div>
     <div class="container-fluid top">
       <app-chart 
-      [zones]="zones" 
-      [type]="'spline'" 
-      [title]="'TEMPERATURA/HUMEDAD'" 
-      [firstSensorType]="'Temperature'"
-      [secondSensorType]="'Humidity'"
-      [fromDate]="fromDate" 
-      [toDate]="toDate">
-    </app-chart>
+        [weatherStation]="weatherStation" 
+        [type]="'spline'" 
+        [title]="'TEMPERATURA/HUMEDAD'" 
+        [firstSensorType]="'Temperature'"
+        [secondSensorType]="'Humidity'"
+        [fromDate]="fromDate" 
+        [toDate]="toDate">
+      </app-chart>
   </div>
   <div class="container-fluid top">
     <app-chart 
-    [zones]="zones" 
-    [type]="'column'" 
-    [title]="'PRECIPITACIÓN/ET0'" 
-    [firstSensorType]="'Rain'"
-    [secondSensorType]="'Et0'"
-    [fromDate]="fromDate" 
-    [toDate]="toDate">
-  </app-chart>
+      [weatherStation]="weatherStation" 
+      [type]="'column'" 
+      [title]="'PRECIPITACIÓN/ET0'" 
+      [firstSensorType]="'Rain'"
+      [secondSensorType]="'Et0'"
+      [fromDate]="fromDate" 
+      [toDate]="toDate">
+    </app-chart>
 </div>
 </div>
 <div class="col-lg-4 pronostic-table">

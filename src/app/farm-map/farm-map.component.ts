@@ -11,14 +11,6 @@ import { WiseconnService } from 'app/services/wiseconn.service';
 import { WeatherService } from 'app/services/weather.service';
 import { NotificationService } from 'app/services/notification.service';
 import { UserService } from 'app/services/user.service';
-//graficas
-// tslint:disable-next-line:no-var-requires
-const Highcharts = require('highcharts/highstock');
-// tslint:disable-next-line:no-var-requires
-require('highcharts/highmaps');
-require('highcharts/modules/exporting')(Highcharts);
-require('highcharts/modules/solid-gauge')(Highcharts);
-require('highcharts/highcharts-more')(Highcharts);
 
 @Component({
   selector: 'app-farm-map',
@@ -203,6 +195,7 @@ export class FarmMapComponent implements OnInit {
   processZones(){
     if(localStorage.getItem('lastZones')){
       this.zones = JSON.parse(localStorage.getItem('lastZones'));
+      this.weatherStation=this.getWeatherStation(this.zones);
       this.weatherZones=this.getWeatherZones();
       this.getIrrigarionsRealOfZones();
       this.getWeather();
@@ -215,12 +208,18 @@ export class FarmMapComponent implements OnInit {
     this.wiseconnService.getZones(this.farm.id).subscribe((response: any) => {
       this.loading = false; 
       this.zones = response.data?response.data:response;
+      this.weatherStation=this.getWeatherStation(this.zones);
       this.weatherZones=this.getWeatherZones();
       this.getIrrigarionsRealOfZones();
       this.setLocalStorageItem("lastFarmId",this.farm.id);
       this.setLocalStorageItem("lastZones",this.getJSONStringify(this.zones));
       this.getWeather();
     });
+  }
+  getWeatherStation(zones:any){
+    return zones.find((element)=>{
+      return element.name=="Estación Meteorológica"||element.name=="Estación Metereológica";
+    })
   }
   getWeatherZones(){
     return this.zones.filter((element)=>{
