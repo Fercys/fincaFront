@@ -103,29 +103,51 @@ export class ChartComponent implements OnInit,OnChanges {
 		this.chartOptions.chart.type=this.type;
 		switch (this.title) {
 			case "TEMPERATURA/HUMEDAD":
-			this.chartOptions.series=[{ 
-				data: [], 
-				name: 'Temperatura',
-				type: 'line',
-				//yAxis: 0 
-			},{ 
-				data: [], 
-				name: 'Humedad',
-				type: 'line', 
-				yAxis: 1 
-			}]
-			break;
+				this.chartOptions.series=[{ 
+					data: [], 
+					name: 'Temperatura',
+					type: 'line',
+					//yAxis: 0 
+				},{ 
+					data: [], 
+					name: 'Humedad',
+					type: 'line', 
+					yAxis: 1 
+				}]
+				break;
 			case "PRECIPITACIÓN/ET0":
-			this.chartOptions.series=[{
-				type: undefined,
-				name: 'Precipitación (mm)', 
-				data: [] 
-			},{
-				type: undefined,
-				name: 'Et0 (mm)', 
-				data: [] 
-			}]
-			break;
+				this.chartOptions.series=[{
+					type: undefined,
+					name: 'Precipitación (mm)', 
+					data: [] 
+				},{
+					type: undefined,
+					name: 'Et0 (mm)', 
+					data: [] 
+				}]
+				break;
+			case "PORCIONES FRIOS/PORCIONES FRIOS":
+				this.chartOptions.series=[{
+					type: undefined,
+					name: 'PORCIONES FRIOS', 
+					data: [] 
+				},{
+					type: undefined,
+					name: 'PORCIONES FRIOS', 
+					data: [] 
+				}]
+				break;
+			case "RADIACIÓN/VIENTO":
+				this.chartOptions.series=[{
+					type: undefined,
+					name: 'RADIACIÓN', 
+					data: [] 
+				},{
+					type: undefined,
+					name: 'VIENTO', 
+					data: [] 
+				}]
+				break;
 			default:
 			// code...
 			break;

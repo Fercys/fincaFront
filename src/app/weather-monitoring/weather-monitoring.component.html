@@ -306,6 +306,28 @@
                   [toDate]="toDate">
                 </app-chart>
               </div>
+              <div class="container-fluid top">
+                <app-chart 
+                  [weatherStation]="weatherStation" 
+                  [type]="'line'" 
+                  [title]="'RADIACIÓN/VIENTO'" 
+                  [firstSensorType]="'Solar Radiation'"
+                  [secondSensorType]="'Wind Direction'"
+                  [fromDate]="fromDate" 
+                  [toDate]="toDate">
+                </app-chart>
+              </div>
+              <div class="container-fluid top">
+                <app-chart 
+                  [weatherStation]="weatherStation" 
+                  [type]="'column'" 
+                  [title]="'PORCIONES FRIOS/PORCIONES FRIOS'" 
+                  [firstSensorType]="'Chill portion'"
+                  [secondSensorType]="'Chill portion'"
+                  [fromDate]="fromDate" 
+                  [toDate]="toDate">
+                </app-chart>
+              </div>
             </div>
           </div>
         </div>
