@@ -1,0 +1,62 @@
+<div class="main-content">
+  <div class="container-fluid">
+      <div class="row">          
+          <div class="col-md-12">
+          	<div>
+          		<div class="d-inline-block">          		
+                    <button mat-raised-button type="submit" class="btn-green pull-right" [routerLink]="['/account-setting-form']" class="btn-green">Configurar</button>
+	          	</div>
+	            <div class="form-group pull-right">            	
+	                <mat-form-field class="mat-input-custom">
+	                  	<input matInput placeholder="Buscar Usuario..." [(ngModel)]="searchTable">
+	                </mat-form-field>
+	            </div>	
+          	</div>          	
+            <div class="card card-plain">
+                  <div class="card-header card-header-success">
+                      <h4 class="card-title mt-0">Configuración de cuentas</h4>
+                  </div>
+                  <div class="card-body">
+                      <div class="table-responsive">
+                          <table class="table table-hover">
+                              <thead class="">
+                                  <th>
+                                      Cuenta
+                                  </th>
+                                  <th>
+                                      Nombre
+                                  </th>
+                                  <th>
+                                      Api key
+                                  </th>
+                                  <th>
+                                      Opciones
+                                  </th>
+                              </thead>
+                              <tbody>
+                                  <tr *ngFor="let data of accountSettings | filter:searchTable" style="cursor: pointer;">
+                                      <td>
+                                          {{data.account.name}}
+                                      </td>
+                                      <td>
+                                          {{data.name}}
+                                      </td>
+                                      <td>
+                                          {{data.api_key}}
+                                      </td>
+                                      <td  style="cursor: pointer;">
+                                          <i class="material-icons" [routerLink]="['/account-setting-form',data.id]">edit</i>
+                                          <i class="material-icons" (click)="delete(data.id)">delete</i>
+                                      </td>
+                                  </tr>
+                              </tbody>
+                          </table>
+                      </div>
+                  </div>
+            </div>
+          </div>
+      </div>
+  </div>
+  <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>
+</div>
+

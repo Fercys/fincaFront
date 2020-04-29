@@ -223,6 +223,6 @@ export class UserFormComponent implements OnInit {
 				if(error.error)
 				this.notificationService.showError('Error',error.error)
 		    });
-	    }		
+	    }
 	}
 }

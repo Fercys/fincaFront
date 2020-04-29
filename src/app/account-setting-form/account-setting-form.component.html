@@ -1,0 +1,65 @@
+<div class="main-content configuracion">
+  <div class="container-fluid">
+    <div class="row">
+      <h4 class="row-title">Configuración</h4>
+    </div>
+    <!--<form accountForm="ngForm">-->
+      <div class="row">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">
+                <h4 class="card-title row-sub">Generar Api Key</h4>
+              </div>
+              <hr class="separated">
+              <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-12 justify-text-general">
+                      <mat-label class="col-md-4">Cuenta</mat-label>
+                      <mat-form-field class="col-md-8 mat-select-custom" floatLabel="never">
+                        <mat-label>{{account?account.name:'Seleccionar Cuenta'}}</mat-label>
+                          <mat-select >
+                            <mat-option *ngFor="let account of accounts" (click)="onSelect('account',account.id)">{{account.name}}</mat-option>
+                          </mat-select>
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-12 justify-text-password">
+                        <mat-label class="col-md-4">Api Key</mat-label>
+                        <mat-form-field class="col-md-8 mat-input-custom">
+                          <input [(ngModel)]="accountSetting.api_key" matInput="" readonly="true">
+                        </mat-form-field>
+                      </div>
+                  </div>
+                  <button mat-raised-button type="submit" class=" btn-green" (click)="generateApiKey()">Generar</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">
+                <h4 class="card-title row-sub">Cuenta IrrimaxLife</h4>
+              </div>
+              <hr class="separated">
+              <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-12 justify-text-password">
+                      <mat-label class="col-md-5">Nombre</mat-label>
+                      <mat-form-field class="col-md-7 mat-input-custom">
+                        <input  [(ngModel)]="accountSetting.name" matInput="">
+                      </mat-form-field>
+                    </div>
+                    <div class="col-md-12 justify-text-password">
+                      <mat-label class="col-md-5">Contraseña</mat-label>
+                      <mat-form-field class="col-md-7 mat-input-custom">
+                        <input [(ngModel)]="accountSetting.password" matInput="" type="password">
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <button mat-raised-button type="submit" class=" btn-green" (click)="save()">{{configuration?'Actualizar':'Guardar'}}</button>
+              </div>
+            </div>
+          </div>
+      </div>
+    <!--</form>-->
+  </div>
+  <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>
+</div>
