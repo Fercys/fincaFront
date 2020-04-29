@@ -43,7 +43,8 @@ import { TableListComponent } from '../../table-list/table-list.component';
 import { TypographyComponent } from '../../typography/typography.component';
 import { UpgradeComponent } from '../../upgrade/upgrade.component';
 import { UserProfileComponent } from '../../user-profile/user-profile.component';
-import { ConfigurationComponent } from '../../configuration/configuration.component';
+import { AccountSettingFormComponent } from '../../account-setting-form/account-setting-form.component';
+import { AccountSettingsComponent } from '../../account-settings/account-settings.component';
 import { AdminLayoutRoutes } from './admin-layout.routing';
 import { FreePlotterComponent } from 'app/free-plotter/free-plotter.component';
 import { SoilAnalysisComponent } from 'app/soil-analysis/soil-analysis.component';
@@ -96,7 +97,8 @@ import { ChartComponent } from 'app/components/chart/chart.component';
     FarmMapPolygonComponent,
     DialogMessage,
     ReportInstalationComponent,
-    ConfigurationComponent,
+    AccountSettingFormComponent,
+    AccountSettingsComponent,
     PolygonMapComponent,
     ChartComponent
   ],
