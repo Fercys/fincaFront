@@ -242,25 +242,9 @@ export class ChartComponent implements OnInit,OnChanges {
 							this.loading = true;
 							this.wiseconnService.getDataByMeasure(this.firstId,this.dateRange).subscribe((response) => {
 								let firstChartData=response.data?response.data:response;
-								if(firstChartData.length==0){
-									if(htmlErrors){
-										htmlErrors+='No existen valores de "temperatura" registrados para la grafica<br>'
-									}else{
-										htmlErrors='No existen valores de "temperatura" registrados para la grafica<br>'
-									}
-									Swal.fire({icon: 'error',title: 'Oops...',html: htmlErrors});
-								}
 								this.wiseconnService.getDataByMeasure(this.secondId,this.dateRange).subscribe((response) => {
 									this.loading = false;
 									let secondChartData=response.data?response.data:response;
-									if(secondChartData.length==0){
-										if(htmlErrors){
-											htmlErrors+='No existen valores de "humedad" registrados para la grafica<br>'
-										}else{
-											htmlErrors='No existen valores de "humedad" registrados para la grafica<br>'
-										}
-										Swal.fire({icon: 'error',title: 'Oops...',html: htmlErrors});
-									}
 									// this.loading = false;
 									firstChartData=firstChartData.map((element)=>{
 										element.chart=this.firstSensorType.toLowerCase();
