@@ -28,7 +28,7 @@ export class WeatherMonitoringComponent implements OnInit {
   public id = 0;
   public url;
   public status=false;
-  public measurements; //mediciones
+  public measurements:any[]=[]; //mediciones
   public now:any=null
   public statusRegando=false;
   public dialog;

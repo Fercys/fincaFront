@@ -60,7 +60,7 @@
       <div class="col-lg-4 col-md-4 col-sm-4">
         
         <!-- Cuadro de Clima -->
-        <div *ngIf="measurements" class="container-fluid">
+        <div *ngIf="measurements.length>0" class="container-fluid">
           <div class="card card-bg-none">
             <div class="card-header py-0">
               <h4 class="row-subtitle-card">Clima</h4>
@@ -151,7 +151,7 @@
           </div>
           
         </div>
-        <div *ngIf="climaLoading" class="container-fluid">
+        <!--<div *ngIf="climaLoading" class="container-fluid">
           <div class="card card-bg-none">
             <div class="card-header py-0">
               <h4 class="row-subtitle-card m-0">Ver análisis del suelo</h4>
@@ -163,7 +163,7 @@
               <img src="../../assets/img/grafica.jpg" class="w-100">
             </div>
           </div>
-        </div>
+        </div>-->
       </div>
       <div class="col-lg-8 col-md-8">
         <div class="container-fluid">

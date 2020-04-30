@@ -223,6 +223,7 @@ export class PolygonMapComponent implements OnInit,OnChanges {
             }
           },
           error=>{
+            this.intPercentage="100%";
             this.loading=false;
           });
         }
@@ -453,7 +454,7 @@ export class PolygonMapComponent implements OnInit,OnChanges {
                         }
                       }
                     break;
-                  case "weather":
+                  case "clima":
                         for (var triangleRef of trianglesRef){
                           if(triangleRef.element.type.find(element=>element.description=="Weather")!=undefined){
                             triangleRef.triangle.setMap(map);
@@ -468,7 +469,7 @@ export class PolygonMapComponent implements OnInit,OnChanges {
                           }
                         }
                     break;
-                  case "soil measure":
+                  case "suelo":
                         for (var triangleRef of trianglesRef){
                           if(triangleRef.element.type.find(element=>element.description=="Soil")!=undefined){
                             triangleRef.triangle.setMap(map);
@@ -483,7 +484,7 @@ export class PolygonMapComponent implements OnInit,OnChanges {
                           }
                         }
                     break;                
-                  case "irrigation":
+                  case "riego":
                     for (var triangleRef of trianglesRef){
                       if(triangleRef.element.type.find(element=>element.description=="Irrigation")!=undefined){
                         triangleRef.triangle.setMap(map);
