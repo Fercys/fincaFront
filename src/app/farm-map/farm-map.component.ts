@@ -8,6 +8,7 @@ import * as bcrypt from 'bcryptjs';
 import * as moment from "moment";
 //services
 import { WiseconnService } from 'app/services/wiseconn.service';
+import { AlertService } from 'app/services/alert.service';
 import { WeatherService } from 'app/services/weather.service';
 import { NotificationService } from 'app/services/notification.service';
 import { UserService } from 'app/services/user.service';
@@ -63,29 +64,31 @@ export class FarmMapComponent implements OnInit {
 
   public userLS:any=null;
   public user:any=null;
+  //alertas
+  public alerts:any[]=[];
 
   constructor(
-    private _route: ActivatedRoute,
-    private wiseconnService: WiseconnService,
+    public _route: ActivatedRoute,
+    public wiseconnService: WiseconnService,
+    public alertService:AlertService,
     public weatherService: WeatherService,
     public notificationService:NotificationService,
-    private userService:UserService,
+    public userService:UserService,
     public modalService: NgbModal,
-    private router: Router,
-    private calendar: NgbCalendar,
-    private dialogs: MatDialog) {
+    public router: Router,
+    public calendar: NgbCalendar,
+    public dialogs: MatDialog) {
   }
 
   ngOnInit() {
     this.now=moment().format('L') +" "+ moment().format('LTS');
-    this.dateRangeByDefault();
     if(localStorage.getItem("user")){
       this.userLS=JSON.parse(localStorage.getItem("user"));
       if(bcrypt.compareSync(this.userLS.plain, this.userLS.hash)){
         this.user=JSON.parse(this.userLS.plain);
         if(localStorage.getItem("lastRoute")&&localStorage.getItem("lastRoute")!="farmmap/"+this._route.snapshot.paramMap.get('id')){
-          if(localStorage.getItem('lastPolygonData')){
-            localStorage.removeItem('lastPolygonData');
+          if(localStorage.getItem("lastPolygonData")){
+            localStorage.removeItem("lastPolygonData");
           }
         }
         this.setLocalStorageItem("lastRoute","farmmap/"+this._route.snapshot.paramMap.get('id'));
@@ -135,6 +138,7 @@ export class FarmMapComponent implements OnInit {
       }
       if(this.farm){
         this.processZones();
+        this.dateRangeByDefault();
       }else if(localStorage.getItem("lastFarmId")!=undefined&&this._route.snapshot.paramMap.get('id')){
         Swal.fire({icon: 'error',title: 'Oops...',text: 'Farm no existente'});
       }        
@@ -271,6 +275,27 @@ export class FarmMapComponent implements OnInit {
     }
     this.setUrlValue();
   }
+  momentFormat(value:string){
+    return moment.utc(value).format("YYYY-MM-DD");
+  }
+  getAlerts(){
+    if(this.fromDate&&this.toDate){
+      this.dateRange = {
+        initTime: moment(this.fromDate.year + "-" + this.fromDate.month + "-" + this.fromDate.day).format("DD-MM-YYYY"),
+        endTime: moment(this.toDate.year + "-" + this.toDate.month + "-" + this.toDate.day).format("DD-MM-YYYY")
+      };
+      this.loading=true;
+      this.alertService.getAlerts(this.farm.id,this.dateRange).subscribe((response) => {
+        this.loading=false;
+        this.alerts=response.data?response.data:response;        
+      },
+      error=>{
+        console.log("error:",error);
+        this.loading=false;
+      });
+
+    }
+  }
   setUrlValue(){
     switch (this.farm.name) {
       case "Agrifrut":
@@ -391,7 +416,8 @@ export class FarmMapComponent implements OnInit {
       break;
     }
     this.toDate = this.calendar.getToday();
-    this.requestChartBtn=(this.fromDate && this.toDate && this.toDate.after(this.fromDate))?false:true;
+    this.requestChartBtn=(this.fromDate && this.toDate && this.toDate.after(this.fromDate))?false:true;    
+    this.getAlerts();
   }
   goBack(){
     let lastElement=this.dateRangeHistory.pop();
@@ -505,6 +531,7 @@ export class FarmMapComponent implements OnInit {
     }
     return CardinalPoint;
   }
+  
   openDialog(): void {
      const dialogRef = this.dialogs.open(DialogMessage, {
        panelClass: 'messagedialogcss'

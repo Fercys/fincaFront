@@ -224,9 +224,7 @@ export class ChartComponent implements OnInit,OnChanges {
 			this.wiseconnService.getMeasuresOfZones(this.weatherStation.id).subscribe((response) => {
 				this.loading=false;
 				let data=response.data?response.data:response;
-				if(data.length==0){
-					Swal.fire({icon: 'error',title: 'Oops...',text: 'Estación metereologica sin "Measures" registradas'});
-				}else{
+				if(data.length>0){
 					let chartFlag=false;
 					let j=0;
 					let htmlErrors=null;

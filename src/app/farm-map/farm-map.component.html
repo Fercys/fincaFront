@@ -19,16 +19,36 @@
   </div>
 </ng-template>
 <ng-template #message let-modal>
-    <div class="modal-header">
-        <h5 class="modal-title">Mensaje</h5>
-        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-      <div class="modal-body">
-          <textarea placeholder="Ingrese un mensaje" cols="30" rows="10"></textarea>
-          <button style="font-size: 15px;" type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')"> Enviar </button>
-        </div>
+  <div class="modal-header">
+    <h5 class="modal-title">Mensaje</h5>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <textarea placeholder="Ingrese un mensaje" cols="30" rows="10"></textarea>
+    <button style="font-size: 15px;" type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')"> Enviar </button>
+  </div>
+</ng-template>
+<ng-template #alertsModal let-modal>
+  <div class="modal-header">
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div *ngIf="alerts.length==0" class="card card-plain">
+      <div class="card-header card-header-success text-center">
+        <h4 class="card-title mt-0">No tiene alerta para esta finca desde el {{fromDate.day}}/{{fromDate.month}}/{{fromDate.year}} hasta {{toDate.day}}/{{toDate.month}}/{{toDate.year}}</h4>
+      </div>
+    </div>  
+    <div *ngFor="let alert of alerts" class="card card-plain">
+      <div class="card-header card-header-success text-center">
+        <h4 class="card-title mt-0">{{alert.description}}</h4>
+        <p class="card-category">{{momentFormat(alert.date)}}/{{alert.activationValue}}</p>
+      </div>
+    </div>    
+  </div>
 </ng-template>
 
 <div class="main-content">
@@ -84,47 +104,47 @@
           </button>
         </div>
         <div class="buttons-farm">
-            <div class="btn btns-alerts btn-block">
-              <span><img src="/assets/icons/alert-icon.png"></span>
-              <span>Alertas</span>
-            </div>
+          <button (click)="open(alertsModal, 'xl')" class="btn btns-alerts btn-block">
+            <span><img src="/assets/icons/alert-icon.png"></span>
+            <span>Alertas</span>
+          </button>
         </div> 
-        <div *ngIf="measurements.length>0" class="container-fluid card-weather">
+        <div *ngIf="measurements.length>0" class="container-fluid">
           <div class="card card-bg-none">
             <div class="card-header py-0">
               <h4 class="row-subtitle-card">Clima</h4>
             </div>
-            <div class="card-body">
+            <div class="card-body card-weather">
               <div class="table-responsive">
                 <table class="table">
                   <tbody>
                     <tr *ngFor="let data of measurements">
-                    <td class="name-weather">
-                      {{translateMeasurement(data.name)}}
-                    </td>
-                    <td class="icon-weather">
-                      <img *ngIf="translateMeasurement(data.name) =='Station Temperature' || translateMeasurement(data.name)=='Temperatura'"
-                                src="assets/icons/Temperatura.svg">
-                      <img *ngIf="translateMeasurement(data.name) =='Rafaga de viento' || translateMeasurement(data.name)=='Dir. Viento'"
-                                src="assets/icons/Direccion-del-Viento.svg">
-                      <img *ngIf="translateMeasurement(data.name) =='Wind Direction' || translateMeasurement(data.name)=='Vel. Viento'" src="assets/icons/Viento.svg">
-                      <img *ngIf="translateMeasurement(data.name) =='Wind Speed (period)'"
-                                src="https://www.dropcontrol.com/img/widgets/ico_velocidad.gif">
-                      <img *ngIf="translateMeasurement(data.name) =='Station Relative Humidity' || translateMeasurement(data.name)=='Humedad'"
-                                src="assets/icons/Gota.svg">
-                      <img *ngIf="translateMeasurement(data.name) =='Solar radiation ' || translateMeasurement(data.name)=='Rad. Solar'" src="assets/icons/Sol.svg">
-                      <img *ngIf="translateMeasurement(data.name) =='Horas Frío'"
-                                src=" https://www.dropcontrol.com/img/widgets/ico_pluviometria.gif?uv=1">
-                      <img *ngIf="translateMeasurement(data.name) =='Porciones de Frío'"
-                                src=" https://www.dropcontrol.com/img/widgets/ico_pluviometria.gif?uv=1">
-                      <img *ngIf="translateMeasurement(data.name) =='Pluviometro'" src="assets/icons/Lluvia.svg">
-                    </td>
-                    <td style="display:inline-flex;">
-                      {{decimalProcessor(data.lastData)}} {{data.unit}} &nbsp;  
-                      <div *ngIf="translateMeasurement(data.name) =='Rafaga de viento' || translateMeasurement(data.name)=='Dir. Viento'"> {{getCardinalPointOfTheValue(data.lastData)}}</div>
-                    </td> 
-          
-                  </tr>
+                      <td class="name-weather">
+                        {{translateMeasurement(data.name)}}
+                      </td>
+                      <td class="icon-weather">
+                        <img *ngIf="translateMeasurement(data.name) =='Station Temperature' || translateMeasurement(data.name)=='Temperatura'"
+                        src="assets/icons/Temperatura.svg">
+                        <img *ngIf="translateMeasurement(data.name) =='Rafaga de viento' || translateMeasurement(data.name)=='Dir. Viento'"
+                        src="assets/icons/Direccion-del-Viento.svg">
+                        <img *ngIf="translateMeasurement(data.name) =='Wind Direction' || translateMeasurement(data.name)=='Vel. Viento'" src="assets/icons/Viento.svg">
+                        <img *ngIf="translateMeasurement(data.name) =='Wind Speed (period)'"
+                        src="https://www.dropcontrol.com/img/widgets/ico_velocidad.gif">
+                        <img *ngIf="translateMeasurement(data.name) =='Station Relative Humidity' || translateMeasurement(data.name)=='Humedad'"
+                        src="assets/icons/Gota.svg">
+                        <img *ngIf="translateMeasurement(data.name) =='Solar radiation ' || translateMeasurement(data.name)=='Rad. Solar'" src="assets/icons/Sol.svg">
+                        <img *ngIf="translateMeasurement(data.name) =='Horas Frío'"
+                        src=" https://www.dropcontrol.com/img/widgets/ico_pluviometria.gif?uv=1">
+                        <img *ngIf="translateMeasurement(data.name) =='Porciones de Frío'"
+                        src=" https://www.dropcontrol.com/img/widgets/ico_pluviometria.gif?uv=1">
+                        <img *ngIf="translateMeasurement(data.name) =='Pluviometro'" src="assets/icons/Lluvia.svg">
+                      </td>
+                      <td style="display:inline-flex;">
+                        {{decimalProcessor(data.lastData)}} {{data.unit}} &nbsp;  
+                        <div *ngIf="translateMeasurement(data.name) =='Rafaga de viento' || translateMeasurement(data.name)=='Dir. Viento'"> {{getCardinalPointOfTheValue(data.lastData)}}</div>
+                      </td> 
+
+                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -206,54 +226,54 @@
                 <table class="table6">
                   <tr>
                     <td *ngIf="statusRegando" class="light lightblue"> <td>
-                    <td *ngIf="statusRegando"> Regando </td>
-                    <td class="light lightgreen"> <td>
-                    <td> Ok </td>
-                    <td *ngIf="status" class="light lighttree"> <td>
-                    <td *ngIf="status"> Estresado </td>
-                    <td *ngIf="status" class="light lightred"> <td>
-                    <td *ngIf="status"> Seco </td>
-                  </tr>
-                </table>
-              </div>
-            </div>
-            <div class="col-md-12">
-              <div class="line">
-                <div class="buttons-time row">
-                  <div >
-                    <button class="volver" (click)="goBack()" [disabled]="dateRangeHistory.length==1">Volver</button>
-                  </div>
-                  <div *ngFor="let data of times">
-                    <button [ngClass]="{'times-active': data.value === selectedValue}" (click)="selectTime(data)"  class="times">{{data.value}}</button>
+                      <td *ngIf="statusRegando"> Regando </td>
+                      <td class="light lightgreen"> <td>
+                        <td> Ok </td>
+                        <td *ngIf="status" class="light lighttree"> <td>
+                          <td *ngIf="status"> Estresado </td>
+                          <td *ngIf="status" class="light lightred"> <td>
+                            <td *ngIf="status"> Seco </td>
+                          </tr>
+                        </table>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="line">
+                        <div class="buttons-time row">
+                          <div >
+                            <button class="volver" (click)="goBack()" [disabled]="dateRangeHistory.length==1">Volver</button>
+                          </div>
+                          <div *ngFor="let data of times">
+                            <button [ngClass]="{'times-active': data.value === selectedValue}" (click)="selectTime(data)"  class="times">{{data.value}}</button>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="container-fluid top">
+                        <app-chart 
+                        [weatherStation]="weatherStation" 
+                        [type]="'spline'" 
+                        [title]="'TEMPERATURA/HUMEDAD'" 
+                        [firstSensorType]="'Temperature'"
+                        [secondSensorType]="'Humidity'"
+                        [fromDate]="fromDate" 
+                        [toDate]="toDate">
+                      </app-chart>
+                    </div>
+                    <div class="container-fluid top">
+                      <app-chart 
+                      [weatherStation]="weatherStation" 
+                      [type]="'column'" 
+                      [title]="'PRECIPITACIÓN/ET0'" 
+                      [firstSensorType]="'Rain'"
+                      [secondSensorType]="'Et0'"
+                      [fromDate]="fromDate" 
+                      [toDate]="toDate">
+                    </app-chart>
                   </div>
                 </div>
-              </div>
-              <div class="container-fluid top">
-                <app-chart 
-                  [weatherStation]="weatherStation" 
-                  [type]="'spline'" 
-                  [title]="'TEMPERATURA/HUMEDAD'" 
-                  [firstSensorType]="'Temperature'"
-                  [secondSensorType]="'Humidity'"
-                  [fromDate]="fromDate" 
-                  [toDate]="toDate">
-                </app-chart>
-              </div>
-              <div class="container-fluid top">
-                <app-chart 
-                  [weatherStation]="weatherStation" 
-                  [type]="'column'" 
-                  [title]="'PRECIPITACIÓN/ET0'" 
-                  [firstSensorType]="'Rain'"
-                  [secondSensorType]="'Et0'"
-                  [fromDate]="fromDate" 
-                  [toDate]="toDate">
-                </app-chart>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </div> 
     </div>
-  </div> 
-</div>

@@ -223,6 +223,7 @@ export class PolygonMapComponent implements OnInit,OnChanges {
             }
           },
           error=>{
+            this.intPercentage="100%";
             this.loading=false;
           });
         }
