@@ -238,7 +238,7 @@ export class FarmMapPolygonComponent implements OnInit {
     }
     this.toDate = this.calendar.getToday(); 
   }
-  goBack(){
+  /*goBack(){
     let lastElement=this.dateRangeHistory.pop();
     this.fromDate=lastElement.fromDate;
     this.toDate=lastElement.toDate;
@@ -247,7 +247,7 @@ export class FarmMapPolygonComponent implements OnInit {
       element.active=(element.value===this.selectedValue)?true:false;
       return element;
     });
-  }
+  }*/
   onSelect(select: string, id: number) {
     switch (select) {
       case "zone":

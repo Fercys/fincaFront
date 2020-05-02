@@ -104,7 +104,7 @@
           </button>
         </div>
         <div class="buttons-farm">
-          <button (click)="open(alertsModal, 'xl')" class="btn btns-alerts btn-block">
+          <button (click)="open(alertsModal, 'xl', 'alerts')" class="btn btns-alerts btn-block">
             <span><img src="/assets/icons/alert-icon.png"></span>
             <span>Alertas</span>
           </button>
@@ -240,9 +240,9 @@
                     <div class="col-md-12">
                       <div class="line">
                         <div class="buttons-time row">
-                          <div >
+                          <!--<div>
                             <button class="volver" (click)="goBack()" [disabled]="dateRangeHistory.length==1">Volver</button>
-                          </div>
+                          </div>-->
                           <div *ngFor="let data of times">
                             <button [ngClass]="{'times-active': data.value === selectedValue}" (click)="selectTime(data)"  class="times">{{data.value}}</button>
                           </div>

@@ -160,7 +160,7 @@ export class WeatherMonitoringComponent implements OnInit {
       this.setLocalStorageItem("lastMeasurements",this.getJSONStringify(this.measurements));
     });
   }
-  goBack(){
+  /*goBack(){
     let lastElement=this.dateRangeHistory.pop();
     this.fromDate=lastElement.fromDate;
     this.toDate=lastElement.toDate;
@@ -169,7 +169,7 @@ export class WeatherMonitoringComponent implements OnInit {
       element.active=(element.value===this.selectedValue)?true:false;
       return element;
     });
-  }
+  }*/
 getWeatherStation() {
   this.loading = true;
   this.wiseconnService.getWeatherStation(this.farm.id).subscribe((response: any) => {
