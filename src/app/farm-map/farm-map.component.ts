@@ -158,10 +158,10 @@ export class FarmMapComponent implements OnInit {
             this.farm=this.getFarm(parseInt(this._route.snapshot.paramMap.get('id')));
             this.setLocalStorageItem("lastFarmId",this.farm.id);
             if(localStorage.getItem("lastZones")){
-              localStorage.removeItem('lastZones');
+              localStorage.removeItem("lastZones");
             }
             if(localStorage.getItem("lastWeatherStation")){
-              localStorage.removeItem('lastWeatherStation');
+              localStorage.removeItem("lastWeatherStation");
             }
           }
         }
@@ -169,10 +169,10 @@ export class FarmMapComponent implements OnInit {
         this.farm=this.getFarm(this._route.snapshot.paramMap.get('id'));
         this.setLocalStorageItem("lastFarmId",this.farm.id);
             if(localStorage.getItem("lastZones")){
-              localStorage.removeItem('lastZones');
+              localStorage.removeItem("lastZones");
             }
             if(localStorage.getItem("lastWeatherStation")){
-              localStorage.removeItem('lastWeatherStation');
+              localStorage.removeItem("lastWeatherStation");
             }
       }else if(this.farms.length>0){
         this.farm=this.farms[0];
