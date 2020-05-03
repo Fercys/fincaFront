@@ -136,9 +136,9 @@ export class FarmMapComponent implements OnInit {
       }else if(this.farms.length>0){
         this.farm=this.farms[0];
       }
+      this.dateRangeByDefault();
       if(this.farm){
         this.processZones();
-        this.dateRangeByDefault();
       }else if(localStorage.getItem("lastFarmId")!=undefined&&this._route.snapshot.paramMap.get('id')){
         Swal.fire({icon: 'error',title: 'Oops...',text: 'Farm no existente'});
       }        
@@ -158,10 +158,10 @@ export class FarmMapComponent implements OnInit {
             this.farm=this.getFarm(parseInt(this._route.snapshot.paramMap.get('id')));
             this.setLocalStorageItem("lastFarmId",this.farm.id);
             if(localStorage.getItem("lastZones")){
-              localStorage.removeItem('lastZones');
+              localStorage.removeItem("lastZones");
             }
             if(localStorage.getItem("lastWeatherStation")){
-              localStorage.removeItem('lastWeatherStation');
+              localStorage.removeItem("lastWeatherStation");
             }
           }
         }
@@ -169,14 +169,15 @@ export class FarmMapComponent implements OnInit {
         this.farm=this.getFarm(this._route.snapshot.paramMap.get('id'));
         this.setLocalStorageItem("lastFarmId",this.farm.id);
             if(localStorage.getItem("lastZones")){
-              localStorage.removeItem('lastZones');
+              localStorage.removeItem("lastZones");
             }
             if(localStorage.getItem("lastWeatherStation")){
-              localStorage.removeItem('lastWeatherStation');
+              localStorage.removeItem("lastWeatherStation");
             }
       }else if(this.farms.length>0){
         this.farm=this.farms[0];
       }
+      this.dateRangeByDefault();
       if(this.farm){
         this.processZones();
       }else if(localStorage.getItem("lastFarmId")!=undefined&&this._route.snapshot.paramMap.get('id')){
@@ -284,15 +285,18 @@ export class FarmMapComponent implements OnInit {
         initTime: moment(this.fromDate.year + "-" + this.fromDate.month + "-" + this.fromDate.day).format("DD-MM-YYYY"),
         endTime: moment(this.toDate.year + "-" + this.toDate.month + "-" + this.toDate.day).format("DD-MM-YYYY")
       };
-      this.loading=true;
-      this.alertService.getAlerts(this.farm.id,this.dateRange).subscribe((response) => {
-        this.loading=false;
-        this.alerts=response.data?response.data:response;        
-      },
-      error=>{
-        console.log("error:",error);
-        this.loading=false;
-      });
+      if(this.farm){
+        this.loading=true;
+        this.alertService.getAlerts(this.farm.id,this.dateRange).subscribe((response) => {
+          this.loading=false;
+          this.alerts=response.data?response.data:response;        
+        },
+        error=>{
+          console.log("error:",error);
+          this.loading=false;
+        }); 
+      }
+      
 
     }
   }
@@ -358,8 +362,19 @@ export class FarmMapComponent implements OnInit {
     cache = null;
     return result;
   }  
-  open(content, sizeValue) {
-    this.modalService.open(content, {size: sizeValue} );
+  open(content:any, sizeValue:any, modal:any=null) {
+    switch (modal) {
+      case "alerts":
+        if(this.farm){
+          this.modalService.open(content, {size: sizeValue} );
+        }else{
+          Swal.fire({icon: 'error',title: 'Oops...',text: 'No hay un ningún campo seleccionado'});
+        }
+        break;      
+      default:
+        this.modalService.open(content, {size: sizeValue} );
+        break;
+    }
   }
   onSelect(select: string, id: number) {
     switch (select) {
@@ -419,7 +434,7 @@ export class FarmMapComponent implements OnInit {
     this.requestChartBtn=(this.fromDate && this.toDate && this.toDate.after(this.fromDate))?false:true;    
     this.getAlerts();
   }
-  goBack(){
+  /*goBack(){
     let lastElement=this.dateRangeHistory.pop();
     this.fromDate=lastElement.fromDate;
     this.toDate=lastElement.toDate;
@@ -428,7 +443,7 @@ export class FarmMapComponent implements OnInit {
       element.active=(element.value===this.selectedValue)?true:false;
       return element;
     });
-  }
+  }*/
   deleteValueJson(value){
     var index:number = this.measurements.indexOf(this.measurements.find(x => x.name == value));
     if(index != -1) this.measurements.splice(index, 1);

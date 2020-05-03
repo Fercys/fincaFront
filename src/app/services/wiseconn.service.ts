@@ -120,7 +120,7 @@ export class WiseconnService {
   }  
   // no funciona con http://developers.wiseconn.com/
   getAccounts(): Observable<any> { 
-    return this.http.get<any>(this.baseurl + '/accounts/', this.httpOptions)
+    return this.http.get<any>(this.baseurl + "/accounts/", this.httpOptions)
     .pipe(
       retry(1),
       catchError(this.errorHandl)
@@ -128,7 +128,7 @@ export class WiseconnService {
   }
   // no funciona con http://developers.wiseconn.com/
   getAccount(id:number): Observable<any> { 
-    return this.http.get<any>(this.baseurl + '/accounts/' +id, this.httpOptions)
+    return this.http.get<any>(this.baseurl + "/accounts/" +id, this.httpOptions)
     .pipe(
       retry(1),
       catchError(this.errorHandl)

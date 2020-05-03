@@ -324,7 +324,7 @@ export class FreePlotterComponent implements OnInit {
 		this.requestChartBtn=(this.fromDate && this.toDate && this.toDate.after(this.fromDate))?false:true;
 		//this.requestDataChart(false);
 	}
-	goBack(){
+	/*goBack(){
 		let lastElement=this.dateRangeHistory.pop();
 		this.fromDate=lastElement.fromDate;
 		this.toDate=lastElement.toDate;
@@ -334,7 +334,7 @@ export class FreePlotterComponent implements OnInit {
 			return element;
 		});
 		this.requestDataChart(true);
-	}
+	}*/
     momentFormat(value:string,chart:string){
       switch (chart) {
         case "line":

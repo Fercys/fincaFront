@@ -33,7 +33,7 @@ export class ChartComponent implements OnInit,OnChanges {
 	@Input() fromDate:any;
 	@Input() toDate:any;
 	public dateRange: any = null;
-	public dateRangeHistory:any[]=[]
+	public dateRangeHistory:any[]=[];
 	public selectedValue: any = '1S';
 	public requestChartBtn: boolean =true;
 	//chart
@@ -53,7 +53,7 @@ export class ChartComponent implements OnInit,OnChanges {
 			text: ''
 		},
 		subtitle: {
-			text: ''
+			text: null
 		},
 		xAxis: [{
 			categories: [],
@@ -70,6 +70,9 @@ export class ChartComponent implements OnInit,OnChanges {
 			},
 			showFirstLabel: false
 		}, { // right y axis
+			title: {
+				text: null
+			},
 			opposite: true,
 			tickInterval: 5,
 			labels: {
@@ -99,7 +102,6 @@ export class ChartComponent implements OnInit,OnChanges {
 
 	ngOnInit(){      
 		this.chartOptions.title.text=this.title;
-		this.chartOptions.subtitle.text=this.title;
 		this.chartOptions.chart.type=this.type;
 		switch (this.title) {
 			case "TEMPERATURA/HUMEDAD":
