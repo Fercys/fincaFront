@@ -38,6 +38,13 @@ export class AccountSettingsService {
       catchError(this.errorHandl)
     )
   }
+  getAccountSettingByFarm(id:number): Observable<any> { 
+    return this.http.get<any>(this.baseurl + '/accountsettings/getbyfarm/'+id, this.httpOptions)
+    .pipe(
+      retry(1),
+      catchError(this.errorHandl)
+    )
+  }
   create(data: any): Observable<any> {
     return this.http.post<any>(this.baseurl + '/accountsettings/store', data , this.httpOptions)
     .pipe(

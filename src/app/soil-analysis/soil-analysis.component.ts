@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WiseconnService } from 'app/services/wiseconn.service';
+import { AccountSettingsService } from 'app/services/account-settings.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -11,41 +12,53 @@ import Swal from 'sweetalert2';
 export class SoilAnalysisComponent implements OnInit {	
   public url:string=null;
   public farm:any=null;
-  public loading = true;
-  constructor(public router: Router,public wiseconnService: WiseconnService) { }
+  public loading:boolean = true;
+  public accountSetting:any=null;
+  constructor(
+    public router: Router,
+    public wiseconnService: WiseconnService,
+    public accountSettingsService:AccountSettingsService
+    ) { }
 
   ngOnInit() {
     this.loading = true;
-  	if(localStorage.getItem("lastFarmId")){
-  		this.getFarm(parseInt(localStorage.getItem("lastFarmId")));
-  	}else{
+    if(localStorage.getItem("lastFarmId")){
+      this.getFarm(parseInt(localStorage.getItem("lastFarmId")));
+    }else{
       this.loading = false;
-  		Swal.fire({
-	         icon: 'error',
-	         title: 'Oops...',
-	         text: 'Debe estar seleccionado un campo.'
-	    });
-  	}
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Debe estar seleccionado un campo.'
+      });
+    }
   }
   getFarm(id:number){
     this.loading = true;
-  	this.wiseconnService.getFarm(id).subscribe((response) => {
-    this.loading = false;
+    this.wiseconnService.getFarm(id).subscribe((response) => {
+      this.loading = false;
       this.farm = response.data?response.data:response;
-      switch (this.farm.name) {
-        case "Agrifrut":
-          this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3435/Campos:l/Agrifrut:f";
-          break;
-        case "Agrifrut II (Nogales y Parrones)":
-          this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3435/Campos:l/Agrifrut%20II%20(Nogales%20y%20Parrones):f";
-          break;
-        case "Santa Juana de Chincolco":
-          this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3507/Campos:l/Agricola%20Santa%20Juana%20de%20Chincolco%20SA:f";
-          break;
-        default:
-          this.url = "";
+      console.log("farm:",this.farm)
+      if(this.farm){
+        this.getAccountSettingByFarm()
       }
-  	});
+      
+    });
+  }
+  processUrlText(text:string){
+    return text.replace(" ", "%20")
+  }
+  getAccountSettingByFarm(){
+    this.loading = true;
+    this.accountSettingsService.getAccountSettingByFarm(this.farm.id).subscribe((response) => {
+      this.loading = false;
+      this.accountSetting=response.data;
+      let username=this.processUrlText(this.accountSetting.name);
+      let password=this.processUrlText(this.accountSetting.password);
+      let accountName=this.processUrlText(this.accountSetting.account.name);
+      let idUser=this.processUrlText(this.accountSetting.id_user);
+      this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username="+username+"&password="+password+"#/u:"+idUser+"/Campos:l/"+accountName+":f";
+    });
   }
 
 }
