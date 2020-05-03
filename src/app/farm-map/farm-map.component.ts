@@ -109,6 +109,7 @@ export class FarmMapComponent implements OnInit {
     this.wiseconnService.getFarms().subscribe((response: any) => {
       this.loading = false;
       this.farms = response.data?response.data:response;
+      this.farms.sort((a, b) => a.name > b.name ? 1 :  b.name > a.name ? -1 : 0);
       if(localStorage.getItem("lastFarmId")){
         if(this._route.snapshot.paramMap.get('id')){
           if(parseInt(this._route.snapshot.paramMap.get('id'))==parseInt(localStorage.getItem("lastFarmId"))){
@@ -150,6 +151,7 @@ export class FarmMapComponent implements OnInit {
     this.userService.getFarmsByUser(this.user.id).subscribe((response: any) => {
       this.loading = false;
       this.farms = response.data?response.data:response;
+      this.farms.sort((a, b) => a.name > b.name ? 1 :  b.name > a.name ? -1 : 0);
       if(localStorage.getItem("lastFarmId")){
         if(this._route.snapshot.paramMap.get('id')){
           if(parseInt(this._route.snapshot.paramMap.get('id'))==parseInt(localStorage.getItem("lastFarmId"))){

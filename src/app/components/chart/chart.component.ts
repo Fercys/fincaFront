@@ -297,12 +297,6 @@ export class ChartComponent implements OnInit,OnChanges {
 								this.loading = false;
 								console.log("error:",error)
 							});
-						}else if(j+1==data.length){
-							Swal.fire({
-								icon: 'error',
-								title: 'Oops...',
-								text: 'No tiene configurado los sensores de '+this.firstSensorType+' y '+this.secondSensorType
-							})
 						}
 						j++;
 					}
