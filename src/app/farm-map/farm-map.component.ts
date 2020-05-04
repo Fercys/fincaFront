@@ -81,7 +81,6 @@ export class FarmMapComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.now=moment().format('L') +" "+ moment().format('LTS');
     if(localStorage.getItem("user")){
       this.userLS=JSON.parse(localStorage.getItem("user"));
       if(bcrypt.compareSync(this.userLS.plain, this.userLS.hash)){
@@ -553,7 +552,10 @@ export class FarmMapComponent implements OnInit {
      const dialogRef = this.dialogs.open(DialogMessage, {
        panelClass: 'messagedialogcss'
      });
-  }   
+  }
+  getLastMeasureDataUpdate(date:any){
+    return moment.utc(date).format('YYYY-MM-DD hh:mm:ss');
+  }
 }
 @Component({
   selector: 'message-dialog',
