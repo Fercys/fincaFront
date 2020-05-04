@@ -457,5 +457,8 @@ getCardinalPointOfTheValue(value:number){
   }
   return CardinalPoint;
 }
+getLastMeasureDataUpdate(date:any){
+  return moment.utc(date).format('YYYY-MM-DD hh:mm:ss');
+}
 
 }

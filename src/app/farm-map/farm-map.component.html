@@ -163,8 +163,8 @@
                 </table>
               </div>
             </div>
-            <div class="card-footer text-muted text-center">
-              Última actualización {{now}}
+            <div *ngIf="measurements.length>0" class="card-footer text-muted text-center">
+              Última actualización {{getLastMeasureDataUpdate(measurements[0].lastMeasureDataUpdate)}}
             </div>
           </div>
         </div>
