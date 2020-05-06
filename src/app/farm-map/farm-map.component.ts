@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, Inject  } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NgbModal, NgbDate, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 import { element } from 'protractor';
 import Swal from 'sweetalert2';

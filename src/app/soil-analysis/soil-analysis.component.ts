@@ -38,7 +38,6 @@ export class SoilAnalysisComponent implements OnInit {
     this.wiseconnService.getFarm(id).subscribe((response) => {
       this.loading = false;
       this.farm = response.data?response.data:response;
-      console.log("farm:",this.farm)
       if(this.farm){
         this.getAccountSettingByFarm()
       }
