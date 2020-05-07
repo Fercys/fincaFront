@@ -134,6 +134,10 @@ export class FarmMapPolygonComponent implements OnInit {
       }
     });
   }
+  requestDataChart(){
+    this.fromDate=this.fromDate;
+    this.toDate=this.toDate;
+  }
   getWeatherStation(zones:any){
     return zones.find((element)=>{
       return element.name=="Estación Meteorológica"||element.name=="Estación Metereológica";
