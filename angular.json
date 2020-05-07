@@ -34,7 +34,9 @@
               "node_modules/perfect-scrollbar/dist/perfect-scrollbar.min.js",
               "node_modules/bootstrap-notify/bootstrap-notify.js",
               "node_modules/chartist/dist/chartist.js"
-            ]
+            ],
+            "browserTarget": "project-name:build",
+            "proxyConfig": "src/proxy.conf.json"
           },
           "configurations": {
             "production": {

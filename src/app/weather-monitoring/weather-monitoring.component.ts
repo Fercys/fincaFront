@@ -93,7 +93,7 @@ export class WeatherMonitoringComponent implements OnInit {
           this.getFarms();
         }else{
           this.getFarmsByUser();
-        }            
+        }
       }else{
         this.router.navigate(['/login']);
       }
