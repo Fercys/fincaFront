@@ -3,7 +3,15 @@
 	<div class="container-fluid">
 		<ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }"></ngx-loading>
 		<div class="row">
-			<h4 class="row-title">Graficador Libre</h4>
+			<div class="col-md-8">
+				<span *ngIf="farm" class="title-farm">{{farm.name}}</span>
+				<h4 class="row-title">Analizador Gráfico</h4>
+			</div>
+			<div class="col-md-4">
+				<div>
+					<span>{{today | date:'MMMM dd/MM/yyyy'}} </span>
+				</div>
+			</div>
 		</div>
 		<div class="row" >
 			<div class="col-md-2">
@@ -95,16 +103,6 @@
       			<button class="btn-greem w-100"  (click)="addSelectGroups()"><i class="material-icons">add</i></button>
       		</div>
 		</div>
-			<div class="row">
-				<div class="col-md-4">
-					<div>
-						<span>{{today | date:'MMMM dd/MM/yyyy'}} </span>
-					</div>
-				</div>
-				<div class="col-md-8">
-					<span *ngIf="farm" class="title-farm">{{farm.name}}</span>
-				</div>
-			</div>
 			<div class="row">
 				<div class="col-md-12" >
 					<div class="select-time">
