@@ -111,6 +111,13 @@ export class WiseconnService {
       catchError(this.errorHandl)
     )
   }
+  getDataByFilterMeasure(data,dateRange): Observable<any> {
+    return this.http.post<any>(this.baseurl + "/measures/filter/data?initTime="+dateRange.initTime+"T00:00&endTime="+dateRange.endTime+"T00:00",data,this.httpOptions)
+    .pipe(
+      retry(1),
+      catchError(this.errorHandl)
+    )
+  }  
   getDataByMeasure(id,dateRange): Observable<any> {
     return this.http.get<any>(this.baseurl + "/measures/"+id+"/data?initTime="+dateRange.initTime+"T00:00&endTime="+dateRange.endTime+"T00:00", this.httpOptions)
     .pipe(

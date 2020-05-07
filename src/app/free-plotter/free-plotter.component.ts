@@ -132,10 +132,10 @@ export class FreePlotterComponent implements OnInit {
 				this.addSelectGroups();
 				this.dateRangeByDefault();
 				if(this.user.id_role==1){
-		          this.getFarms();
-		        }else{
-		          this.getFarmsByUser();
-		        }
+					this.getFarms();
+				}else{
+					this.getFarmsByUser();
+				}
 			}else{
 				this.router.navigate(['/login']);
 			}
@@ -253,43 +253,46 @@ export class FreePlotterComponent implements OnInit {
 	onSelect(select: string, id: number, group:any=null) {
 		switch (select) {			
 			case "variable":
-				if(group){
-					this.selectGroups[this.selectGroups.length-1].variablesSelected=group.variable.find((element)=>{
-						return element.id == id
-					});
-					this.filterZonesByVariable(group,this.selectGroups[this.selectGroups.length-1].variablesSelected)
-				}
-				break;
+			if(group){
+				this.selectGroups[this.selectGroups.length-1].variablesSelected=group.variable.find((element)=>{
+					return element.id == id
+				});
+				this.filterZonesByVariable(group,this.selectGroups[this.selectGroups.length-1].variablesSelected)
+			}
+			break;
 			case "type":
-				this.selectGroups[this.selectGroups.length-1].typeSelected=this.selectGroups[this.selectGroups.length-1].types.find((element)=>{
-					return element.id == id
-				});
-				break;
+			this.selectGroups[this.selectGroups.length-1].typeSelected=this.selectGroups[this.selectGroups.length-1].types.find((element)=>{
+				return element.id == id
+			});
+			break;
 			case "resolution":
-				this.selectGroups[this.selectGroups.length-1].resolutionSelected = this.selectGroups[this.selectGroups.length-1].resolutions.find((element)=>{
-					return element.id == id
-				});
-				break;
+			this.selectGroups[this.selectGroups.length-1].resolutionSelected = this.selectGroups[this.selectGroups.length-1].resolutions.find((element)=>{
+				return element.id == id
+			});
+			break;
 			case "zone":
-				this.selectGroups[this.selectGroups.length-1].zoneSelected = this.selectGroups[this.selectGroups.length-1].zones.find((element)=>{
-					return element.zone.id == id
-				});
-				this.selectGroups[this.selectGroups.length-1].sensors=[];
-				for (let measure of this.selectGroups[this.selectGroups.length-1].zoneSelected.zone.measures){
-					if(measure.sensorDepth && measure.depthUnit && measure.unit){
-						let sensor= measure.sensorDepth + " " + measure.depthUnit + " ("+measure.unit+")";
-						this.selectGroups[this.selectGroups.length-1].sensors.push({
-							id:this.selectGroups[this.selectGroups.length-1].sensors.length+1,
-							name:sensor
-						});
-					}
+			this.selectGroups[this.selectGroups.length-1].zoneSelected = this.selectGroups[this.selectGroups.length-1].zones.find((element)=>{
+				return element.zone.id == id
+			});
+			this.selectGroups[this.selectGroups.length-1].sensors=[];
+			for (let measure of this.selectGroups[this.selectGroups.length-1].zoneSelected.zone.measures){
+				if(measure.sensorDepth && measure.depthUnit && measure.unit){
+					let sensor= measure.sensorDepth + " " + measure.depthUnit + " ("+measure.unit+")";
+					this.selectGroups[this.selectGroups.length-1].sensors.push({
+						id:this.selectGroups[this.selectGroups.length-1].sensors.length+1,
+						name:sensor,
+						sensorDepth:measure.sensorDepth,
+						depthUnit:measure.depthUnit,
+						unit:measure.unit
+					});
 				}
-				break;
+			}
+			break;
 			case "sensor":
-				this.selectGroups[this.selectGroups.length-1].sensorSelected = this.selectGroups[this.selectGroups.length-1].sensors.find((element)=>{
-					return element.id == id
-				});
-				break;
+			this.selectGroups[this.selectGroups.length-1].sensorSelected = this.selectGroups[this.selectGroups.length-1].sensors.find((element)=>{
+				return element.id == id
+			});
+			break;
 			default:
 			break;
 		}
@@ -455,7 +458,7 @@ export class FreePlotterComponent implements OnInit {
 			default:
 			return sensorType;
 			break;
-		}
+		}	
 	}
 	requestDataChart(goBackFlag:boolean=false){
 		if(this.selectGroups[this.selectGroups.length-1].typeSelected&&
@@ -478,7 +481,120 @@ export class FreePlotterComponent implements OnInit {
 		for(let selectGroup of this.selectGroups){
 			let j=0;
 			let getDataByMeasure=false;
-			while(j<selectGroup.zoneSelected.zone.measures.length&&!getDataByMeasure){
+			this.loading=true;
+			this.wiseconnService.getDataByFilterMeasure({
+				zone:selectGroup.zoneSelected.zone,
+				sensorSelected:selectGroup.sensorSelected
+			},this.dateRange).subscribe((response) => {
+				this.loading=false;
+				getDataByMeasure=true;
+				let chartData=response.data?response.data:response;
+				chartData = chartData.filter((element) => {
+					let minutes=moment(element.time).minutes();
+					switch (this.selectGroups[this.selectGroups.length-1].resolutionSelected.name) {
+						case "15 Minutos":
+						if(minutes==15)
+							return element;
+						break;
+						case "30 Minutos":
+						if(minutes==30)
+							return element;
+						break;
+						case "45 Minutos":
+						if(minutes==45)
+							return element;
+						break;
+						case "60 Minutos":
+						if(minutes==0)
+							return element;
+						break;
+						default:
+						// code...
+						break;
+					}
+
+				});
+				chartData.sort(function (a, b) {
+					if (moment(a.time).isAfter(b.time)) {
+						return 1;
+					}
+					if (!moment(a.time).isAfter(b.time)) {
+						return -1;
+					}
+					return 0;
+				});
+
+				if(chartData.length>this.chartOptions.xAxis[0].categories.length){
+					this.chartOptions.xAxis[0].categories=[];
+					for(let data of chartData){
+						this.chartOptions.xAxis[0].categories.push(this.momentFormat(data.time,"line"));
+					}
+				}
+
+				chartData=chartData.map(element=>{
+					return element.value
+				});
+
+				let yAxis=(this.chartOptions.yAxis.length % 2 == 0)?{ // Primary yAxis
+					labels: {
+						format: '{value}',
+						style: {
+							color: selectGroup.chartColor
+						}
+					},
+					title: {
+						text: selectGroup.variablesSelected.name +"/"+selectGroup.zoneSelected.zone.name,
+						style: {
+							color: selectGroup.chartColor
+						}
+					},
+					opposite: true
+
+				}:{ // Secondary yAxis
+					gridLineWidth: 0,
+					title: {
+						text: selectGroup.variablesSelected.name +"/"+selectGroup.zoneSelected.zone.name,
+						style: {
+							color: selectGroup.chartColor
+						}
+					},
+					labels: {
+						format: '{value}',
+						style: {
+							color: selectGroup.chartColor
+						}
+					}
+
+				};
+				let serieLabelName=selectGroup.variablesSelected.name +"/"+selectGroup.zoneSelected.zone.name;
+				let serie=((selectGroup.typeSelected.name).toLowerCase() == "linea")?{
+					data: chartData.slice(0, this.chartDataLength-1),
+					name: serieLabelName,
+					type: 'line',
+					yAxis: this.chartOptions.series.length
+				}:{
+					data: chartData.slice(0, this.chartDataLength-1),
+					name: serieLabelName,
+					type: 'column',
+					yAxis: this.chartOptions.series.length
+				};
+				if(this.chartOptions.series.length==0){					    			
+					this.chartOptions.series.push(serie);
+					this.chartOptions.yAxis.push(yAxis);
+					this.chartOptions.colors.push(selectGroup.chartColor);
+				}else if(this.chartOptions.series.find(element=>{return element.name==serieLabelName})==undefined){
+					this.chartOptions.series.push(serie);
+					this.chartOptions.yAxis.push(yAxis);
+					this.chartOptions.colors.push(selectGroup.chartColor);
+				}
+				this.highchartsShow();
+				this.loading=false;
+			},error=>{
+				this.loading=false;
+				console.log("error:",error)
+			});
+
+			/*while(j<selectGroup.zoneSelected.zone.measures.length&&!getDataByMeasure){
 				let measure=selectGroup.zoneSelected.zone.measures[j];
 				if(measure.sensorType&&measure.sensorDepth&&measure.depthUnit&&measure.unit&&selectGroup.variablesSelected.name){
 					let sensor= measure.sensorDepth + " " + measure.depthUnit + " ("+measure.unit+")";
@@ -489,108 +605,7 @@ export class FreePlotterComponent implements OnInit {
 						console.log("measure:",measure)
 						this.loading=true;
 						this.wiseconnService.getDataByMeasure(measure.id,this.dateRange).subscribe((response) => {
-							getDataByMeasure=true;
-							let chartData=response.data?response.data:response;
-							chartData = chartData.filter((element) => {
-								let minutes=moment(element.time).minutes();
-								switch (this.selectGroups[this.selectGroups.length-1].resolutionSelected.name) {
-									case "15 Minutos":
-									if(minutes==15)
-										return element;
-									break;
-									case "30 Minutos":
-									if(minutes==30)
-										return element;
-									break;
-									case "45 Minutos":
-									if(minutes==45)
-										return element;
-									break;
-									case "60 Minutos":
-									if(minutes==0)
-										return element;
-									break;
-									default:
-									// code...
-									break;
-								}
-
-							});
-							chartData.sort(function (a, b) {
-								if (moment(a.time).isAfter(b.time)) {
-									return 1;
-								}
-								if (!moment(a.time).isAfter(b.time)) {
-									return -1;
-								}
-								return 0;
-							});
-
-							if(chartData.length>this.chartOptions.xAxis[0].categories.length){
-								this.chartOptions.xAxis[0].categories=[];
-								for(let data of chartData){
-									this.chartOptions.xAxis[0].categories.push(this.momentFormat(data.time,"line"));
-								}
-							}
-
-							chartData=chartData.map(element=>{
-								return element.value
-							});
-
-							let yAxis=(this.chartOptions.yAxis.length % 2 == 0)?{ // Primary yAxis
-								labels: {
-									format: '{value}',
-									style: {
-										color: selectGroup.chartColor
-									}
-								},
-								title: {
-									text: selectGroup.variablesSelected.name +"/"+selectGroup.zoneSelected.zone.name,
-									style: {
-										color: selectGroup.chartColor
-									}
-								},
-								opposite: true
-
-							}:{ // Secondary yAxis
-								gridLineWidth: 0,
-								title: {
-									text: selectGroup.variablesSelected.name +"/"+selectGroup.zoneSelected.zone.name,
-									style: {
-										color: selectGroup.chartColor
-									}
-								},
-								labels: {
-									format: '{value}',
-									style: {
-										color: selectGroup.chartColor
-									}
-								}
-
-							};
-							let serieLabelName=selectGroup.variablesSelected.name +"/"+selectGroup.zoneSelected.zone.name;
-							let serie=((selectGroup.typeSelected.name).toLowerCase() == "linea")?{
-								data: chartData.slice(0, this.chartDataLength-1),
-								name: serieLabelName,
-								type: 'line',
-								yAxis: this.chartOptions.series.length
-							}:{
-								data: chartData.slice(0, this.chartDataLength-1),
-								name: serieLabelName,
-								type: 'column',
-								yAxis: this.chartOptions.series.length
-							};
-							if(this.chartOptions.series.length==0){					    			
-								this.chartOptions.series.push(serie);
-								this.chartOptions.yAxis.push(yAxis);
-								this.chartOptions.colors.push(selectGroup.chartColor);
-							}else if(this.chartOptions.series.find(element=>{return element.name==serieLabelName})==undefined){
-								this.chartOptions.series.push(serie);
-								this.chartOptions.yAxis.push(yAxis);
-								this.chartOptions.colors.push(selectGroup.chartColor);
-							}
-							this.highchartsShow();
-							this.loading=false;
+							
 						},
 						error=>{
 							this.loading=false;
@@ -600,7 +615,7 @@ export class FreePlotterComponent implements OnInit {
 				}
 				j++;
 			}
-			i++;
+			i++;*/
 		}
 	}else{
 		let message='';
