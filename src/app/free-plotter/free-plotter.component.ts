@@ -112,12 +112,7 @@ export class FreePlotterComponent implements OnInit {
 		resolutionSelected:null,
 		zones:[],
 		zoneSelected:null,
-		sensors:[
-		{id:1,name:"#1 15 cm (%)"},
-		{id:2,name:"#2 35 cm (%)"},
-		{id:3,name:"#3 55 cm (%)"},
-		{id:4,name:"#4 75 cm (%)"},
-		],
+		sensors:[],
 		sensorSelected:null,
 		chartColor:this.chartColors[this.selectGroups.length]
 	};
@@ -258,33 +253,43 @@ export class FreePlotterComponent implements OnInit {
 	onSelect(select: string, id: number, group:any=null) {
 		switch (select) {			
 			case "variable":
-			if(group){
-				this.selectGroups[this.selectGroups.length-1].variablesSelected=group.variable.find((element)=>{
+				if(group){
+					this.selectGroups[this.selectGroups.length-1].variablesSelected=group.variable.find((element)=>{
+						return element.id == id
+					});
+					this.filterZonesByVariable(group,this.selectGroups[this.selectGroups.length-1].variablesSelected)
+				}
+				break;
+			case "type":
+				this.selectGroups[this.selectGroups.length-1].typeSelected=this.selectGroups[this.selectGroups.length-1].types.find((element)=>{
 					return element.id == id
 				});
-				this.filterZonesByVariable(group,this.selectGroups[this.selectGroups.length-1].variablesSelected)
-			}
-			break;
-			case "type":
-			this.selectGroups[this.selectGroups.length-1].typeSelected=this.selectGroups[this.selectGroups.length-1].types.find((element)=>{
-				return element.id == id
-			});
-			break;
+				break;
 			case "resolution":
-			this.selectGroups[this.selectGroups.length-1].resolutionSelected = this.selectGroups[this.selectGroups.length-1].resolutions.find((element)=>{
-				return element.id == id
-			});
-			break;
+				this.selectGroups[this.selectGroups.length-1].resolutionSelected = this.selectGroups[this.selectGroups.length-1].resolutions.find((element)=>{
+					return element.id == id
+				});
+				break;
 			case "zone":
-			this.selectGroups[this.selectGroups.length-1].zoneSelected = this.selectGroups[this.selectGroups.length-1].zones.find((element)=>{
-				return element.zone.id == id
-			});
-			break;
+				this.selectGroups[this.selectGroups.length-1].zoneSelected = this.selectGroups[this.selectGroups.length-1].zones.find((element)=>{
+					return element.zone.id == id
+				});
+				this.selectGroups[this.selectGroups.length-1].sensors=[];
+				for (let measure of this.selectGroups[this.selectGroups.length-1].zoneSelected.zone.measures){
+					if(measure.sensorDepth && measure.depthUnit && measure.unit){
+						let sensor= measure.sensorDepth + " " + measure.depthUnit + " ("+measure.unit+")";
+						this.selectGroups[this.selectGroups.length-1].sensors.push({
+							id:this.selectGroups[this.selectGroups.length-1].sensors.length+1,
+							name:sensor
+						});
+					}
+				}
+				break;
 			case "sensor":
-			this.selectGroups[this.selectGroups.length-1].sensorSelected = this.selectGroups[this.selectGroups.length-1].sensors.find((element)=>{
-				return element.id == id
-			});
-			break;
+				this.selectGroups[this.selectGroups.length-1].sensorSelected = this.selectGroups[this.selectGroups.length-1].sensors.find((element)=>{
+					return element.id == id
+				});
+				break;
 			default:
 			break;
 		}
@@ -475,10 +480,13 @@ export class FreePlotterComponent implements OnInit {
 			let getDataByMeasure=false;
 			while(j<selectGroup.zoneSelected.zone.measures.length&&!getDataByMeasure){
 				let measure=selectGroup.zoneSelected.zone.measures[j];
-				if(measure.sensorType&&selectGroup.variablesSelected.name){
+				if(measure.sensorType&&measure.sensorDepth&&measure.depthUnit&&measure.unit&&selectGroup.variablesSelected.name){
+					let sensor= measure.sensorDepth + " " + measure.depthUnit + " ("+measure.unit+")";
+					//&&sensor==this.selectGroups[this.selectGroups.length-1].sensorSelected.name
 					if((this.getSensorName(measure.sensorType)).toLowerCase()==(selectGroup.variablesSelected.name).toLowerCase()){
 						//measure.id => para probar local
 						//measure.id_wiseconn => para probar con wiseconn
+						console.log("measure:",measure)
 						this.loading=true;
 						this.wiseconnService.getDataByMeasure(measure.id,this.dateRange).subscribe((response) => {
 							getDataByMeasure=true;
@@ -659,12 +667,7 @@ getDefaultSelectGroups(){
 		resolutionSelected:null,
 		zones:[],
 		zoneSelected:null,
-		sensors:[
-		{id:1,name:"#1 15 cm (%)"},
-		{id:2,name:"#2 35 cm (%)"},
-		{id:3,name:"#3 55 cm (%)"},
-		{id:4,name:"#4 75 cm (%)"},
-		],
+		sensors:[],
 		sensorSelected:null,
 		chartColor:this.chartColors[this.selectGroups.length]
 	};

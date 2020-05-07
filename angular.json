@@ -35,8 +35,6 @@
               "node_modules/bootstrap-notify/bootstrap-notify.js",
               "node_modules/chartist/dist/chartist.js"
             ],
-            "browserTarget": "project-name:build",
-            "proxyConfig": "src/proxy.conf.json"
           },
           "configurations": {
             "production": {
