@@ -19,8 +19,7 @@ export class RoleService {
     let httpHeaders:any=null;
     httpHeaders={
       "Accept": "application/json",
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*"
+      "Content-Type": "application/json"
     };
     this.httpOptions={
       headers: new HttpHeaders(httpHeaders)
