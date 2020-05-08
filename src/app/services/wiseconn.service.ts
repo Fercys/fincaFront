@@ -27,7 +27,9 @@ export class WiseconnService {
       };
     }else{
       httpHeaders={
-        'Accept': 'application/json'
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
       };
     }
     this.httpOptions={
