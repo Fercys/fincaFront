@@ -20,8 +20,10 @@ export class WiseconnService {
     let httpHeaders:any=null;
     if(this.baseurl=="https://cors-anywhere.herokuapp.com/https://apiv2.wiseconn.com"){
       httpHeaders={
-        'Accept': 'application/json',
-        'api_key':'9Ev6ftyEbHhylMoKFaok'
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "api_key":"9Ev6ftyEbHhylMoKFaok"
       };
     }else{
       httpHeaders={
