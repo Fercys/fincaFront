@@ -19,7 +19,6 @@ export class AccountSettingsService {
     let httpHeaders:any=null;
     httpHeaders={
       "Accept": "application/json",
-      "Content-Type": "application/json"
     };
     this.httpOptions={
       headers: new HttpHeaders(httpHeaders)
