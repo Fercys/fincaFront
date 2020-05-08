@@ -22,14 +22,12 @@ export class AlertService {
       httpHeaders={
         "Accept": "application/json",
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
         "api_key":"9Ev6ftyEbHhylMoKFaok"
       };
     }else{
       httpHeaders={
         "Accept": "application/json",
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
       };
     }
     this.httpOptions={
