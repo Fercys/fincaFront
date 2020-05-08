@@ -18,7 +18,8 @@ export class RoleService {
   constructor(private http: HttpClient) { 
     let httpHeaders:any=null;
     httpHeaders={
-      "Accept": "application/json"
+      "Content-Type": "application/json",
+      //"Accept": "application/json",
     };
     this.httpOptions={
       headers: new HttpHeaders(httpHeaders)
