@@ -18,7 +18,9 @@ export class AccountSettingsService {
   constructor(private http: HttpClient) { 
     let httpHeaders:any=null;
     httpHeaders={
-      'Accept': 'application/json'
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*"
     };
     this.httpOptions={
       headers: new HttpHeaders(httpHeaders)
