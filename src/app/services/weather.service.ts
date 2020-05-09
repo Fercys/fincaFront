@@ -14,8 +14,7 @@ export class WeatherService {
 //   HTTPS: https://api.worldweatheronline.com/premium/v1/weather.ashx
   httpOptions = {
     headers: new HttpHeaders({
-      "Content-Type": "application/json",
-      //"Accept": "application/json",
+      "Accept": "application/json",
       "api_key":"7da96f2f52f54be7a1b123737202102",
     })
   };
