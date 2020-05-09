@@ -20,14 +20,12 @@ export class AlertService {
     let httpHeaders:any=null;
     if(this.baseurl=="https://cors-anywhere.herokuapp.com/https://apiv2.wiseconn.com"){
       httpHeaders={
-        "Content-Type": "application/json",
-        //"Accept": "application/json",
+        "Accept": "application/json",
         "api_key":"9Ev6ftyEbHhylMoKFaok"
       };
     }else{
       httpHeaders={
-        "Content-Type": "application/json",
-        //"Accept": "application/json",
+        "Accept": "application/json",
       };
     }
     this.httpOptions={
