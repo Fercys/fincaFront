@@ -62,8 +62,7 @@ export class FarmsComponent implements OnInit {
       this.loading = false;
     },
     error=>{
-      this.loading = false;
-      
+      this.loading = false;      
       if(error.error)
         this.notificationService.showError('Error',error.error)
       console.log("error:",error)
@@ -82,6 +81,29 @@ export class FarmsComponent implements OnInit {
       }
     }
     this.router.navigate(route);
+  }
+  activeCloning(id:number){
+    this.loading = true;
+    this.wiseconnService.activeCloning(id).subscribe((response: any) => {
+      this.loading = false;
+      if(response.data){
+        this.farms=this.farms.map(element=>{
+          if(response.data.id==element.id){
+            element.active_cloning=response.data.active_cloning;
+          }
+          return element;
+        })
+      }
+      if(response.message){
+       this.notificationService.showSuccess('Operación realizada',response.message)
+      }
+    },
+    error=>{            
+      this.loading = false;      
+      if(error.error)
+      this.notificationService.showError('Error',error.error)
+      console.log("error:",error)
+    });
   }
   setLocalStorageItem(key,value){
     localStorage.setItem(key,value);
