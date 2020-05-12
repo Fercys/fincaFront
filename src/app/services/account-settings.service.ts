@@ -18,7 +18,7 @@ export class AccountSettingsService {
   constructor(private http: HttpClient) { 
     let httpHeaders:any=null;
     httpHeaders={
-      "Accept": "application/json",
+      "Content-Type": "application/x-www-form-urlencoded",
     };
     this.httpOptions={
       headers: new HttpHeaders(httpHeaders)

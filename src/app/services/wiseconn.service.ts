@@ -48,6 +48,13 @@ export class WiseconnService {
       catchError(this.errorHandl)
     )
   }
+  activeCloning(id): Observable<any> {
+    return this.http.get<any>(this.baseurl + '/farms/'+id+'/activecloning', this.httpOptions)
+    .pipe(
+      retry(1),
+      catchError(this.errorHandl)
+    )
+  }
   getZones(id): Observable<any> { 
     return this.http.get<any>(this.baseurl + '/farms/'+id+'/zones', this.httpOptions)
     .pipe(

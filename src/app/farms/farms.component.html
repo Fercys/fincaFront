@@ -27,7 +27,7 @@
                                   </th>
                               </thead>
                               <tbody>
-                                  <tr *ngFor="let data of farms | filter:searchTable" (click)="navigateTo(['/farmmap',data.id])" style="cursor: pointer;">
+                                  <tr *ngFor="let data of farms | filter:searchTable"  style="cursor: pointer;">
                                       <td>
                                           {{data.id}}
                                       </td>
@@ -36,6 +36,7 @@
                                       </td>
                                       <td  style="cursor: pointer;">
                                           <i class="material-icons" [routerLink]="['/farmmap',data.id]">visibility</i>
+                                          <i class="material-icons" (click)="activeCloning(data.id)">{{data.active_cloning==1?'assignment_turned_in':'assignment_late'}}</i>
                                       </td>
                                   </tr>
                               </tbody>
