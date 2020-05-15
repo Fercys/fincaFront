@@ -18,28 +18,28 @@ export class AccountSettingsService {
   constructor(private http: HttpClient) { 
     let httpHeaders:any=null;
     httpHeaders={
-      "Content-Type": "application/x-www-form-urlencoded",
+      "Accept": "application/json",
     };
     this.httpOptions={
       headers: new HttpHeaders(httpHeaders)
     }
   }  
   getAccountSettings(): Observable<any> { 
-    return this.http.get<any>(this.baseurl + '/accountsettings', this.httpOptions)
+    return this.http.get<any>(this.baseurl + '/accountsettings')
     .pipe(
       retry(1),
       catchError(this.errorHandl)
     )
   }
   getAccountSetting(id:number): Observable<any> { 
-    return this.http.get<any>(this.baseurl + '/accountsettings/get/'+id, this.httpOptions)
+    return this.http.get<any>(this.baseurl + '/accountsettings/get/'+id)
     .pipe(
       retry(1),
       catchError(this.errorHandl)
     )
   }
   getAccountSettingByFarm(id:number): Observable<any> { 
-    return this.http.get<any>(this.baseurl + '/accountsettings/getbyfarm/'+id, this.httpOptions)
+    return this.http.get<any>(this.baseurl + '/accountsettings/getbyfarm/'+id)
     .pipe(
       retry(1),
       catchError(this.errorHandl)
@@ -65,7 +65,7 @@ export class AccountSettingsService {
     )
   }
   generateApiKey(): Observable<any> { 
-    return this.http.get<any>(this.baseurl + '/accountsettings/generateapikey', this.httpOptions)
+    return this.http.get<any>(this.baseurl + '/accountsettings/generateapikey')
     .pipe(
       retry(1),
       catchError(this.errorHandl)

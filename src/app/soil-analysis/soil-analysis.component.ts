@@ -54,7 +54,7 @@ export class SoilAnalysisComponent implements OnInit {
       this.accountSetting=response.data;
       let username=this.processUrlText(this.accountSetting.name);
       let password=this.processUrlText(this.accountSetting.password);
-      let accountName=this.processUrlText(this.accountSetting.account.name);
+      let accountName=this.processUrlText(this.farm.name);
       let idUser=this.processUrlText(this.accountSetting.id_user);
       this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username="+username+"&password="+password+"#/u:"+idUser+"/Campos:l/"+accountName+":f";
     });

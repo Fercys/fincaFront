@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  base_url: 'https://api.dev.aparicioconsulting.com/api'  
+  base_url: 'https://api.ceres-cdtec.cl/api'
 };

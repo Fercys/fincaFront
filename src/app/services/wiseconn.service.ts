@@ -14,7 +14,7 @@ export class WiseconnService {
   baseurl = environment.base_url;
   prodEnv = environment.production;
 
-  httpOptions:any=null;
+  httpOptions:any = null;
 
   constructor(private http: HttpClient) { 
     let httpHeaders:any=null;
@@ -25,7 +25,7 @@ export class WiseconnService {
       };
     }else{
       httpHeaders={
-        "Accept": "application/json",
+        "Accept": "application/json"        
       };
     }
     this.httpOptions={
@@ -34,7 +34,7 @@ export class WiseconnService {
   }
   
   getFarms(): Observable<any> { 
-    return this.http.get<any>(this.baseurl + '/farms', this.httpOptions)
+    return this.http.get<any>(this.baseurl + '/farms')
     .pipe(
       retry(1),
       catchError(this.errorHandl)
@@ -42,77 +42,77 @@ export class WiseconnService {
   }
   getFarm(id): Observable<any> {
     localStorage.setItem("lastFarmId",id);
-    return this.http.get<any>(this.baseurl + '/farms/'+id, this.httpOptions)
+    return this.http.get<any>(this.baseurl + '/farms/'+id)
     .pipe(
       retry(1),
       catchError(this.errorHandl)
     )
   }
   activeCloning(id): Observable<any> {
-    return this.http.get<any>(this.baseurl + '/farms/'+id+'/activecloning', this.httpOptions)
+    return this.http.get<any>(this.baseurl + '/farms/'+id+'/activecloning')
     .pipe(
       retry(1),
       catchError(this.errorHandl)
     )
   }
   getZones(id): Observable<any> { 
-    return this.http.get<any>(this.baseurl + '/farms/'+id+'/zones', this.httpOptions)
+    return this.http.get<any>(this.baseurl + '/farms/'+id+'/zones')
     .pipe(
       retry(1),
       catchError(this.errorHandl)
     )
   }
   getWeatherStation(id): Observable<any> { 
-    return this.http.get<any>(this.baseurl + '/farms/'+id+'/weatherstation', this.httpOptions)
+    return this.http.get<any>(this.baseurl + '/farms/'+id+'/weatherstation')
     .pipe(
       retry(1),
       catchError(this.errorHandl)
     )
   }
   getMeasuresOfFarm(id:number): Observable<any> { 
-    return this.http.get<any>(this.baseurl + '/farms/'+id+"/measures", this.httpOptions)
+    return this.http.get<any>(this.baseurl + '/farms/'+id+"/measures")
     .pipe(
       retry(1),
       catchError(this.errorHandl)
     )
   }
   getSensorTypes(): Observable<any> { 
-    return this.http.get<any>(this.baseurl + '/sensortypes', this.httpOptions)
+    return this.http.get<any>(this.baseurl + '/sensortypes')
     .pipe(
       retry(1),
       catchError(this.errorHandl)
     )
   }
   getSensorTypesOfFarm(id:number): Observable<any> { 
-    return this.http.get<any>(this.baseurl + '/farms/'+id+'/sensortypes', this.httpOptions)
+    return this.http.get<any>(this.baseurl + '/farms/'+id+'/sensortypes')
     .pipe(
       retry(1),
       catchError(this.errorHandl)
     )
   }
   getIrrigarionsRealOfZones(id:number,dateRange:any): Observable<any> {
-    return this.http.get<any>(this.baseurl + "/zones/"+id+"/realIrrigations?initTime="+dateRange.initTime+"&endTime="+dateRange.endTime, this.httpOptions)
+    return this.http.get<any>(this.baseurl + "/zones/"+id+"/realIrrigations?initTime="+dateRange.initTime+"&endTime="+dateRange.endTime)
     .pipe(
       retry(1),
       catchError(this.errorHandl)
     )
   }
   getMeasuresOfZones(id): Observable<any> { 
-    return this.http.get<any>(this.baseurl + "/zones/"+id+"/measures", this.httpOptions)
+    return this.http.get<any>(this.baseurl + "/zones/"+id+"/measures")
     .pipe(
       retry(1),
       catchError(this.errorHandl)
     )
   }
   getMeterogoAgrifut(id): Observable<any> {
-    return this.http.get<any>(this.baseurl + "/zones/"+id+"/measures", this.httpOptions)
+    return this.http.get<any>(this.baseurl + "/zones/"+id+"/measures")
     .pipe(
       retry(1),
       catchError(this.errorHandl)
     )
   }
   getMeterogoSantaPin(id): Observable<any> { 
-    return this.http.get<any>(this.baseurl + "/zones/"+id+"/measures", this.httpOptions)
+    return this.http.get<any>(this.baseurl + "/zones/"+id+"/measures")
     .pipe(
       retry(1),
       catchError(this.errorHandl)
@@ -126,7 +126,7 @@ export class WiseconnService {
     )
   }  
   getDataByMeasure(id,dateRange): Observable<any> {
-    return this.http.get<any>(this.baseurl + "/measures/"+id+"/data?initTime="+dateRange.initTime+"T00:00&endTime="+dateRange.endTime+"T00:00", this.httpOptions)
+    return this.http.get<any>(this.baseurl + "/measures/"+id+"/data?initTime="+dateRange.initTime+"T00:00&endTime="+dateRange.endTime+"T00:00")
     .pipe(
       retry(1),
       catchError(this.errorHandl)
@@ -134,7 +134,7 @@ export class WiseconnService {
   }  
   // no funciona con http://developers.wiseconn.com/
   getAccounts(): Observable<any> { 
-    return this.http.get<any>(this.baseurl + "/accounts/", this.httpOptions)
+    return this.http.get<any>(this.baseurl + "/accounts/")
     .pipe(
       retry(1),
       catchError(this.errorHandl)
@@ -142,7 +142,7 @@ export class WiseconnService {
   }
   // no funciona con http://developers.wiseconn.com/
   getAccount(id:number): Observable<any> { 
-    return this.http.get<any>(this.baseurl + "/accounts/" +id, this.httpOptions)
+    return this.http.get<any>(this.baseurl + "/accounts/" +id)
     .pipe(
       retry(1),
       catchError(this.errorHandl)

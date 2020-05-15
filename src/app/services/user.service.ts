@@ -14,43 +14,54 @@ export class UserService {
   baseurl = environment.base_url;
   prodEnv = environment.production;
 
-  httpOptions:any=null;
+  httpOptions: any = null;
+  httpOptionsGet: any = null;
 
-  constructor(private http: HttpClient) { 
-    let httpHeaders:any=null;
-    httpHeaders={
-      "Accept": "application/json",
+  constructor(private http: HttpClient) {
+    let httpHeaders: any = null;
+    httpHeaders = {
+      'Accept': 'application/json',
     };
-    this.httpOptions={
+    this.httpOptions = {
       headers: new HttpHeaders(httpHeaders)
     }
-  }  
-  login(credentials): Observable<any> { 
-    return this.http.post<any>(this.baseurl + '/auth/login',credentials, this.httpOptions)
+
+    let httpHeadersget: any = null;
+    httpHeadersget = {
+      'Accept': 'application/json',
+      'Access-Control-Allow-Origin': '*'
+    };
+    this.httpOptionsGet = {
+      headers: new HttpHeaders(httpHeadersget)
+    }
+  }
+
+  login(credentials): Observable<any> {     
+    return this.http.post<any>(this.baseurl + '/auth/login', credentials, this.httpOptions)
     .pipe(
       retry(1),
     )
   }
   getUsers(): Observable<any> { 
-    return this.http.get<any>(this.baseurl + '/users', this.httpOptions)
+    return this.http.get<any>(this.baseurl + '/users')
     .pipe(
       retry(1),
     )
   }
-  getUser(id:number): Observable<any> { 
-    return this.http.get<any>(this.baseurl + '/users/get/'+id, this.httpOptions)
+  getUser(id:number): Observable<any> {     
+    return this.http.get<any>(this.baseurl + '/users/get/'+id)
     .pipe(
       retry(1),
     )
   }
-  getFarmsByUser(id:number): Observable<any> { 
-    return this.http.get<any>(this.baseurl + '/users/'+id+'/getfarms', this.httpOptions)
+  getFarmsByUser(id:number): Observable<any> {     
+    return this.http.get<any>(this.baseurl + '/users/'+id+'/getfarms')
     .pipe(
       retry(1),
     )
   }
   getAccountsByUser(id:number): Observable<any> { 
-    return this.http.get<any>(this.baseurl + '/users/'+id+'/getaccounts', this.httpOptions)
+    return this.http.get<any>(this.baseurl + '/users/'+id+'/getaccounts')
     .pipe(
       retry(1),
     )

@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.conf.json",
-    "build": "ng build --prod=true --base-href https://dev.aparicioconsulting.com/ --aot=true",
+    "build": "ng build --prod=true --base-href https://api.ceres-cdtec.cl/ --aot=true",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",

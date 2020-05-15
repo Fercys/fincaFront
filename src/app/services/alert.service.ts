@@ -14,7 +14,7 @@ export class AlertService {
   baseurl = environment.base_url;
   prodEnv = environment.production;
 
-  httpOptions:any=null;
+  httpOptions: any=null;
 
   constructor(private http: HttpClient) { 
     let httpHeaders:any=null;
