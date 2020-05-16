@@ -313,6 +313,9 @@ export class FarmMapPolygonComponent implements OnInit {
           case "solar radiation ":
             newMeasurement="Rad. Solar";
             break;
+          case "pluviometro":
+            newMeasurement="Precipitación";
+            break;
           default:
             newMeasurement=measurement;
             break;

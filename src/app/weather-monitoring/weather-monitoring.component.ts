@@ -35,6 +35,8 @@ export class WeatherMonitoringComponent implements OnInit {
   public today = Date.now();
   public dataFarm: any;
   public zone: any = null;
+  public zones:any[]=[];
+  public weatherZones:any[]=[];
   public farm: any=null;
   public farms: any[] = [];
   public weatherStation: any = null;
@@ -107,9 +109,17 @@ export class WeatherMonitoringComponent implements OnInit {
       this.farms = response.data?response.data:response;
       if(localStorage.getItem("lastFarmId")){
         this.farm=this.getFarm(parseInt(localStorage.getItem("lastFarmId")));
+        this.setLocalStorageItem("lastFarmId",this.farm.id);
+        if(localStorage.getItem("lastZones")){
+          localStorage.removeItem('lastZones');
+        }
+        if(localStorage.getItem("lastWeatherStation")){
+          localStorage.removeItem('lastWeatherStation');
+        }
       }
       if(this.farm){
         this.processWeatherStation();
+        this.processZones();
       }else if(localStorage.getItem("lastFarmId")!=undefined&&this._route.snapshot.paramMap.get('id')){
         Swal.fire({icon: 'error',title: 'Oops...',text: 'Farm no existente'});
       }        
@@ -125,6 +135,7 @@ export class WeatherMonitoringComponent implements OnInit {
       }
       if(this.farm){
         this.processWeatherStation();
+        this.processZones();
       }else if(localStorage.getItem("lastFarmId")!=undefined&&this._route.snapshot.paramMap.get('id')){
         Swal.fire({icon: 'error',title: 'Oops...',text: 'Farm no existente'});
       }        
@@ -151,6 +162,38 @@ export class WeatherMonitoringComponent implements OnInit {
       this.getWeatherStation();
     }
   }
+  processZones(){
+    if(localStorage.getItem('lastZones')){
+      this.zones = JSON.parse(localStorage.getItem('lastZones'));
+      this.getWeather();
+    }else{
+      this.getZones();
+    }
+  }
+  getZones() {
+    this.loading = true;
+    this.wiseconnService.getZones(this.farm.id).subscribe((response: any) => {
+      this.loading = false; 
+      this.zones = response.data?response.data:response;
+      this.weatherZones=this.getWeatherZones();
+      this.setLocalStorageItem("lastFarmId",this.farm.id);
+      this.setLocalStorageItem("lastZones",this.getJSONStringify(this.zones));
+      this.getWeather();
+    });
+  }
+  getWeatherZones(){
+    return this.zones.filter((element)=>{
+      if(element.type.find(element=>{
+        if(element.description){
+          return element.description.toLowerCase() == "weather"
+        }
+        return element.toLowerCase() == "weather" 
+      })!=undefined){
+        return element;
+      }
+    });
+
+  }
   getIrrigarionsRealOfWeatherStation(){
     this.loading = true;
     this.wiseconnService.getMeterogoAgrifut(this.weatherStation.id).subscribe((response: any) => {
@@ -170,295 +213,298 @@ export class WeatherMonitoringComponent implements OnInit {
       return element;
     });
   }*/
-getWeatherStation() {
-  this.loading = true;
-  this.wiseconnService.getWeatherStation(this.farm.id).subscribe((response: any) => {
-    this.loading = false; 
-    this.weatherStation = response.data?response.data:null;
-    if(this.weatherStation){
-      this.getIrrigarionsRealOfWeatherStation();
-      this.setLocalStorageItem("lastFarmId",this.farm.id);
-      this.setLocalStorageItem("lastWeatherStation",this.getJSONStringify(this.weatherStation));
-      this.getWeather();
-    }else{
-      Swal.fire({icon: 'error',title: 'Oops...',text: 'Campo sin "Estación Metereologica" registrada'});
-    }
-
-  });
-} 
-
-getWeather(){
-  if (this.farm.latitude && this.farm.longitude) {
-    this.climaLoading = false;
-    this.weatherService.getWeather("e8078bb2fbfd43f1b9f175027202403", [this.farm.latitude, this.farm.longitude]).subscribe((response) => {
-      this.climaLoading = true;
-      this.resetWeatherValues(response);
-      for (const element of response.data.weather) {
-        element.iconLabel = element.hourly[0].weatherIconUrl[0];
-        this.climaDay.push(element.date);
-        this.climaIcon.push(element.iconLabel.value);
-        this.climaMax.push(element.maxtempC);
-        this.climaMin.push(element.mintempC);
+  getWeatherStation() {
+    this.loading = true;
+    this.wiseconnService.getWeatherStation(this.farm.id).subscribe((response: any) => {
+      this.loading = false; 
+      this.weatherStation = response.data?response.data:null;
+      if(this.weatherStation){
+        this.getIrrigarionsRealOfWeatherStation();
+        this.setLocalStorageItem("lastFarmId",this.farm.id);
+        this.setLocalStorageItem("lastWeatherStation",this.getJSONStringify(this.weatherStation));
+        this.getWeather();
+      }else{
+        Swal.fire({icon: 'error',title: 'Oops...',text: 'Campo sin "Estación Metereologica" registrada'});
       }
+
     });
-  }
-  this.setUrlValue();
-}
-setUrlValue(){
-  switch (this.farm.name) {
-    case "Agrifrut":
-    this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3435/Campos:l/Agrifrut:f";
-    break;
-    case "Agrifrut II (Nogales y Parrones)":
-    this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3435/Campos:l/Agrifrut%20II%20(Nogales%20y%20Parrones):f";
-    break;
-    case "Santa Juana de Chincolco":
-    this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3507/Campos:l/Agricola%20Santa%20Juana%20de%20Chincolco%20SA:f";
-    break;
-    default:
-    this.url = "";
-  }
-}
-resetWeatherValues(response){
-  this.climaDay = [];
-  this.climaIcon = [];
-  this.climaMax = [];
-  this.climaMin = [];
-  this.climaToday = response.data.current_condition[0];
-}
+  } 
 
-onSelect(select: string, id: number) {
-  switch (select) {
-    case "farm":
-    //this.setLocalStorageItem("lastLineChartLabels",this.getJSONStringify(this.lineChartLabels));
-    //this.setLocalStorageItem("lastLineChartData",this.getJSONStringify(this.lineChartData));
-    //this.setLocalStorageItem("lastBarChartLabels",this.getJSONStringify(this.barChartLabels));
-    //this.setLocalStorageItem("lastBarChartData",this.getJSONStringify(this.barChartData));
-    this.farm=this.getFarm(id);
-    if(this.farm){
-      this.setLocalStorageItem("lastFarmId",this.farm.id);
-      this.getWeatherStation();
-      this.getWeather();
+  getWeather(){
+    if (this.farm.latitude && this.farm.longitude) {
+      this.climaLoading = false;
+      this.weatherService.getWeather("e8078bb2fbfd43f1b9f175027202403", [this.farm.latitude, this.farm.longitude]).subscribe((response) => {
+        this.climaLoading = true;
+        this.resetWeatherValues(response);
+        for (const element of response.data.weather) {
+          element.iconLabel = element.hourly[0].weatherIconUrl[0];
+          this.climaDay.push(element.date);
+          this.climaIcon.push(element.iconLabel.value);
+          this.climaMax.push(element.maxtempC);
+          this.climaMin.push(element.mintempC);
+        }
+      });
     }
-    break;
-    default:
-    break;
+    this.setUrlValue();
   }
-} 
-setLocalStorageItem(key,value){
-  localStorage.setItem(key,value);
-}
+  setUrlValue(){
+    switch (this.farm.name) {
+      case "Agrifrut":
+      this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3435/Campos:l/Agrifrut:f";
+      break;
+      case "Agrifrut II (Nogales y Parrones)":
+      this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3435/Campos:l/Agrifrut%20II%20(Nogales%20y%20Parrones):f";
+      break;
+      case "Santa Juana de Chincolco":
+      this.url = "https://cdtec.irrimaxlive.com/?cmd=signin&username=cdtec&password=l01yliEl7H#/u:3507/Campos:l/Agricola%20Santa%20Juana%20de%20Chincolco%20SA:f";
+      break;
+      default:
+      this.url = "";
+    }
+  }
+  resetWeatherValues(response){
+    this.climaDay = [];
+    this.climaIcon = [];
+    this.climaMax = [];
+    this.climaMin = [];
+    this.climaToday = response.data.current_condition[0];
+  }
 
-getJSONStringify(data) {
-  var cache = [];
-  var result =null;
-  result=JSON.stringify(data, function(key, value) {
-    if (typeof value === 'object' && value !== null) {
-      if (cache.indexOf(value) !== -1) {
-        return;
+  onSelect(select: string, id: number) {
+    switch (select) {
+      case "farm":
+        //this.setLocalStorageItem("lastLineChartLabels",this.getJSONStringify(this.lineChartLabels));
+        //this.setLocalStorageItem("lastLineChartData",this.getJSONStringify(this.lineChartData));
+        //this.setLocalStorageItem("lastBarChartLabels",this.getJSONStringify(this.barChartLabels));
+        //this.setLocalStorageItem("lastBarChartData",this.getJSONStringify(this.barChartData));
+        this.farm=this.getFarm(id);
+        if(this.farm){
+          this.setLocalStorageItem("lastFarmId",this.farm.id);
+          this.getWeatherStation();
+          this.getWeather();
+        }
+      break;
+      case "zone":        
+        this.router.navigate(['/farmpolygon',this.farm.id, id]);
+      break;
+      default:
+      break;
+    }
+  } 
+  setLocalStorageItem(key,value){
+    localStorage.setItem(key,value);
+  }
+
+  getJSONStringify(data) {
+    var cache = [];
+    var result =null;
+    result=JSON.stringify(data, function(key, value) {
+      if (typeof value === 'object' && value !== null) {
+        if (cache.indexOf(value) !== -1) {
+          return;
+        }
+        cache.push(value);
       }
-      cache.push(value);
-    }
-    return value;
-  });
-  cache = null;
-  return result;
-}
-changeDateRange(){
-  this.fromDate=this.fromDate;
-  this.toDate=this.toDate;
-  this.weatherStation=this.weatherStation;
-}
-selectTime(event){
-  this.selectedValue = event.value;
-  this.dateRangeByDefault();
-}
-dateRangeByDefault(){
-  this.times.map((element)=>{
-    element.active=(element.value===this.selectedValue)?true:false;
-    return element;
-  });
-  switch (this.selectedValue) {
-    case "1D":
-    this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -1);
-    break;
-    case "1S":
-    this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -7);
-    break;
-    case "2S":
-    this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -14);
-    break;
-    case "1M":
-    this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -30);
-    break;
-    case "3M":
-    this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -90);
-    break;
-    case "6M":
-    this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -180);
-    break;
-    default:
-    // code...
-    break;
+      return value;
+    });
+    cache = null;
+    return result;
   }
-  this.toDate = this.calendar.getToday();
-  this.requestChartBtn=(this.fromDate && this.toDate && this.toDate.after(this.fromDate))?false:true;
-}
-
-deleteValueJson(value) {
-  var index: number = this.measurements.indexOf(this.measurements.find(x => x.name == value));
-  if (index != -1) this.measurements.splice(index, 1);
-}
-open(content, sizeValue) {
-  this.modalService.open(content, {size: sizeValue} );
-}
-translateDate(date:string){
-  let newDate;
-  let days=[
-  {ing:"Mon",spa:"Lun"},
-  {ing:"Tue",spa:"Mar"},
-  {ing:"Wed",spa:"Mie"},
-  {ing:"Thu",spa:"Jue"},
-  {ing:"Fri",spa:"Vie"},
-  {ing:"Sat",spa:"Sab"},
-  {ing:"Sun",spa:"Dom"}
-  ];
-  for (var i = 0; i < days.length; i++) {      
-    if(date.indexOf(days[i].ing)==0){
-      newDate=date.replace(days[i].ing, days[i].spa);
-    }
-  }    
-  return newDate;
-}
-
-//datepicker
-onDateSelection(date: NgbDate,element:string) {
-  switch (element) {
-    case "from":
-    this.fromDate = date;
-    break;
-    case "to":
-    this.toDate = date;
-    break;
-    default:
-    // code...
-    break;
+  changeDateRange(){
+    this.fromDate=this.fromDate;
+    this.toDate=this.toDate;
+    this.weatherStation=this.weatherStation;
   }
-  this.requestChartBtn=(this.fromDate && this.toDate && this.toDate.after(this.fromDate))?false:true;
-}
-isHovered(date: NgbDate) {
-  return this.fromDate && !this.toDate && this.hoveredDate && date.after(this.fromDate) && date.before(this.hoveredDate);
-}
-isInside(date: NgbDate) {
-  return date.after(this.fromDate) && date.before(this.toDate);
-}
-isRange(date: NgbDate) {
-  return date.equals(this.fromDate) || date.equals(this.toDate) || this.isInside(date) || this.isHovered(date);
-}
-validateInput(currentValue: NgbDate, input: string): NgbDate {
-  const parsed = this.formatter.parse(input);
-  return parsed && this.calendar.isValid(NgbDate.from(parsed)) ? NgbDate.from(parsed) : currentValue;
-}
-translateMeasurement(measurement:string){
-  let newMeasurement;
-  switch ((measurement).toLowerCase()) {
-    case "station temperature":
-    newMeasurement="Temperatura";
-    break;
-    case "wind direction":
-    newMeasurement="Dir. Viento";
-    break;
-    case "direccion de viento":
-    newMeasurement="Dir. Viento";
-    break;
-    case "velocidad viento":
-    newMeasurement="Vel. Viento";
-    break;
-    case "wind speed (period)":
-    newMeasurement="Vel. Viento";
-    break;
-    case "solar radiation":
-    newMeasurement="Rad. Solar";
-    break;
-    case "sta. rel. humidity":
-    newMeasurement="Humedad";
-    break;
-    case "station relative humidity":
-    newMeasurement="Humedad";
-    break;
-    case "radiacion solar":
-    newMeasurement="Rad. Solar";
-    break;
-    case "solar radiation ":
-    newMeasurement="Rad. Solar";
-    break;
-    default:
-    newMeasurement=measurement;
-    break;
-  }    
-  return newMeasurement;
-}
-processMeasurements(data){
-  let measurementsResult=[]
-  let measurementNames=[
-  "Velocidad Viento",
-  "Vel. Viento",
-  "Wind Speed (period)",
-  "Direccion de viento",
-  "Dir. Viento",
-  "Wind Direction",
-  "Radiacion Solar",
-  "Rad. Solar",
-  "Solar radiation ",
-  "Station Relative Humidity",
-  "Sta. Rel. Humidity",
-  "Pluviometro",
-  "Temperatura", 
-  "Humedad",
-  "Station Temperature"]
-  for (const item of data) {
-    if(measurementNames.find(element=>element==item.name)!=undefined){
-      if(measurementsResult.find(element=>element.name==item.name)==undefined){
-        measurementsResult.push(item);
+  selectTime(event){
+    this.selectedValue = event.value;
+    this.dateRangeByDefault();
+  }
+  dateRangeByDefault(){
+    this.times.map((element)=>{
+      element.active=(element.value===this.selectedValue)?true:false;
+      return element;
+    });
+    switch (this.selectedValue) {
+      case "1D":
+      this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -1);
+      break;
+      case "1S":
+      this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -7);
+      break;
+      case "2S":
+      this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -14);
+      break;
+      case "1M":
+      this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -30);
+      break;
+      case "3M":
+      this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -90);
+      break;
+      case "6M":
+      this.fromDate = this.calendar.getNext(this.calendar.getToday(), 'd', -180);
+      break;
+      default:
+      // code...
+      break;
+    }
+    this.toDate = this.calendar.getToday();
+    this.requestChartBtn=(this.fromDate && this.toDate && this.toDate.after(this.fromDate))?false:true;
+  }
+
+  deleteValueJson(value) {
+    var index: number = this.measurements.indexOf(this.measurements.find(x => x.name == value));
+    if (index != -1) this.measurements.splice(index, 1);
+  }
+  open(content, sizeValue) {
+    this.modalService.open(content, {size: sizeValue} );
+  }
+  translateDate(date:string){
+    let newDate;
+    let days=[
+    {ing:"Mon",spa:"Lun"},
+    {ing:"Tue",spa:"Mar"},
+    {ing:"Wed",spa:"Mie"},
+    {ing:"Thu",spa:"Jue"},
+    {ing:"Fri",spa:"Vie"},
+    {ing:"Sat",spa:"Sab"},
+    {ing:"Sun",spa:"Dom"}
+    ];
+    for (var i = 0; i < days.length; i++) {      
+      if(date.indexOf(days[i].ing)==0){
+        newDate=date.replace(days[i].ing, days[i].spa);
       }
-    }  
+    }    
+    return newDate;
   }
-  return measurementsResult;
-}
-decimalProcessor(value,decimals){
-  return value.toFixed(decimals);
-}
-getCardinalPointOfTheValue(value:number){
-  let CardinalPoint;
-  switch (value) {
-    case 360:
-    CardinalPoint='N';
-    break;
-    case 90:
-    CardinalPoint='E';
-    break;
-    case 180:
-    CardinalPoint='S';
-    break;
-    case 270:
-    CardinalPoint='W';
-    break;
-    default:
-    if(value>=0&&value<=89.99){
-      CardinalPoint='NE';
-    }else if(value>=90.1&&value<=179.99){
-      CardinalPoint='SE';
-    }else if(value>=180.1&&value<=269.99){
-      CardinalPoint='SW';
-    }else if(value>=270.1&&value<=359.99){
-      CardinalPoint='NW';
+
+  //datepicker
+  onDateSelection(date: NgbDate,element:string) {
+    switch (element) {
+      case "from":
+      this.fromDate = date;
+      break;
+      case "to":
+      this.toDate = date;
+      break;
+      default:
+      // code...
+      break;
     }
-    break;
+    this.requestChartBtn=(this.fromDate && this.toDate && this.toDate.after(this.fromDate))?false:true;
   }
-  return CardinalPoint;
-}
-getLastMeasureDataUpdate(date:any){
-  return moment.utc(date).format('YYYY-MM-DD hh:mm:ss');
-}
+  isHovered(date: NgbDate) {
+    return this.fromDate && !this.toDate && this.hoveredDate && date.after(this.fromDate) && date.before(this.hoveredDate);
+  }
+  isInside(date: NgbDate) {
+    return date.after(this.fromDate) && date.before(this.toDate);
+  }
+  isRange(date: NgbDate) {
+    return date.equals(this.fromDate) || date.equals(this.toDate) || this.isInside(date) || this.isHovered(date);
+  }
+  validateInput(currentValue: NgbDate, input: string): NgbDate {
+    const parsed = this.formatter.parse(input);
+    return parsed && this.calendar.isValid(NgbDate.from(parsed)) ? NgbDate.from(parsed) : currentValue;
+  }
+  translateMeasurement(measurement:string){
+    let newMeasurement;
+    switch ((measurement).toLowerCase()) {
+      case "station temperature":
+      newMeasurement="Temperatura";
+      break;
+      case "wind direction":
+      newMeasurement="Dir. Viento";
+      break;
+      case "direccion de viento":
+      newMeasurement="Dir. Viento";
+      break;
+      case "velocidad viento":
+      newMeasurement="Vel. Viento";
+      break;
+      case "wind speed (period)":
+      newMeasurement="Vel. Viento";
+      break;
+      case "solar radiation":
+      newMeasurement="Rad. Solar";
+      break;
+      case "sta. rel. humidity":
+      newMeasurement="Humedad";
+      break;
+      case "station relative humidity":
+      newMeasurement="Humedad";
+      break;
+      case "radiacion solar":
+      newMeasurement="Rad. Solar";
+      break;
+      case "solar radiation ":
+      newMeasurement="Rad. Solar";
+      break;
+      default:
+      newMeasurement=measurement;
+      break;
+    }    
+    return newMeasurement;
+  }
+  processMeasurements(data){
+    let measurementsResult=[]
+    let measurementNames=[
+    "Velocidad Viento",
+    "Vel. Viento",
+    "Wind Speed (period)",
+    "Direccion de viento",
+    "Dir. Viento",
+    "Wind Direction",
+    "Radiacion Solar",
+    "Rad. Solar",
+    "Solar radiation ",
+    "Station Relative Humidity",
+    "Sta. Rel. Humidity",
+    "Pluviometro",
+    "Temperatura", 
+    "Humedad",
+    "Station Temperature"]
+    for (const item of data) {
+      if(measurementNames.find(element=>element==item.name)!=undefined){
+        if(measurementsResult.find(element=>element.name==item.name)==undefined){
+          measurementsResult.push(item);
+        }
+      }  
+    }
+    return measurementsResult;
+  }
+  decimalProcessor(value,decimals){
+    return value.toFixed(decimals);
+  }
+  getCardinalPointOfTheValue(value:number){
+    let CardinalPoint;
+    switch (value) {
+      case 360:
+      CardinalPoint='N';
+      break;
+      case 90:
+      CardinalPoint='E';
+      break;
+      case 180:
+      CardinalPoint='S';
+      break;
+      case 270:
+      CardinalPoint='W';
+      break;
+      default:
+      if(value>=0&&value<=89.99){
+        CardinalPoint='NE';
+      }else if(value>=90.1&&value<=179.99){
+        CardinalPoint='SE';
+      }else if(value>=180.1&&value<=269.99){
+        CardinalPoint='SW';
+      }else if(value>=270.1&&value<=359.99){
+        CardinalPoint='NW';
+      }
+      break;
+    }
+    return CardinalPoint;
+  }
+  getLastMeasureDataUpdate(date:any){
+    return moment.utc(date).format('YYYY-MM-DD hh:mm:ss');
+  }
 
 }

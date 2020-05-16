@@ -176,8 +176,9 @@ export class ChartComponent implements OnInit,OnChanges {
 		this.chart = Highcharts.chart(this.chartOptions);
 	}
 	renderCharts() {
-		this.chart.series[0].setData(this.chartData[0]);
-		this.chart.series[1].setData(this.chartData[1]);
+		for (var i = this.chart.series.length - 1; i >= 0; i--) {
+			this.chart.series[i].setData(this.chartData[i]);
+		}
 		this.chart.xAxis[0].setCategories(this.chartLabels.labels, true);
 		this.renderchartFlag=true;
 	}
@@ -185,8 +186,9 @@ export class ChartComponent implements OnInit,OnChanges {
 		this.firstId=null;
 		this.secondId=null;
 		if(this.chart!=undefined){
-			this.chart.series[0].setData([]);
-			this.chart.series[1].setData([]);
+			for (var i = this.chart.series.length - 1; i >= 0; i--) {
+				this.chart.series[i].setData([]);
+			}
 			this.chart.xAxis[0].setCategories([]);        
 		}
 		this.chartLabels.values=[];
