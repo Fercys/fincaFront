@@ -125,6 +125,7 @@
 							<ngx-select-dropdown
 								[(ngModel)]="selectedAccounts"
 								[ngModelOptions]="{standalone: true}"
+								[multiple]="true"
 								(change)="selectionChanged($event,'account')"
 								[config]="accountsConfig"
 								[options]="accounts"
