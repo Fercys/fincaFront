@@ -409,35 +409,38 @@ export class WeatherMonitoringComponent implements OnInit {
     let newMeasurement;
     switch ((measurement).toLowerCase()) {
       case "station temperature":
-      newMeasurement="Temperatura";
-      break;
+        newMeasurement="Temperatura";
+        break;
       case "wind direction":
-      newMeasurement="Dir. Viento";
-      break;
+        newMeasurement="Dir. Viento";
+        break;
       case "direccion de viento":
-      newMeasurement="Dir. Viento";
-      break;
+        newMeasurement="Dir. Viento";
+        break;
       case "velocidad viento":
-      newMeasurement="Vel. Viento";
-      break;
+        newMeasurement="Vel. Viento";
+        break;
       case "wind speed (period)":
-      newMeasurement="Vel. Viento";
-      break;
+        newMeasurement="Vel. Viento";
+        break;
       case "solar radiation":
-      newMeasurement="Rad. Solar";
-      break;
+        newMeasurement="Rad. Solar";
+        break;
       case "sta. rel. humidity":
-      newMeasurement="Humedad";
-      break;
+        newMeasurement="Humedad";
+        break;
       case "station relative humidity":
-      newMeasurement="Humedad";
-      break;
+        newMeasurement="Humedad";
+        break;
       case "radiacion solar":
-      newMeasurement="Rad. Solar";
-      break;
+        newMeasurement="Rad. Solar";
+        break;
       case "solar radiation ":
-      newMeasurement="Rad. Solar";
-      break;
+        newMeasurement="Rad. Solar";
+        break;
+      case "pluviometro":
+        newMeasurement="Precipitación";
+        break;
       default:
       newMeasurement=measurement;
       break;
