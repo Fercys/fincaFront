@@ -48,7 +48,7 @@ export class ChartComponent implements OnInit,OnChanges {
 		chart: {
 			type: null,
 		},
-		colors: ['#D12B34','#00B9EE'],
+		colors: [],
 		title: {
 			text: ''
 		},
@@ -94,6 +94,17 @@ export class ChartComponent implements OnInit,OnChanges {
 			crosshairs: true
 		},
 	};
+	//colors
+	/*
+	et0:#b5b5b5,
+	precipitación:#0069b3,
+	riego:#ed69a3,
+	radiación:#ffd237,
+	temperatura:#d12b34,
+	humedad relativa:#00b9ee,
+	velocidad de viento:#905ba7,
+	direccion de viento:#95c11f
+	*/
 	public renderchartFlag: boolean = false;
 	constructor(
 		private calendar: NgbCalendar,
@@ -105,6 +116,7 @@ export class ChartComponent implements OnInit,OnChanges {
 		this.chartOptions.chart.type=this.type;
 		switch (this.title) {
 			case "TEMPERATURA/HUMEDAD":
+				this.chartOptions.colors=['#d12b34','#00b9ee'];
 				this.chartOptions.series=[{ 
 					data: [], 
 					name: 'Temperatura',
@@ -118,6 +130,7 @@ export class ChartComponent implements OnInit,OnChanges {
 				}]
 				break;
 			case "PRECIPITACIÓN/ET0":
+				this.chartOptions.colors=['#0069b3','#b5b5b5'];
 				this.chartOptions.series=[{
 					type: undefined,
 					name: 'Precipitación (mm)', 
@@ -129,6 +142,7 @@ export class ChartComponent implements OnInit,OnChanges {
 				}]
 				break;
 			case "PORCIONES FRIOS/PORCIONES FRIOS":
+				this.chartOptions.colors=['#d12b34','#00b9ee'];
 				this.chartOptions.series=[{
 					type: undefined,
 					name: 'PORCIONES FRIOS', 
@@ -140,6 +154,7 @@ export class ChartComponent implements OnInit,OnChanges {
 				}]
 				break;
 			case "RADIACIÓN/VIENTO":
+				this.chartOptions.colors=['#ffd237','#905ba7'];
 				this.chartOptions.series=[{
 					type: undefined,
 					name: 'RADIACIÓN', 
