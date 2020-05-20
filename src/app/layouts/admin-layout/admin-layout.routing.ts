@@ -23,6 +23,7 @@ import { AccountSettingFormComponent } from '../../account-setting-form/account-
 import { AccountSettingsComponent } from '../../account-settings/account-settings.component';
 
 import { SoilAnalysisComponent } from 'app/soil-analysis/soil-analysis.component';
+import { SoilAnalysisIosComponent } from 'app/soil-analysis-ios/soil-analysis-ios.component';
 
 export const AdminLayoutRoutes: Routes = [
     { path: 'dashboard',                   component: DashboardComponent },
@@ -48,4 +49,5 @@ export const AdminLayoutRoutes: Routes = [
     { path: 'farmpolygon/:idfarm/:idzone', component: FarmMapPolygonComponent, pathMatch:  'full' },
     { path: 'free-plotter',                component: FreePlotterComponent, pathMatch:  'full' },
     { path: 'soil-analysis',               component: SoilAnalysisComponent, pathMatch:  'full' },    
+    { path: 'soil-analysis-ios',               component: SoilAnalysisIosComponent, pathMatch:  'full' },    
 ];

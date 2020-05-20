@@ -49,9 +49,11 @@ import { AdminLayoutRoutes } from './admin-layout.routing';
 import { FreePlotterComponent } from 'app/free-plotter/free-plotter.component';
 import { SoilAnalysisComponent } from 'app/soil-analysis/soil-analysis.component';
 
+
 //componentes de uso compartido
 import { PolygonMapComponent } from 'app/components/polygon-map/polygon-map.component';
 import { ChartComponent } from 'app/components/chart/chart.component';
+import { SoilAnalysisIosComponent } from 'app/soil-analysis-ios/soil-analysis-ios.component';
 
 @NgModule({
   imports: [
@@ -81,6 +83,7 @@ import { ChartComponent } from 'app/components/chart/chart.component';
     AdminDashboardComponent,
     WeatherMonitoringComponent,
     UserProfileComponent,
+    SoilAnalysisIosComponent,
     TableListComponent,
     TypographyComponent,
     IconsComponent,
